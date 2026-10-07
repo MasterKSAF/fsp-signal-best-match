@@ -1,0 +1,28 @@
+{
+  "version": "confirmation-isolated-v1",
+  "declaredBeforeRun": true,
+  "datasetType": "independently specified synthetic scenarios, not human observations",
+  "selection": { "maximumIntervalDays": 7, "minimumScoreDelta": 25, "differentDecisionRequired": true, "criticalMismatchAlternative": true },
+  "outcome": { "maximumDeltaFromLatest": 17, "sameDecisionRequired": true, "sameCriticalCompleteRequired": true, "maxAdditionalFormsPerSourcePair": 1 },
+  "validity": { "sameCandidate": true, "sameProgram": true, "sameGrade": true, "sameSavedVersionRubric": true, "excludeKnownDefect": true, "excludeScoringFailure": true, "excludeRevoked": true },
+  "production": { "network": false, "database": false, "endpoints": false, "gradeChanges": false, "cooldownChanges": false },
+  "episodes": [
+    { "id": "stable-high", "story": "Skill state stays strong, both forms fully solved", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,2,3,4,5] },
+    { "id": "stable-limited", "story": "Known stable limited skill, identical capability on both forms", "labelNeedsClarification": false, "a": [0,1], "b": [0,1] },
+    { "id": "stable-mixed", "story": "Stable skills with the same noncritical gap", "labelNeedsClarification": false, "a": [0,1,2,3,5], "b": [0,1,2,3,5] },
+    { "id": "borderline", "story": "Uncertain measurement near a grade boundary, minor noncritical fluctuation", "labelNeedsClarification": true, "a": [0,1,2,3,5], "b": [0,1,3,5], "third": [0,1,2,3,5] },
+    { "id": "documented-training", "story": "Legitimate improvement after documented training; recent state is stable strong", "labelNeedsClarification": false, "a": [0,1,3], "b": [0,1,2,3,4,5], "third": [0,1,2,3,4,5], "days": 3 },
+    { "id": "persistent-change", "story": "Skill condition changed; two observations do not establish current stability", "labelNeedsClarification": true, "a": [0,1,2,3,4,5], "b": [0,1,3], "third": [0,1,3] },
+    { "id": "fluctuating", "story": "Unresolved condition produces inconsistent competency patterns", "labelNeedsClarification": true, "a": [0,1,2,3,4,5], "b": [0,1], "third": [0,1,3,5] },
+    { "id": "critical-with-equal-totals", "story": "Critical competency uncertainty despite identical total scores", "labelNeedsClarification": true, "a": [0,1,2,3,5], "b": [0,1,2,4,5], "third": [0,1,2,3,5] },
+    { "id": "invalid-confirmation", "story": "Uncertain current state, then the additional measurement has a technical failure", "labelNeedsClarification": true, "a": [0,1,2,3,4,5], "b": [0,1,3], "third": [0,1,2,3,4,5], "thirdValidity": "scoring_failure" },
+    { "id": "different-programs", "story": "Backend and Frontend competence legitimately differ", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "bProgram": "frontend-typescript" },
+    { "id": "different-grades", "story": "Passing easier Junior is not a contradiction to missing Middle", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "aGrade": "Junior" },
+    { "id": "different-versions", "story": "A registered historic Backend v4 and current v6 are not one raw-score scale", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "aGenerator": "legacy" },
+    { "id": "known-defective-form", "story": "Known ambiguous task needs repair, not inference about candidate reliability", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "bValidity": "known_defect" },
+    { "id": "scoring-failure", "story": "Failed evaluation is an invalid result rather than low ability", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "bValidity": "scoring_failure" },
+    { "id": "long-gap", "story": "A long interval admits learning and changing conditions beyond the preregistered window", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "days": 30 },
+    { "id": "one-proof-five-resumes", "story": "Five resume views of one immutable proof are one observation", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,2,3,4,5], "sameAttempt": true, "resumeCopies": 5 },
+    { "id": "revoked-source", "story": "An operator-annulled attempt is not an active comparable observation", "labelNeedsClarification": false, "a": [0,1,2,3,4,5], "b": [0,1,3], "bValidity": "revoked" }
+  ]
+}

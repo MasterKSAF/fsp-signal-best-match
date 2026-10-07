@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Signal assessment context extension
+  version: 1.0.0
+  description: Дополнительные endpoints к основному контракту. Авторизация через текущую cookie-сессию.
+servers:
+  - url: /api
+paths:
+  /assessments/contexts:
+    get:
+      summary: Три профиля проверки и собственные активные приглашения кандидата
+      responses:
+        '200':
+          description: Справочник; ключей ответов и внутренних переключателей генератора нет
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [profiles, invitations]
+                properties:
+                  profiles:
+                    type: array
+                    items: {$ref: '#/components/schemas/Profile'}
+                  invitations:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, title, snapshot]
+                      properties:
+                        id: {type: integer}
+                        title: {type: string}
+                        snapshot: {$ref: '#/components/schemas/Snapshot'}
+        '401': {description: Нет сессии}
+        '403': {description: Сессия работодателя}
+  /assessments/attempts/{id}/context:
+    get:
+      summary: Неизменяемое описание собственной попытки кандидата
+      parameters:
+        - {in: path, name: id, required: true, schema: {type: integer, minimum: 1}}
+      responses:
+        '200':
+          description: Для старой попытки без контекста snapshot равен null
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [snapshot]
+                properties:
+                  snapshot:
+                    oneOf:
+                      - {$ref: '#/components/schemas/Snapshot'}
+                      - {type: 'null'}
+        '400': {description: Некорректный id}
+        '401': {description: Нет сессии}
+        '403': {description: Сессия работодателя}
+        '404': {description: Нет попытки или она принадлежит другому кандидату}
+  /employer/needs/{id}/assessment-context:
+    get:
+      summary: Направление проверки и карта требований собственной потребности
+      parameters:
+        - {in: path, name: id, required: true, schema: {type: integer, minimum: 1}}
+      responses:
+        '200':
+          description: Категория берётся из потребности работодателя
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [supported, targetGrade, context, reason, matchedRequirements, unsupportedRequirements]
+                properties:
+                  supported: {type: boolean}
+                  targetGrade: {type: string, enum: [Junior, Middle, Senior]}
+                  context: {$ref: '#/components/schemas/Profile'}
+                  reason: {type: string}
+                  matchedRequirements: {type: array, items: {type: string}}
+                  unsupportedRequirements: {type: array, items: {type: string}}
+        '400': {description: Некорректный id}
+        '401': {description: Нет сессии}
+        '403': {description: Сессия кандидата}
+        '404': {description: Нет потребности или она принадлежит другой компании}
+components:
+  schemas:
+    StartSelection:
+      description: Поля расширяют существующий StartAssessmentAttemptBody. Одновременно contextId и invitationId запрещены. В отсутствие обоих сохраняется исходная форма v4.
+      type: object
+      properties:
+        contextId: {type: string, enum: [api-platform, data-services, reliability]}
+        invitationId: {type: integer, minimum: 1, description: Только собственное активное приглашение Backend / Python; grade должен совпадать с приглашением}
+      not: {required: [contextId, invitationId]}
+    Coverage:
+      type: object
+      required: [requirement, families, evidence]
+      properties:
+        requirement: {type: string}
+        families: {type: array, items: {type: string}}
+        evidence: {type: string}
+    Profile:
+      type: object
+      required: [id, title, description, skills, coverage]
+      properties:
+        id: {type: string, enum: [api-platform, data-services, reliability]}
+        title: {type: string}
+        description: {type: string}
+        skills: {type: array, items: {type: string}}
+        coverage: {type: array, items: {$ref: '#/components/schemas/Coverage'}}
+    Snapshot:
+      type: object
+      required: [version, source, context, targetGrade, roleTitle, requirements, unsupportedRequirements, reason]
+      properties:
+        version: {type: string, const: backend-role-context-v1}
+        source: {type: string, enum: [profile, invitation]}
+        context: {$ref: '#/components/schemas/Profile'}
+        targetGrade: {type: string, enum: [Junior, Middle, Senior]}
+        roleTitle: {type: string}
+        requirements: {type: array, items: {type: string}}
+        unsupportedRequirements: {type: array, items: {type: string}}
+        reason: {type: string}

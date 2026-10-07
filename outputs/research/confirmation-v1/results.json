@@ -1,0 +1,736 @@
+{
+  "status": "PASS",
+  "protocolVersion": "confirmation-isolated-v1",
+  "protocolSha256": "278fdc8ef232dd2e2bc65c82c246535b5dfca85a8f2c55f6c420754fed12651c",
+  "protocolMtimeUtc": "2026-10-06T13:40:10.751Z",
+  "generatedAt": "2026-10-06T13:47:19.948Z",
+  "syntheticOnly": true,
+  "independentHumanParticipants": 0,
+  "runtimeDatabaseAccess": false,
+  "runtimeNetworkAccess": false,
+  "productionRoutesAdded": 0,
+  "originalSourceObjectsUnchanged": true,
+  "sourceObjectsSha256": "eb8a8778058b006a1c423c1053703e444716e54d38692aebd94e0f98fed1c72c",
+  "repeatedConfirmationDenied": 5,
+  "confirmationChainsDenied": 5,
+  "bankFacts": {
+    "totalManagedTemplates": 72,
+    "programGradeCompetencyGroups": 36,
+    "minimumTemplatesPerCompetency": 2,
+    "maximumTemplatesPerCompetency": 2,
+    "additionalTasksWithUnseenTemplateId": 0,
+    "additionalTasksWithNewCaseId": 30,
+    "additionalTasksWithDifferentPrompt": 30
+  },
+  "observations": {
+    "rawResumeViews": 37,
+    "uniqueSourceAttempts": 33,
+    "oneProofFiveResumes": {
+      "id": "one-proof-five-resumes",
+      "story": "Five resume views of one immutable proof are one observation",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 5,
+      "uniqueSourceAttempts": 1,
+      "comparable": false,
+      "selected": false,
+      "reason": "two_distinct_attempts_required",
+      "sources": [
+        {
+          "attemptId": "one-proof-five-resumes:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    }
+  },
+  "metrics": {
+    "allEpisodes": {
+      "cases": 17,
+      "truePositive": 4,
+      "falsePositive": 1,
+      "falseNegative": 1,
+      "trueNegative": 11,
+      "precision": 0.8,
+      "recall": 0.8,
+      "falseAlertRate": 0.08333333333333333
+    },
+    "comparableEpisodes": {
+      "cases": 9,
+      "truePositive": 4,
+      "falsePositive": 1,
+      "falseNegative": 1,
+      "trueNegative": 3,
+      "precision": 0.8,
+      "recall": 0.8,
+      "falseAlertRate": 0.25
+    },
+    "excludedEpisodes": 8,
+    "additionalAttempts": 5,
+    "additionalAssignedTasks": 30,
+    "unnecessaryAdditionalAttemptsOnPredeclaredStableOrTrainingScenarios": 1,
+    "unnecessaryAdditionalAssignedTasks": 6,
+    "outcomes": {
+      "consistent": 2,
+      "uncertain": 2,
+      "invalid": 1
+    }
+  },
+  "episodes": [
+    {
+      "id": "stable-high",
+      "story": "Skill state stays strong, both forms fully solved",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": false,
+      "reason": "rule_not_triggered",
+      "sources": [
+        {
+          "attemptId": "stable-high:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "stable-high:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "stable-limited",
+      "story": "Known stable limited skill, identical capability on both forms",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": false,
+      "reason": "rule_not_triggered",
+      "sources": [
+        {
+          "attemptId": "stable-limited:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 33,
+            "verified": false,
+            "criticalComplete": false
+          }
+        },
+        {
+          "attemptId": "stable-limited:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 33,
+            "verified": false,
+            "criticalComplete": false
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "stable-mixed",
+      "story": "Stable skills with the same noncritical gap",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": false,
+      "reason": "rule_not_triggered",
+      "sources": [
+        {
+          "attemptId": "stable-mixed:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 83,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "stable-mixed:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 83,
+            "verified": true,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "borderline",
+      "story": "Uncertain measurement near a grade boundary, minor noncritical fluctuation",
+      "syntheticLabelNeedsClarification": true,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": false,
+      "reason": "rule_not_triggered",
+      "sources": [
+        {
+          "attemptId": "borderline:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 83,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "borderline:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 67,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "documented-training",
+      "story": "Legitimate improvement after documented training; recent state is stable strong",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": true,
+      "reason": "decision_disagreement_with_score_or_critical_difference",
+      "sources": [
+        {
+          "attemptId": "documented-training:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "documented-training:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": "consistent",
+      "confirmationScore": 100,
+      "novelty": {
+        "tasks": 6,
+        "freshTemplateIds": 0,
+        "freshCaseIds": 6,
+        "changedPrompts": 6
+      }
+    },
+    {
+      "id": "persistent-change",
+      "story": "Skill condition changed; two observations do not establish current stability",
+      "syntheticLabelNeedsClarification": true,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": true,
+      "reason": "decision_disagreement_with_score_or_critical_difference",
+      "sources": [
+        {
+          "attemptId": "persistent-change:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "persistent-change:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": "consistent",
+      "confirmationScore": 50,
+      "novelty": {
+        "tasks": 6,
+        "freshTemplateIds": 0,
+        "freshCaseIds": 6,
+        "changedPrompts": 6
+      }
+    },
+    {
+      "id": "fluctuating",
+      "story": "Unresolved condition produces inconsistent competency patterns",
+      "syntheticLabelNeedsClarification": true,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": true,
+      "reason": "decision_disagreement_with_score_or_critical_difference",
+      "sources": [
+        {
+          "attemptId": "fluctuating:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "fluctuating:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 33,
+            "verified": false,
+            "criticalComplete": false
+          }
+        }
+      ],
+      "confirmationOutcome": "uncertain",
+      "confirmationScore": 67,
+      "novelty": {
+        "tasks": 6,
+        "freshTemplateIds": 0,
+        "freshCaseIds": 6,
+        "changedPrompts": 6
+      }
+    },
+    {
+      "id": "critical-with-equal-totals",
+      "story": "Critical competency uncertainty despite identical total scores",
+      "syntheticLabelNeedsClarification": true,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": true,
+      "reason": "decision_disagreement_with_score_or_critical_difference",
+      "sources": [
+        {
+          "attemptId": "critical-with-equal-totals:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 83,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "critical-with-equal-totals:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 83,
+            "verified": false,
+            "criticalComplete": false
+          }
+        }
+      ],
+      "confirmationOutcome": "uncertain",
+      "confirmationScore": 83,
+      "novelty": {
+        "tasks": 6,
+        "freshTemplateIds": 0,
+        "freshCaseIds": 6,
+        "changedPrompts": 6
+      }
+    },
+    {
+      "id": "invalid-confirmation",
+      "story": "Uncertain current state, then the additional measurement has a technical failure",
+      "syntheticLabelNeedsClarification": true,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": true,
+      "selected": true,
+      "reason": "decision_disagreement_with_score_or_critical_difference",
+      "sources": [
+        {
+          "attemptId": "invalid-confirmation:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "invalid-confirmation:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": "invalid",
+      "confirmationScore": null,
+      "novelty": {
+        "tasks": 6,
+        "freshTemplateIds": 0,
+        "freshCaseIds": 6,
+        "changedPrompts": 6
+      }
+    },
+    {
+      "id": "different-programs",
+      "story": "Backend and Frontend competence legitimately differ",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "different_programs",
+      "sources": [
+        {
+          "attemptId": "different-programs:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "different-programs:b",
+          "programId": "frontend-typescript",
+          "grade": "Middle",
+          "version": "signal-frontend-typescript-v2",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "different-grades",
+      "story": "Passing easier Junior is not a contradiction to missing Middle",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "different_grades",
+      "sources": [
+        {
+          "attemptId": "different-grades:a",
+          "programId": "backend-python",
+          "grade": "Junior",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "different-grades:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "different-versions",
+      "story": "A registered historic Backend v4 and current v6 are not one raw-score scale",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "different_saved_version_or_rubric",
+      "sources": [
+        {
+          "attemptId": "different-versions:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "kalibr-backend-python-v4",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "different-versions:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "known-defective-form",
+      "story": "Known ambiguous task needs repair, not inference about candidate reliability",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "invalid_source:known_defect",
+      "sources": [
+        {
+          "attemptId": "known-defective-form:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "known-defective-form:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "invalidReason": "known_defect"
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "scoring-failure",
+      "story": "Failed evaluation is an invalid result rather than low ability",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "invalid_source:scoring_failure",
+      "sources": [
+        {
+          "attemptId": "scoring-failure:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "scoring-failure:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "invalidReason": "scoring_failure"
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "long-gap",
+      "story": "A long interval admits learning and changing conditions beyond the preregistered window",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "outside_declared_interval",
+      "sources": [
+        {
+          "attemptId": "long-gap:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "long-gap:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 50,
+            "verified": false,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "one-proof-five-resumes",
+      "story": "Five resume views of one immutable proof are one observation",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 5,
+      "uniqueSourceAttempts": 1,
+      "comparable": false,
+      "selected": false,
+      "reason": "two_distinct_attempts_required",
+      "sources": [
+        {
+          "attemptId": "one-proof-five-resumes:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    },
+    {
+      "id": "revoked-source",
+      "story": "An operator-annulled attempt is not an active comparable observation",
+      "syntheticLabelNeedsClarification": false,
+      "rawViews": 2,
+      "uniqueSourceAttempts": 2,
+      "comparable": false,
+      "selected": false,
+      "reason": "invalid_source:revoked",
+      "sources": [
+        {
+          "attemptId": "revoked-source:a",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "score": 100,
+            "verified": true,
+            "criticalComplete": true
+          }
+        },
+        {
+          "attemptId": "revoked-source:b",
+          "programId": "backend-python",
+          "grade": "Middle",
+          "version": "signal-backend-python-v6",
+          "evaluated": {
+            "invalidReason": "revoked"
+          }
+        }
+      ],
+      "confirmationOutcome": null,
+      "confirmationScore": null,
+      "novelty": null
+    }
+  ],
+  "conclusion": "Данных недостаточно для рабочей политики или утверждения эффективности на людях. Нужны непоказанные содержательные формы и измеренная сопоставимость; допускается обсуждение отдельного добровольного исследовательского пилота после подготовки этих условий.",
+  "limitations": [
+    "Only manually specified synthetic scenarios; labels are not independent human expertise or empirical ability observations.",
+    "Thresholds 25/17/7 days are preregistered hypotheses, not measured confidence or significance.",
+    "The current bank has exactly two templates per competency. After two complete forms the third reuses templates: new seeds/case IDs do not establish independent assessment content.",
+    "Parameter changes do not establish equal human difficulty, resistance to memorization or anticheating accuracy.",
+    "A consistent third result is agreement with the latest measurement, not proof that it is true or that a working grade should change.",
+    "One false alert after legitimate training and one missed borderline uncertainty remain visible; thresholds were not tuned after results.",
+    "No participant minutes, cheating prevalence, real-world validity or production safeguard regression is inferred from this script."
+  ]
+}

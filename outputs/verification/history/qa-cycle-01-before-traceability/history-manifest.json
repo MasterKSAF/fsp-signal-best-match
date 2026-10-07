@@ -1,0 +1,59 @@
+{
+  "preservedAt": "2026-10-06T08:26:48.147Z",
+  "beforeAlgorithmSha256": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+  "currentSourceSha256AtPreserve": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+  "beforeSourcePreserved": true,
+  "files": [
+    {
+      "path": "outputs/quality/qa-cycle-01/intergroup-control-v1-report.json",
+      "sha256": "fd55fb5bd71995a3834bd35c92cac09a11f9937026f76cfcef3f57918e22fe0a",
+      "bytes": 631181
+    },
+    {
+      "path": "outputs/quality/qa-cycle-01/intergroup-control-v1-report.md",
+      "sha256": "eb180548c27e424d3bd6bb1b507c3acfc537574b99e5c55e5919c0da4ad38800",
+      "bytes": 5200
+    },
+    {
+      "path": "outputs/quality/qa-cycle-01/intergroup-control-v1-first-measurement.json",
+      "sha256": "e8a73c7ab769b79847bf41b7cb65c5d1194d6393e5a28f91014604504f173ccc",
+      "bytes": 631043
+    },
+    {
+      "path": "outputs/verification/qa01-intergroup-control.json",
+      "sha256": "58d6b3084174fce5a6abac4c7974785b67c751c8ef5a084f8f4f1471f485e703",
+      "bytes": 9750
+    },
+    {
+      "path": "outputs/verification/qa01-intergroup-control-tests.tap",
+      "sha256": "adce979ebf040eca37a613671fa6088bc0047e1423a2a61263458acfe39289fd",
+      "bytes": 1355
+    },
+    {
+      "path": "docs/matching-intergroup-control.md",
+      "sha256": "11d848c48f0ffc9f8180f020aa49193979b653ab8db9b67e11ce732ff631da50",
+      "bytes": 7758
+    },
+    {
+      "path": "scripts/evaluate-intergroup-control.ts",
+      "sha256": "9ce30407b804a44d114ecd1d56697ecd29e5a210406a58f12870a30377300645",
+      "bytes": 24200
+    },
+    {
+      "path": "tests/matching-intergroup-control.test.ts",
+      "sha256": "7b33c2190369ae036abc92242ea62e7887823c7ea2bedbe0f10160b8d09365c6",
+      "bytes": 5034
+    },
+    {
+      "path": "artifacts/api-server/src/lib/signal-matching.ts",
+      "sha256": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+      "bytes": 19786
+    },
+    {
+      "path": "artifacts/api-server/src/lib/skill-catalog.ts",
+      "sha256": "8d7b0ffede249af975713581771d188ae520b8f803c7e7840a72ec4b06473b39",
+      "bytes": 5457
+    }
+  ],
+  "method": "Exact byte copies before own report regeneration; original controls and labels untouched."
+}

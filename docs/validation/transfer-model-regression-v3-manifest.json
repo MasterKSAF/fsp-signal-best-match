@@ -1,0 +1,11 @@
+{
+  "version": "signal-transfer-model-regression-v3",
+  "frozenAt": "2026-10-06T08:17:52.438648+00:00",
+  "files": {
+    "docs/validation/transfer-model-regression-v3.json": "6e7bc7cba6b987ae5e6fbc9b1cf9a778b58f34789c00d7e0f76d2b95e301d8ee",
+    "docs/validation/transfer-model-regression-v1.json": "b910ce5e50a91daef70d8311e2aee3731e42a9acea4c48de2c61adb8ddc1929c",
+    "docs/validation/transfer-model-regression-v2.json": "209cf36890ab93eeed0275c017b48e98a8abce4da724ba454165d23a602c3b10"
+  },
+  "casesAdded": 2,
+  "policyOverrides": 1
+}

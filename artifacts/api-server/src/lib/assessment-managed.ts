@@ -1,0 +1,153 @@
+import { createHash, randomBytes } from "node:crypto";
+import type { SignalCase } from "@workspace/db";
+import { assembleAttempt, type AssessmentGrade, type AttemptOracle, type OracleBlueprint } from "./assessment-bank";
+import type { AssessmentContextId } from "./assessment-context";
+
+export type ProgramId = "backend-python" | "frontend-typescript";
+export const assessmentPrograms = [
+  { id: "backend-python" as const, specialization: "Backend / Python", title: "Проверка навыков · Backend / Python", version: "signal-backend-python-v6", grades: ["Junior", "Middle", "Senior"], available: true, estimatedMinutes: 35, description: "Контракты API, SQL, диагностика и безопасная обработка событий. Шесть заданий с разными инженерными сценариями." },
+  { id: "frontend-typescript" as const, specialization: "Frontend / TypeScript", title: "Проверка навыков · Frontend / TypeScript", version: "signal-frontend-typescript-v2", grades: ["Junior", "Middle", "Senior"], available: true, estimatedMinutes: 35, description: "TypeScript, состояние интерфейса, доступность, производительность, архитектура и асинхронные обновления." },
+];
+export function isProgramId(value: unknown): value is ProgramId { return value === "backend-python" || value === "frontend-typescript"; }
+export function programSpecialization(id: string) { return assessmentPrograms.find(program => program.id === id)?.specialization; }
+const backendFamilies = ["api-contracts", "sql-data", "incident-diagnosis", "idempotency", "architecture", "condition-change"] as const;
+const frontendFamilies = ["typescript", "frontend-state", "frontend-performance", "accessibility", "frontend-architecture", "async-ui"] as const;
+const backendScenarios = [["saved-response", "optimistic-write"], ["tenant-aggregate", "missing-relations"], ["database-runtime", "dependency-budget"], ["event-ledger", "sequence-window"], ["durable-delivery", "expand-contract"], ["late-replay", "cache-invalidation"]] as const;
+const frontendScenarios = [["union-narrowing", "runtime-boundary"], ["immutable-reducer", "derived-selection"], ["main-thread", "network-waterfall"], ["focus-navigation", "live-feedback"], ["state-ownership", "contract-evolution"], ["request-race", "optimistic-rollback"]] as const;
+const frontendLabels = ["TypeScript", "Состояние интерфейса", "Производительность интерфейса", "Доступность", "Архитектура интерфейса", "Асинхронный интерфейс"];
+const backendSkills = [["Python", "API contracts"], ["SQL"], ["Incident diagnosis"], ["Python", "Idempotency"], ["Architecture"], ["Replay safety"]];
+const frontendSkills = [["TypeScript"], ["Frontend state"], ["Frontend performance"], ["Accessibility"], ["Frontend architecture"], ["Async UI"]];
+export type ManagedTemplate = { id: string; version: number; programId: ProgramId; programVersion: string; grade: AssessmentGrade; competency: string; scenario: string; slot: number; variant: number; status: "active"; responseType: "choice" | "integer" | "structured"; critical: boolean; targetSeconds: number; verifiedSkills: string[] };
+export const managedTemplates: ManagedTemplate[] = assessmentPrograms.flatMap(program => (["Junior", "Middle", "Senior"] as const).flatMap(grade => (program.id === "backend-python" ? backendFamilies : frontendFamilies).flatMap((competency, slot) => (program.id === "backend-python" ? backendScenarios : frontendScenarios)[slot]!.map((scenario, variant) => ({
+  id: `${program.id}.${grade.toLowerCase()}.${competency}.${scenario}`, version: grade === "Senior" && slot === 4 ? 2 : 1, programId: program.id, programVersion: program.version, grade, competency, scenario, slot, variant, status: "active" as const,
+  responseType: slot === 2 || slot === 4 ? "choice" as const : slot === 1 ? "integer" as const : "structured" as const,
+  // Senior must demonstrate safe architecture/change management; a missing
+  // systems judgement cannot be compensated by five routine correct answers.
+  // Older attempts retain their saved v5/v1 critical flags unchanged.
+  critical: [0, 1, 3].includes(slot) || grade === "Senior" && slot === 4, targetSeconds: grade === "Junior" || slot === 5 ? 300 : 360,
+  verifiedSkills: (program.id === "backend-python" ? backendSkills : frontendSkills)[slot]!,
+})))));
+
+export class ManagedBankUnavailableError extends Error { constructor(public competency: string) { super(`Для компетенции «${competency}» временно нет доступного задания. Попытка не создана. Повторите позже.`); } }
+export type BankSelection = { disabledTemplateIds?: string[]; previousTemplateIds?: string[]; contextId?: AssessmentContextId; forcedVariant?: 0 | 1 };
+/** Pure registry selection. The caller supplies candidate exposure and durable availability overrides. */
+export function selectManagedTemplates(programId: ProgramId, grade: AssessmentGrade, seed: string, options: BankSelection = {}) {
+  const counts = new Map<string, number>();
+  for (const id of options.previousTemplateIds ?? []) counts.set(id, (counts.get(id) ?? 0) + 1);
+  return Array.from({ length: 6 }, (_, slot) => {
+    const candidates = managedTemplates.filter(t => t.programId === programId && t.grade === grade && t.slot === slot && !options.disabledTemplateIds?.includes(t.id) && (options.forcedVariant === undefined || t.variant === options.forcedVariant));
+    if (!candidates.length) throw new ManagedBankUnavailableError((programId === "backend-python" ? backendFamilies : frontendFamilies)[slot]!);
+    const frontendPreferred = programId === "frontend-typescript" && (slot === 2 || slot === 4) && options.contextId
+      ? options.contextId === "frontend-platform" ? 1 : options.contextId === "frontend-accessibility" && slot === 4 ? 1 : 0
+      : undefined;
+    candidates.sort((a, b) => (counts.get(a.id) ?? 0) - (counts.get(b.id) ?? 0) || (frontendPreferred === undefined ? 0 : Number(b.variant === frontendPreferred) - Number(a.variant === frontendPreferred)) || createHash("sha256").update(`${seed}:${a.id}`).digest("hex").localeCompare(createHash("sha256").update(`${seed}:${b.id}`).digest("hex")));
+    return candidates[0]!;
+  });
+}
+export function exposedTemplateIds(oracles: unknown): string[] {
+  if (!oracles || typeof oracles !== "object") return [];
+  return Object.values(oracles).flatMap(value => { const id = (value as { blueprint?: { templateId?: unknown } })?.blueprint?.templateId; return typeof id === "string" ? [id] : []; });
+}
+type Task = { title: string; prompt: string; answer: string; distractors?: [string, string, string]; objective: string };
+const code = (language: string, lines: string[]) => `\n\n\`\`\`${language}\n${lines.join("\n")}\n\`\`\``;
+const trace = " Укажите значения в порядке вызовов через | без пробелов.";
+
+function backendAlternative(slot: number, grade: AssessmentGrade, n: number): Task {
+  const level = grade === "Junior" ? 0 : grade === "Middle" ? 1 : 2;
+  if (slot === 0) {
+    const start = n + 2; const calls = level === 0 ? [`write(${start}, ${n})`, `write(${start}, ${n + 1})`, `write(${start + 1}, ${n + 2})`] : level === 1 ? [`write("a", ${start}, ${n})`, `write("b", ${start}, ${n + 1})`, `write("a", ${start}, ${n + 2})`, `write("a", ${start + 1}, ${n + 3})`] : [`write(${start}, "bad", ${n})`, `write(${start}, "ok", ${n + 1})`, `write(${start}, "ok", ${n + 2})`, `write(${start + 1}, "ok", ${n + 3})`];
+    return { title: "Конкурентная запись по версии", objective: "Предусловие If-Match, конфликт устаревшей записи и границы ресурса", prompt: `Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова.${trace}${code("python", level === 0 ? [`version = ${start}`, "def write(expected, value):", "    global version", "    if expected != version: return f'412:{version}'", "    version += 1", "    return f'200:{version}'", ...calls] : level === 1 ? [`versions = {'a': ${start}, 'b': ${start}}`, "def write(resource, expected, value):", "    if versions[resource] != expected: return f'412:{versions[resource]}'", "    versions[resource] += 1", "    return f'200:{versions[resource]}'", ...calls] : [`version = ${start}`, "def write(expected, digest, value):", "    global version", "    if digest != 'ok': return f'422:{version}'", "    if expected != version: return f'412:{version}'", "    version += 1", "    return f'200:{version}'", ...calls])}`, answer: level === 0 ? `200:${start + 1}|412:${start + 1}|200:${start + 2}` : level === 1 ? `200:${start + 1}|200:${start + 1}|412:${start + 1}|200:${start + 2}` : `422:${start}|200:${start + 1}|412:${start + 1}|200:${start + 2}` };
+  }
+  if (slot === 1) return level === 0 ? {
+    title: "Заказы без оплаты", objective: "NULL после LEFT JOIN и подсчёт отсутствующей связи", prompt: `Найдите число заказов без оплаты. Ответ — одно целое число.${code("sql", ["SELECT COUNT(*) FROM orders o", "LEFT JOIN payments p ON p.order_id = o.id", "WHERE p.order_id IS NULL;"])}\norders.id: ${n}, ${n + 1}, ${n + 2}, ${n + 3}; payments.order_id: ${n}, ${n}, ${n + 2}.`, answer: "2",
+  } : level === 1 ? {
+    title: "Исключить отменённые заказы", objective: "NOT EXISTS в границе tenant, включая NULL и чужие ключи", prompt: `Вычислите сумму неотменённых заказов tenant=7. Ответ — целое число.${code("sql", ["SELECT COALESCE(SUM(o.amount),0) FROM orders o WHERE o.tenant=7", "AND NOT EXISTS (SELECT 1 FROM cancellations c WHERE c.tenant=o.tenant AND c.order_id=o.id);"])}\norders (tenant,id,amount): (7,A,${n}), (7,B,${n + 2}), (7,C,${n + 4}), (8,B,${n + 6}); cancellations (tenant,order_id): (7,A),(8,B),(7,NULL).`, answer: String(n * 2 + 6),
+  } : {
+    title: "Ранжирование и одинаковые даты", objective: "Детерминированный ROW_NUMBER, tie-break и фильтр после окна", prompt: `Запрос выбирает последнюю запись; при равной ревизии больший id побеждает. Введите сумму выбранных amount, если status='paid'.${code("sql", ["WITH ranked AS (SELECT *, ROW_NUMBER() OVER", " (PARTITION BY tenant,order_id ORDER BY revision DESC,id DESC) AS rn", " FROM events WHERE tenant=7)", "SELECT COALESCE(SUM(amount),0) FROM ranked WHERE rn=1 AND status='paid';"])}\nevents (tenant,order_id,revision,id,status,amount): (7,A,2,1,paid,${n}), (7,A,2,2,refunded,${n + 1}), (7,B,1,3,paid,${n + 2}), (7,B,2,4,paid,${n + 3}), (8,C,9,5,paid,${n + 4}).`, answer: String(n + 3),
+  };
+  if (slot === 2) return level === 0 ? {
+    title: "Зависимость вернула 429", objective: "Отличить ограничение API от ошибки БД и проверить Retry-After", prompt: `За минуту внешний API отклонил ${n} запросов с 429 и Retry-After. БД и CPU стабильны. Какая проверка обосновывает следующее действие?`, answer: "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.", distractors: ["Добавить индекс в БД и не изменять исходящие запросы до следующего релиза.", "Увеличить параллелизм запросов; 429 считать случайной сетевой ошибкой.", "Повторять запрос немедленно до 200; время между попытками не измерять."],
+  } : level === 1 ? {
+    title: "Каскад повторов", objective: "Бюджет повторов, трасса зависимостей и ограничение усиления нагрузки", prompt: `После тайм-аута каждый из трёх слоёв повторяет запрос трижды. Downstream получает до 27 запросов на один исходный, p95=${n} мс. Что проверить и ограничить первым?`, answer: "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки.", distractors: ["Увеличить повторения каждого слоя до пяти и сравнить только среднюю задержку.", "Увеличить число соединений ко всем зависимостям без общего deadline.", "Удалить trace для ускорения запроса, оставив число HTTP 200 за сутки."],
+  } : {
+    title: "Очередь после отключения региона", objective: "Backpressure и границы отказа при наблюдаемом насыщении", prompt: `После потери региона вход=${n + 50}/с, обработка=${n}/с; очередь растёт, latency нарушает SLO. Автомасштабирование занимает 10 минут. Какой план уменьшает ущерб и проверяем?`, answer: "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности.", distractors: ["Сделать очередь безлимитной и поднять timeout всех клиентов до 24 часов.", "Равномерно повторять каждый запрос без бюджета; ждать масштабирования без наблюдений.", "Удалить всю очередь, заявить полное восстановление по доступности HTTP endpoint."],
+  };
+  if (slot === 3) {
+    const increments = level === 0 ? [1, 1, 2] : level === 1 ? [2, 1, 2, 3] : [1, 3, 2, 3];
+    const contiguous = level === 2;
+    const answers = contiguous ? [`ok:${n + 1}`, `gap:${n + 1}`, `ok:${n + 2}`, `ok:${n + 3}`] : level === 1 ? [`ok:${n + 2}`, `old:${n + 2}`, `old:${n + 2}`, `ok:${n + 3}`] : [`ok:${n + 1}`, `old:${n + 1}`, `ok:${n + 2}`];
+    return { title: contiguous ? "Пропуск номера события" : "Водяной знак потребителя", objective: contiguous ? "Не применять событие через пропуск последовательности" : "Дедупликация и отбрасывание устаревших событий по последовательности", prompt: `Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery.${trace}${code("python", [`last = ${n}`, "def consume(seq):", "    global last", "    if seq <= last: return f'old:{last}'", ...(contiguous ? ["    if seq != last + 1: return f'gap:{last}'"] : []), "    last = seq", "    return f'ok:{last}'", ...increments.map(x => `consume(${n + x})`)])}`, answer: answers.join("|") };
+  }
+  if (slot === 4) return {
+    title: level === 0 ? "Совместимое добавление поля" : level === 1 ? "Переезд схемы без остановки" : "Завершение двойной записи",
+    objective: "Expand-contract, наблюдаемый переход и безопасный откат",
+    prompt: level === 0 ? `Старый клиент версии ${n} принимает JSON без нового необязательного поля. Как добавить поле без согласованного одновременного обновления?` : level === 1 ? `Нужно заменить обязательный столбец при работающих старых и новых версиях сервиса. ${n} тысяч строк ещё не перенесены. Какая последовательность сохраняет совместимость?` : `Новая модель прошла backfill ${n} тысяч строк; часть старых writers ещё работает. Когда безопасно удалить старую модель и двойную запись?`,
+    answer: level === 0 ? "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов." : level === 1 ? "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним." : "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+    distractors: ["Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.", "Одновременно заменить контракт и данные без метрик, резервного пути и сверки.", "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных."],
+  };
+  const start = n; const senior = level === 2;
+  return { title: "Изменилось условие: инвалидирован кеш", objective: "Пересчёт после инвалидирования; ревизия защищает от устаревшего заполнения", prompt: `Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения?${trace}${code("python", senior ? [`revision = 2`, `cache = (1, ${start})`, `db_value = ${start + 5}`, "def read():", "    global cache", "    if cache[0] != revision: cache = (revision, db_value)", "    return cache[1]", "r1 = read()", `db_value = ${start + 9}`, "revision = 3", "r2 = read()", "r3 = read()"] : [`cache = {'key': ${start}}`, `db_value = ${start + 5}`, "def read():", "    if 'key' not in cache: cache['key'] = db_value", "    return cache['key']", "r1 = read()", "del cache['key']", "r2 = read()", `db_value = ${start + 9}`, ...(level === 1 ? ["del cache['key']"] : []), "r3 = read()"])}`, answer: senior ? `${start + 5}|${start + 9}|${start + 9}` : level === 1 ? `${start}|${start + 5}|${start + 9}` : `${start}|${start + 5}|${start + 5}` };
+}
+
+function frontendTask(slot: number, variant: number, grade: AssessmentGrade, n: number): Task {
+  const level = grade === "Junior" ? 0 : grade === "Middle" ? 1 : 2;
+  if (slot === 0 && variant === 0) {
+    const lines = ["type State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };", "function label(s: State): string {", "  if (s.kind === 'ready') return `value:${s.value}`;", ...(level > 0 ? ["  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';"] : []), "  return 'wait';", "}", `label({kind:'ready',value:${n}})`, "label({kind:'loading'})", "label({kind:'error',retry:true})", ...(level === 2 ? ["label({kind:'error',retry:false})"] : [])];
+    return { title: "Сужение discriminated union", objective: "Ветвление по discriminant без небезопасного cast", prompt: `Вычислите возвращаемые строки; TypeScript с strict:true.${trace}${code("typescript", lines)}`, answer: `value:${n}|wait|${level === 0 ? "wait" : "retry"}${level === 2 ? "|stop" : ""}` };
+  }
+  if (slot === 0) return { title: "Данные unknown на границе", objective: "Runtime-проверка unknown; TypeScript assertion не валидирует JSON", prompt: `JSON пришёл извне. Вычислите значения функции для трёх входов.${trace}${code("typescript", ["function read(value: unknown): string {", "  if (typeof value !== 'object' || value === null) return 'invalid';", "  const x = value as Record<string, unknown>;", "  if (typeof x.count !== 'number') return 'invalid';", ...(level > 0 ? ["  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';"] : []), ...(level === 2 ? ["  if (x.version !== 2) return 'version';"] : []), "  return String(x.count + 1);", "}", `read({count:${n},version:2})`, `read({count:'${n}',version:2})`, level === 0 ? "read(null)" : level === 1 ? "read({count:-1})" : `read({count:${n},version:1})`])}`, answer: `${n + 1}|invalid|${level === 2 ? "version" : "invalid"}` };
+  if (slot === 1 && variant === 0) return { title: "Неизменяемый reducer", objective: "Последовательность reducer actions и отсутствие мутации снимка", prompt: `Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.${code("typescript", [`let state = {count:${n}, revision:0};`, "function reduce(s: typeof state, a: {type: string; amount: number}) {", ...(level === 2 ? ["  if (a.type === 'stale') return s;"] : []), "  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};", ...(level > 0 ? ["  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};"] : []), "  return s;", "}", "state=reduce(state,{type:'add',amount:3});", level > 0 ? `state=reduce(state,{type:'reset',amount:${n + 7}});` : "state=reduce(state,{type:'unknown',amount:100});", level === 2 ? "state=reduce(state,{type:'stale',amount:100});" : "state=reduce(state,{type:'add',amount:2});", ...(level === 2 ? ["state=reduce(state,{type:'add',amount:4});"] : [])])}`, answer: String(n + (level === 0 ? 5 : level === 1 ? 9 : 11)) };
+  if (slot === 1) return { title: "Производное состояние списка", objective: "Считать derived state после обновления без второго источника истины", prompt: `Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.${code("typescript", [`let rows=[{id:1,active:true,points:${n}},{id:2,active:false,points:${n + 2}},{id:3,active:true,points:${n + 4}}];`, level === 0 ? "rows=rows.filter(x=>x.id!==1);" : level === 1 ? "rows=rows.map(x=>x.id===2?{...x,active:true}:x);" : "rows=rows.map(x=>x.id===1?{...x,active:false}:x).filter(x=>x.id!==2);", "const total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);"])}`, answer: String(level === 1 ? n * 3 + 6 : n + 4) };
+  if (slot === 2) return variant === 0 ? {
+    title: "Задержка реакции интерфейса", objective: "Проверяемая диагностика main thread; разная сложность обработки", prompt: level === 0 ? `После ввода буквы интерфейс зависает на ${n} мс. Network пуст, Performance показывает длинную синхронную сортировку. Что проверить и изменить?` : level === 1 ? `Фильтр ${n} тысяч строк блокирует main thread. Debounce уменьшил частоту, но каждый ввод всё ещё создаёт длинную задачу. Как устранить источник задержки?` : `Worker считает ${n} тысяч строк, но postMessage копирует большой объект и rendering всё равно создаёт long task. Что измерить дальше?`,
+    answer: level === 0 ? "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно." : level === 1 ? "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера." : "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+    distractors: ["Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.", "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.", "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика."],
+  } : {
+    title: "Критическая цепочка загрузки", objective: "Waterfall и зависимости: параллельность только независимых запросов", prompt: level === 0 ? `Два независимых справочника загружаются последовательно по ${n} мс. Что сократит задержку без изменения их содержимого?` : level === 1 ? `Карточка ждёт профиль, затем одновременно можно получить ${n} независимых деталей. Что изменить в цепочке?` : `Главный экран содержит чувствительные пользовательские данные, waterfall обнаружил повторный общий запрос и зависимые запросы. Как оптимизировать без утечки кеша?`,
+    answer: level === 0 ? "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall." : level === 1 ? "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов." : "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+    distractors: ["Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.", "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.", "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности."],
+  };
+  if (slot === 3 && variant === 0) return { title: "Клавиатурный фокус", objective: "Фокус, disabled и возврат управления из диалога", prompt: `Определите id элемента с фокусом после каждой операции.${trace}\nНачало: focus=open-${n}. При открытии диалога фокус переходит на first-${n}; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-${n}, disabled-${n} (disabled), last-${n}. Escape закрывает диалог и возвращает фокус на open-${n}. ${level === 2 ? `После закрытия open-${n} удаляется; политика восстановления переводит фокус на heading-${n}.` : ""}\nОперации: открыть; Tab; ${level === 0 ? "Escape" : "Tab; Escape"}.`, answer: `first-${n}|last-${n}|${level === 0 ? `open-${n}` : `first-${n}|${level === 2 ? `heading-${n}` : `open-${n}`}`}` };
+  if (slot === 3) return { title: "Обратная связь формы", objective: "Ошибка по полю, живое сообщение и отсутствие захвата фокуса", prompt: `Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. ${level > 0 ? "Асинхронный ответ старой версии игнорируется." : ""} ${level === 2 ? "После удаления submit при успехе фокус переносится на heading." : ""} Введите фокус:сообщение после каждого действия.${trace}\nНачало email пуст. submit invalid → email:${n}; исправить email и submit valid → success:${n + 1}; ${level === 0 ? `повторить valid → success:${n + 2}` : `получить старый error:${n} после success:${n + 1}`}. Для ошибки сообщение «Ошибка», для успеха «Отправлено».`, answer: `email:Ошибка|${level === 2 ? "heading" : "submit"}:Отправлено|${level === 2 ? "heading" : "submit"}:Отправлено` };
+  if (slot === 4) return variant === 0 ? {
+    title: "Кому принадлежит состояние", objective: "Единый источник истины и явные границы UI-состояния", prompt: level === 0 ? `Два компонента редактируют один фильтр списка из ${n} элементов. Где хранить изменяемое значение?` : level === 1 ? `Фильтр должен переживать reload и быть доступен по ссылке; ответы сервера зависят от него. Как разделить состояния?` : `Несколько вкладок и локальное редактирование могут конфликтовать с серверной ревизией. Как избежать молчаливого перезаписывания?`,
+    answer: level === 0 ? "У общего владельца; передавать значение и событие изменения, производный список вычислять из него." : level === 1 ? "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно." : "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+    distractors: ["Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.", "Использовать DOM как единственную БД; изменения другого компонента игнорировать.", "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний."],
+  } : {
+    title: "Изменение контракта клиента", objective: "Версии DTO, граница преобразования и совместимое развитие", prompt: level === 0 ? `Сервер добавляет необязательное поле к DTO версии ${n}. Как показать разумное значение при его отсутствии?` : level === 1 ? `Две версии API возвращают различающуюся структуру одного объекта. Как сохранить компоненты независимыми от перехода?` : `В кешах клиентов остаются DTO старой версии, новая версия меняет значение поля. Как провести переход безопасно?`,
+    answer: level === 0 ? "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса." : level === 1 ? "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта." : "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+    distractors: ["Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.", "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.", "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."],
+  };
+  if (variant === 0) return { title: "Поздний ответ поиска", objective: "Request identity, устаревший ответ и отмена обновления после unmount", prompt: `Проследите значение view после каждого receive.${trace}${code("typescript", [`let request=0, view='initial', mounted=true;`, "function start(){return ++request}", "function receive(id:number,value:string){if(id===request" + (level === 2 ? " && mounted" : "") + ") view=value; return view}", "const first=start(); const second=start();", `receive(second,'new-${n}');`, `receive(first,'old-${n}');`, level === 2 ? "mounted=false;" : level === 1 ? "start();" : "// request не меняется", `receive(second,'late-${n}');`])}`, answer: `new-${n}|new-${n}|${level === 0 ? `late-${n}` : `new-${n}`}` };
+  return { title: "Откат оптимистичного обновления", objective: "Откат только собственной ревизии без уничтожения более нового изменения", prompt: `После каждого settle укажите значение count.${trace}${code("typescript", [`let count=${n}, revision=0;`, "function update(value:number){const previous=count; count=value; return {revision:++revision,previous};}", "function settle(op:{revision:number;previous:number},ok:boolean){", level === 0 ? "  if(!ok) count=op.previous;" : "  if(!ok && op.revision===revision) count=op.previous;", "  return count;", "}", `const a=update(${n + 1});`, ...(level > 0 ? [`const b=update(${n + 2});`] : []), "settle(a,false);", level === 0 ? `const b=update(${n + 2});` : "// b уже был выдан", "settle(b,true);", ...(level === 2 ? [`const c=update(${n + 3});`, "settle(c,false);"] : ["settle(b,true);"])])}`, answer: level === 0 ? `${n}|${n + 2}|${n + 2}` : level === 1 ? `${n + 2}|${n + 2}|${n + 2}` : `${n + 2}|${n + 2}|${n + 2}` };
+}
+
+/** No DB or global mutable state. forcedVariant is server research/test only, never parsed from a candidate request. */
+export function assembleManagedAttempt(programId: ProgramId, grade: AssessmentGrade, seed = randomBytes(24).toString("hex"), options: BankSelection = {}): { cases: SignalCase[]; oracles: AttemptOracle } {
+  const selected = selectManagedTemplates(programId, grade, seed, options);
+  const digest = createHash("sha256").update(seed).digest("hex");
+  const n = 17 + Number.parseInt(digest.slice(0, 6), 16) % 900;
+  const legacy = programId === "backend-python" ? assembleAttempt(grade, seed, options.contextId) : null;
+  const generated = selected.map(template => {
+    const id = `${template.programVersion}:${grade}:${template.competency}:${digest.slice(0, 16)}`;
+    let item: SignalCase; let answer: string; let objective: string;
+    if (legacy && template.variant === 0) {
+      const original = legacy.cases[template.slot]!;
+      const oracle = legacy.oracles[original.id]!;
+      item = { ...original, id }; answer = oracle.answer; objective = oracle.blueprint.objective;
+    } else {
+      const task = programId === "backend-python" ? backendAlternative(template.slot, grade, n) : frontendTask(template.slot, template.variant, grade, n);
+      const options = task.distractors ? [...task.distractors, task.answer].map((value, index) => ({ value, key: createHash("sha256").update(`${seed}:${template.id}:${index}`).digest("hex") })).sort((a, b) => a.key.localeCompare(b.key)).map(x => x.value) : [];
+      item = { id, family: legacy?.cases[template.slot]?.family ?? frontendLabels[template.slot]!, title: task.title, prompt: task.prompt, responseType: template.responseType === "choice" ? "choice" : "text", options };
+      answer = task.answer; objective = task.objective;
+    }
+    const blueprint: OracleBlueprint = { version: template.programVersion, grade, programId, family: template.competency as OracleBlueprint["family"], templateId: template.id, templateVersion: template.version, objective, responseType: template.responseType, partialCredit: template.responseType === "structured" ? "ordered_components" : "all_or_nothing", critical: template.critical, targetSeconds: template.targetSeconds, verifiedSkills: template.verifiedSkills };
+    return { item, oracle: { answer, blueprint } };
+  });
+  return { cases: generated.map(x => x.item), oracles: Object.fromEntries(generated.map(x => [x.item.id, x.oracle])) };
+}
+
+/** Only fully passed rubric criteria can verify the catalog skills declared by that saved template. */
+export function verifiedSkillsForAttempt(cases: SignalCase[], oracles: AttemptOracle, evidence: Array<{ skill: string; score: number }>) {
+  return [...new Set(cases.flatMap((item, index) => evidence[index]?.score === 100 ? oracles[item.id]?.blueprint?.verifiedSkills ?? [] : []))];
+}

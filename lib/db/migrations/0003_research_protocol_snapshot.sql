@@ -1,0 +1,1 @@
+ALTER TABLE "signal_research_studies" ADD COLUMN "protocol_snapshot" jsonb;

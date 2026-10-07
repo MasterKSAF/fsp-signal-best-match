@@ -1,0 +1,128 @@
+{
+  "version": "signal-traceability-quality-boundary-v1",
+  "evaluationClock": "2026-10-06T00:00:00.000Z",
+  "provenance": "New semantic boundary frozen before QA01b implementation; AI-assisted synthetic fixture, not human observations. Initial traceability fixture remains immutable.",
+  "newBusinessCases": [
+    {
+      "id": "comparable100-before83-with-fsp",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 880031,
+            "alias": "Z comparable100 no FSP",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880031,
+            "candidateId": 880031,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        },
+        {
+          "profile": {
+            "userId": 880030,
+            "alias": "A comparable83 FSP",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880030,
+            "candidateId": 880030,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        }
+      ],
+      "expectedBefore": [
+        880031,
+        880030
+      ],
+      "labelReasons": {
+        "880031": "At identical fit/provenance and same comparison group a 17-point quality advantage exceeds a bounded +3 positive FSP signal, despite reverse aliases.",
+        "880030": "FSP evidence is positive but bounded; it cannot outweigh this 17-point same-group result difference."
+      }
+    }
+  ]
+}

@@ -1,0 +1,2526 @@
+{
+  "version": "signal-grade-visible-v1",
+  "provenance": "Synthetic generated public prompts; no oracle answers exported.",
+  "forms": [
+    {
+      "id": "backend-python:Junior:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Трасса повторного POST",
+          "prompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Фильтр арендатора и статуса",
+          "prompt": "Выполните запрос мысленно по приведённым строкам. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(amount), 0)\nFROM payments\nWHERE tenant_id = 739 AND status = 'paid';\n```\n\npayments: (739, paid, 339), (739, pending, 586), (739, paid, 1276), (740, paid, 1419)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Рост задержки чтения",
+          "prompt": "INC-274: p95 вырос после изменения фильтра tenant_id=739; возвращается 1276 строк при ожидании 339, ошибок нет. С чего начать?",
+          "responseType": "choice",
+          "options": [
+            "Откатить фильтр tenant_id=739 и сохранить лишь одну метрику задержки.",
+            "Увеличить pool_size до 586 и сравнить только p95 после повторной нагрузки.",
+            "Добавить индекс по status и выкатить его всем арендаторам без измерения селективности.",
+            "Снять EXPLAIN ANALYZE INC-274 и сопоставить 339 ожидаемых с 1276 фактическими строками для tenant_id=739."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Трасса дедупликации события",
+          "prompt": "Consumer применяет эффект только при новом event_id. Проследите три доставки. Введите три значения баланса строго через `|` без пробелов.\n\n```python\nprocessed = set()\nbalance = 0\ndef consume(event_id, amount):\n    global balance\n    if event_id in processed:\n        return balance\n    processed.add(event_id)\n    balance += amount\n    return balance\n\nr1 = consume(\"evt-62134\", 339)\nr2 = consume(\"evt-62134\", 339)\nr3 = consume(\"evt-62134-next\", 586)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Повторная доставка события",
+          "prompt": "Брокер дважды доставил evt-62134 для ord-6897; ack разрешён только после бизнес-эффекта. Какой контракт не применит эффект дважды?",
+          "responseType": "choice",
+          "options": [
+            "Передавать устойчивый evt-62134 и записывать его ledger вместе с эффектом ord-6897 до ack.",
+            "Подтверждать ack сразу, а дубликаты evt-62134 исправлять ночной сверкой.",
+            "Создавать новый event_id для каждого delivery, чтобы consumer не увидел повтор.",
+            "Игнорировать второй delivery, только если он пришёл в тот же процесс за 43 секунд."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: перезапуск до ответа",
+          "prompt": "Условие изменилось: процесс перезапустился после durable-записи для op-8508, но до ответа. Проследите два повтора. Введите результаты строго как `код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {\n    \"op-8508\": (\"h-a\", 339)\n}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 586)\nr2 = create(\"op-8508\", \"h-b\", 586)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 810\ndef write(expected, value):\n    global version\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(810, 808)\nwrite(810, 809)\nwrite(811, 810)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Заказы без оплаты",
+          "prompt": "Найдите число заказов без оплаты. Ответ — одно целое число.\n\n```sql\nSELECT COUNT(*) FROM orders o\nLEFT JOIN payments p ON p.order_id = o.id\nWHERE p.order_id IS NULL;\n```\norders.id: 808, 809, 810, 811; payments.order_id: 808, 808, 810.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Зависимость вернула 429",
+          "prompt": "За минуту внешний API отклонил 808 запросов с 429 и Retry-After. БД и CPU стабильны. Какая проверка обосновывает следующее действие?",
+          "responseType": "choice",
+          "options": [
+            "Повторять запрос немедленно до 200; время между попытками не измерять.",
+            "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+            "Увеличить параллелизм запросов; 429 считать случайной сетевой ошибкой.",
+            "Добавить индекс в БД и не изменять исходящие запросы до следующего релиза."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 808\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(809)\nconsume(809)\nconsume(810)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Совместимое добавление поля",
+          "prompt": "Старый клиент версии 808 принимает JSON без нового необязательного поля. Как добавить поле без согласованного одновременного обновления?",
+          "responseType": "choice",
+          "options": [
+            "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 808}\ndb_value = 813\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 817\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Трасса повторного POST",
+          "prompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-3311. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-3311\", \"h-a\", 197)\nr2 = create(\"op-3311\", \"h-a\", 700)\nr3 = create(\"op-3311\", \"h-b\", 1085)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Фильтр арендатора и статуса",
+          "prompt": "Выполните запрос мысленно по приведённым строкам. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(amount), 0)\nFROM payments\nWHERE tenant_id = 482 AND status = 'paid';\n```\n\npayments: (482, paid, 197), (482, pending, 700), (482, paid, 1085), (483, paid, 1374)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Рост задержки чтения",
+          "prompt": "INC-735: p95 вырос после изменения фильтра tenant_id=482; возвращается 1085 строк при ожидании 197, ошибок нет. С чего начать?",
+          "responseType": "choice",
+          "options": [
+            "Снять EXPLAIN ANALYZE INC-735 и сопоставить 197 ожидаемых с 1085 фактическими строками для tenant_id=482.",
+            "Откатить фильтр tenant_id=482 и сохранить лишь одну метрику задержки.",
+            "Увеличить pool_size до 700 и сравнить только p95 после повторной нагрузки.",
+            "Добавить индекс по status и выкатить его всем арендаторам без измерения селективности."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Трасса дедупликации события",
+          "prompt": "Consumer применяет эффект только при новом event_id. Проследите три доставки. Введите три значения баланса строго через `|` без пробелов.\n\n```python\nprocessed = set()\nbalance = 0\ndef consume(event_id, amount):\n    global balance\n    if event_id in processed:\n        return balance\n    processed.add(event_id)\n    balance += amount\n    return balance\n\nr1 = consume(\"evt-62757\", 197)\nr2 = consume(\"evt-62757\", 197)\nr3 = consume(\"evt-62757-next\", 700)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Повторная доставка события",
+          "prompt": "Брокер дважды доставил evt-62757 для ord-3655; ack разрешён только после бизнес-эффекта. Какой контракт не применит эффект дважды?",
+          "responseType": "choice",
+          "options": [
+            "Создавать новый event_id для каждого delivery, чтобы consumer не увидел повтор.",
+            "Передавать устойчивый evt-62757 и записывать его ledger вместе с эффектом ord-3655 до ack.",
+            "Подтверждать ack сразу, а дубликаты evt-62757 исправлять ночной сверкой.",
+            "Игнорировать второй delivery, только если он пришёл в тот же процесс за 38 секунд."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: перезапуск до ответа",
+          "prompt": "Условие изменилось: процесс перезапустился после durable-записи для op-3311, но до ответа. Проследите два повтора. Введите результаты строго как `код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {\n    \"op-3311\": (\"h-a\", 197)\n}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-3311\", \"h-a\", 700)\nr2 = create(\"op-3311\", \"h-b\", 700)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 125\ndef write(expected, value):\n    global version\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(125, 123)\nwrite(125, 124)\nwrite(126, 125)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Заказы без оплаты",
+          "prompt": "Найдите число заказов без оплаты. Ответ — одно целое число.\n\n```sql\nSELECT COUNT(*) FROM orders o\nLEFT JOIN payments p ON p.order_id = o.id\nWHERE p.order_id IS NULL;\n```\norders.id: 123, 124, 125, 126; payments.order_id: 123, 123, 125.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Зависимость вернула 429",
+          "prompt": "За минуту внешний API отклонил 123 запросов с 429 и Retry-After. БД и CPU стабильны. Какая проверка обосновывает следующее действие?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить параллелизм запросов; 429 считать случайной сетевой ошибкой.",
+            "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+            "Добавить индекс в БД и не изменять исходящие запросы до следующего релиза.",
+            "Повторять запрос немедленно до 200; время между попытками не измерять."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 123\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(124)\nconsume(124)\nconsume(125)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Совместимое добавление поля",
+          "prompt": "Старый клиент версии 123 принимает JSON без нового необязательного поля. Как добавить поле без согласованного одновременного обновления?",
+          "responseType": "choice",
+          "options": [
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 123}\ndb_value = 128\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 132\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Трасса повторного POST",
+          "prompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-7275. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-7275\", \"h-a\", 305)\nr2 = create(\"op-7275\", \"h-a\", 741)\nr3 = create(\"op-7275\", \"h-b\", 904)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Фильтр арендатора и статуса",
+          "prompt": "Выполните запрос мысленно по приведённым строкам. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(amount), 0)\nFROM payments\nWHERE tenant_id = 760 AND status = 'paid';\n```\n\npayments: (760, paid, 305), (760, pending, 741), (760, paid, 904), (761, paid, 1548)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Рост задержки чтения",
+          "prompt": "INC-496: p95 вырос после изменения фильтра tenant_id=760; возвращается 904 строк при ожидании 305, ошибок нет. С чего начать?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить pool_size до 741 и сравнить только p95 после повторной нагрузки.",
+            "Откатить фильтр tenant_id=760 и сохранить лишь одну метрику задержки.",
+            "Добавить индекс по status и выкатить его всем арендаторам без измерения селективности.",
+            "Снять EXPLAIN ANALYZE INC-496 и сопоставить 305 ожидаемых с 904 фактическими строками для tenant_id=760."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Трасса дедупликации события",
+          "prompt": "Consumer применяет эффект только при новом event_id. Проследите три доставки. Введите три значения баланса строго через `|` без пробелов.\n\n```python\nprocessed = set()\nbalance = 0\ndef consume(event_id, amount):\n    global balance\n    if event_id in processed:\n        return balance\n    processed.add(event_id)\n    balance += amount\n    return balance\n\nr1 = consume(\"evt-91173\", 305)\nr2 = consume(\"evt-91173\", 305)\nr3 = consume(\"evt-91173-next\", 741)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Событие после изменения заказа",
+          "prompt": "Сервис сохраняет ord-1443, затем должен опубликовать evt-91173. Процесс может завершиться между записью и публикацией. Какой вариант исключает потерю события?",
+          "responseType": "choice",
+          "options": [
+            "Записать изменение ord-1443 и outbox-событие evt-91173 в одной транзакции, затем доставлять outbox отдельно.",
+            "Сохранять ord-1443, а evt-91173 держать в памяти воркера до плановой публикации.",
+            "Писать оба действия в разные логи и еженочью восстанавливать пропуски вручную.",
+            "Сначала публиковать evt-91173, а запись ord-1443 повторять до HTTP-ответа."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: перезапуск до ответа",
+          "prompt": "Условие изменилось: процесс перезапустился после durable-записи для op-7275, но до ответа. Проследите два повтора. Введите результаты строго как `код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {\n    \"op-7275\": (\"h-a\", 305)\n}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-7275\", \"h-a\", 741)\nr2 = create(\"op-7275\", \"h-b\", 741)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Junior:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 588\ndef write(expected, value):\n    global version\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(588, 586)\nwrite(588, 587)\nwrite(589, 588)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Заказы без оплаты",
+          "prompt": "Найдите число заказов без оплаты. Ответ — одно целое число.\n\n```sql\nSELECT COUNT(*) FROM orders o\nLEFT JOIN payments p ON p.order_id = o.id\nWHERE p.order_id IS NULL;\n```\norders.id: 586, 587, 588, 589; payments.order_id: 586, 586, 588.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Зависимость вернула 429",
+          "prompt": "За минуту внешний API отклонил 586 запросов с 429 и Retry-After. БД и CPU стабильны. Какая проверка обосновывает следующее действие?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить параллелизм запросов; 429 считать случайной сетевой ошибкой.",
+            "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+            "Добавить индекс в БД и не изменять исходящие запросы до следующего релиза.",
+            "Повторять запрос немедленно до 200; время между попытками не измерять."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 586\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(587)\nconsume(587)\nconsume(588)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Совместимое добавление поля",
+          "prompt": "Старый клиент версии 586 принимает JSON без нового необязательного поля. Как добавить поле без согласованного одновременного обновления?",
+          "responseType": "choice",
+          "options": [
+            "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Junior:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 586}\ndb_value = 591\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 595\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Трасса ключа в границе арендатора",
+          "prompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(739, \"op-8508\", \"h-a\", 339)\nr2 = create(740, \"op-8508\", \"h-a\", 586)\nr3 = create(739, \"op-8508\", \"h-a\", 1276)\nr4 = create(739, \"op-8508\", \"h-b\", 1419)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Кардинальность при JOIN",
+          "prompt": "Запрос использует EXISTS, поэтому строка заказа попадает в сумму максимум один раз. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount), 0)\nFROM orders o\nWHERE o.tenant_id = 739\n  AND EXISTS (\n    SELECT 1 FROM payment_attempts p\n    WHERE p.tenant_id = o.tenant_id\n      AND p.order_id = o.id\n      AND p.status = 'paid'\n  );\n```\n\norders: (739, A, 339), (739, B, 1276), (740, A, 1419)\npayment_attempts: (739, A, paid), (739, A, paid), (739, B, pending), (739, B, paid), (740, A, paid)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Насыщение пула соединений",
+          "prompt": "INC-274: после миграции 339 запросов ждут блокировку, p95 растёт, а очередь пула стабильна на 586. Какое первое действие даст проверяемую гипотезу?",
+          "responseType": "choice",
+          "options": [
+            "Перезапустить миграцию и считать блокировки нормой, если p95 кратко станет ниже 339.",
+            "Одновременно увеличить pool_size до 586 и число воркеров, затем сравнить среднюю задержку.",
+            "Продлить HTTP-тайм-ауты, собрав итог только по ошибкам 5xx без связи с pg_locks.",
+            "Снять граф pg_locks для INC-274 и связать 339 ожидающих блокировку с запросами tenant_id=739."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Доставка до и после ack",
+          "prompt": "Запись `done` и изменение баланса происходят в одной транзакции до ack. Проследите доставки двух событий. Введите четыре результата строго как `A:баланс|D:баланс|...` без пробелов.\n\n```python\nledger = {}\nbalance = 0\ndef apply(event_id, amount):\n    global balance\n    if ledger.get(event_id) == \"done\":\n        return f\"D:{balance}\"\n    ledger[event_id] = \"done\"\n    balance += amount\n    return f\"A:{balance}\"\n\nr1 = apply(\"evt-62134\", 339)\nr2 = apply(\"evt-62134\", 586)\nr3 = apply(\"evt-62134-b\", 1276)\nr4 = apply(\"evt-62134-b\", 586)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Конкурентные consumer-ы",
+          "prompt": "Два consumer-а одновременно получают evt-62134 для tenant_id=739; запись должна быть видна после failover. Какой порядок сохраняет эффект один раз?",
+          "responseType": "choice",
+          "options": [
+            "Уникально закрепить (739, evt-62134) и эффект в одной транзакции, затем отправить ack.",
+            "Обрабатывать оба delivery, а различие tenant_id=739 исправлять вручную.",
+            "Держать evt-62134 в кеше каждого consumer-а и отправлять ack сразу.",
+            "Выбирать победителя по времени получения и не хранить факт обработки после ack."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: другое тело",
+          "prompt": "Условие изменилось: тот же ключ приходит от другого tenant, а затем исходный tenant меняет тело. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {\n    (739, \"op-8508\"): (\"h-a\", 339)\n}\ndef create(tenant, key, body_hash, next_order):\n    previous = stored.get((tenant, key))\n    if previous is None:\n        stored[(tenant, key)] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(740, \"op-8508\", \"h-a\", 586)\nr2 = create(739, \"op-8508\", \"h-b\", 586)\nr3 = create(739, \"op-8508\", \"h-a\", 586)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversions = {'a': 810, 'b': 810}\ndef write(resource, expected, value):\n    if versions[resource] != expected: return f'412:{versions[resource]}'\n    versions[resource] += 1\n    return f'200:{versions[resource]}'\nwrite(\"a\", 810, 808)\nwrite(\"b\", 810, 809)\nwrite(\"a\", 810, 810)\nwrite(\"a\", 811, 811)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Исключить отменённые заказы",
+          "prompt": "Вычислите сумму неотменённых заказов tenant=7. Ответ — целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount),0) FROM orders o WHERE o.tenant=7\nAND NOT EXISTS (SELECT 1 FROM cancellations c WHERE c.tenant=o.tenant AND c.order_id=o.id);\n```\norders (tenant,id,amount): (7,A,808), (7,B,810), (7,C,812), (8,B,814); cancellations (tenant,order_id): (7,A),(8,B),(7,NULL).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Каскад повторов",
+          "prompt": "После тайм-аута каждый из трёх слоёв повторяет запрос трижды. Downstream получает до 27 запросов на один исходный, p95=808 мс. Что проверить и ограничить первым?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить повторения каждого слоя до пяти и сравнить только среднюю задержку.",
+            "Увеличить число соединений ко всем зависимостям без общего deadline.",
+            "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки.",
+            "Удалить trace для ускорения запроса, оставив число HTTP 200 за сутки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 808\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(810)\nconsume(809)\nconsume(810)\nconsume(811)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Переезд схемы без остановки",
+          "prompt": "Нужно заменить обязательный столбец при работающих старых и новых версиях сервиса. 808 тысяч строк ещё не перенесены. Какая последовательность сохраняет совместимость?",
+          "responseType": "choice",
+          "options": [
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 808}\ndb_value = 813\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 817\ndel cache['key']\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Трасса ключа в границе арендатора",
+          "prompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(482, \"op-3311\", \"h-a\", 197)\nr2 = create(483, \"op-3311\", \"h-a\", 700)\nr3 = create(482, \"op-3311\", \"h-a\", 1085)\nr4 = create(482, \"op-3311\", \"h-b\", 1374)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Кардинальность при JOIN",
+          "prompt": "Запрос использует EXISTS, поэтому строка заказа попадает в сумму максимум один раз. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount), 0)\nFROM orders o\nWHERE o.tenant_id = 482\n  AND EXISTS (\n    SELECT 1 FROM payment_attempts p\n    WHERE p.tenant_id = o.tenant_id\n      AND p.order_id = o.id\n      AND p.status = 'paid'\n  );\n```\n\norders: (482, A, 197), (482, B, 1085), (483, A, 1374)\npayment_attempts: (482, A, paid), (482, A, paid), (482, B, pending), (482, B, paid), (483, A, paid)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Насыщение пула соединений",
+          "prompt": "INC-735: после миграции 197 запросов ждут блокировку, p95 растёт, а очередь пула стабильна на 700. Какое первое действие даст проверяемую гипотезу?",
+          "responseType": "choice",
+          "options": [
+            "Снять граф pg_locks для INC-735 и связать 197 ожидающих блокировку с запросами tenant_id=482.",
+            "Перезапустить миграцию и считать блокировки нормой, если p95 кратко станет ниже 197.",
+            "Одновременно увеличить pool_size до 700 и число воркеров, затем сравнить среднюю задержку.",
+            "Продлить HTTP-тайм-ауты, собрав итог только по ошибкам 5xx без связи с pg_locks."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Доставка до и после ack",
+          "prompt": "Запись `done` и изменение баланса происходят в одной транзакции до ack. Проследите доставки двух событий. Введите четыре результата строго как `A:баланс|D:баланс|...` без пробелов.\n\n```python\nledger = {}\nbalance = 0\ndef apply(event_id, amount):\n    global balance\n    if ledger.get(event_id) == \"done\":\n        return f\"D:{balance}\"\n    ledger[event_id] = \"done\"\n    balance += amount\n    return f\"A:{balance}\"\n\nr1 = apply(\"evt-62757\", 197)\nr2 = apply(\"evt-62757\", 700)\nr3 = apply(\"evt-62757-b\", 1085)\nr4 = apply(\"evt-62757-b\", 700)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Конкурентные consumer-ы",
+          "prompt": "Два consumer-а одновременно получают evt-62757 для tenant_id=482; запись должна быть видна после failover. Какой порядок сохраняет эффект один раз?",
+          "responseType": "choice",
+          "options": [
+            "Держать evt-62757 в кеше каждого consumer-а и отправлять ack сразу.",
+            "Уникально закрепить (482, evt-62757) и эффект в одной транзакции, затем отправить ack.",
+            "Обрабатывать оба delivery, а различие tenant_id=482 исправлять вручную.",
+            "Выбирать победителя по времени получения и не хранить факт обработки после ack."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: другое тело",
+          "prompt": "Условие изменилось: тот же ключ приходит от другого tenant, а затем исходный tenant меняет тело. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {\n    (482, \"op-3311\"): (\"h-a\", 197)\n}\ndef create(tenant, key, body_hash, next_order):\n    previous = stored.get((tenant, key))\n    if previous is None:\n        stored[(tenant, key)] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(483, \"op-3311\", \"h-a\", 700)\nr2 = create(482, \"op-3311\", \"h-b\", 700)\nr3 = create(482, \"op-3311\", \"h-a\", 700)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversions = {'a': 125, 'b': 125}\ndef write(resource, expected, value):\n    if versions[resource] != expected: return f'412:{versions[resource]}'\n    versions[resource] += 1\n    return f'200:{versions[resource]}'\nwrite(\"a\", 125, 123)\nwrite(\"b\", 125, 124)\nwrite(\"a\", 125, 125)\nwrite(\"a\", 126, 126)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Исключить отменённые заказы",
+          "prompt": "Вычислите сумму неотменённых заказов tenant=7. Ответ — целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount),0) FROM orders o WHERE o.tenant=7\nAND NOT EXISTS (SELECT 1 FROM cancellations c WHERE c.tenant=o.tenant AND c.order_id=o.id);\n```\norders (tenant,id,amount): (7,A,123), (7,B,125), (7,C,127), (8,B,129); cancellations (tenant,order_id): (7,A),(8,B),(7,NULL).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Каскад повторов",
+          "prompt": "После тайм-аута каждый из трёх слоёв повторяет запрос трижды. Downstream получает до 27 запросов на один исходный, p95=123 мс. Что проверить и ограничить первым?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить повторения каждого слоя до пяти и сравнить только среднюю задержку.",
+            "Увеличить число соединений ко всем зависимостям без общего deadline.",
+            "Удалить trace для ускорения запроса, оставив число HTTP 200 за сутки.",
+            "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 123\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(125)\nconsume(124)\nconsume(125)\nconsume(126)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Переезд схемы без остановки",
+          "prompt": "Нужно заменить обязательный столбец при работающих старых и новых версиях сервиса. 123 тысяч строк ещё не перенесены. Какая последовательность сохраняет совместимость?",
+          "responseType": "choice",
+          "options": [
+            "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 123}\ndb_value = 128\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 132\ndel cache['key']\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Трасса ключа в границе арендатора",
+          "prompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(760, \"op-7275\", \"h-a\", 305)\nr2 = create(761, \"op-7275\", \"h-a\", 741)\nr3 = create(760, \"op-7275\", \"h-a\", 904)\nr4 = create(760, \"op-7275\", \"h-b\", 1548)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Кардинальность при JOIN",
+          "prompt": "Запрос использует EXISTS, поэтому строка заказа попадает в сумму максимум один раз. Введите одно целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount), 0)\nFROM orders o\nWHERE o.tenant_id = 760\n  AND EXISTS (\n    SELECT 1 FROM payment_attempts p\n    WHERE p.tenant_id = o.tenant_id\n      AND p.order_id = o.id\n      AND p.status = 'paid'\n  );\n```\n\norders: (760, A, 305), (760, B, 904), (761, A, 1548)\npayment_attempts: (760, A, paid), (760, A, paid), (760, B, pending), (760, B, paid), (761, A, paid)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Насыщение пула соединений",
+          "prompt": "INC-496: после миграции 305 запросов ждут блокировку, p95 растёт, а очередь пула стабильна на 741. Какое первое действие даст проверяемую гипотезу?",
+          "responseType": "choice",
+          "options": [
+            "Одновременно увеличить pool_size до 741 и число воркеров, затем сравнить среднюю задержку.",
+            "Перезапустить миграцию и считать блокировки нормой, если p95 кратко станет ниже 305.",
+            "Продлить HTTP-тайм-ауты, собрав итог только по ошибкам 5xx без связи с pg_locks.",
+            "Снять граф pg_locks для INC-496 и связать 305 ожидающих блокировку с запросами tenant_id=760."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Доставка до и после ack",
+          "prompt": "Запись `done` и изменение баланса происходят в одной транзакции до ack. Проследите доставки двух событий. Введите четыре результата строго как `A:баланс|D:баланс|...` без пробелов.\n\n```python\nledger = {}\nbalance = 0\ndef apply(event_id, amount):\n    global balance\n    if ledger.get(event_id) == \"done\":\n        return f\"D:{balance}\"\n    ledger[event_id] = \"done\"\n    balance += amount\n    return f\"A:{balance}\"\n\nr1 = apply(\"evt-91173\", 305)\nr2 = apply(\"evt-91173\", 741)\nr3 = apply(\"evt-91173-b\", 904)\nr4 = apply(\"evt-91173-b\", 741)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Падение паблишера после send",
+          "prompt": "Паблишер отправил evt-91173 из outbox ord-1443, но упал до отметки delivered. Брокер повторит сообщение. Какой контракт доставки нужен?",
+          "responseType": "choice",
+          "options": [
+            "Повторять outbox evt-91173 с тем же id, а consumer фиксирует дедуплицированный эффект ord-1443 до ack.",
+            "Генерировать новый event_id на повторе, чтобы consumer увидел независимое сообщение.",
+            "Подтверждать delivery до эффекта и восстанавливать расхождения по еженочной сверке.",
+            "Пометить evt-91173 delivered до send и считать повтор ошибкой сети."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: другое тело",
+          "prompt": "Условие изменилось: тот же ключ приходит от другого tenant, а затем исходный tenant меняет тело. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {\n    (760, \"op-7275\"): (\"h-a\", 305)\n}\ndef create(tenant, key, body_hash, next_order):\n    previous = stored.get((tenant, key))\n    if previous is None:\n        stored[(tenant, key)] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(761, \"op-7275\", \"h-a\", 741)\nr2 = create(760, \"op-7275\", \"h-b\", 741)\nr3 = create(760, \"op-7275\", \"h-a\", 741)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Middle:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversions = {'a': 588, 'b': 588}\ndef write(resource, expected, value):\n    if versions[resource] != expected: return f'412:{versions[resource]}'\n    versions[resource] += 1\n    return f'200:{versions[resource]}'\nwrite(\"a\", 588, 586)\nwrite(\"b\", 588, 587)\nwrite(\"a\", 588, 588)\nwrite(\"a\", 589, 589)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Исключить отменённые заказы",
+          "prompt": "Вычислите сумму неотменённых заказов tenant=7. Ответ — целое число.\n\n```sql\nSELECT COALESCE(SUM(o.amount),0) FROM orders o WHERE o.tenant=7\nAND NOT EXISTS (SELECT 1 FROM cancellations c WHERE c.tenant=o.tenant AND c.order_id=o.id);\n```\norders (tenant,id,amount): (7,A,586), (7,B,588), (7,C,590), (8,B,592); cancellations (tenant,order_id): (7,A),(8,B),(7,NULL).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Каскад повторов",
+          "prompt": "После тайм-аута каждый из трёх слоёв повторяет запрос трижды. Downstream получает до 27 запросов на один исходный, p95=586 мс. Что проверить и ограничить первым?",
+          "responseType": "choice",
+          "options": [
+            "Удалить trace для ускорения запроса, оставив число HTTP 200 за сутки.",
+            "Увеличить повторения каждого слоя до пяти и сравнить только среднюю задержку.",
+            "Увеличить число соединений ко всем зависимостям без общего deadline.",
+            "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Водяной знак потребителя",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 586\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(588)\nconsume(587)\nconsume(588)\nconsume(589)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Переезд схемы без остановки",
+          "prompt": "Нужно заменить обязательный столбец при работающих старых и новых версиях сервиса. 586 тысяч строк ещё не перенесены. Какая последовательность сохраняет совместимость?",
+          "responseType": "choice",
+          "options": [
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Middle:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\ncache = {'key': 586}\ndb_value = 591\ndef read():\n    if 'key' not in cache: cache['key'] = db_value\n    return cache['key']\nr1 = read()\ndel cache['key']\nr2 = read()\ndb_value = 595\ndel cache['key']\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Трасса replay с версией команды",
+          "prompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-8508\", 43, \"h-a\", 339)\nr2 = apply(\"op-8508\", 44, \"h-a\", 586)\nr3 = apply(\"op-8508\", 43, \"h-b\", 1276)\nr4 = apply(\"op-8508\", 43, \"h-a\", 1419)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Последняя версия заказа",
+          "prompt": "В PostgreSQL `DISTINCT ON` берёт одну последнюю версию каждого заказа до суммирования. Выполните запрос по строкам и введите одно целое число.\n\n```sql\nWITH latest AS (\n  SELECT DISTINCT ON (tenant_id, order_id) tenant_id, order_id, status, amount\n  FROM payment_versions\n  WHERE tenant_id = 739\n  ORDER BY tenant_id, order_id, version DESC\n)\nSELECT COALESCE(SUM(amount), 0)\nFROM latest\nWHERE status = 'paid';\n```\n\npayment_versions: (739, A, v1, paid, 339), (739, A, v2, refunded, 586), (739, B, v1, paid, 1276), (739, C, v1, pending, 1419), (740, A, v9, paid, 339)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Регрессия после canary",
+          "prompt": "INC-274: после canary только у tenant_id=739 p99 вырос до 1276, есть 339 блокировок. Как ограничить ущерб и сохранить доказательства?",
+          "responseType": "choice",
+          "options": [
+            "Откатить всю БД к резервной копии и считать тишину в логах достаточным доказательством.",
+            "Продолжить canary для tenant_id=739 и сравнить p99=1276 без plan и lock trace.",
+            "Отключить наблюдаемость для флага и повторить rollout тем же процентом арендаторов.",
+            "Остановить canary INC-274 флагом и сохранить plan/lock trace для tenant_id=739 с p99=1276."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Поздний replay и версия агрегата",
+          "prompt": "Consumer хранит event_id и версию агрегата на всём согласованном replay-window. Проследите четыре доставки. Введите результаты строго как `A:версия:баланс|D:версия:баланс|S:версия:баланс|A:версия:баланс` без пробелов.\n\n```python\nhandled = set()\nversion = 43\nbalance = 339\ndef apply(event_id, expected_version, delta):\n    global version, balance\n    if event_id in handled:\n        return f\"D:{version}:{balance}\"\n    if expected_version != version:\n        return f\"S:{version}:{balance}\"\n    handled.add(event_id)\n    version += 1\n    balance += delta\n    return f\"A:{version}:{balance}\"\n\nr1 = apply(\"evt-62134\", 43, 586)\nr2 = apply(\"evt-62134\", 43, 1276)\nr3 = apply(\"evt-62134-late\", 43, 1276)\nr4 = apply(\"evt-62134-next\", 44, 1276)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Эволюция контракта события",
+          "prompt": "Producer выпускает evt-62134 с новой схемой для ord-6897, а часть consumer-ов ещё читает старую. Как провести переход без потери и двойного эффекта?",
+          "responseType": "choice",
+          "options": [
+            "Публиковать версионированный evt-62134 через outbox, сохранить совместимый consumer и dedup по стабильному id до cutover.",
+            "Выдавать новый event_id на каждую схему и считать их независимыми бизнес-эффектами.",
+            "Сразу удалить старые поля evt-62134 и повторять delivery, пока все consumer-ы не обновятся.",
+            "Отключить старые consumer-ы без наблюдаемого статуса обработки и компенсирующих действий."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: поздний replay",
+          "prompt": "Условие изменилось: поздний повтор операции op-8508 приходит после перехода агрегата на версию 44. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {\n    \"op-8508\": (44, \"h-a\", 339)\n}\ndef apply(key, version, body_hash, next_order):\n    previous = records[key]\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-8508\", 43, \"h-a\", 586)\nr2 = apply(\"op-8508\", 44, \"h-b\", 586)\nr3 = apply(\"op-8508\", 44, \"h-a\", 586)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:7eabb3ed7948b778",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 810\ndef write(expected, digest, value):\n    global version\n    if digest != 'ok': return f'422:{version}'\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(810, \"bad\", 808)\nwrite(810, \"ok\", 809)\nwrite(810, \"ok\", 810)\nwrite(811, \"ok\", 811)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:7eabb3ed7948b778",
+          "family": "SQL и данные",
+          "title": "Ранжирование и одинаковые даты",
+          "prompt": "Запрос выбирает последнюю запись; при равной ревизии больший id побеждает. Введите сумму выбранных amount, если status='paid'.\n\n```sql\nWITH ranked AS (SELECT *, ROW_NUMBER() OVER\n (PARTITION BY tenant,order_id ORDER BY revision DESC,id DESC) AS rn\n FROM events WHERE tenant=7)\nSELECT COALESCE(SUM(amount),0) FROM ranked WHERE rn=1 AND status='paid';\n```\nevents (tenant,order_id,revision,id,status,amount): (7,A,2,1,paid,808), (7,A,2,2,refunded,809), (7,B,1,3,paid,810), (7,B,2,4,paid,811), (8,C,9,5,paid,812).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:7eabb3ed7948b778",
+          "family": "Диагностика инцидента",
+          "title": "Очередь после отключения региона",
+          "prompt": "После потери региона вход=858/с, обработка=808/с; очередь растёт, latency нарушает SLO. Автомасштабирование занимает 10 минут. Какой план уменьшает ущерб и проверяем?",
+          "responseType": "choice",
+          "options": [
+            "Удалить всю очередь, заявить полное восстановление по доступности HTTP endpoint.",
+            "Равномерно повторять каждый запрос без бюджета; ждать масштабирования без наблюдений.",
+            "Сделать очередь безлимитной и поднять timeout всех клиентов до 24 часов.",
+            "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:7eabb3ed7948b778",
+          "family": "Идемпотентность",
+          "title": "Пропуск номера события",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 808\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    if seq != last + 1: return f'gap:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(809)\nconsume(811)\nconsume(810)\nconsume(811)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:7eabb3ed7948b778",
+          "family": "Выбор архитектуры",
+          "title": "Завершение двойной записи",
+          "prompt": "Новая модель прошла backfill 808 тысяч строк; часть старых writers ещё работает. Когда безопасно удалить старую модель и двойную запись?",
+          "responseType": "choice",
+          "options": [
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:7eabb3ed7948b778",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nrevision = 2\ncache = (1, 808)\ndb_value = 813\ndef read():\n    global cache\n    if cache[0] != revision: cache = (revision, db_value)\n    return cache[1]\nr1 = read()\ndb_value = 817\nrevision = 3\nr2 = read()\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Трасса replay с версией команды",
+          "prompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-3311\", 38, \"h-a\", 197)\nr2 = apply(\"op-3311\", 39, \"h-a\", 700)\nr3 = apply(\"op-3311\", 38, \"h-b\", 1085)\nr4 = apply(\"op-3311\", 38, \"h-a\", 1374)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Последняя версия заказа",
+          "prompt": "В PostgreSQL `DISTINCT ON` берёт одну последнюю версию каждого заказа до суммирования. Выполните запрос по строкам и введите одно целое число.\n\n```sql\nWITH latest AS (\n  SELECT DISTINCT ON (tenant_id, order_id) tenant_id, order_id, status, amount\n  FROM payment_versions\n  WHERE tenant_id = 482\n  ORDER BY tenant_id, order_id, version DESC\n)\nSELECT COALESCE(SUM(amount), 0)\nFROM latest\nWHERE status = 'paid';\n```\n\npayment_versions: (482, A, v1, paid, 197), (482, A, v2, refunded, 700), (482, B, v1, paid, 1085), (482, C, v1, pending, 1374), (483, A, v9, paid, 197)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Регрессия после canary",
+          "prompt": "INC-735: после canary только у tenant_id=482 p99 вырос до 1085, есть 197 блокировок. Как ограничить ущерб и сохранить доказательства?",
+          "responseType": "choice",
+          "options": [
+            "Остановить canary INC-735 флагом и сохранить plan/lock trace для tenant_id=482 с p99=1085.",
+            "Откатить всю БД к резервной копии и считать тишину в логах достаточным доказательством.",
+            "Продолжить canary для tenant_id=482 и сравнить p99=1085 без plan и lock trace.",
+            "Отключить наблюдаемость для флага и повторить rollout тем же процентом арендаторов."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Поздний replay и версия агрегата",
+          "prompt": "Consumer хранит event_id и версию агрегата на всём согласованном replay-window. Проследите четыре доставки. Введите результаты строго как `A:версия:баланс|D:версия:баланс|S:версия:баланс|A:версия:баланс` без пробелов.\n\n```python\nhandled = set()\nversion = 38\nbalance = 197\ndef apply(event_id, expected_version, delta):\n    global version, balance\n    if event_id in handled:\n        return f\"D:{version}:{balance}\"\n    if expected_version != version:\n        return f\"S:{version}:{balance}\"\n    handled.add(event_id)\n    version += 1\n    balance += delta\n    return f\"A:{version}:{balance}\"\n\nr1 = apply(\"evt-62757\", 38, 700)\nr2 = apply(\"evt-62757\", 38, 1085)\nr3 = apply(\"evt-62757-late\", 38, 1085)\nr4 = apply(\"evt-62757-next\", 39, 1085)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Эволюция контракта события",
+          "prompt": "Producer выпускает evt-62757 с новой схемой для ord-3655, а часть consumer-ов ещё читает старую. Как провести переход без потери и двойного эффекта?",
+          "responseType": "choice",
+          "options": [
+            "Сразу удалить старые поля evt-62757 и повторять delivery, пока все consumer-ы не обновятся.",
+            "Публиковать версионированный evt-62757 через outbox, сохранить совместимый consumer и dedup по стабильному id до cutover.",
+            "Выдавать новый event_id на каждую схему и считать их независимыми бизнес-эффектами.",
+            "Отключить старые consumer-ы без наблюдаемого статуса обработки и компенсирующих действий."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: поздний replay",
+          "prompt": "Условие изменилось: поздний повтор операции op-3311 приходит после перехода агрегата на версию 39. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {\n    \"op-3311\": (39, \"h-a\", 197)\n}\ndef apply(key, version, body_hash, next_order):\n    previous = records[key]\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-3311\", 38, \"h-a\", 700)\nr2 = apply(\"op-3311\", 39, \"h-b\", 700)\nr3 = apply(\"op-3311\", 39, \"h-a\", 700)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:c3ff6a39dd9e0b26",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 125\ndef write(expected, digest, value):\n    global version\n    if digest != 'ok': return f'422:{version}'\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(125, \"bad\", 123)\nwrite(125, \"ok\", 124)\nwrite(125, \"ok\", 125)\nwrite(126, \"ok\", 126)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:c3ff6a39dd9e0b26",
+          "family": "SQL и данные",
+          "title": "Ранжирование и одинаковые даты",
+          "prompt": "Запрос выбирает последнюю запись; при равной ревизии больший id побеждает. Введите сумму выбранных amount, если status='paid'.\n\n```sql\nWITH ranked AS (SELECT *, ROW_NUMBER() OVER\n (PARTITION BY tenant,order_id ORDER BY revision DESC,id DESC) AS rn\n FROM events WHERE tenant=7)\nSELECT COALESCE(SUM(amount),0) FROM ranked WHERE rn=1 AND status='paid';\n```\nevents (tenant,order_id,revision,id,status,amount): (7,A,2,1,paid,123), (7,A,2,2,refunded,124), (7,B,1,3,paid,125), (7,B,2,4,paid,126), (8,C,9,5,paid,127).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:c3ff6a39dd9e0b26",
+          "family": "Диагностика инцидента",
+          "title": "Очередь после отключения региона",
+          "prompt": "После потери региона вход=173/с, обработка=123/с; очередь растёт, latency нарушает SLO. Автомасштабирование занимает 10 минут. Какой план уменьшает ущерб и проверяем?",
+          "responseType": "choice",
+          "options": [
+            "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности.",
+            "Сделать очередь безлимитной и поднять timeout всех клиентов до 24 часов.",
+            "Равномерно повторять каждый запрос без бюджета; ждать масштабирования без наблюдений.",
+            "Удалить всю очередь, заявить полное восстановление по доступности HTTP endpoint."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:c3ff6a39dd9e0b26",
+          "family": "Идемпотентность",
+          "title": "Пропуск номера события",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 123\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    if seq != last + 1: return f'gap:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(124)\nconsume(126)\nconsume(125)\nconsume(126)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:c3ff6a39dd9e0b26",
+          "family": "Выбор архитектуры",
+          "title": "Завершение двойной записи",
+          "prompt": "Новая модель прошла backfill 123 тысяч строк; часть старых writers ещё работает. Когда безопасно удалить старую модель и двойную запись?",
+          "responseType": "choice",
+          "options": [
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:c3ff6a39dd9e0b26",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nrevision = 2\ncache = (1, 123)\ndb_value = 128\ndef read():\n    global cache\n    if cache[0] != revision: cache = (revision, db_value)\n    return cache[1]\nr1 = read()\ndb_value = 132\nrevision = 3\nr2 = read()\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Трасса replay с версией команды",
+          "prompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-7275\", 34, \"h-a\", 305)\nr2 = apply(\"op-7275\", 35, \"h-a\", 741)\nr3 = apply(\"op-7275\", 34, \"h-b\", 904)\nr4 = apply(\"op-7275\", 34, \"h-a\", 1548)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Последняя версия заказа",
+          "prompt": "В PostgreSQL `DISTINCT ON` берёт одну последнюю версию каждого заказа до суммирования. Выполните запрос по строкам и введите одно целое число.\n\n```sql\nWITH latest AS (\n  SELECT DISTINCT ON (tenant_id, order_id) tenant_id, order_id, status, amount\n  FROM payment_versions\n  WHERE tenant_id = 760\n  ORDER BY tenant_id, order_id, version DESC\n)\nSELECT COALESCE(SUM(amount), 0)\nFROM latest\nWHERE status = 'paid';\n```\n\npayment_versions: (760, A, v1, paid, 305), (760, A, v2, refunded, 741), (760, B, v1, paid, 904), (760, C, v1, pending, 1548), (761, A, v9, paid, 305)",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Регрессия после canary",
+          "prompt": "INC-496: после canary только у tenant_id=760 p99 вырос до 904, есть 305 блокировок. Как ограничить ущерб и сохранить доказательства?",
+          "responseType": "choice",
+          "options": [
+            "Продолжить canary для tenant_id=760 и сравнить p99=904 без plan и lock trace.",
+            "Откатить всю БД к резервной копии и считать тишину в логах достаточным доказательством.",
+            "Отключить наблюдаемость для флага и повторить rollout тем же процентом арендаторов.",
+            "Остановить canary INC-496 флагом и сохранить plan/lock trace для tenant_id=760 с p99=904."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Поздний replay и версия агрегата",
+          "prompt": "Consumer хранит event_id и версию агрегата на всём согласованном replay-window. Проследите четыре доставки. Введите результаты строго как `A:версия:баланс|D:версия:баланс|S:версия:баланс|A:версия:баланс` без пробелов.\n\n```python\nhandled = set()\nversion = 34\nbalance = 305\ndef apply(event_id, expected_version, delta):\n    global version, balance\n    if event_id in handled:\n        return f\"D:{version}:{balance}\"\n    if expected_version != version:\n        return f\"S:{version}:{balance}\"\n    handled.add(event_id)\n    version += 1\n    balance += delta\n    return f\"A:{version}:{balance}\"\n\nr1 = apply(\"evt-91173\", 34, 741)\nr2 = apply(\"evt-91173\", 34, 904)\nr3 = apply(\"evt-91173-late\", 34, 904)\nr4 = apply(\"evt-91173-next\", 35, 904)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Региональный replay outbox",
+          "prompt": "После failover второй регион читает outbox evt-91173 для ord-1443; старый регион мог уже отправить его. Как не потерять и не удвоить эффект?",
+          "responseType": "choice",
+          "options": [
+            "Сохранить глобально устойчивый evt-91173, outbox lease и dedup ledger ord-1443 на весь replay-window.",
+            "Создать региональный event_id и применить оба delivery, если они пришли из разных зон.",
+            "Держать статус delivered только в памяти паблишера до завершения failover.",
+            "Удалить evt-91173 после первой отправки и доверять тому, что второй регион не увидит его."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: поздний replay",
+          "prompt": "Условие изменилось: поздний повтор операции op-7275 приходит после перехода агрегата на версию 35. Проследите три вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {\n    \"op-7275\": (35, \"h-a\", 305)\n}\ndef apply(key, version, body_hash, next_order):\n    previous = records[key]\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-7275\", 34, \"h-a\", 741)\nr2 = apply(\"op-7275\", 35, \"h-b\", 741)\nr3 = apply(\"op-7275\", 35, \"h-a\", 741)\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-backend-python-v5:Senior:api-contracts:ec7641cf856f008b",
+          "family": "API-контракты",
+          "title": "Конкурентная запись по версии",
+          "prompt": "Контракт возвращает код и текущую версию. Вычислите код:версия для каждого вызова. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nversion = 588\ndef write(expected, digest, value):\n    global version\n    if digest != 'ok': return f'422:{version}'\n    if expected != version: return f'412:{version}'\n    version += 1\n    return f'200:{version}'\nwrite(588, \"bad\", 586)\nwrite(588, \"ok\", 587)\nwrite(588, \"ok\", 588)\nwrite(589, \"ok\", 589)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:sql-data:ec7641cf856f008b",
+          "family": "SQL и данные",
+          "title": "Ранжирование и одинаковые даты",
+          "prompt": "Запрос выбирает последнюю запись; при равной ревизии больший id побеждает. Введите сумму выбранных amount, если status='paid'.\n\n```sql\nWITH ranked AS (SELECT *, ROW_NUMBER() OVER\n (PARTITION BY tenant,order_id ORDER BY revision DESC,id DESC) AS rn\n FROM events WHERE tenant=7)\nSELECT COALESCE(SUM(amount),0) FROM ranked WHERE rn=1 AND status='paid';\n```\nevents (tenant,order_id,revision,id,status,amount): (7,A,2,1,paid,586), (7,A,2,2,refunded,587), (7,B,1,3,paid,588), (7,B,2,4,paid,589), (8,C,9,5,paid,590).",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:incident-diagnosis:ec7641cf856f008b",
+          "family": "Диагностика инцидента",
+          "title": "Очередь после отключения региона",
+          "prompt": "После потери региона вход=636/с, обработка=586/с; очередь растёт, latency нарушает SLO. Автомасштабирование занимает 10 минут. Какой план уменьшает ущерб и проверяем?",
+          "responseType": "choice",
+          "options": [
+            "Удалить всю очередь, заявить полное восстановление по доступности HTTP endpoint.",
+            "Равномерно повторять каждый запрос без бюджета; ждать масштабирования без наблюдений.",
+            "Сделать очередь безлимитной и поднять timeout всех клиентов до 24 часов.",
+            "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:idempotency:ec7641cf856f008b",
+          "family": "Идемпотентность",
+          "title": "Пропуск номера события",
+          "prompt": "Состояние хранится durable в одной транзакции с эффектом. Вычислите статус:last для каждого delivery. Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nlast = 586\ndef consume(seq):\n    global last\n    if seq <= last: return f'old:{last}'\n    if seq != last + 1: return f'gap:{last}'\n    last = seq\n    return f'ok:{last}'\nconsume(587)\nconsume(589)\nconsume(588)\nconsume(589)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:architecture:ec7641cf856f008b",
+          "family": "Выбор архитектуры",
+          "title": "Завершение двойной записи",
+          "prompt": "Новая модель прошла backfill 586 тысяч строк; часть старых writers ещё работает. Когда безопасно удалить старую модель и двойную запись?",
+          "responseType": "choice",
+          "options": [
+            "Сначала удалить старую структуру, затем обновлять оставшиеся версии по мере обращений.",
+            "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+            "Сохранить оба пути навсегда, не проверяя расхождения и не определяя владельца данных.",
+            "Одновременно заменить контракт и данные без метрик, резервного пути и сверки."
+          ]
+        },
+        {
+          "id": "signal-backend-python-v5:Senior:condition-change:ec7641cf856f008b",
+          "family": "Изменение условия",
+          "title": "Изменилось условие: инвалидирован кеш",
+          "prompt": "Теперь сохранённое значение кеша удаляется или отвергается по ревизии. Что вернут три чтения? Укажите значения в порядке вызовов через | без пробелов.\n\n```python\nrevision = 2\ncache = (1, 586)\ndb_value = 591\ndef read():\n    global cache\n    if cache[0] != revision: cache = (revision, db_value)\n    return cache[1]\nr1 = read()\ndb_value = 595\nrevision = 3\nr2 = read()\nr3 = read()\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:808, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'unknown',amount:100});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "После ввода буквы интерфейс зависает на 808 мс. Network пуст, Performance показывает длинную синхронную сортировку. Что проверить и изменить?",
+          "responseType": "choice",
+          "options": [
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-808. При открытии диалога фокус переходит на first-808; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-808, disabled-808 (disabled), last-808. Escape закрывает диалог и возвращает фокус на open-808. \nОперации: открыть; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Два компонента редактируют один фильтр списка из 808 элементов. Где хранить изменяемое значение?",
+          "responseType": "choice",
+          "options": [
+            "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-808');\nreceive(first,'old-808');\n// request не меняется\nreceive(second,'late-808');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  return String(x.count + 1);\n}\nread({count:808,version:2})\nread({count:'808',version:2})\nread(null)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:808},{id:2,active:false,points:810},{id:3,active:true,points:812}];\nrows=rows.filter(x=>x.id!==1);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Два независимых справочника загружаются последовательно по 808 мс. Что сократит задержку без изменения их содержимого?",
+          "responseType": "choice",
+          "options": [
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region.   Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:808; исправить email и submit valid → success:809; повторить valid → success:810. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Сервер добавляет необязательное поле к DTO версии 808. Как показать разумное значение при его отсутствии?",
+          "responseType": "choice",
+          "options": [
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=808, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok) count=op.previous;\n  return count;\n}\nconst a=update(809);\nsettle(a,false);\nconst b=update(810);\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  return 'wait';\n}\nlabel({kind:'ready',value:123})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:123, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'unknown',amount:100});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "После ввода буквы интерфейс зависает на 123 мс. Network пуст, Performance показывает длинную синхронную сортировку. Что проверить и изменить?",
+          "responseType": "choice",
+          "options": [
+            "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-123. При открытии диалога фокус переходит на first-123; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-123, disabled-123 (disabled), last-123. Escape закрывает диалог и возвращает фокус на open-123. \nОперации: открыть; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Два компонента редактируют один фильтр списка из 123 элементов. Где хранить изменяемое значение?",
+          "responseType": "choice",
+          "options": [
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-123');\nreceive(first,'old-123');\n// request не меняется\nreceive(second,'late-123');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  return String(x.count + 1);\n}\nread({count:123,version:2})\nread({count:'123',version:2})\nread(null)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:123},{id:2,active:false,points:125},{id:3,active:true,points:127}];\nrows=rows.filter(x=>x.id!==1);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Два независимых справочника загружаются последовательно по 123 мс. Что сократит задержку без изменения их содержимого?",
+          "responseType": "choice",
+          "options": [
+            "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region.   Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:123; исправить email и submit valid → success:124; повторить valid → success:125. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Сервер добавляет необязательное поле к DTO версии 123. Как показать разумное значение при его отсутствии?",
+          "responseType": "choice",
+          "options": [
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=123, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok) count=op.previous;\n  return count;\n}\nconst a=update(124);\nsettle(a,false);\nconst b=update(125);\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  return 'wait';\n}\nlabel({kind:'ready',value:586})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:586, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'unknown',amount:100});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "После ввода буквы интерфейс зависает на 586 мс. Network пуст, Performance показывает длинную синхронную сортировку. Что проверить и изменить?",
+          "responseType": "choice",
+          "options": [
+            "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-586. При открытии диалога фокус переходит на first-586; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-586, disabled-586 (disabled), last-586. Escape закрывает диалог и возвращает фокус на open-586. \nОперации: открыть; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Два компонента редактируют один фильтр списка из 586 элементов. Где хранить изменяемое значение?",
+          "responseType": "choice",
+          "options": [
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-586');\nreceive(first,'old-586');\n// request не меняется\nreceive(second,'late-586');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Junior:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  return String(x.count + 1);\n}\nread({count:586,version:2})\nread({count:'586',version:2})\nread(null)\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:586},{id:2,active:false,points:588},{id:3,active:true,points:590}];\nrows=rows.filter(x=>x.id!==1);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Два независимых справочника загружаются последовательно по 586 мс. Что сократит задержку без изменения их содержимого?",
+          "responseType": "choice",
+          "options": [
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region.   Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:586; исправить email и submit valid → success:587; повторить valid → success:588. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Сервер добавляет необязательное поле к DTO версии 586. Как показать разумное значение при его отсутствии?",
+          "responseType": "choice",
+          "options": [
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов.",
+            "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Junior:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=586, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok) count=op.previous;\n  return count;\n}\nconst a=update(587);\nsettle(a,false);\nconst b=update(588);\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:808, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:815});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Фильтр 808 тысяч строк блокирует main thread. Debounce уменьшил частоту, но каждый ввод всё ещё создаёт длинную задачу. Как устранить источник задержки?",
+          "responseType": "choice",
+          "options": [
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-808. При открытии диалога фокус переходит на first-808; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-808, disabled-808 (disabled), last-808. Escape закрывает диалог и возвращает фокус на open-808. \nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Фильтр должен переживать reload и быть доступен по ссылке; ответы сервера зависят от него. Как разделить состояния?",
+          "responseType": "choice",
+          "options": [
+            "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-808');\nreceive(first,'old-808');\nstart();\nreceive(second,'late-808');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  return String(x.count + 1);\n}\nread({count:808,version:2})\nread({count:'808',version:2})\nread({count:-1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:808},{id:2,active:false,points:810},{id:3,active:true,points:812}];\nrows=rows.map(x=>x.id===2?{...x,active:true}:x);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Карточка ждёт профиль, затем одновременно можно получить 808 независимых деталей. Что изменить в цепочке?",
+          "responseType": "choice",
+          "options": [
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется.  Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:808; исправить email и submit valid → success:809; получить старый error:808 после success:809. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Две версии API возвращают различающуюся структуру одного объекта. Как сохранить компоненты независимыми от перехода?",
+          "responseType": "choice",
+          "options": [
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=808, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(809);\nconst b=update(810);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:123})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:123, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:130});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Фильтр 123 тысяч строк блокирует main thread. Debounce уменьшил частоту, но каждый ввод всё ещё создаёт длинную задачу. Как устранить источник задержки?",
+          "responseType": "choice",
+          "options": [
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-123. При открытии диалога фокус переходит на first-123; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-123, disabled-123 (disabled), last-123. Escape закрывает диалог и возвращает фокус на open-123. \nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Фильтр должен переживать reload и быть доступен по ссылке; ответы сервера зависят от него. Как разделить состояния?",
+          "responseType": "choice",
+          "options": [
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний.",
+            "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-123');\nreceive(first,'old-123');\nstart();\nreceive(second,'late-123');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  return String(x.count + 1);\n}\nread({count:123,version:2})\nread({count:'123',version:2})\nread({count:-1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:123},{id:2,active:false,points:125},{id:3,active:true,points:127}];\nrows=rows.map(x=>x.id===2?{...x,active:true}:x);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Карточка ждёт профиль, затем одновременно можно получить 123 независимых деталей. Что изменить в цепочке?",
+          "responseType": "choice",
+          "options": [
+            "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется.  Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:123; исправить email и submit valid → success:124; получить старый error:123 после success:124. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Две версии API возвращают различающуюся структуру одного объекта. Как сохранить компоненты независимыми от перехода?",
+          "responseType": "choice",
+          "options": [
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов.",
+            "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=123, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(124);\nconst b=update(125);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:586})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:586, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:593});\nstate=reduce(state,{type:'add',amount:2});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Фильтр 586 тысяч строк блокирует main thread. Debounce уменьшил частоту, но каждый ввод всё ещё создаёт длинную задачу. Как устранить источник задержки?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-586. При открытии диалога фокус переходит на first-586; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-586, disabled-586 (disabled), last-586. Escape закрывает диалог и возвращает фокус на open-586. \nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Фильтр должен переживать reload и быть доступен по ссылке; ответы сервера зависят от него. Как разделить состояния?",
+          "responseType": "choice",
+          "options": [
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-586');\nreceive(first,'old-586');\nstart();\nreceive(second,'late-586');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Middle:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  return String(x.count + 1);\n}\nread({count:586,version:2})\nread({count:'586',version:2})\nread({count:-1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:586},{id:2,active:false,points:588},{id:3,active:true,points:590}];\nrows=rows.map(x=>x.id===2?{...x,active:true}:x);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Карточка ждёт профиль, затем одновременно можно получить 586 независимых деталей. Что изменить в цепочке?",
+          "responseType": "choice",
+          "options": [
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется.  Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:586; исправить email и submit valid → success:587; получить старый error:586 после success:587. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "Две версии API возвращают различающуюся структуру одного объекта. Как сохранить компоненты независимыми от перехода?",
+          "responseType": "choice",
+          "options": [
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов.",
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Middle:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=586, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(587);\nconst b=update(588);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nsettle(b,true);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:808, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'stale') return s;\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:815});\nstate=reduce(state,{type:'stale',amount:100});\nstate=reduce(state,{type:'add',amount:4});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Worker считает 808 тысяч строк, но postMessage копирует большой объект и rendering всё равно создаёт long task. Что измерить дальше?",
+          "responseType": "choice",
+          "options": [
+            "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-808. При открытии диалога фокус переходит на first-808; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-808, disabled-808 (disabled), last-808. Escape закрывает диалог и возвращает фокус на open-808. После закрытия open-808 удаляется; политика восстановления переводит фокус на heading-808.\nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Несколько вкладок и локальное редактирование могут конфликтовать с серверной ревизией. Как избежать молчаливого перезаписывания?",
+          "responseType": "choice",
+          "options": [
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request && mounted) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-808');\nreceive(first,'old-808');\nmounted=false;\nreceive(second,'late-808');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:7eabb3ed7948b778",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  if (x.version !== 2) return 'version';\n  return String(x.count + 1);\n}\nread({count:808,version:2})\nread({count:'808',version:2})\nread({count:808,version:1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:7eabb3ed7948b778",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:808},{id:2,active:false,points:810},{id:3,active:true,points:812}];\nrows=rows.map(x=>x.id===1?{...x,active:false}:x).filter(x=>x.id!==2);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:7eabb3ed7948b778",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Главный экран содержит чувствительные пользовательские данные, waterfall обнаружил повторный общий запрос и зависимые запросы. Как оптимизировать без утечки кеша?",
+          "responseType": "choice",
+          "options": [
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:7eabb3ed7948b778",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется. После удаления submit при успехе фокус переносится на heading. Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:808; исправить email и submit valid → success:809; получить старый error:808 после success:809. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:7eabb3ed7948b778",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "В кешах клиентов остаются DTO старой версии, новая версия меняет значение поля. Как провести переход безопасно?",
+          "responseType": "choice",
+          "options": [
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:7eabb3ed7948b778",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=808, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(809);\nconst b=update(810);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nconst c=update(811);\nsettle(c,false);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:123})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:123, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'stale') return s;\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:130});\nstate=reduce(state,{type:'stale',amount:100});\nstate=reduce(state,{type:'add',amount:4});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Worker считает 123 тысяч строк, но postMessage копирует большой объект и rendering всё равно создаёт long task. Что измерить дальше?",
+          "responseType": "choice",
+          "options": [
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-123. При открытии диалога фокус переходит на first-123; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-123, disabled-123 (disabled), last-123. Escape закрывает диалог и возвращает фокус на open-123. После закрытия open-123 удаляется; политика восстановления переводит фокус на heading-123.\nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Несколько вкладок и локальное редактирование могут конфликтовать с серверной ревизией. Как избежать молчаливого перезаписывания?",
+          "responseType": "choice",
+          "options": [
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать.",
+            "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request && mounted) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-123');\nreceive(first,'old-123');\nmounted=false;\nreceive(second,'late-123');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:c3ff6a39dd9e0b26",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  if (x.version !== 2) return 'version';\n  return String(x.count + 1);\n}\nread({count:123,version:2})\nread({count:'123',version:2})\nread({count:123,version:1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:c3ff6a39dd9e0b26",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:123},{id:2,active:false,points:125},{id:3,active:true,points:127}];\nrows=rows.map(x=>x.id===1?{...x,active:false}:x).filter(x=>x.id!==2);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:c3ff6a39dd9e0b26",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Главный экран содержит чувствительные пользовательские данные, waterfall обнаружил повторный общий запрос и зависимые запросы. Как оптимизировать без утечки кеша?",
+          "responseType": "choice",
+          "options": [
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:c3ff6a39dd9e0b26",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется. После удаления submit при успехе фокус переносится на heading. Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:123; исправить email и submit valid → success:124; получить старый error:123 после success:124. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:c3ff6a39dd9e0b26",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "В кешах клиентов остаются DTO старой версии, новая версия меняет значение поля. Как провести переход безопасно?",
+          "responseType": "choice",
+          "options": [
+            "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:c3ff6a39dd9e0b26",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=123, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(124);\nconst b=update(125);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nconst c=update(126);\nsettle(c,false);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Сужение discriminated union",
+          "prompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:586})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Неизменяемый reducer",
+          "prompt": "Введите финальное значение count как целое число. Каждый dispatch передаёт последний state.\n\n```typescript\nlet state = {count:586, revision:0};\nfunction reduce(s: typeof state, a: {type: string; amount: number}) {\n  if (a.type === 'stale') return s;\n  if (a.type === 'add') return {...s,count:s.count+a.amount,revision:s.revision+1};\n  if (a.type === 'reset') return {...s,count:a.amount,revision:s.revision+1};\n  return s;\n}\nstate=reduce(state,{type:'add',amount:3});\nstate=reduce(state,{type:'reset',amount:593});\nstate=reduce(state,{type:'stale',amount:100});\nstate=reduce(state,{type:'add',amount:4});\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Задержка реакции интерфейса",
+          "prompt": "Worker считает 586 тысяч строк, но postMessage копирует большой объект и rendering всё равно создаёт long task. Что измерить дальше?",
+          "responseType": "choice",
+          "options": [
+            "Отключить клавиатуру на время расчёта и считать исчезновение вводов улучшением отклика.",
+            "Увеличить timeout HTTP-запросов: он определяет продолжительность синхронной сортировки.",
+            "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+            "Добавить анимацию загрузки в тот же блокирующий обработчик без изменения вычислений."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Клавиатурный фокус",
+          "prompt": "Определите id элемента с фокусом после каждой операции. Укажите значения в порядке вызовов через | без пробелов.\nНачало: focus=open-586. При открытии диалога фокус переходит на first-586; Tab переходит к следующему доступному элементу, в конце — к первому. Список: first-586, disabled-586 (disabled), last-586. Escape закрывает диалог и возвращает фокус на open-586. После закрытия open-586 удаляется; политика восстановления переводит фокус на heading-586.\nОперации: открыть; Tab; Tab; Escape.",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Кому принадлежит состояние",
+          "prompt": "Несколько вкладок и локальное редактирование могут конфликтовать с серверной ревизией. Как избежать молчаливого перезаписывания?",
+          "responseType": "choice",
+          "options": [
+            "Создать независимую изменяемую копию в каждом компоненте и синхронизировать таймером.",
+            "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+            "При каждом render сбрасывать всё к первому значению, чтобы избежать разных состояний.",
+            "Использовать DOM как единственную БД; изменения другого компонента игнорировать."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Поздний ответ поиска",
+          "prompt": "Проследите значение view после каждого receive. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet request=0, view='initial', mounted=true;\nfunction start(){return ++request}\nfunction receive(id:number,value:string){if(id===request && mounted) view=value; return view}\nconst first=start(); const second=start();\nreceive(second,'new-586');\nreceive(first,'old-586');\nmounted=false;\nreceive(second,'late-586');\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "cases": [
+        {
+          "id": "signal-frontend-typescript-v1:Senior:typescript:ec7641cf856f008b",
+          "family": "TypeScript",
+          "title": "Данные unknown на границе",
+          "prompt": "JSON пришёл извне. Вычислите значения функции для трёх входов. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nfunction read(value: unknown): string {\n  if (typeof value !== 'object' || value === null) return 'invalid';\n  const x = value as Record<string, unknown>;\n  if (typeof x.count !== 'number') return 'invalid';\n  if (!Number.isInteger(x.count) || x.count < 0) return 'invalid';\n  if (x.version !== 2) return 'version';\n  return String(x.count + 1);\n}\nread({count:586,version:2})\nread({count:'586',version:2})\nread({count:586,version:1})\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-state:ec7641cf856f008b",
+          "family": "Состояние интерфейса",
+          "title": "Производное состояние списка",
+          "prompt": "Фильтр применяется после изменения списка. Введите сумму видимых points как целое число.\n\n```typescript\nlet rows=[{id:1,active:true,points:586},{id:2,active:false,points:588},{id:3,active:true,points:590}];\nrows=rows.map(x=>x.id===1?{...x,active:false}:x).filter(x=>x.id!==2);\nconst total=rows.filter(x=>x.active).reduce((sum,x)=>sum+x.points,0);\n```",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-performance:ec7641cf856f008b",
+          "family": "Производительность интерфейса",
+          "title": "Критическая цепочка загрузки",
+          "prompt": "Главный экран содержит чувствительные пользовательские данные, waterfall обнаружил повторный общий запрос и зависимые запросы. Как оптимизировать без утечки кеша?",
+          "responseType": "choice",
+          "options": [
+            "Запускать запрос детали без нужного ID и повторять его в бесконечном цикле до успеха.",
+            "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+            "Сделать все ответы глобально публичным кешем независимо от авторизации и параметров.",
+            "Скрыть spinner и оставить сетевую последовательность без измерения времени готовности."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:accessibility:ec7641cf856f008b",
+          "family": "Доступность",
+          "title": "Обратная связь формы",
+          "prompt": "Контракт формы: invalid submit фокусирует первое неверное поле; valid submit оставляет фокус на submit и сообщает «Отправлено» через live region. Асинхронный ответ старой версии игнорируется. После удаления submit при успехе фокус переносится на heading. Введите фокус:сообщение после каждого действия. Укажите значения в порядке вызовов через | без пробелов.\nНачало email пуст. submit invalid → email:586; исправить email и submit valid → success:587; получить старый error:586 после success:587. Для ошибки сообщение «Ошибка», для успеха «Отправлено».",
+          "responseType": "text",
+          "options": []
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:frontend-architecture:ec7641cf856f008b",
+          "family": "Архитектура интерфейса",
+          "title": "Изменение контракта клиента",
+          "prompt": "В кешах клиентов остаются DTO старой версии, новая версия меняет значение поля. Как провести переход безопасно?",
+          "responseType": "choice",
+          "options": [
+            "Смешать новый смысл поля со старым кешем, чтобы избежать видимой загрузки.",
+            "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+            "Выполнить type assertion для всех DTO и считать его runtime-валидацией сервера.",
+            "Удалить обработку отсутствующих полей и полагаться на одинаковое время обновления клиентов."
+          ]
+        },
+        {
+          "id": "signal-frontend-typescript-v1:Senior:async-ui:ec7641cf856f008b",
+          "family": "Асинхронный интерфейс",
+          "title": "Откат оптимистичного обновления",
+          "prompt": "После каждого settle укажите значение count. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\nlet count=586, revision=0;\nfunction update(value:number){const previous=count; count=value; return {revision:++revision,previous};}\nfunction settle(op:{revision:number;previous:number},ok:boolean){\n  if(!ok && op.revision===revision) count=op.previous;\n  return count;\n}\nconst a=update(587);\nconst b=update(588);\nsettle(a,false);\n// b уже был выдан\nsettle(b,true);\nconst c=update(589);\nsettle(c,false);\n```",
+          "responseType": "text",
+          "options": []
+        }
+      ]
+    }
+  ]
+}

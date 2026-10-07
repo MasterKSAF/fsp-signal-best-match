@@ -1,0 +1,634 @@
+{
+  "version": "signal-traceability-regression-v1",
+  "evaluationClock": "2026-10-06T00:00:00.000Z",
+  "provenance": "AI-assisted explicit business target regressions authored by QA control agent before QA01b policy patch. Three fixed original control cases are consumed-control regressions, not new labels or an unseen benchmark. Three counterexamples are new frozen semantic fixtures, not humans.",
+  "originalDatasetVersion": "signal-competitive-control-v1-2026-10-06",
+  "originalDatasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+  "originalCases": [
+    {
+      "queryId": "heldout-qstore-import",
+      "betterIds": [
+        6203
+      ],
+      "lowerTraceabilityIds": [
+        6210
+      ],
+      "populationIds": [
+        6199,
+        6200,
+        6201,
+        6202,
+        6203,
+        6204,
+        6205,
+        6206,
+        6207,
+        6208,
+        6209,
+        6210,
+        6211,
+        6212,
+        6213,
+        6214,
+        6215,
+        6216
+      ],
+      "relevanceLabels": {
+        "6199": 1,
+        "6200": 3,
+        "6201": 4,
+        "6202": 1,
+        "6203": 4,
+        "6204": 2,
+        "6205": 3,
+        "6206": 2,
+        "6207": 3,
+        "6208": 2,
+        "6209": 3,
+        "6210": 2,
+        "6211": 0,
+        "6212": 0,
+        "6213": 0,
+        "6214": 0,
+        "6215": 0,
+        "6216": 0
+      },
+      "labelReasons": {
+        "6199": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 70 belongs only to Junior/Backend / Python.",
+        "6200": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 94 belongs only to Junior/Backend / Python.",
+        "6201": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 100 belongs only to Junior/Backend / Python.",
+        "6202": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 78 belongs only to Junior/Backend / Python.",
+        "6203": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP confirmed synthetic record; observed 92 belongs only to Junior/Backend / Python.",
+        "6204": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 88 belongs only to Junior/Backend / Python.",
+        "6205": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 97 belongs only to Junior/Backend / Python.",
+        "6206": "Authored relevance 2: desired criteria 1/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 91 belongs only to Junior/Backend / Python.",
+        "6207": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 96 belongs only to Junior/Backend / Python.",
+        "6208": "Authored relevance 2: desired criteria 2/2, working context differs, evidence 150 days old, source current, FSP absent without penalty; observed 99 belongs only to Junior/Backend / Python.",
+        "6209": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 30 days old, source current, FSP absent without penalty; observed 98 belongs only to Middle/Backend / Python.",
+        "6210": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 30 days old, source missing, FSP confirmed synthetic record; observed 96 belongs only to Junior/Backend / Python.",
+        "6211": "Independent admission label: private disqualifies regardless of score100/FSP.",
+        "6212": "Independent admission label: consent disqualifies regardless of score100/FSP.",
+        "6213": "Independent admission label: pool disqualifies regardless of score100/FSP.",
+        "6214": "Independent admission label: unverified disqualifies regardless of score100/FSP.",
+        "6215": "Independent admission label: missing-mandatory disqualifies regardless of score100/FSP.",
+        "6216": "Independent admission label: wrong-specialization disqualifies regardless of score100/FSP."
+      },
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Junior",
+        "requiredSkills": [
+          "Python",
+          "Q-Store"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts"
+        ],
+        "workFormat": "Офис",
+        "salaryMin": 180000,
+        "salaryMax": 300000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "note": "Exact old IDs, pool, inputs and authored labels are not altered. Regression observed by independent QA; this is a consumed-control regression, not a fresh blind external measurement."
+    },
+    {
+      "queryId": "heldout-ledger-data",
+      "betterIds": [
+        6159,
+        6163,
+        6170
+      ],
+      "lowerTraceabilityIds": [
+        6171,
+        6172
+      ],
+      "populationIds": [
+        6157,
+        6158,
+        6159,
+        6160,
+        6161,
+        6162,
+        6163,
+        6164,
+        6165,
+        6166,
+        6167,
+        6168,
+        6169,
+        6170,
+        6171,
+        6172,
+        6173,
+        6174,
+        6175,
+        6176,
+        6177,
+        6178
+      ],
+      "relevanceLabels": {
+        "6157": 1,
+        "6158": 3,
+        "6159": 4,
+        "6160": 2,
+        "6161": 3,
+        "6162": 1,
+        "6163": 4,
+        "6164": 2,
+        "6165": 4,
+        "6166": 3,
+        "6167": 3,
+        "6168": 3,
+        "6169": 1,
+        "6170": 4,
+        "6171": 2,
+        "6172": 2,
+        "6173": 0,
+        "6174": 0,
+        "6175": 0,
+        "6176": 0,
+        "6177": 0,
+        "6178": 0
+      },
+      "labelReasons": {
+        "6157": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 84 belongs only to Middle/Backend / Python.",
+        "6158": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 92 belongs only to Middle/Backend / Python.",
+        "6159": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 100 belongs only to Middle/Backend / Python.",
+        "6160": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 86 belongs only to Middle/Backend / Python.",
+        "6161": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 96 belongs only to Middle/Backend / Python.",
+        "6162": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 83 belongs only to Middle/Backend / Python.",
+        "6163": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 98 belongs only to Middle/Backend / Python.",
+        "6164": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 89 belongs only to Middle/Backend / Python.",
+        "6165": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP confirmed synthetic record; observed 95 belongs only to Middle/Backend / Python.",
+        "6166": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 94 belongs only to Middle/Backend / Python.",
+        "6167": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 94 belongs only to Middle/Backend / Python.",
+        "6168": "Authored relevance 3: desired criteria 1/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 97 belongs only to Middle/Backend / Python.",
+        "6169": "Authored relevance 1: desired criteria 1/2, working context differs, evidence 160 days old, source current, FSP absent without penalty; observed 88 belongs only to Middle/Backend / Python.",
+        "6170": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 2 days old, source current, FSP absent without penalty; observed 100 belongs only to Senior/Backend / Python.",
+        "6171": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 2 days old, source previous, FSP confirmed synthetic record; observed 91 belongs only to Middle/Backend / Python.",
+        "6172": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 2 days old, source missing, FSP confirmed synthetic record; observed 99 belongs only to Middle/Backend / Python.",
+        "6173": "Independent admission label: private disqualifies regardless of score100/FSP.",
+        "6174": "Independent admission label: consent disqualifies regardless of score100/FSP.",
+        "6175": "Independent admission label: pool disqualifies regardless of score100/FSP.",
+        "6176": "Independent admission label: unverified disqualifies regardless of score100/FSP.",
+        "6177": "Independent admission label: missing-mandatory disqualifies regardless of score100/FSP.",
+        "6178": "Independent admission label: wrong-specialization disqualifies regardless of score100/FSP."
+      },
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "py",
+          "SQL"
+        ],
+        "desirableSkills": [
+          "Postgres",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 180000,
+        "salaryMax": 300000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "note": "Exact old IDs, pool, inputs and authored labels are not altered. Regression observed by independent QA; this is a consumed-control regression, not a fresh blind external measurement."
+    },
+    {
+      "queryId": "dev-platform-api",
+      "betterIds": [
+        6102
+      ],
+      "lowerTraceabilityIds": [
+        6114
+      ],
+      "populationIds": [
+        6101,
+        6102,
+        6103,
+        6104,
+        6105,
+        6106,
+        6107,
+        6108,
+        6109,
+        6110,
+        6111,
+        6112,
+        6113,
+        6114,
+        6115,
+        6116,
+        6117,
+        6118,
+        6119,
+        6120
+      ],
+      "relevanceLabels": {
+        "6101": 1,
+        "6102": 4,
+        "6103": 3,
+        "6104": 2,
+        "6105": 4,
+        "6106": 1,
+        "6107": 3,
+        "6108": 2,
+        "6109": 3,
+        "6110": 2,
+        "6111": 1,
+        "6112": 4,
+        "6113": 2,
+        "6114": 2,
+        "6115": 0,
+        "6116": 0,
+        "6117": 0,
+        "6118": 0,
+        "6119": 0,
+        "6120": 0
+      },
+      "labelReasons": {
+        "6101": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 83 belongs only to Middle/Backend / Python.",
+        "6102": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 100 belongs only to Middle/Backend / Python.",
+        "6103": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 91 belongs only to Middle/Backend / Python.",
+        "6104": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 86 belongs only to Middle/Backend / Python.",
+        "6105": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 98 belongs only to Middle/Backend / Python.",
+        "6106": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 84 belongs only to Middle/Backend / Python.",
+        "6107": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 93 belongs only to Middle/Backend / Python.",
+        "6108": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 90 belongs only to Middle/Backend / Python.",
+        "6109": "Authored relevance 3: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 96 belongs only to Middle/Backend / Python.",
+        "6110": "Authored relevance 2: desired criteria 1/2, working context fits, evidence 5 days old, source current, FSP absent without penalty; observed 88 belongs only to Middle/Backend / Python.",
+        "6111": "Authored relevance 1: desired criteria 2/2, working context fits, evidence 170 days old, source current, FSP absent without penalty; observed 85 belongs only to Middle/Backend / Python.",
+        "6112": "Authored relevance 4: desired criteria 2/2, working context fits, evidence 5 days old, source current, FSP confirmed synthetic record; observed 95 belongs only to Middle/Backend / Python.",
+        "6113": "Authored relevance 2: desired criteria 1/2, working context differs, evidence 120 days old, source current, FSP absent without penalty; observed 100 belongs only to Senior/Backend / Python.",
+        "6114": "Authored relevance 2: desired criteria 2/2, working context fits, evidence 5 days old, source missing, FSP confirmed synthetic record; observed 100 belongs only to Middle/Backend / Python.",
+        "6115": "Independent admission label: private disqualifies regardless of score100/FSP.",
+        "6116": "Independent admission label: consent disqualifies regardless of score100/FSP.",
+        "6117": "Independent admission label: pool disqualifies regardless of score100/FSP.",
+        "6118": "Independent admission label: unverified disqualifies regardless of score100/FSP.",
+        "6119": "Independent admission label: missing-mandatory disqualifies regardless of score100/FSP.",
+        "6120": "Independent admission label: wrong-specialization disqualifies regardless of score100/FSP."
+      },
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "PYTHON",
+          "API-контракты"
+        ],
+        "desirableSkills": [
+          "Idempotency",
+          "Architecture"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 180000,
+        "salaryMax": 300000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "note": "Exact old IDs, pool, inputs and authored labels are not altered. Regression observed by independent QA; this is a consumed-control regression, not a fresh blind external measurement."
+    }
+  ],
+  "newBusinessCases": [
+    {
+      "id": "business-fit-before-traceability-fsp",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 880001,
+            "alias": "Z fullfit unknown",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 880002,
+            "alias": "A partialfit current",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880002,
+            "candidateId": 880002,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        }
+      ],
+      "expectedBefore": [
+        880001,
+        880002
+      ],
+      "labelReasons": {
+        "880001": "Higher concrete verified skills/work fit remains primary despite incomplete detailed attempt protocol.",
+        "880002": "Current fully linked proof and FSP do not replace the sought optional skills/work format."
+      }
+    },
+    {
+      "id": "equal-fit-full-proof-before-legacy-fsp",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 880011,
+            "alias": "A historical FSP",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 880010,
+            "alias": "Z complete current proof",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880010,
+            "candidateId": 880010,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        }
+      ],
+      "expectedBefore": [
+        880010,
+        880011
+      ],
+      "labelReasons": {
+        "880010": "Same business fit with complete traceable evidence should precede historical summary with missing protocol; no numeric quality equivalence claimed.",
+        "880011": "FSP positive signal cannot replace provenance of skill checking; unknown quality stays null."
+      }
+    },
+    {
+      "id": "fsp-positive-at-equal-fit-complete-proof-result",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 880021,
+            "alias": "A current no FSP",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880021,
+            "candidateId": 880021,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        },
+        {
+          "profile": {
+            "userId": 880020,
+            "alias": "Z current FSP",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1880020,
+            "candidateId": 880020,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "synthetic-traceability-six-criteria-v1"
+          }
+        }
+      ],
+      "expectedBefore": [
+        880020,
+        880021
+      ],
+      "labelReasons": {
+        "880020": "All skill, work, salary, date, provenance and rawquality conditions equal; admitted FSP signal improves order.",
+        "880021": "No FSP is not an eligibility exclusion; candidate remains admitted."
+      }
+    }
+  ],
+  "policyLimitations": [
+    "Unknown quality is null and no numeric historical score recovered. Full proof preference is a declared nonnumeric traceability business policy at equal common fit, not crossbank raw score equivalence.",
+    "Business fit stays primary: better concrete task fit must outrank lower-fit current evidence/FSP.",
+    "FSP priority tested only with otherwise equal business/provenance/result; this does not prove any universal dominance of FSP over superior skill quality.",
+    "The original intergroup control has already been measured. Later generic policy changes responding to independent QA must be marked subsequent regression iterations, not reported as untuned holdout proof."
+  ]
+}

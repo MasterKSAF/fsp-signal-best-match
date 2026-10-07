@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-10-05T19:03:00Z",
+  "checks": [
+    ["Unit и сборка", "60 тестов PASS; TypeScript и production build PASS в Docker."],
+    ["HTTP: основной контур", "47 групп PASS на 90ecfa98; после изменения расписания 12 групп повторены на ced87c4. final-http-docker.json."],
+    ["Исследовательский контур", "7 групп PASS на отдельном локальном HTTP-сервере; research-http.json."],
+    ["Production-изоляция", "4 проверки PASS в отдельном локальном Express; production-isolation-timed-final-local.log."]
+  ],
+  "releaseSummary": "Финальный образ ced87c4: 2969 запросов за 60,23 с, 49,30 запроса/с, 0 ошибок; max p95 JSON 973,98 мс, PDF 985,30 мс; max p99 1102,47 мс; пик RAM 367,5 MiB. Все заданные пороги пройдены; 13 замеров CPU/RAM и полные хеши: load-test.json. Чистый запуск проверенного исходного ZIP подтверждается отдельным протоколом комплекта; источник - verification/clean-source-launch.json.",
+  "provenance": {
+    "http": "outputs/verification/final-http-docker.json",
+    "httpLatestGroups": 12,
+    "httpEarlierGroups": 47,
+    "httpEarlierImage": "sha256:90ecfa98ece67936412156dd7986145e4b587ec165388b4725556b0275fcf08a",
+    "finalImage": "sha256:ced87c4ab42467f59717895d790ee5e2fc78490c3bb5621aa2302b74ef12b6c0",
+    "load": "outputs/verification/load-test.json",
+    "cleanLaunch": "verification/clean-source-launch.json",
+    "cleanLaunchStatusInDocument": "The clean-launch result is a separate companion protocol. The PDF does not predeclare its outcome or a ZIP hash.",
+    "limits": "Synthetic technical verification, not human validation or a production SLA. Recurrence clock phases run locally with the same scheduler source hash as the final container."
+  }
+}

@@ -1,0 +1,58 @@
+.environment-indicator {
+  --environment-lamp:#218363;
+  --environment-glow:rgba(33, 131, 99, .13);
+  display:inline-flex;
+  position:relative;
+  flex-shrink:0;
+}
+.environment-indicator--demo { --environment-lamp:#bc8717; --environment-glow:rgba(188, 135, 23, .14); }
+.dark .environment-indicator--personal { --environment-lamp:#65cda4; --environment-glow:rgba(101, 205, 164, .13); }
+.dark .environment-indicator--demo { --environment-lamp:#ebbf5b; --environment-glow:rgba(235, 191, 91, .13); }
+.environment-indicator--unavailable { --environment-lamp:#c94351; --environment-glow:rgba(201, 67, 81, .14); }
+.dark .environment-indicator--unavailable { --environment-lamp:#f88791; --environment-glow:rgba(248, 135, 145, .14); }
+.environment-indicator .environment-indicator__trigger {
+  display:grid;
+  place-items:center;
+  width:32px;
+  height:32px;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:50%;
+  background:transparent;
+  color:hsl(var(--foreground));
+  cursor:help;
+}
+.environment-indicator .environment-indicator__trigger:hover,
+.environment-indicator .environment-indicator__trigger[aria-expanded="true"] { background:hsl(var(--muted)); border-color:hsl(var(--border)); }
+.environment-indicator__lamp {
+  display:block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--environment-lamp);
+  box-shadow:0 0 0 4px var(--environment-glow);
+}
+.environment-indicator__tooltip {
+  position:absolute;
+  z-index:70;
+  top:calc(100% + 10px);
+  right:0;
+  width:235px;
+  max-width:calc(100vw - 32px);
+  display:grid;
+  gap:5px;
+  padding:12px 14px;
+  border:1px solid hsl(var(--border));
+  border-radius:11px;
+  background:hsl(var(--popover));
+  color:hsl(var(--foreground));
+  box-shadow:0 10px 30px hsl(230 25% 10% / .14);
+  text-align:left;
+  white-space:normal;
+  pointer-events:auto;
+}
+.environment-indicator__tooltip::before { content:''; position:absolute; left:0; right:0; top:-11px; height:11px; }
+.environment-indicator__tooltip strong { font-size:12px; font-weight:800; }
+.environment-indicator__tooltip > span { font-size:11px; line-height:1.6; color:hsl(var(--muted-foreground)); }
+@media (pointer:coarse) { .environment-indicator .environment-indicator__trigger { width:36px; height:36px; } }
+@media (max-width:560px) { .environment-indicator__tooltip { position:fixed; left:16px; right:16px; top:72px; width:auto; max-width:none; } }

@@ -1,0 +1,57 @@
+{
+  "version": "signal-transfer-model-regression-v2",
+  "extends": "signal-transfer-model-regression-v1",
+  "frozenBeforeSourceGuardCorrection": true,
+  "frozenAt": "2026-10-06T08:12:18.233851+00:00",
+  "origin": "Independent QA-02b reproduction plus hand-authored TS-literal and harmless-formatting controls; not scorer/target-key expectations",
+  "cases": [
+    {
+      "id": "changed-source-significant-literal-space",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-signed-numbers",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"2 01:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(17, -4)\nwrite(17, -4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "source-method",
+        "recognizedCallCount": 0
+      }
+    },
+    {
+      "id": "changed-typescript-source-literal-space",
+      "programId": "frontend-typescript",
+      "grade": "Junior",
+      "sourceId": "frontend-typescript:Junior:development:A",
+      "targetId": "independent-regression:frontend-junior-null",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  return 'wa it';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+      "targetPrompt": "```typescript\nread({count:7,version:2})\nread({count:'7',version:2})\nread(null)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "source-method",
+        "recognizedCallCount": 0
+      }
+    },
+    {
+      "id": "outside-literal-source-formatting-preserved",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-signed-numbers",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key,body_hash,next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(17, -4)\nwrite(17, -4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:-4|200:-4|409:-4",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    }
+  ]
+}

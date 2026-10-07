@@ -1,0 +1,3 @@
+# Frozen regression inputs and acceptance records verify exact SHA-256 bytes.
+# Preserve their original line endings on Windows and on Linux.
+* -text

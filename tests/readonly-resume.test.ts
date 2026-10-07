@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readonlyResumeProjection, isReadonlyResumeProjection, resumeAssessmentMillis } from '../artifacts/api-server/src/lib/signal-readonly-resume';
+test('readonly pool dates are fresh values even under Date.prototype mutation; arrays/JSON/fields cannot change',()=>{
+  const raw={resumeId:7,title:'Original',latestAssessmentAt:new Date('2026-10-05T12:34:56.123Z'),deletedAt:null,stack:['Python'],legacyQualification:{skills:['SQL']}},view=readonlyResumeProjection(raw);
+  assert.deepEqual(view,raw);assert.equal(JSON.stringify(view),JSON.stringify(raw));
+  const first=view.latestAssessmentAt;Date.prototype.setTime.call(first,0);
+  assert.equal(view.latestAssessmentAt.getTime(),raw.latestAssessmentAt.getTime());assert.notEqual(view.latestAssessmentAt,view.latestAssessmentAt);
+  assert.ok(Object.isFrozen(view)&&Object.isFrozen(view.stack)&&Object.isFrozen(view.legacyQualification.skills));
+  assert.equal(Reflect.set(view,'title','Forged'),false);assert.throws(()=>view.stack.push('Forged'),TypeError);assert.throws(()=>view.legacyQualification.skills.push('Forged'),TypeError);
+  const second=readonlyResumeProjection({...raw,latestAssessmentAt:new Date('2026-10-06T00:00:00Z')});
+  assert.equal(Object.getOwnPropertyDescriptor(view,'latestAssessmentAt')?.get,Object.getOwnPropertyDescriptor(second,'latestAssessmentAt')?.get);
+  assert.equal(Object.getOwnPropertyDescriptor(view,'deletedAt')?.get,Object.getOwnPropertyDescriptor(second,'deletedAt')?.get);
+  Date.prototype.setTime.call(raw.latestAssessmentAt,0);
+  assert.equal(view.latestAssessmentAt.getTime(),new Date('2026-10-05T12:34:56.123Z').getTime());
+  for(const symbol of Object.getOwnPropertySymbols(view))assert.equal(Reflect.set(view,symbol,0),false);
+  assert.equal(second.latestAssessmentAt.toISOString(),'2026-10-06T00:00:00.000Z');
+  assert.ok(isReadonlyResumeProjection(view));assert.equal(resumeAssessmentMillis(view),view.latestAssessmentAt.getTime());
+  const unowned=Object.freeze({latestAssessmentAt:Object.freeze(new Date(1000))});
+  assert.equal(isReadonlyResumeProjection(unowned),false);assert.equal(resumeAssessmentMillis(unowned),1000);
+  Date.prototype.setTime.call(unowned.latestAssessmentAt,2000);assert.equal(resumeAssessmentMillis(unowned),2000,'Arbitrary frozen Date is never trusted as an immutable pool timestamp');
+});

@@ -1,0 +1,14 @@
+{
+  "datasetVersion": "signal-intergroup-control-v1",
+  "frozenAt": "2026-10-06T07:58:42.501Z",
+  "file": "outputs/quality/qa-cycle-01/intergroup-control-v1.json",
+  "fileSha256": "602e7c230ebf7374a44c2cfc2a8ff47392f302aba27c30e3d6d0c4ce3c78c01a",
+  "bytes": 159605,
+  "queries": 8,
+  "pairs": 96,
+  "phase": "before-new-policy-implementation-and-before-first-measurement",
+  "oldAlgorithmSha256AtFreeze": "8e8dca055c3a0deb9485bb215f70fa44fb61357e7a42e1234d40b67f684564a9",
+  "provenance": "AI-assisted independently authored synthetic business judgements by QA-01 control agent; not external human review. Labels explicitly recorded before new matcher implementation/measurement.",
+  "labelsFrozen": true,
+  "oldControlsModified": false
+}

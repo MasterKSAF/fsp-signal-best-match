@@ -1,0 +1,236 @@
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { compareRankedMatches, evaluateMatch, MATCH_ALGORITHM_VERSION, type MatchCandidate, type MatchEvaluation, type MatchNeed } from './signal-matching';
+import { evaluateMatch as evaluateV3 } from './matching-v3-frozen';
+import { canonicalSkillKey, SKILL_CATALOG_VERSION } from './skill-catalog';
+import { competitiveCandidates, competitiveDataset, COMPETITIVE_FROZEN_SHA256, type CompetitiveQuery } from './matching-competitive-fixtures';
+
+export const COMPETITIVE_EVALUATOR_VERSION = 'signal-competitive-evaluator-v1';
+export const COMPETITIVE_METHODS = ['signal', 'keyword-baseline', 'old-v3', 'random', 'reverse', 'without-test-result'] as const;
+export type CompetitiveMethod = typeof COMPETITIVE_METHODS[number];
+type Entry = { candidate: MatchCandidate; evaluation: MatchEvaluation };
+const ratio = (n: number, d: number): number | null => d ? n / d : null;
+const mean = (values: Array<number | null>) => {
+  const defined = values.filter((v): v is number => v !== null);
+  return { value: defined.length ? defined.reduce((a,b) => a+b, 0) / defined.length : null, defined: defined.length, undefined: values.length-defined.length, total: values.length };
+};
+
+export function competitiveMetrics(ranking: readonly number[], labels: Record<string, number>, expectedEligibleIds: readonly number[]) {
+  const k = 5;
+  const top = ranking.slice(0,k);
+  const relevantIds = expectedEligibleIds.filter(id => (labels[String(id)] ?? 0) >= 2);
+  const relevantReturned = ranking.filter(id => relevantIds.includes(id)).length;
+  const relevantTop = top.filter(id => relevantIds.includes(id)).length;
+  const dcg = (grades: readonly number[]) => grades.slice(0,k).reduce((sum, grade, i) => sum + (2**grade-1)/Math.log2(i+2), 0);
+  const ideal = dcg(expectedEligibleIds.map(id => labels[String(id)] ?? 0).sort((a,b)=>b-a));
+  return {
+    precisionAt5: relevantTop/k, precisionAt5Numerator: relevantTop, precisionAt5Denominator: k,
+    ndcgAt5: ideal ? dcg(top.map(id => labels[String(id)] ?? 0))/ideal : null,
+    relevantRecallAll: ratio(relevantReturned,relevantIds.length), relevantRecallAt5: ratio(relevantTop,relevantIds.length),
+    relevantTotal: relevantIds.length, returnedCount: ranking.length, topReturnedCount: top.length,
+    maximumAvailablePrecisionAt5: Math.min(k, relevantIds.length)/k,
+    admissionRecall: ratio(ranking.filter(id=>expectedEligibleIds.includes(id)).length,expectedEligibleIds.length),
+    admissionRecallNumerator: ranking.filter(id=>expectedEligibleIds.includes(id)).length, admissionRecallDenominator: expectedEligibleIds.length,
+    expectedEmpty: !expectedEligibleIds.length, actualEmpty: !ranking.length, unexpectedEmpty: !!expectedEligibleIds.length && !ranking.length,
+  };
+}
+
+/** Ablation preserves gate/group; quality is removed, not set to a failed score. */
+function withoutResult(evaluation: MatchEvaluation): MatchEvaluation {
+  const remaining = evaluation.factors.filter(f => !isQualityFactor(f.name) && f.score !== null);
+  const weight = remaining.reduce((sum,f)=>sum+f.weight,0);
+  const available = weight ? 100*remaining.reduce((sum,f)=>sum+f.weight*(f.score??0),0)/weight : 0;
+  return { ...evaluation, baseScore: Math.round(available), rankingScore: available+evaluation.fspBonus, factors: remaining };
+}
+function isQualityFactor(name: string) {
+  return name === 'Результат сопоставимой проверки';
+}
+
+function aliasId(a: MatchCandidate,b: MatchCandidate) {
+  return a.alias.localeCompare(b.alias,'ru') || a.userId-b.userId;
+}
+function rankMethod(method: CompetitiveMethod, query: CompetitiveQuery, entries: Entry[], at: Date): number[] {
+  const sorted = [...entries];
+  if (method === 'signal' || method === 'reverse') {
+    sorted.sort(compareRankedMatches);
+    if (method === 'reverse') sorted.reverse();
+  } else if (method === 'without-test-result') {
+    sorted.sort((a,b)=>compareRankedMatches({candidate:a.candidate,evaluation:withoutResult(a.evaluation)}, {candidate:b.candidate,evaluation:withoutResult(b.evaluation)}));
+  } else if (method === 'old-v3') {
+    const old = new Map(sorted.map(x=>[x.candidate.userId,evaluateV3(query.need,x.candidate,true,at).rankingScore]));
+    sorted.sort((a,b)=>old.get(b.candidate.userId)!-old.get(a.candidate.userId)! || aliasId(a.candidate,b.candidate));
+  } else if (method === 'keyword-baseline') {
+    const requirements = [...query.need.requiredSkills,...query.need.desirableSkills].map(canonicalSkillKey);
+    const score = (c: MatchCandidate) => {
+      const mentioned = new Set([...c.stack,...c.statedSkills].map(canonicalSkillKey));
+      return requirements.filter(key=>mentioned.has(key)).length;
+    };
+    sorted.sort((a,b)=>score(b.candidate)-score(a.candidate) || aliasId(a.candidate,b.candidate));
+  } else {
+    const draw = (id: number) => createHash('sha256').update(`${COMPETITIVE_FROZEN_SHA256}|fixed-random-v1|${query.id}|${id}`).digest('hex');
+    sorted.sort((a,b)=>draw(a.candidate.userId).localeCompare(draw(b.candidate.userId)) || aliasId(a.candidate,b.candidate));
+  }
+  return sorted.map(x=>x.candidate.userId);
+}
+
+// Identity-preserving, authored spellings for a separate normalization stress
+// view. These are not an eligibility oracle or inferred technology relations.
+const aliasEquivalent: Record<string,string> = {
+  PYTHON:'Python', py:'Python', ts:'TypeScript', a11y:'Accessibility',
+  'API-контракты':'API contracts', 'Диагностика инцидента':'Incident diagnosis',
+  'Производительность интерфейса':'Frontend performance', Postgres:'PostgreSQL',
+};
+export function aliasStressNeed(need: MatchNeed): MatchNeed {
+  return {...need,requiredSkills:need.requiredSkills.map(s=>aliasEquivalent[s] ?? s),desirableSkills:need.desirableSkills.map(s=>aliasEquivalent[s] ?? s)};
+}
+
+function admissionRows(rows: Array<{pairId:string;expectedEligible:boolean;privacyPermitted:boolean;actualEligible:boolean}>) {
+  const falseExclusions = rows.filter(r=>r.privacyPermitted&&r.expectedEligible&&!r.actualEligible).map(r=>r.pairId);
+  const falseAdmissions = rows.filter(r=>r.privacyPermitted&&!r.expectedEligible&&r.actualEligible).map(r=>r.pairId);
+  const privacyViolations = rows.filter(r=>!r.privacyPermitted&&r.actualEligible).map(r=>r.pairId);
+  const expected = rows.filter(r=>r.expectedEligible).length;
+  const permittedNegative = rows.filter(r=>r.privacyPermitted&&!r.expectedEligible).length;
+  const hidden = rows.filter(r=>!r.privacyPermitted).length;
+  return {
+    pairs:rows.length,expectedEligible:expected,privacyPermitted:rows.filter(r=>r.privacyPermitted).length,permittedNegative,hidden,
+    falseExclusions,falseAdmissions,privacyViolations,
+    recall:ratio(expected-falseExclusions.length,expected),recallDenominator:expected,
+    falseAdmissionRate:ratio(falseAdmissions.length,permittedNegative),falseAdmissionDenominator:permittedNegative,
+    privacyViolationRate:ratio(privacyViolations.length,hidden),privacyViolationDenominator:hidden,
+  };
+}
+
+export function runCompetitiveMatchingQuality() {
+  const dataset = competitiveDataset();
+  const at = new Date(dataset.evaluatedAt);
+  const candidates = competitiveCandidates(dataset);
+  const byId = new Map(candidates.map(c=>[c.userId,c]));
+  const byQuery = dataset.queries.map(query=>{
+    const entries = query.populationIds.map(id=>{
+      const candidate = byId.get(id);
+      if (!candidate) throw new Error(`Unknown frozen candidate ${id}`);
+      return {candidate,evaluation:evaluateMatch(query.need,candidate,true,at)};
+    });
+    const pairRows = entries.map(({candidate,evaluation})=>({
+      pairId:`${query.id}/${candidate.userId}`,queryId:query.id,candidateId:candidate.userId,split:query.split,kind:query.kind,
+      minimumGrade:query.need.grade,candidateGrade:candidate.verifiedGrade??'unverified',fsp:candidate.hasFspHistory,
+      provenance:candidate.assessmentEvidence?'known-attempt':'unknown-historical',
+      expectedEligible:query.expectedEligibleIds.includes(candidate.userId),privacyPermitted:query.privacyPermittedIds.includes(candidate.userId),
+      actualEligible:evaluation.eligible,ineligibilityReasons:evaluation.ineligibilityReasons,
+      relevance:query.relevanceLabels[String(candidate.userId)]??0,labelReason:query.labelReasons[String(candidate.userId)],
+    }));
+    const expected = entries.filter(x=>query.expectedEligibleIds.includes(x.candidate.userId));
+    const runtime = entries.filter(x=>x.evaluation.eligible);
+    const methods = Object.fromEntries(COMPETITIVE_METHODS.map(method=>{
+      const expectedRanking = rankMethod(method,query,expected,at);
+      const runtimeRanking = rankMethod(method,query,runtime,at);
+      return [method,{expectedRanking,runtimeRanking,rankingOnly:competitiveMetrics(expectedRanking,query.relevanceLabels,query.expectedEligibleIds),endToEnd:competitiveMetrics(runtimeRanking,query.relevanceLabels,query.expectedEligibleIds)}];
+    })) as Record<CompetitiveMethod,{expectedRanking:number[];runtimeRanking:number[];rankingOnly:ReturnType<typeof competitiveMetrics>;endToEnd:ReturnType<typeof competitiveMetrics>}>;
+    const reexpressedNeed = aliasStressNeed(query.need);
+    const aliasRows = entries.map(({candidate})=>{
+      const base = evaluateMatch(reexpressedNeed,candidate,true,at);
+      const broken = base.eligible && reexpressedNeed.requiredSkills.every(skill=>candidate.verifiedSkills.includes(skill));
+      return {pairId:`${query.id}/${candidate.userId}`,expectedEligible:query.expectedEligibleIds.includes(candidate.userId),privacyPermitted:query.privacyPermittedIds.includes(candidate.userId),actualEligible:broken,signalEligible:base.eligible};
+    });
+    const aliasGood = aliasRows.filter(x=>x.signalEligible).map(x=>x.pairId);
+    const aliasExpected = aliasRows.filter(x=>x.expectedEligible).map(x=>x.pairId);
+    if (JSON.stringify(aliasGood.sort()) !== JSON.stringify(aliasExpected.sort())) throw new Error(`Equivalent alias view changed valid production gate: ${query.id}`);
+    const brokenAliasRanking = entries.filter(entry=>aliasRows.some(r=>r.actualEligible && Number(r.pairId.split('/')[1])===entry.candidate.userId)).sort(compareRankedMatches).map(entry=>entry.candidate.userId);
+    return {queryId:query.id,split:query.split,kind:query.kind,purpose:query.purpose,populationIds:query.populationIds,expectedEligibleIds:query.expectedEligibleIds,
+      admission:admissionRows(pairRows),methods,pairRows,
+      scores:entries.map(({candidate,evaluation})=>({candidateId:candidate.userId,alias:candidate.alias,observedResult:candidate.assessmentEvidence?.score??null,
+        grade:candidate.verifiedGrade,programVersion:candidate.assessmentEvidence?.programVersion??null,rubricKey:candidate.assessmentEvidence?.rubricKey??null,
+        evaluation})),
+      aliasRegression:{inputView:'identity-preserving controlled alias re-expression; same candidates and labels',requiredSkills:reexpressedNeed.requiredSkills,admission:admissionRows(aliasRows),ranking:brokenAliasRanking,
+        metrics:competitiveMetrics(brokenAliasRanking,query.relevanceLabels,query.expectedEligibleIds)},
+    };
+  });
+  const allPairs = byQuery.flatMap(q=>q.pairRows);
+  const aggregate = (rows: typeof byQuery) => ({
+    queries:rows.length,competitiveQueries:rows.filter(q=>q.kind==='competitive').length,shortQueries:rows.filter(q=>q.kind==='short').length,emptyQueries:rows.filter(q=>q.kind==='empty').length,
+    admission:admissionRows(rows.flatMap(q=>q.pairRows)),
+    methods:Object.fromEntries(COMPETITIVE_METHODS.map(method=>[method,{
+      precisionAt5:mean(rows.map(q=>q.methods[method].endToEnd.precisionAt5)),ndcgAt5:mean(rows.map(q=>q.methods[method].endToEnd.ndcgAt5)),
+      relevantRecallAt5:mean(rows.map(q=>q.methods[method].endToEnd.relevantRecallAt5)),relevantRecallAll:mean(rows.map(q=>q.methods[method].endToEnd.relevantRecallAll)),
+      unexpectedEmpty:rows.filter(q=>q.methods[method].endToEnd.unexpectedEmpty).map(q=>q.queryId),
+    }])),
+    aliasRegression:admissionRows(rows.flatMap(q=>q.pairRows.map(p=>({...p,actualEligible:q.aliasRegression.ranking.includes(p.candidateId)})))),
+  });
+  const signalDelta = (method:CompetitiveMethod) => byQuery.map(q=>({queryId:q.queryId,split:q.split,kind:q.kind,
+    precisionAt5:q.methods.signal.endToEnd.precisionAt5-q.methods[method].endToEnd.precisionAt5,
+    ndcgAt5:q.methods.signal.endToEnd.ndcgAt5!==null && q.methods[method].endToEnd.ndcgAt5!==null ? q.methods.signal.endToEnd.ndcgAt5!-q.methods[method].endToEnd.ndcgAt5! : null,
+  }));
+  // Two explicit views: filtered within-stratum order, and who actually made
+  // the mixed production top-five. Neither view silently removes empty queries.
+  const rankingStratum = (predicate:(candidate:MatchCandidate)=>boolean) => {
+    const rows = byQuery.map(q=>{
+      const inStratum=(id:number)=>predicate(byId.get(id)!);
+      const expectedIds=q.expectedEligibleIds.filter(inStratum);
+      return {queryId:q.queryId,eligibleInStratum:expectedIds.length,
+        methods:Object.fromEntries(COMPETITIVE_METHODS.map(method=>{
+          const runtime=q.methods[method].runtimeRanking;
+          const filtered=runtime.filter(inStratum);
+          const mixedTop=runtime.slice(0,5).filter(inStratum);
+          const relevantIds=expectedIds.filter(id=>(q.pairRows.find(p=>p.candidateId===id)?.relevance??0)>=2);
+          const selectedRelevant=mixedTop.filter(id=>relevantIds.includes(id)).length;
+          return [method,{
+            filteredOrderMetrics:competitiveMetrics(filtered,Object.fromEntries(q.pairRows.map(p=>[String(p.candidateId),p.relevance])),expectedIds),
+            mixedProductionTop5:{selected:mixedTop.length,relevantSelected:selectedRelevant,relevantAvailable:relevantIds.length,
+              precision:ratio(selectedRelevant,mixedTop.length),recall:ratio(selectedRelevant,relevantIds.length)},
+          }];
+        })),
+      };
+    });
+    return {
+      definition:'filteredOrderMetrics preserves relative order after the stated attribute filter; mixedProductionTop5 preserves original production top5. All nine queries are retained, null denominators explicit.',
+      byQuery:rows,
+      methods:Object.fromEntries(COMPETITIVE_METHODS.map(method=>[method,{
+        filteredPrecisionAt5:mean(rows.map(q=>q.methods[method].filteredOrderMetrics.precisionAt5)),
+        filteredNdcgAt5:mean(rows.map(q=>q.methods[method].filteredOrderMetrics.ndcgAt5)),
+        mixedTop5Selected:rows.reduce((sum,q)=>sum+q.methods[method].mixedProductionTop5.selected,0),
+        mixedTop5RelevantSelected:rows.reduce((sum,q)=>sum+q.methods[method].mixedProductionTop5.relevantSelected,0),
+        relevantAvailable:rows.reduce((sum,q)=>sum+q.methods[method].mixedProductionTop5.relevantAvailable,0),
+        mixedTop5Recall:ratio(rows.reduce((sum,q)=>sum+q.methods[method].mixedProductionTop5.relevantSelected,0),rows.reduce((sum,q)=>sum+q.methods[method].mixedProductionTop5.relevantAvailable,0)),
+      }])),
+    };
+  };
+  const diagnostics = {
+    random:signalDelta('random'),reverse:signalDelta('reverse'),withoutTestResult:signalDelta('without-test-result'),
+    aliasRegressionFalseExclusions:byQuery.flatMap(q=>q.aliasRegression.admission.falseExclusions),
+    checks:{
+      qualityRemovalChangesAtLeastOneCompetitiveTop5:byQuery.some(q=>q.kind==='competitive' && JSON.stringify(q.methods.signal.runtimeRanking.slice(0,5))!==JSON.stringify(q.methods['without-test-result'].runtimeRanking.slice(0,5))),
+      qualityRemovalLowersNdcgInAtLeastOneCompetitiveQuery:byQuery.some(q=>q.kind==='competitive' && q.methods.signal.endToEnd.ndcgAt5!==null && q.methods['without-test-result'].endToEnd.ndcgAt5!==null && q.methods.signal.endToEnd.ndcgAt5!>q.methods['without-test-result'].endToEnd.ndcgAt5!+1e-9),
+      reverseLowersNdcgInAtLeastOneCompetitiveQuery:byQuery.some(q=>q.kind==='competitive' && q.methods.signal.endToEnd.ndcgAt5!>q.methods.reverse.endToEnd.ndcgAt5!+1e-9),
+      randomLowersNdcgInAtLeastOneCompetitiveQuery:byQuery.some(q=>q.kind==='competitive' && q.methods.signal.endToEnd.ndcgAt5!>q.methods.random.endToEnd.ndcgAt5!+1e-9),
+      aliasRegressionDetected:byQuery.some(q=>q.aliasRegression.admission.falseExclusions.length>0),
+    },
+  };
+  return {
+    evaluatorVersion:COMPETITIVE_EVALUATOR_VERSION,datasetVersion:dataset.version,datasetSha256:COMPETITIVE_FROZEN_SHA256,
+    algorithmVersion:MATCH_ALGORITHM_VERSION,algorithmSha256:createHash('sha256').update(readFileSync(new URL('./signal-matching.ts',import.meta.url))).digest('hex'),
+    evaluatorSha256:createHash('sha256').update(readFileSync(new URL('./matching-competitive-quality.ts',import.meta.url))).digest('hex'),
+    catalogVersion:SKILL_CATALOG_VERSION,measurementAt:new Date().toISOString(),evaluationClock:dataset.evaluatedAt,
+    environment:{mode:'local-pure-function-control',node:process.version,platform:process.platform,architecture:process.arch,
+      database:'not_used',dockerImage:'not_applicable; shared production function imported directly'},
+    annotationSource:dataset.rubric.provenance,rubric:dataset.rubric,oldMatcherSha256:createHash('sha256').update(readFileSync(new URL('./matching-v3-frozen.ts',import.meta.url))).digest('hex'),
+    summary:aggregate(byQuery),byQuery,comparisons:{keywordBaseline:signalDelta('keyword-baseline'),oldV3:signalDelta('old-v3')},diagnostics,
+    strata:{
+      split:['development','control-holdout'].map(value=>({value,...aggregate(byQuery.filter(q=>q.split===value))})),
+      poolKind:['competitive','short','empty'].map(value=>({value,...aggregate(byQuery.filter(q=>q.kind===value))})),
+      minimumGrade:['Junior','Middle','Senior'].map(value=>({value,...aggregate(byQuery.filter(q=>q.pairRows[0]?.minimumGrade===value))})),
+      candidateGrade:['unverified','Junior','Middle','Senior'].map(value=>({value,...admissionRows(allPairs.filter(p=>p.candidateGrade===value)),ranking:rankingStratum(c=>(c.verifiedGrade??'unverified')===value)})),
+      fsp:[false,true].map(value=>({value,...admissionRows(allPairs.filter(p=>p.fsp===value)),ranking:rankingStratum(c=>c.hasFspHistory===value)})),
+      provenance:['known-attempt','unknown-historical'].map(value=>({value,...admissionRows(allPairs.filter(p=>p.provenance===value)),ranking:rankingStratum(c=>(c.assessmentEvidence?'known-attempt':'unknown-historical')===value)})),
+    },
+    humanValidation:{status:'not_measured',participants:0,expertReviewers:0,agreement:null},
+    limitations:[
+      'Synthetic explicit AI-authored labels are independent of the checked score function, not independent human or market observations.',
+      'Scenario holdout is consumed by this report. Neither weights nor labels may be tuned from its measured results.',
+      'All six ranking methods share the same current eligibility gate and exact inputs. Alias regression is a separately disclosed equivalent-spelling diagnostic view.',
+      'Cross-grade/version technical group order is not a substantive qualification claim; losses against the business rubric are preserved.',
+      'Precision@5 includes short/empty queries with denominator five. Null nDCG/recall are counted explicitly, not converted into perfect values.',
+      'The fixture rubricKey and successful-attempt records are constructed; structural grouping does not prove equal human difficulty or actual hiring success.',
+      'A fixed pseudo-random seed is one diagnostic ordering, not a repeated random-trial estimate.',
+    ],
+  };
+}

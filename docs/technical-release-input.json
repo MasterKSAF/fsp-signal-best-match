@@ -1,0 +1,795 @@
+{
+  "schemaVersion": "signal-qa-cycle-01-technical-facts-v1",
+  "generatedAt": "2026-10-06T11:09:31.740199+00:00",
+  "sliceDate": "06.10.2026",
+  "draft": false,
+  "artifactScope": "Accepted current04 local technical release: same-image fixed load and independent20 PASS; historical full60/video55a5 and bounded media equivalence explicitly retained. Exact source ZIP clean proof is post-seal companion; no external publication/submission.",
+  "packageVersion": "0.4.1",
+  "matchingVersion": "fsp-signal-match-v5",
+  "matchingPolicyVersion": "need-fit-traceability-comparable-queues-v2",
+  "bankVersions": {
+    "backend-python": "signal-backend-python-v6",
+    "frontend-typescript": "signal-frontend-typescript-v2"
+  },
+  "checks": [
+    [
+      "Текущий imagef5c067",
+      "155/155 unit, full typecheck, 6 isolated HTTP-групп, независимые 20 групп и исходная нагрузка PASS. Source manifest 22."
+    ],
+    [
+      "Исторический checkpoint55a5",
+      "Независимые 60 групп: подбор 20, оценивание 17, безопасность 23. 65 built HTTP-групп, 130 ID-запросов, 8 quality-browser; отдельно 7 source-research."
+    ],
+    [
+      "Оптимизация / эквивалентность",
+      "Loader 13, admission 8, catalogue 13 unit-групп PASS; raw admission matrix1152. Три source-контроля воспроизведены без смены результатов."
+    ],
+    [
+      "Конкурентный контроль",
+      "9 сценариев: P@5 0,777778; nDCG 0,970490 по 8 определённым, 1 null. Frozen v4 0,987928; без качества 0,782349."
+    ],
+    [
+      "Межгрупповой контроль",
+      "8 сценариев/96 пар: P@5 1,000; nDCG 0,920002. Frozen v4 0,825 / 0,689976; без качества 0,817809."
+    ],
+    [
+      "Оценивание / A-B",
+      "468 работ, 216 независимых ответов: 12 расхождений до / 0 после. A/B 216/234, 18 намеренных переходов."
+    ],
+    [
+      "QA-02: узкая модель",
+      "Независимая приёмка exact-guard v4 PASS; 12 core-моделей / 41 вызов, непустые ответы. Не доказательство устойчивости людей к списыванию."
+    ],
+    [
+      "Видео / обычный UI",
+      "138 с / 21 сцена на checkpoint55a5, полный decode/UI-пиксели PASS; обычная регистрация обеих ролей и cleanup. Совместимость нового backend подтверждена."
+    ],
+    [
+      "Нагрузка текущего образа: PASS",
+      "1000 профилей / 32 сессии / 30+180,65 с: 8726 запросов, 0 ошибок. p95 подбор 1221,98, объяснение 1403,76, PDF 784,98 мс; пороги сохранены."
+    ],
+    [
+      "Точный исходный ZIP",
+      "Чистый запуск — отдельный companion после seal. Байты PDF/ZIP после проверки не меняются; результат не заявляется заранее."
+    ]
+  ],
+  "releaseSummary": "Signal 0.4.1 / подбор v5, политика v2 / Backend v6, Frontend v2. Текущий imagef5c067: 155 unit, typecheck, 6 HTTP, независимые20, три source-контроля и исходная нагрузка PASS. Полный60 checkpoint55a5 исторический; видео138с/21сцена совместимо с текущей версией. Чистый ZIP проверяется после seal с companion-протоколом. Человеческие измерения not_measured; публикация и подача отдельны.",
+  "pending": {
+    "load": "passed original32/1000/30+180 profile on current04 with fixed original thresholds and no profiler",
+    "registrationVideo": "passed",
+    "cleanSealedSourceZip": "post-seal companion",
+    "wholeSubmission": "local package finalization; external publication/submission separate",
+    "independentTargetedRuntime": "passed20 on current04; earlier full60 retained only as accepted55a5 checkpoint",
+    "mediaEquivalence": "passed bounded equivalence receipt; original55a5 video/capture bytes and provenance unchanged"
+  },
+  "provenance": {
+    "image": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "bundleSHA": "d49f7070c7c69db573362a53df61579d976226b5d6333583660f211fea706828",
+    "runtimeScope": "Основной и изолированный runtime совпадают по image, bundle и 22 хешам исходников. На новом образе: 155 unit, typecheck, 6 HTTP, независимые20 и нагрузка PASS. Checkpoint55a5 сохраняет независимые60, builtHTTP65, ID130, browser8 и видео; research7 проверяли отдельный source-router. Одинаковый frontend и ограниченная приёмка нового backend подтверждают совместимость видео без повторной съёмки. Три source-контроля фактически воспроизведены; прежние отчёты сохранены. Чистый ZIP — post-seal companion.",
+    "sourceHashes": {
+      "artifacts/api-server/src/lib/signal-matching.ts": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+      "scripts/lib/grade-transfer-model.ts": "8fb73421de22a16a38ac7befad4a62a585fa7d80af7e156dd3c0770ee0c97836",
+      "artifacts/api-server/src/lib/assessment-bank.ts": "287f5b7acec0b372ce004554d2d6c6856dbf1cff32f9c113f2f11cbc8abd91ed",
+      "artifacts/api-server/src/lib/assessment-managed.ts": "6da5f0412e4a7efbf45e0f1bdeb45f9d5da3b359c2a604d4edea5221e767191c",
+      "artifacts/api-server/src/lib/assessment-ranking-evidence.ts": "0f6e0407020312ee2badb18ca8ded3f6aca33129ea46626808a5988f6f1efe9b",
+      "artifacts/api-server/src/lib/matching-pool-admission.ts": "e359c638ca538b8035b3c9f0329dcbe9fbe6fdc831508cdde55b3ff31ced9e65",
+      "artifacts/api-server/src/lib/postgres-id.ts": "c1841c340e15496b81d23d8464a98508e09b932fe66b588722acbc6b0af7c10e",
+      "artifacts/api-server/src/lib/opportunity-auth.ts": "7abf83a8fe7efe55d1a4e0611e8e15d542042086b0986eeed303250517d6b375",
+      "artifacts/api-server/src/lib/skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+      "artifacts/api-server/src/lib/skill-catalog-sql.ts": "f77c1bc5d3a465d0ea69edc1ecc354c4012b673e90d148e75483df8bb0d37e65",
+      "artifacts/api-server/src/lib/public-quality.ts": "9d90d329edeab5b23ae7a3bd31cfc02613aea2e147156959cb69559b744a89f3",
+      "artifacts/api-server/src/lib/quality-public-report.json": "2a122fb97fbf7c1af0dc54fa1777161b3842eff260e6eac101c2b72bae8704aa",
+      "artifacts/api-server/src/routes/signal-employer-matching.ts": "817bad5d53475bbc49b8a13115c6405e9b9027c362dc3c4c4c30886631ea892e",
+      "artifacts/api-server/src/routes/signal-candidate-bank.ts": "412c57a39a699164483d7fabb1030fd1a8af4b5bab0db2e0fcd71258ea6a3441",
+      "artifacts/api-server/src/routes/signal-quality.ts": "443616a9f3e262f39b02cebc7dc884a7d31dc1575461797e9d0fbc0b87a9f9d5",
+      "artifacts/api-server/src/routes/signal-jobs.ts": "8f2008190ca5f6329327d811a0c9ee15f163ba5713aac09eeb9df519f9163ea5",
+      "artifacts/api-server/src/routes/signal-microtasks.ts": "0d73da07dbcbc91eb73e8cc80a298e113e7e36a350cf52542b7c46bd711f2d06",
+      "artifacts/api-server/src/routes/signal-invitations.ts": "faad95260b9e74e6ecd64e819d180ee8a2a6d0add79de94655844df3bd574fd5",
+      "artifacts/api-server/src/routes/signal-profile-assessments.ts": "d503145e238c33cd8fd4352d52855b982fdde35ca26376e2dd76f4ec59eb0024",
+      "artifacts/api-server/src/routes/signal-assessment-context.ts": "3820bd83ef1038a32fd772158716162f98ec47e8015c79aa08b6afb7c4b88e19",
+      "artifacts/api-server/src/routes/signal-research.ts": "b18ff181cafdf3b31b6046739ac1bd13be3985d90fc30ce30e35a0d1a1390940",
+      "artifacts/fsp-signal/src/components/public-quality-page.tsx": "4e56ebd2c0c07a6276047370f2062c49287489e5156b93b8d2803ba79b460e64",
+      "artifacts/fsp-signal/src/components/product-enhancements.tsx": "82048785ad0763fad3662a209d32c15dd58af1b8543da17bb5683fc8f88b9c45",
+      "lib/api-spec/openapi.yaml": "b8d9323aea16de427fdeefd7d29853a4a711ffa216ebdef6fa452ce40d8323ab"
+    },
+    "proofHashes": {
+      "outputs/verification/qa-cycle-01-working-runtime.json": "f1d8e863b7f04e3f9e06ec25c824a069bd458e31f0bb87f0ba809b461012f861",
+      "outputs/verification/qa-cycle-01-isolated-runtime-after.json": "6837ebf6fe60f6dc4df834961b17efb6396dc602c3e9f5951a6e6fe9d6f45f38",
+      "outputs/verification/qa-cycle-01-unit.log": "06bd37f9052194f62f8975c87ef3d96a20ed0efd6fa23496484706318468b3d0",
+      "outputs/verification/qa-cycle-01-typecheck.log": "b5d149de6bb6291f14cfa69c3447e0563182c60c5e821d82eaa264385cc05f05",
+      "outputs/verification/qa-cycle-01-general-http.json": "921d3a1a6aa7c0cd77d4f6a77e25713b9b08c2f2a45ded4da0d14da17d3f210f",
+      "outputs/verification/qa-cycle-01-managed-http.json": "ae1c0e2c8334b35a42d762c330b9a15e83984c5d96873337e71c527a6d105f04",
+      "outputs/verification/qa-cycle-01-opportunities-http.json": "4e77806f7e9f5de05e67e297eeb19b0dbce3ae13d4842c66eb9d511559bb9e66",
+      "outputs/verification/qa-cycle-01-matching-http.json": "2787949fcc510dbb1f89a8283a16643f39c5220fdd595ffac77fa2ae094632e7",
+      "outputs/verification/qa-cycle-01-quality-http.json": "e1cfbe06a4d407cbff01603df87e974b961133a123a6fcbc2141c8fd5d3fe905",
+      "outputs/verification/qa-cycle-01-bank.json": "5f893acd50a88f33ee3501fb1ba7096daab64ba829e983fc862cf6a10c175e9b",
+      "outputs/verification/qa-cycle-01-id-http.json": "bbb556e9fdbd7a4ce070c924c5e516d6a9ff89ff3a21c6caf24d2bbef1f96903",
+      "outputs/verification/qa-cycle-01-quality-browser.json": "89bc4eefe218b602a9ec2a3e0b1e29a503125b8d9fd7896370d724e3bba3473c",
+      "outputs/verification/qa-cycle-01-research-http.json": "b38ef4f2ca94332fd5b04d55b5734990a59053a1716cc10de004b375d29976f5",
+      "outputs/verification/qa-cycle-01-grade.json": "d8e733cec65a93aed7d7994d1a6a343569c3beb8fdca123a4001be12e7aa4846",
+      "outputs/quality/assessment-validation-before.json": "01c69f72215f03a77068ea96f8ed2dd818d2b7b444befa9bde3b3d286bdbd0cc",
+      "outputs/quality/assessment-validation-after.json": "a0e5db069c71867ac9dc4eb71945ee002a33aace67d199b21e745d6d223a20e0",
+      "outputs/quality/matching-competitive-v2-report.json": "6db101a81efed5d48b8f576c40a6e82151149315273a65755d5c409272b2d98b",
+      "outputs/quality/qa-cycle-01/intergroup-control-v1-report.json": "d69471537bc6c7e5c6a8b9f2cdae4482e4f5ea0efc227787f702e8a4e785a298",
+      "outputs/verification/qa-cycle-02-independent-acceptance.json": "4afddda17538516181e485a3af4d875a1f214d604bc9a2e3d777998f517a9d89",
+      "outputs/verification/qa-cycle-02-video.json": "6da7d5f13098df670f9ee04f1a8c5dc173c68028792080c718639ca15c2d1479",
+      "outputs/verification/qa-cycle-02-ordinary-ui-workflow.json": "b7682f82a19ca5c04e71adbc82eb5ea985fe23bc3702c0d2e253a04e6259d2d0",
+      "outputs/submission/Signal-Demo.mp4": "80c47010a9b93ab58e3fbbeba96343a8632510514284bb62fbed7dd90bddeab7",
+      "outputs/submission/Signal-Demo-audit.json": "5f951a63b2857376da5acb823198896ccece2b17dbad0577b111965619902282",
+      "outputs/verification/load-scale-8ab4b41d.json": "af06d9234c64955939dc1abffb9af8a4b0a352656678018f490c4790c7689833",
+      "outputs/verification/qa-cycle-04-working-runtime.json": "791f47905f2d446cd68e6d36283d51cad95bbc1966c7c661a6ad2ce920529794",
+      "outputs/verification/qa-cycle-04-isolated-runtime.json": "7225d9c701e68e583b9fe35f23a3e24d192c33b7196a3057a9b402b1a8b5e25c",
+      "outputs/verification/qa-cycle-04-quality-equivalence.json": "608f103141d32fe9cbe478da9f52ab6fd9b58ead5ec340eb3f1577c240e0ce3c",
+      "outputs/verification/qa-cycle-04-matching-http.json": "e2d50bed63a1f5772164b4bfcee09d5a812cce186713f834ad0a05fedd8501cf",
+      "outputs/verification/qa-cycle-04-unit.log": "0f457c8454857a1679b1650a360952627b6262433fef5dc2f0f3392618e16db6",
+      "outputs/verification/qa-cycle-04-typecheck.log": "b5d149de6bb6291f14cfa69c3447e0563182c60c5e821d82eaa264385cc05f05",
+      "outputs/verification/qa-cycle-03-loader-regression.json": "cd2793be20f9c5d2961cc4341292d7de026f80a290f52f751da10dd266836a42",
+      "outputs/verification/qa-cycle-03-catalog-regression.json": "28d62a5d89f33b32be8fcfbd0076316d5d21c9954d8956927ff61bdc0c0a6011",
+      "outputs/verification/qa-cycle-03-admission-regression.json": "93c66ec365592b400b815c5e66881b7f354fe24bee83c2684f2d03d95fb5a967",
+      "outputs/verification/load-scale-8ad31dbe.json": "ec7cfd121efc22e93f2a4e2cb78132975c701d2fe15e766d5ae90158379983b2",
+      "outputs/verification/load-scale-2aeb58e1.json": "22395e56273edc44a3a3d26eb16445e09abccd8af862aa020a4beaf5e630add0",
+      "outputs/verification/qa07-load.json": "5ebb7fda7f370e3693a2cf71110936b2632c352d0261c79c298d97e71684fce1",
+      "outputs/verification/qa07-load-runtime-after.json": "3f3b663ed0793f18fac3fdb346acf659fc9404f9bddbaeb7740070eca971ee81",
+      "outputs/verification/qa07-load-preserved-after.json": "3974a33a4227a5d67239119408a0f09fb30f5fb55af51fc983b82ec132c48854",
+      "outputs/verification/qa-cycle-04-independent-acceptance.json": "c087f68e4183a31b3de489586c63c9a35acb190d023905ae7baefc8bb40f9d69",
+      "outputs/verification/qa-cycle-02-presentation-equivalence.json": "f4c006accdbbb00f7a8bb3ff4926ebe054e64a364378a20c7b8b432e19bb34ad",
+      "outputs/verification/qa-cycle-04-functional-summary.json": "05eacb27ec1e541f26da9779498a503a11253609ac9a75016191df3b59ac091a"
+    },
+    "humanMeasures": "not_measured",
+    "historicalFullCheckpoint": {
+      "imageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "bundleSHA": "300cea14e8ee37bb1332f0bafe40590d7923d9aaa9f7a70fb856b5fec5560624",
+      "groups": 60,
+      "proof": "outputs/verification/qa-cycle-02-independent-acceptance.json",
+      "proofSha256": "4afddda17538516181e485a3af4d875a1f214d604bc9a2e3d777998f517a9d89",
+      "videoCapturedImage": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120"
+    },
+    "runtimeSourceManifest": {
+      "count": 22,
+      "path": "outputs/verification/qa-cycle-04-working-runtime.json",
+      "sha256": "791f47905f2d446cd68e6d36283d51cad95bbc1966c7c661a6ad2ce920529794",
+      "sourceHashes": {
+        "artifacts/api-server/src/lib/signal-matching.ts": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+        "artifacts/api-server/src/lib/assessment-ranking-evidence.ts": "0f6e0407020312ee2badb18ca8ded3f6aca33129ea46626808a5988f6f1efe9b",
+        "artifacts/api-server/src/lib/matching-pool-admission.ts": "e359c638ca538b8035b3c9f0329dcbe9fbe6fdc831508cdde55b3ff31ced9e65",
+        "artifacts/api-server/src/lib/postgres-id.ts": "c1841c340e15496b81d23d8464a98508e09b932fe66b588722acbc6b0af7c10e",
+        "artifacts/api-server/src/lib/opportunity-auth.ts": "7abf83a8fe7efe55d1a4e0611e8e15d542042086b0986eeed303250517d6b375",
+        "artifacts/api-server/src/lib/skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+        "artifacts/api-server/src/lib/skill-catalog-sql.ts": "f77c1bc5d3a465d0ea69edc1ecc354c4012b673e90d148e75483df8bb0d37e65",
+        "artifacts/api-server/src/lib/public-quality.ts": "9d90d329edeab5b23ae7a3bd31cfc02613aea2e147156959cb69559b744a89f3",
+        "artifacts/api-server/src/lib/quality-public-report.json": "2a122fb97fbf7c1af0dc54fa1777161b3842eff260e6eac101c2b72bae8704aa",
+        "artifacts/api-server/src/routes/signal-employer-matching.ts": "817bad5d53475bbc49b8a13115c6405e9b9027c362dc3c4c4c30886631ea892e",
+        "artifacts/api-server/src/routes/signal-candidate-bank.ts": "412c57a39a699164483d7fabb1030fd1a8af4b5bab0db2e0fcd71258ea6a3441",
+        "artifacts/api-server/src/routes/signal-quality.ts": "443616a9f3e262f39b02cebc7dc884a7d31dc1575461797e9d0fbc0b87a9f9d5",
+        "artifacts/api-server/src/routes/signal-jobs.ts": "8f2008190ca5f6329327d811a0c9ee15f163ba5713aac09eeb9df519f9163ea5",
+        "artifacts/api-server/src/routes/signal-microtasks.ts": "0d73da07dbcbc91eb73e8cc80a298e113e7e36a350cf52542b7c46bd711f2d06",
+        "artifacts/api-server/src/routes/signal-invitations.ts": "faad95260b9e74e6ecd64e819d180ee8a2a6d0add79de94655844df3bd574fd5",
+        "artifacts/api-server/src/routes/signal-profile-assessments.ts": "d503145e238c33cd8fd4352d52855b982fdde35ca26376e2dd76f4ec59eb0024",
+        "artifacts/api-server/src/routes/signal-assessment-context.ts": "3820bd83ef1038a32fd772158716162f98ec47e8015c79aa08b6afb7c4b88e19",
+        "artifacts/api-server/src/routes/signal-research.ts": "b18ff181cafdf3b31b6046739ac1bd13be3985d90fc30ce30e35a0d1a1390940",
+        "artifacts/fsp-signal/src/components/public-quality-page.tsx": "4e56ebd2c0c07a6276047370f2062c49287489e5156b93b8d2803ba79b460e64",
+        "artifacts/fsp-signal/src/components/product-enhancements.tsx": "82048785ad0763fad3662a209d32c15dd58af1b8543da17bb5683fc8f88b9c45",
+        "lib/api-spec/openapi.yaml": "b8d9323aea16de427fdeefd7d29853a4a711ffa216ebdef6fa452ce40d8323ab",
+        "scripts/lib/grade-transfer-model.ts": "8fb73421de22a16a38ac7befad4a62a585fa7d80af7e156dd3c0770ee0c97836"
+      }
+    }
+  },
+  "acceptedChecks": {
+    "imageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "unit": {
+      "passed": 155,
+      "failed": 0,
+      "path": "outputs/verification/qa-cycle-04-unit.log",
+      "sha256": "0f457c8454857a1679b1650a360952627b6262433fef5dc2f0f3392618e16db6"
+    },
+    "typecheck": {
+      "passed": true,
+      "path": "outputs/verification/qa-cycle-04-typecheck.log",
+      "sha256": "b5d149de6bb6291f14cfa69c3447e0563182c60c5e821d82eaa264385cc05f05"
+    },
+    "isolatedMatchingHttp": {
+      "groups": 6,
+      "passed": true,
+      "path": "outputs/verification/qa-cycle-04-matching-http.json",
+      "sha256": "e2d50bed63a1f5772164b4bfcee09d5a812cce186713f834ad0a05fedd8501cf"
+    },
+    "sourceControlEquivalence": {
+      "controls": 3,
+      "passed": true,
+      "path": "outputs/verification/qa-cycle-04-quality-equivalence.json",
+      "sha256": "608f103141d32fe9cbe478da9f52ab6fd9b58ead5ec340eb3f1577c240e0ce3c"
+    },
+    "offlineRegressionGroups": {
+      "loader": 13,
+      "catalogue": 13,
+      "admission": 8
+    },
+    "scope": "Current04 155unit/typecheck/6rootHTTP/20independent matching groups/fixed-scale load PASS. Previous full60 and65built groups remain historical55a5.",
+    "independentTargetedBuiltRuntimeGroups": 20
+  },
+  "independentRuntimeAcceptance": {
+    "passed": true,
+    "matchingGroups": 20,
+    "assessmentGroups": 17,
+    "securityGroups": 23,
+    "uniqueGroups": 60,
+    "securityHttpRequests": 184,
+    "uiPassed": true,
+    "publicAggregateIndependentCells": 1196,
+    "scope": "Accepted historical full60 checkpoint55a5; not a new full60 execution on image04.",
+    "imageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120"
+  },
+  "controlMetrics": {
+    "signal-competitive-control-v1-2026-10-06": {
+      "measuredAt": "2026-10-06T08:31:14.593Z",
+      "algorithmSha256": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+      "datasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+      "methods": [
+        {
+          "method": "signal",
+          "precisionAt5": {
+            "value": 0.7777777777777778,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 35,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9704904794205496,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        },
+        {
+          "method": "old-v4",
+          "precisionAt5": {
+            "value": 0.7777777777777778,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 35,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9879281900786864,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        },
+        {
+          "method": "without-test-result",
+          "precisionAt5": {
+            "value": 0.6888888888888889,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 31,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.7823487861318676,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        }
+      ]
+    },
+    "signal-intergroup-control-v1": {
+      "measuredAt": "2026-10-06T08:32:42.285Z",
+      "algorithmSha256": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+      "datasetSha256": "602e7c230ebf7374a44c2cfc2a8ff47392f302aba27c30e3d6d0c4ce3c78c01a",
+      "methods": [
+        {
+          "method": "signal",
+          "precisionAt5": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 40,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9200023809123489,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        },
+        {
+          "method": "old-v4",
+          "precisionAt5": {
+            "value": 0.825,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 33,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.6899763011550198,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        },
+        {
+          "method": "without-test-result",
+          "precisionAt5": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 40,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.8178092211135837,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          }
+        }
+      ]
+    }
+  },
+  "independentAcceptedSourceChecks": {
+    "order": {
+      "checks": 15,
+      "passed": true,
+      "originalReportSha256": "3f14408f28f58af08b1ea37261fa01ea8f64e5296337a67a937c161d3a30e4a1"
+    },
+    "transferModel": {
+      "checks": 24,
+      "passed": true,
+      "originalReportSha256": "68e669cc628d8a41c16c45682a8ef8f03cb2a859854bb5177d9f800277cf1093"
+    },
+    "exactDefinitionGuard": {
+      "passed": true,
+      "originalReportSha256": "522f35c2f8133e5cdef201d011a5ac3f0225de4de308bf1999f88c39817b6931"
+    },
+    "publicQualityHttp": {
+      "passed": true,
+      "originalReportSha256": "65a77303a5024b7234b47287a55fd8a0fd0377914820808234770a8ad1175950"
+    },
+    "publicQualityArithmetic": {
+      "passed": true,
+      "counts": {
+        "queryMethodRecomputations": 189,
+        "aggregateMetricComparisons": 1196,
+        "sliceAdmissionComparisons": 47
+      },
+      "originalReportSha256": "be931f4c4e5a7ad6cb585020d9650a2c7b13902aaff4054f78e3834bf80982b8"
+    }
+  },
+  "video": {
+    "passed": true,
+    "seconds": 138,
+    "scenes": 21,
+    "sha256": "80c47010a9b93ab58e3fbbeba96343a8632510514284bb62fbed7dd90bddeab7",
+    "ordinaryRegistrationAndLocalEmailObserved": true,
+    "ordinaryWorkflowCleanupCompleted": true,
+    "silentMontage": true,
+    "capturedImageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+    "currentBackendEquivalenceStatus": "passed bounded compatibility; original capture provenance unchanged",
+    "currentBackendEquivalence": {
+      "path": "outputs/verification/qa-cycle-02-presentation-equivalence.json",
+      "sha256": "f4c006accdbbb00f7a8bb3ff4926ebe054e64a364378a20c7b8b432e19bb34ad",
+      "captureImageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "acceptedImageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+      "frontendManifestSha256": "46872afdb3326b67b1749315187c5d2ac08b2fe09ca79fd738b9a54300a081db",
+      "sameFrontendBytes": true,
+      "newUICaptureClaimed": false
+    },
+    "captureMode": "ordinary-accounts-only; demoMode=false",
+    "includesDemoMode": false
+  },
+  "load": {
+    "imageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "measuredAt": "2026-10-06T10:50:08.190Z",
+    "elapsedSeconds": 180.6542727,
+    "totalRequests": 8726,
+    "requestsPerSecond": 48.302206582684384,
+    "fixture": {
+      "version": "signal-load-scale-v1",
+      "seed": "signal-scale-2026-10-06-v1",
+      "sessions": 32,
+      "candidates": 1000,
+      "candidateSessions": 16,
+      "employers": 16,
+      "programs": [
+        "backend-python",
+        "frontend-typescript"
+      ],
+      "grades": [
+        "Junior",
+        "Middle",
+        "Senior"
+      ],
+      "warmupSeconds": 30,
+      "measuredSeconds": 180,
+      "thinkMs": 100,
+      "timeoutMs": 10000
+    },
+    "limits": {
+      "jsonP95Ms": 1500,
+      "pdfP95Ms": 2000,
+      "p99Ms": 5000,
+      "errors": 0,
+      "minRequestsPerRoute": 50,
+      "maxAppMemoryBytes": 1073741824,
+      "minimumValidTelemetrySamples": 12
+    },
+    "results": {
+      "catalogue": {
+        "requests": 1400,
+        "errors": 0,
+        "statuses": {
+          "200": 1400
+        },
+        "p50Ms": 303.06,
+        "p95Ms": 542.65,
+        "p99Ms": 647.7,
+        "passed": true
+      },
+      "profile": {
+        "requests": 3486,
+        "errors": 0,
+        "statuses": {
+          "200": 3486
+        },
+        "p50Ms": 376.14,
+        "p95Ms": 605.2,
+        "p99Ms": 727.14,
+        "passed": true
+      },
+      "pdf": {
+        "requests": 1744,
+        "errors": 0,
+        "statuses": {
+          "200": 1744
+        },
+        "p50Ms": 569.7,
+        "p95Ms": 784.98,
+        "p99Ms": 907.28,
+        "passed": true
+      },
+      "matching": {
+        "requests": 1395,
+        "errors": 0,
+        "statuses": {
+          "200": 1395
+        },
+        "p50Ms": 930.29,
+        "p95Ms": 1221.98,
+        "p99Ms": 1373.72,
+        "passed": true
+      },
+      "explanation": {
+        "requests": 701,
+        "errors": 0,
+        "statuses": {
+          "200": 701
+        },
+        "p50Ms": 1126.57,
+        "p95Ms": 1403.76,
+        "p99Ms": 1535.2,
+        "passed": true
+      }
+    },
+    "peakAppMemoryBytes": 415760384,
+    "passed": true,
+    "cleanup": "complete",
+    "rawReport": "outputs/verification/load-scale-2aeb58e1.json",
+    "rawReportSha256": "22395e56273edc44a3a3d26eb16445e09abccd8af862aa020a4beaf5e630add0",
+    "wrapper": "outputs/verification/qa07-load.json",
+    "wrapperSha256": "5ebb7fda7f370e3693a2cf71110936b2632c352d0261c79c298d97e71684fce1",
+    "diagnosticWarmupCpuProfile": false,
+    "protectedOrdinaryRecordsPreserved": true,
+    "capturedSyntheticUserCount": 1016,
+    "remainingSyntheticUsers": 0,
+    "scope": "Actual current04 original fixed-profile load PASS; local synthetic regression, not production capacity."
+  },
+  "historicalAcceptedChecks": {
+    "unit": {
+      "passed": 121,
+      "failed": 0,
+      "path": "outputs/verification/qa-cycle-01-unit.log",
+      "sha256": "06bd37f9052194f62f8975c87ef3d96a20ed0efd6fa23496484706318468b3d0"
+    },
+    "typecheck": {
+      "passed": true,
+      "path": "outputs/verification/qa-cycle-01-typecheck.log",
+      "sha256": "b5d149de6bb6291f14cfa69c3447e0563182c60c5e821d82eaa264385cc05f05"
+    },
+    "builtHttpGroups": 65,
+    "builtHttp": {
+      "general": {
+        "groups": 23,
+        "path": "outputs/verification/qa-cycle-01-general-http.json",
+        "sha256": "921d3a1a6aa7c0cd77d4f6a77e25713b9b08c2f2a45ded4da0d14da17d3f210f"
+      },
+      "managed": {
+        "groups": 10,
+        "path": "outputs/verification/qa-cycle-01-managed-http.json",
+        "sha256": "ae1c0e2c8334b35a42d762c330b9a15e83984c5d96873337e71c527a6d105f04"
+      },
+      "opportunities": {
+        "groups": 12,
+        "path": "outputs/verification/qa-cycle-01-opportunities-http.json",
+        "sha256": "4e77806f7e9f5de05e67e297eeb19b0dbce3ae13d4842c66eb9d511559bb9e66"
+      },
+      "matching": {
+        "groups": 6,
+        "path": "outputs/verification/qa-cycle-01-matching-http.json",
+        "sha256": "2787949fcc510dbb1f89a8283a16643f39c5220fdd595ffac77fa2ae094632e7"
+      },
+      "quality": {
+        "groups": 8,
+        "path": "outputs/verification/qa-cycle-01-quality-http.json",
+        "sha256": "e1cfbe06a4d407cbff01603df87e974b961133a123a6fcbc2141c8fd5d3fe905"
+      },
+      "bank": {
+        "groups": 6,
+        "path": "outputs/verification/qa-cycle-01-bank.json",
+        "sha256": "5f893acd50a88f33ee3501fb1ba7096daab64ba829e983fc862cf6a10c175e9b"
+      }
+    },
+    "idRequests": {
+      "requests": 130,
+      "passed": 130,
+      "failed": 0,
+      "serverErrors": 0
+    },
+    "browserQualityGroups": 8,
+    "sourceResearchHttpGroups": 7,
+    "sourceResearchProvenance": "Separate source-router HTTP process; not counted as built Docker group"
+  },
+  "currentIndependentAcceptance": {
+    "passed": true,
+    "imageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "targetedBuiltRuntimeGroups": 20,
+    "sourceGuardPaths": 9,
+    "fixturesCleaned": true,
+    "runtimeUnchanged": true,
+    "path": "outputs/verification/qa-cycle-04-independent-acceptance.json",
+    "sha256": "c087f68e4183a31b3de489586c63c9a35acb190d023905ae7baefc8bb40f9d69",
+    "scope": "Current04 bounded retest after performance optimization; earlier full60 remains historical55a5 checkpoint."
+  },
+  "currentQualityControls": {
+    "passed": true,
+    "controls": 3,
+    "path": "outputs/verification/qa-cycle-04-quality-equivalence.json",
+    "sha256": "608f103141d32fe9cbe478da9f52ab6fd9b58ead5ec340eb3f1577c240e0ce3c",
+    "originalReportsAndOutcomeMetadataUnchanged": true
+  },
+  "historicalLoadAttempts": [
+    {
+      "passed": false,
+      "rawReport": "outputs/verification/load-scale-8ab4b41d.json",
+      "rawReportSha256": "af06d9234c64955939dc1abffb9af8a4b0a352656678018f490c4790c7689833",
+      "imageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "measuredAt": "2026-10-06T10:07:57.384Z",
+      "elapsedSeconds": 180.7960712,
+      "totalRequests": 5541,
+      "requestsPerSecond": 30.647789872991442,
+      "fixture": {
+        "version": "signal-load-scale-v1",
+        "seed": "signal-scale-2026-10-06-v1",
+        "sessions": 32,
+        "candidates": 1000,
+        "candidateSessions": 16,
+        "employers": 16,
+        "programs": [
+          "backend-python",
+          "frontend-typescript"
+        ],
+        "grades": [
+          "Junior",
+          "Middle",
+          "Senior"
+        ],
+        "warmupSeconds": 30,
+        "measuredSeconds": 180,
+        "thinkMs": 100,
+        "timeoutMs": 10000
+      },
+      "limits": {
+        "jsonP95Ms": 1500,
+        "pdfP95Ms": 2000,
+        "p99Ms": 5000,
+        "errors": 0,
+        "minRequestsPerRoute": 50,
+        "maxAppMemoryBytes": 1073741824,
+        "minimumValidTelemetrySamples": 12
+      },
+      "metrics": {
+        "catalogue": {
+          "requests": 929,
+          "errors": 0,
+          "statuses": {
+            "200": 929
+          },
+          "p50Ms": 494.13,
+          "p95Ms": 775.42,
+          "p99Ms": 951.57,
+          "passed": true
+        },
+        "profile": {
+          "requests": 2148,
+          "errors": 0,
+          "statuses": {
+            "200": 2148
+          },
+          "p50Ms": 684.97,
+          "p95Ms": 1049.48,
+          "p99Ms": 1298.26,
+          "passed": true
+        },
+        "matching": {
+          "requests": 927,
+          "errors": 0,
+          "statuses": {
+            "200": 927
+          },
+          "p50Ms": 1399.63,
+          "p95Ms": 1904.73,
+          "p99Ms": 2779.45,
+          "passed": false
+        },
+        "pdf": {
+          "requests": 1073,
+          "errors": 0,
+          "statuses": {
+            "200": 1073
+          },
+          "p50Ms": 923.32,
+          "p95Ms": 1388.05,
+          "p99Ms": 1776.6,
+          "passed": true
+        },
+        "explanation": {
+          "requests": 464,
+          "errors": 0,
+          "statuses": {
+            "200": 464
+          },
+          "p50Ms": 1799.28,
+          "p95Ms": 2473.18,
+          "p99Ms": 2709.5,
+          "passed": false
+        }
+      },
+      "peakAppMemoryBytes": 500380467.2,
+      "cleanup": "complete",
+      "interpretation": "Fixed p95 thresholds failed for matching/explanation; zero HTTP errors does not make this a load PASS."
+    },
+    {
+      "imageId": "sha256:d814ad196070304e7f4461256a8ba5355d77131541073d85a5e52fd0bffc698c",
+      "measuredAt": "2026-10-06T10:25:50.865Z",
+      "elapsedSeconds": 181.16905989999998,
+      "totalRequests": 5991,
+      "requestsPerSecond": 33.06856040047267,
+      "fixture": {
+        "version": "signal-load-scale-v1",
+        "seed": "signal-scale-2026-10-06-v1",
+        "sessions": 32,
+        "candidates": 1000,
+        "candidateSessions": 16,
+        "employers": 16,
+        "programs": [
+          "backend-python",
+          "frontend-typescript"
+        ],
+        "grades": [
+          "Junior",
+          "Middle",
+          "Senior"
+        ],
+        "warmupSeconds": 30,
+        "measuredSeconds": 180,
+        "thinkMs": 100,
+        "timeoutMs": 10000
+      },
+      "limits": {
+        "jsonP95Ms": 1500,
+        "pdfP95Ms": 2000,
+        "p99Ms": 5000,
+        "errors": 0,
+        "minRequestsPerRoute": 50,
+        "maxAppMemoryBytes": 1073741824,
+        "minimumValidTelemetrySamples": 12
+      },
+      "results": {
+        "catalogue": {
+          "requests": 981,
+          "errors": 0,
+          "statuses": {
+            "200": 981
+          },
+          "p50Ms": 464.89,
+          "p95Ms": 713.52,
+          "p99Ms": 891.69,
+          "passed": true
+        },
+        "profile": {
+          "requests": 2361,
+          "errors": 0,
+          "statuses": {
+            "200": 2361
+          },
+          "p50Ms": 606.36,
+          "p95Ms": 898.65,
+          "p99Ms": 1202.51,
+          "passed": true
+        },
+        "pdf": {
+          "requests": 1181,
+          "errors": 0,
+          "statuses": {
+            "200": 1181
+          },
+          "p50Ms": 845.5,
+          "p95Ms": 1275.59,
+          "p99Ms": 1721.68,
+          "passed": true
+        },
+        "matching": {
+          "requests": 979,
+          "errors": 0,
+          "statuses": {
+            "200": 979
+          },
+          "p50Ms": 1327.02,
+          "p95Ms": 1962.95,
+          "p99Ms": 2527.41,
+          "passed": false
+        },
+        "explanation": {
+          "requests": 489,
+          "errors": 0,
+          "statuses": {
+            "200": 489
+          },
+          "p50Ms": 1633.44,
+          "p95Ms": 2280.36,
+          "p99Ms": 2977.66,
+          "passed": false
+        }
+      },
+      "passed": false,
+      "cleanup": "complete",
+      "rawReport": "outputs/verification/load-scale-8ad31dbe.json",
+      "rawReportSha256": "ec7cfd121efc22e93f2a4e2cb78132975c701d2fe15e766d5ae90158379983b2",
+      "scope": "Historical first read-only optimization d814 FAIL; fixed limits retained."
+    }
+  ]
+}

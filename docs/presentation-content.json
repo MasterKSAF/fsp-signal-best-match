@@ -1,0 +1,820 @@
+{
+  "draft": false,
+  "generatedAt": "2026-10-06T10:58:20.083340+00:00",
+  "sliceDate": "06.10.2026",
+  "matchingVersion": "fsp-signal-match-v5",
+  "bankVersions": {
+    "backend-python": "signal-backend-python-v6",
+    "frontend-typescript": "signal-frontend-typescript-v2"
+  },
+  "screenshots": {
+    "entry": "outputs/video/qa-cycle-02/11-entry.jpg",
+    "matching": "outputs/video/qa-cycle-02/16-matching-explanation.jpg",
+    "assessment": "outputs/video/qa-cycle-02/10-verified-middle.jpg"
+  },
+  "screenshotProvenance": {
+    "entry": {
+      "captureImage": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "isFinalImageCapture": true,
+      "description": "Живой снимок главной страницы из образа 55a5. Не переснят после backend-оптимизации; ограниченная совместимость требует отдельной приёмки.",
+      "path": "outputs/video/qa-cycle-02/11-entry.jpg",
+      "sha256": "2c51ed208bf73f57c97d962931a83f2cd6209fa0f432297920f706f44cd8bbf3",
+      "capturedAt": "2026-10-06T09:05:36.106Z",
+      "origin": "http://localhost:4310",
+      "route": "/",
+      "syntheticData": true,
+      "ordinaryAccountMode": true,
+      "demo": false,
+      "pixelEditing": false,
+      "captureReport": "outputs/verification/qa-cycle-02-video-captures.json",
+      "captureClass": "original-accepted-55a5-preserved"
+    },
+    "matching": {
+      "captureImage": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "isFinalImageCapture": true,
+      "description": "Живой снимок explanation текущего v5: общий fit, связанный результат и позиция. Обычный синтетический аккаунт; Demo выключен. Верх карточки находится выше viewport из-за фактической прокрутки.",
+      "path": "outputs/video/qa-cycle-02/16-matching-explanation.jpg",
+      "sha256": "f55899471a8aae5bc44a3d22b20ea2db75c437e21dc67ea588752900f394a70b",
+      "capturedAt": "2026-10-06T09:07:30.640Z",
+      "origin": "http://localhost:4310",
+      "route": "/employer/matches",
+      "syntheticData": true,
+      "ordinaryAccountMode": true,
+      "demo": false,
+      "pixelEditing": false,
+      "captureReport": "outputs/verification/qa-cycle-02-video-captures.json",
+      "captureClass": "original-accepted-55a5-preserved"
+    },
+    "assessment": {
+      "captureImage": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+      "isFinalImageCapture": true,
+      "description": "Действительный серверный результат принадлежащей аккаунту попытки Middle. Ответы сконструированы для демонстрации, не человеческая валидация. Все шесть критериев видны; верх результата выше viewport из-за фактической прокрутки.",
+      "path": "outputs/video/qa-cycle-02/10-verified-middle.jpg",
+      "sha256": "c15d103c773e0bda61a9876d068576aeb0958963075260f21790c011bccf90aa",
+      "capturedAt": "2026-10-06T09:05:31.568Z",
+      "origin": "http://127.0.0.1:4310",
+      "route": "/candidate/kalibr",
+      "syntheticData": true,
+      "ordinaryAccountMode": true,
+      "demo": false,
+      "pixelEditing": false,
+      "captureReport": "outputs/verification/qa-cycle-02-video-captures.json",
+      "captureClass": "original-accepted-55a5-preserved"
+    }
+  },
+  "screenshotVerification": {
+    "captureReport": "outputs/verification/qa-cycle-02-video-captures.json",
+    "captureReportSHA": "d03b3b4c03d9f952e157c7aed20a1d9bd2f5a3ac7c25bb4a538be329011bcdf6",
+    "runtimeSourceReport": "outputs/verification/qa-cycle-04-working-runtime.json",
+    "independentAcceptance": "outputs/verification/qa-cycle-04-independent-acceptance.json",
+    "independentAcceptanceSHA": "c087f68e4183a31b3de489586c63c9a35acb190d023905ae7baefc8bb40f9d69",
+    "videoVerification": "outputs/verification/qa-cycle-02-video.json",
+    "videoVerificationSHA": "6da7d5f13098df670f9ee04f1a8c5dc173c68028792080c718639ca15c2d1479",
+    "testedImageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "testedBundleSHA": "d49f7070c7c69db573362a53df61579d976226b5d6333583660f211fea706828",
+    "sourceMatcherSHA": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+    "limitation": "Actual CUA viewport screenshots with synthetic ordinary accounts, Demo off. Constructed owned-attempt answers are not human assessment validity evidence. Exact visible scroll positions retained, no UI pixel editing.",
+    "offlineQualityEquivalence": {
+      "proofPath": "outputs/verification/qa-cycle-04-quality-equivalence.json",
+      "proofSHA": "608f103141d32fe9cbe478da9f52ab6fd9b58ead5ec340eb3f1577c240e0ce3c"
+    },
+    "boundedRuntimeEquivalence": {
+      "proofPath": "outputs/verification/qa-cycle-02-presentation-equivalence.json",
+      "proofSHA": "f4c006accdbbb00f7a8bb3ff4926ebe054e64a364378a20c7b8b432e19bb34ad"
+    },
+    "originalAcceptance60": {
+      "proofPath": "outputs/verification/qa-cycle-02-independent-acceptance.json",
+      "proofSHA": "4afddda17538516181e485a3af4d875a1f214d604bc9a2e3d777998f517a9d89",
+      "imageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120"
+    }
+  },
+  "sourceHashes": {
+    "artifacts/api-server/src/lib/signal-matching.ts": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+    "artifacts/api-server/src/lib/assessment-managed.ts": "6da5f0412e4a7efbf45e0f1bdeb45f9d5da3b359c2a604d4edea5221e767191c",
+    "artifacts/api-server/src/lib/assessment-bank.ts": "287f5b7acec0b372ce004554d2d6c6856dbf1cff32f9c113f2f11cbc8abd91ed",
+    "scripts/lib/grade-transfer-model.ts": "8fb73421de22a16a38ac7befad4a62a585fa7d80af7e156dd3c0770ee0c97836",
+    "outputs/quality/matching-competitive-v2-report.json": "6db101a81efed5d48b8f576c40a6e82151149315273a65755d5c409272b2d98b",
+    "outputs/quality/qa-cycle-01/intergroup-control-v1-report.json": "d69471537bc6c7e5c6a8b9f2cdae4482e4f5ea0efc227787f702e8a4e785a298",
+    "outputs/quality/assessment-validation-after.json": "a0e5db069c71867ac9dc4eb71945ee002a33aace67d199b21e745d6d223a20e0",
+    "outputs/quality/assessment-validation-before.json": "01c69f72215f03a77068ea96f8ed2dd818d2b7b444befa9bde3b3d286bdbd0cc",
+    "artifacts/api-server/src/lib/quality-public-report.json": "2a122fb97fbf7c1af0dc54fa1777161b3842eff260e6eac101c2b72bae8704aa",
+    "artifacts/api-server/src/lib/assessment-ranking-evidence.ts": "0f6e0407020312ee2badb18ca8ded3f6aca33129ea46626808a5988f6f1efe9b",
+    "artifacts/api-server/src/lib/matching-pool-admission.ts": "e359c638ca538b8035b3c9f0329dcbe9fbe6fdc831508cdde55b3ff31ced9e65",
+    "artifacts/api-server/src/lib/skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+    "artifacts/api-server/src/routes/signal-employer-matching.ts": "817bad5d53475bbc49b8a13115c6405e9b9027c362dc3c4c4c30886631ea892e"
+  },
+  "finalAcceptance": "outputs/verification/qa-cycle-04-independent-acceptance.json",
+  "matchingHeading": "Соответствие задаче,\nпроверяемые основания",
+  "matchingBody": "Допуск: навыки, категория и согласие.\n\nЗатем - условия вакансии и полнота протокола.\n\n100 выше 83 одной шкалы при равном соответствии.\n\nРазные шкалы не сравниваются.",
+  "matchingFooter": "Matching v5 · 06.10.2026 · Синтетические регрессионные контроли. Качество реального найма не измерено.",
+  "assessmentText": "Backend / Python v6\nFrontend / TypeScript v2\nJunior, Middle, Senior\n\n72 смысловых шаблона\n6 заданий за 45 минут\n\nJunior / Middle: 3 критичных.\nSenior: 4, включая архитектуру.\n\nJunior от 67 баллов\nMiddle и Senior от 83\n\nИстория версий сохранена.",
+  "assessmentCaption": "Синтетические эталоны: 12/468 расхождений до, 0/468 после.\nЧеловеческая сложность не измерена.",
+  "validationBody": "155 unit и 6 HTTP: текущая сборка.\n20 независимых групп подбора.\nРанее: 65 HTTP, 130 ID и 8 /quality;\n60 независимых групп на 55a5.\n\nПеренос метода, модель v4:\nстроки - 0/12, новый A - 6/6,\nA → B - 0/6, эталоны - 12/12.\nПять остальных навыков заданы.\n\n7 research-групп: source-router.\nПилот с людьми не проведён.",
+  "verificationTiles": [
+    {
+      "value": "128",
+      "title": "Прежний контроль",
+      "body": "9 потребностей. P@5: 0,778, как v4. nDCG: 0,9705 против 0,9879 у v4."
+    },
+    {
+      "value": "96",
+      "title": "Межгрупповой контроль",
+      "body": "8 потребностей. P@5: 1,000 / 0,825 v4. nDCG: 0,9200 / 0,6900 v4."
+    },
+    {
+      "value": "-Q",
+      "title": "Без локального результата",
+      "body": "nDCG: 0,7823 и 0,8178 соответственно. Проигрыши и знаменатели сохранены."
+    },
+    {
+      "value": "60",
+      "title": "Независимых групп",
+      "body": "60 групп на 55a5. 20 групп подбора повторены после оптимизации серверной части."
+    },
+    {
+      "value": "468",
+      "title": "Синтетических эталонов",
+      "body": "Расхождения: 12 до, 0 после. A/B: 216/234. Реальные люди не измерены."
+    },
+    {
+      "value": "!",
+      "title": "Граница доказательств",
+      "body": "Метки с ИИ, контроли уже использованы. Реестр ФСП ещё не подключён."
+    }
+  ],
+  "metrics": {
+    "signal-competitive-control-v1-2026-10-06:fsp-signal-match-v5": {
+      "datasetVersion": "signal-competitive-control-v1-2026-10-06",
+      "datasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+      "measuredAt": "2026-10-06T08:31:14.593Z",
+      "sourceReportSha256": "6db101a81efed5d48b8f576c40a6e82151149315273a65755d5c409272b2d98b",
+      "splitPolicy": "Scenario-level control-holdout authored before ranking implementation/evaluation; synthetic construct check, not statistical unseen-market or independent-human holdout. It becomes consumed when the final report is viewed; no tuning from it is authorized. Current control use: Used regression control after QA-01/01b substantive counterexample review; original labels, partitions and shared-fit weights are unchanged. Not an unused final holdout..",
+      "methods": [
+        {
+          "method": "signal",
+          "label": "Signal",
+          "precisionAt5": {
+            "value": 0.7777777777777778,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 35,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9704904794205496,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.6014228826728827,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "keyword-baseline",
+          "label": "Поиск по ключевым словам",
+          "precisionAt5": {
+            "value": 0.4666666666666667,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 21,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.38016001362578583,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.4398747086247087,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "old-v3",
+          "label": "Исторический алгоритм v3",
+          "precisionAt5": {
+            "value": 0.6888888888888889,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 31,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.7674972482166212,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5540549728049728,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "old-v4",
+          "label": "Исторический алгоритм v4",
+          "precisionAt5": {
+            "value": 0.7777777777777778,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 35,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9879281900786864,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.6014228826728827,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "random",
+          "label": "Фиксированный случайный порядок",
+          "precisionAt5": {
+            "value": 0.6444444444444444,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 29,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.6388654898919428,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5276660839160839,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "reverse",
+          "label": "Обратный порядок Signal",
+          "precisionAt5": {
+            "value": 0.5333333333333334,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 24,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.33258579382812986,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.46988150738150736,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "without-test-result",
+          "label": "Без результата проверки навыков",
+          "precisionAt5": {
+            "value": 0.6888888888888889,
+            "defined": 9,
+            "undefined": 0,
+            "total": 9,
+            "numerator": 31,
+            "denominator": 45,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.7823487861318676,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5540549728049728,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 1,
+            "total": 9,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        }
+      ]
+    },
+    "signal-intergroup-control-v1:fsp-signal-match-v5": {
+      "datasetVersion": "signal-intergroup-control-v1",
+      "datasetSha256": "602e7c230ebf7374a44c2cfc2a8ff47392f302aba27c30e3d6d0c4ce3c78c01a",
+      "measuredAt": "2026-10-06T08:32:42.285Z",
+      "sourceReportSha256": "d69471537bc6c7e5c6a8b9f2cdae4482e4f5ea0efc227787f702e8a4e785a298",
+      "splitPolicy": "Scenario split fixed before any run; consumed after measurement; do not tune weights or labels from results. Current control use: regression-after-independent-QA-followup.",
+      "methods": [
+        {
+          "method": "signal",
+          "label": "Signal",
+          "precisionAt5": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 40,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.9200023809123489,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5267857142857143,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "old-v4",
+          "label": "Исторический алгоритм v4",
+          "precisionAt5": {
+            "value": 0.825,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 33,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.6899763011550198,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.41607142857142854,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "old-v3",
+          "label": "Исторический алгоритм v3",
+          "precisionAt5": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 40,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.7633857396120822,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5267857142857143,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "keyword-baseline",
+          "label": "Поиск по ключевым словам",
+          "precisionAt5": {
+            "value": 0.9249999999999999,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 37,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.6047106781803615,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.4892857142857142,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "random",
+          "label": "Фиксированный случайный порядок",
+          "precisionAt5": {
+            "value": 0.7999999999999999,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 32,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.5668259742442645,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.40892857142857136,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "reverse",
+          "label": "Обратный порядок Signal",
+          "precisionAt5": {
+            "value": 0.575,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 23,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.3026398511903843,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.2625,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        },
+        {
+          "method": "without-test-result",
+          "label": "Без результата проверки навыков",
+          "precisionAt5": {
+            "value": 1.0,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": 40,
+            "denominator": 40,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "ndcgAt5": {
+            "value": 0.8178092211135837,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAt5": {
+            "value": 0.5267857142857143,
+            "defined": 8,
+            "undefined": 0,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "relevantRecallAll": {
+            "value": null,
+            "defined": 0,
+            "undefined": 8,
+            "total": 8,
+            "numerator": null,
+            "denominator": null,
+            "aggregation": "macro: arithmetic mean of defined query values; undefined queries retained in counts"
+          },
+          "unexpectedEmpty": 0
+        }
+      ]
+    }
+  },
+  "notes": [
+    "Слайд 1. 0:00-0:10. Signal\n\nМы Best Match из Казани. Signal помогает компании найти ИТ-специалиста по подтверждённым навыкам, а кандидату получить предложение с понятными условиями.\n\nИсточники и границы: Официальный шаблон ФСП. Выпуск 0.4.1; source SHA matching 5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44. Демонстрационные данные синтетические.",
+    "Слайд 2. 0:10-0:30. Ценность\n\nКомпания начинает с задачи: нужные навыки, уровень и зарплата. Signal показывает подходящих людей и объясняет соответствие. Кандидат видит условия заранее и сам решает, кому открыть контакты. Основной путь завершается приглашением и адресным согласием человека.\n\nИсточники и границы: docs/architecture.md, docs/technical-description.md. Точное происхождение экрана entry сохранено в screenshotProvenance конфигурации.",
+    "Слайд 3. 0:30-0:40. Команда\n\nСергей Калеев - капитан и разработчик. Оксана Калеева - маркетолог. Мы делаем решение проверяемым для компании и понятным для кандидата.\n\nИсточники и границы: Состав и контакты Best Match подтверждены пользователем. Казань.",
+    "Слайд 4. 0:40-1:00. Разработка\n\nНачали с двух прототипов. Аудит помог исправить обходы оценки и потерю синонимов. Убрали технический приоритет банков, добавили полноту подтверждения. Итоговый порядок прошёл независимую проверку на работающем приложении; прежние измерения и проигрыши сохранены.\n\nИсточники и границы: docs/matching-v5.md, docs/evaluation.md. Итоговые наборы — использованные регрессионные контроли; прежние метки и общие веса не менялись.",
+    "Слайд 5. 1:00-1:20. Возможности\n\nРаботают резюме с PDF, профессиональный опрос, вакансии с откликом и задания компаний с расписанием. Исследовательский режим A/B отделён от рабочей категории. На новой сборке прошли сто пятьдесят пять unit-тестов и шесть групп HTTP подбора. На исходном стенде — шестьдесят независимых групп, на новом повторены двадцать групп подбора.\n\nИсточники и границы: outputs/verification/qa-cycle-01.json; outputs/quality/assessment-validation-after.json. Дополнительно 130 запросов ID и 8 браузерных групп /quality. Семь research-групп проверены в source-router отдельно от Docker. Модель signal-source-mechanism-transfer-v4 (SHA 8fb73421de22a16a38ac7befad4a62a585fa7d80af7e156dd3c0770ee0c97836): строки 0/12, новый A 6/6, A→B 0/6, эталоны 12/12. Варируется один core-механизм; пять остальных компетенций заданы правильными. Это не человеческое обучение и не доказательство защиты от ИИ.\n\nТекущая функциональная проверка: outputs/verification/qa-cycle-04-functional-summary.json; 155 unit, typecheck, 6 built matching HTTP. Нагрузка f5c067 и независимый повтор20 прошли; прежние60 остаются измерением55a5.\n\nУточнение runtime: предыдущие 121 unit,65 Docker HTTP,130 ID,8 /quality и60 независимых групп измерены на55a5; после изменения четырёх backend-путей 20 matching-групп независимо повторены на новом образе. Совпали frontend bytes, matcher/transfer source SHA. Протоколы: outputs/verification/qa-cycle-04-independent-acceptance.json, outputs/verification/qa07-load.json, outputs/verification/qa-cycle-02-presentation-equivalence.json. Это не повтор всех60 на новом образе.",
+    "Слайд 6. 1:20-1:55. Подбор\n\nСначала сервер проверяет обязательные навыки, минимальную категорию и согласие. Непокрытое требование видно до поиска, пустая выдача объяснена.\n\nЗатем сравниваем покрытие и условия вакансии. Название банка и категория сверх минимума не создают штрафа. При равном соответствии полный действующий протокол имеет приоритет перед неполной историей. В одной категории, программе, версии и рубрике сто баллов без ФСП выше восьмидесяти трёх с ФСП. Разные шкалы не сравниваем; неизвестное качество не превращаем в ноль. Работодатель видит основания и позицию. Приложение и контроль используют один порядок.\n\nИсточники и границы: signal-matching.ts, docs/matching-v5.md. Политика need-fit-traceability-comparable-queues-v2: общий fit → полнота linked proof → сравнимые очереди. Общие веса: покрытие 62,5%, контекст 18,75%, зарплата 12,5%, свежесть 6,25%; неизвестная зарплата исключается с перенормированием. В очереди quality + до 3 ФСП; головы разных очередей выбираются по ФСП, затем NFC alias/ID. Unknown quality null. rankingScore — описательная сумма, position/orderPolicy задают фактическую выдачу. Происхождение экрана matching сохранено в конфигурации.",
+    "Слайд 7. 1:55-2:25. Проверка навыков\n\nДве программы для трёх уровней, семьдесят два смысловых шаблона, шесть заданий в форме. Senior требует полного решения архитектуры вместе с критичной основой.\n\nНа четырёхстах шестидесяти восьми эталонных работах расхождения сократились с двенадцати до нуля. Это работы с помощью ИИ. Модель переноса отдельно различает готовые строки и освоенный метод; человеческая сложность ещё не измерена. Историю версий сохраняем.\n\nИсточники и границы: docs/assessment-validation.md; outputs/quality/assessment-validation-after.json. Backend v6, Frontend v2; Junior 67, Middle/Senior 83. Junior/Middle требуют три критичных критерия, Senior четыре с архитектурой. 216 ответов / 36 форм, 468 работ, 234 A/B-пары: 216 совпадений (92,31%); 18 намеренных переходов сохранены. Все работы синтетические с помощью ИИ. Происхождение экрана assessment сохранено в конфигурации.",
+    "Слайд 8. 2:25-3:00. Результаты и границы\n\nМежгрупповой контроль: восемь потребностей и девяносто шесть пар. Precision@5 — единица против ноль восемьсот двадцать пять у v4; nDCG — около ноль девяносто два против ноль шестьдесят девять. На прежнем наборе nDCG снизилась с ноль девяносто девять до ноль девяносто семь. Этот проигрыш открыт.\n\nОба набора уже использованы в регрессионных проверках. Числа описывают синтетические метки. Реальное качество найма не измерено, пилот подготовлен. Официальный реестр ФСП ещё не подключён.\n\nРезультат Signal - предметное знакомство по требованиям, проверенным основаниям и согласованным условиям.\n\nИсточники и границы: outputs/quality/matching-competitive-v2-report.json: все 9 потребностей, 128 пар / 87 допустимых, шесть конкурентных, две короткие и одна пустая выдача. P@5 v5/v4 = 0,7777777777777778. nDCG v5 = 0,9704904794205496, v4 = 0,9879281900786864 по восьми определённым; пустая nDCG null. Без локального результата = 0,7823487861318676. outputs/quality/qa-cycle-01/intergroup-control-v1-report.json: 8 потребностей / 96 пар, P@5 v5 = 1, v4 = 0,825; nDCG v5 = 0,9200023809123489, v4 = 0,6899763011550198; без результата = 0,8178092211135837. P@5 знаменатель пять. После QA-01b оба набора — использованные регрессионные контроли, финальный untouched holdout не заявляется. Метки с ИИ; автор знает продукт; человеческих участников нет. Все проигрыши, даты, SHA и неопределённые знаменатели сохранены. Новый privacy-negative знаменатель ноль, поэтому 0% риска не заявляется. Независимая функциональная приёмка 60 групп не превращает эти метки в человеческие. Пилот на 36 добровольцев подготовлен, реестр ФСП не подключён.\n\nПроисхождение media: кадры сохранены из55a5, accepted current runtime sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb. Ограниченная совместимость проверена по outputs/verification/qa-cycle-02-presentation-equivalence.json. Новый load PASS относится к принятому текущему образу, все прежние load FAIL сохранены отдельно."
+  ],
+  "packageVersion": "0.4.1",
+  "matchingOrderPolicy": "need-fit-traceability-comparable-queues-v2",
+  "transferModelVersion": "signal-source-mechanism-transfer-v4",
+  "acceptanceSnapshot": {
+    "checkedAt": "2026-10-06T08:49:18.779601+00:00",
+    "sha256": "67a0eeeadf50c36598206d416330f252d081e0f5a05d8ac93648bc37d36ca0c2",
+    "imageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "bundleSHA": "d49f7070c7c69db573362a53df61579d976226b5d6333583660f211fea706828",
+    "independentGroups": 60,
+    "unitTests": 121,
+    "builtHttpGroups": 65,
+    "idRequests": 130,
+    "browserQualityGroups": 8,
+    "sourceResearchHttpGroups": 7,
+    "sourceResearchScope": "Separate source-router process; excluded from built Docker HTTP groups",
+    "mediaLoadCleanFinalSeal": "Actual video, bounded source/UI acceptance and same-runtime load verified; source ZIP clean is post-seal companion.",
+    "currentIndependentAcceptanceSHA": "c087f68e4183a31b3de489586c63c9a35acb190d023905ae7baefc8bb40f9d69",
+    "currentTargetedMatchingGroups": 20,
+    "originalIndependentGroups60ImageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+    "currentFunctional": {
+      "proofPath": "outputs/verification/qa-cycle-04-functional-summary.json",
+      "proofSHA": "05eacb27ec1e541f26da9779498a503a11253609ac9a75016191df3b59ac091a",
+      "unitTests": 155,
+      "targetedBuiltHttpGroups": 6
+    },
+    "historicalFullFunctionalImageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120"
+  },
+  "companionMedia": {
+    "video": {
+      "proof": "outputs/verification/qa-cycle-02-video.json",
+      "proofSHA": "6da7d5f13098df670f9ee04f1a8c5dc173c68028792080c718639ca15c2d1479",
+      "file": "outputs/submission/Signal-Demo.mp4",
+      "sha256": "80c47010a9b93ab58e3fbbeba96343a8632510514284bb62fbed7dd90bddeab7",
+      "durationSeconds": 138,
+      "scenes": 21,
+      "ordinaryWorkflow": true,
+      "demo": false,
+      "presentationClaims": "Current real UI montage; constructed demonstration answers are not human accuracy evidence."
+    },
+    "load": {
+      "status": "passed",
+      "proof": "outputs/verification/qa07-load.json",
+      "proofSHA": "5ebb7fda7f370e3693a2cf71110936b2632c352d0261c79c298d97e71684fce1",
+      "imageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+      "bundleSHA": "d49f7070c7c69db573362a53df61579d976226b5d6333583660f211fea706828",
+      "report": "outputs/verification/load-scale.json",
+      "reportSHA": "22395e56273edc44a3a3d26eb16445e09abccd8af862aa020a4beaf5e630add0",
+      "scope": "Original1000/32sessions/16employers/30s warmup/180s measurement and all original limits unchanged"
+    },
+    "clean": {
+      "status": "post-seal companion"
+    }
+  },
+  "plannedRuntimeReconciliation": {
+    "captureImageId": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+    "targetImageId": "sha256:f5c0679cf66f57378c0baa14b44e65d648b8b1107e6f12d98d56c2e12cd475bb",
+    "targetBundleSHA": "d49f7070c7c69db573362a53df61579d976226b5d6333583660f211fea706828",
+    "unchangedFrontendManifestSHA": "46872afdb3326b67b1749315187c5d2ac08b2fe09ca79fd738b9a54300a081db",
+    "requiredTargetedAcceptance": "outputs/verification/qa-cycle-04-independent-acceptance.json",
+    "requiredLoadAcceptance": "outputs/verification/qa07-load.json",
+    "status": "accepted within verified bounded scope",
+    "claim": "Original captures remain55a5; current targeted matching20 and load measured on the new accepted runtime. Earlier60 are not presented as 60 rerun groups.",
+    "changedBackendPaths": [
+      "artifacts/api-server/src/lib/assessment-ranking-evidence.ts",
+      "artifacts/api-server/src/lib/matching-pool-admission.ts",
+      "artifacts/api-server/src/lib/skill-catalog.ts",
+      "artifacts/api-server/src/routes/signal-employer-matching.ts"
+    ],
+    "requiredRuntimeProof": "outputs/verification/qa-cycle-04-working-runtime.json",
+    "plannedOfflineQualityEquivalence": "outputs/verification/qa-cycle-04-quality-equivalence.json: actual pure-function rerun passed; old measurements and report bytes unchanged"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "version": "signal-traceability-regression-v1",
+  "frozenAt": "2026-10-06T08:24:13.490Z",
+  "file": "outputs/quality/qa-cycle-01/traceability-regression-v1.json",
+  "sha256": "5bcf243f34c7f2be835d2759bdc20f67f63682724a14905487a3ad058824ccab",
+  "bytes": 26698,
+  "prePatchMatchingSha256": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+  "originalDatasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+  "newCases": 3,
+  "fixedOriginalCases": 3,
+  "labelsAndOldFilesModified": false
+}

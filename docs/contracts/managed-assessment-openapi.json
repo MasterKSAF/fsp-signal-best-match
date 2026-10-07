@@ -1,0 +1,957 @@
+{
+  "paths": {
+    "/assessments/contexts": {
+      "get": {
+        "summary": "Три профиля проверки и собственные активные приглашения кандидата",
+        "responses": {
+          "200": {
+            "description": "Справочник; ключей ответов и внутренних переключателей генератора нет",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "profiles",
+                    "invitations"
+                  ],
+                  "properties": {
+                    "profiles": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AssessmentContextProfile"
+                      }
+                    },
+                    "invitations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "title",
+                          "snapshot"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "snapshot": {
+                            "$ref": "#/components/schemas/AssessmentContextSnapshot"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Нет сессии"
+          },
+          "403": {
+            "description": "Сессия работодателя"
+          }
+        },
+        "operationId": "getAssessmentContexts",
+        "tags": [
+          "assessment"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "programId",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "backend-python",
+                "frontend-typescript"
+              ],
+              "default": "backend-python"
+            }
+          }
+        ]
+      }
+    },
+    "/assessments/programs/{id}/competencies": {
+      "get": {
+        "operationId": "getAssessmentCompetencies",
+        "tags": [
+          "assessments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "backend-python",
+                "frontend-typescript"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Public registry metadata; no keys, seeds, candidate issuance or private answers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "program",
+                    "templates",
+                    "partialCredit",
+                    "categoryRule"
+                  ],
+                  "properties": {
+                    "program": {
+                      "$ref": "#/components/schemas/AssessmentProgram"
+                    },
+                    "templates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ManagedAssessmentTemplate"
+                      }
+                    },
+                    "partialCredit": {
+                      "type": "string"
+                    },
+                    "categoryRule": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown program"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssessmentStartInput": {
+        "type": "object",
+        "properties": {
+          "programId": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "contextId": {
+            "type": "string",
+            "enum": [
+              "api-platform",
+              "data-services",
+              "reliability",
+              "frontend-product",
+              "frontend-platform",
+              "frontend-accessibility"
+            ]
+          },
+          "invitationId": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "programId",
+          "grade"
+        ],
+        "description": "Context and invitation are mutually exclusive. Program, profile specialization and completed questionnaire must agree. New attempts use managed v5/v1; saved v4 snapshots stay readable."
+      },
+      "AssessmentProgram": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specialization": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "grades": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "estimatedMinutes": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "specialization",
+          "title",
+          "grades",
+          "available",
+          "estimatedMinutes",
+          "description"
+        ]
+      },
+      "AssessmentHistoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "programId": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in_progress",
+              "submitted"
+            ]
+          },
+          "score": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "verified": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "bankVersion": {
+            "type": "string"
+          },
+          "correctionReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Explicit annulment reason. Historical score retained; verified false, evidence empty."
+          }
+        },
+        "required": [
+          "id",
+          "programId",
+          "grade",
+          "status",
+          "score",
+          "verified",
+          "startedAt",
+          "submittedAt",
+          "bankVersion"
+        ]
+      },
+      "AssessmentResult": {
+        "type": "object",
+        "properties": {
+          "attemptId": {
+            "type": "integer"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "statusText": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkillEvidence"
+            }
+          },
+          "nextStep": {
+            "type": "string"
+          },
+          "gradeChanged": {
+            "type": "boolean"
+          },
+          "correctionReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Explicit annulment reason. Historical score retained; verified false, evidence empty."
+          }
+        },
+        "required": [
+          "attemptId",
+          "grade",
+          "score",
+          "verified",
+          "statusText",
+          "evidence",
+          "nextStep",
+          "gradeChanged"
+        ]
+      },
+      "SkillEvidence": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer"
+          },
+          "criterion": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "criterionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "templateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "programId": {
+            "type": "string"
+          },
+          "programVersion": {
+            "type": "string"
+          },
+          "templateVersion": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "candidateUserId": {
+            "type": "integer"
+          },
+          "attemptId": {
+            "type": "integer"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "signal_assessment",
+              "demo_example"
+            ]
+          }
+        },
+        "required": [
+          "skill",
+          "score",
+          "criterion",
+          "source",
+          "date"
+        ]
+      },
+      "ResumeQuestionnaire": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/BackendResumeQuestionnaire"
+          },
+          {
+            "$ref": "#/components/schemas/FrontendResumeQuestionnaire"
+          }
+        ]
+      },
+      "CandidateResume": {
+        "type": "object",
+        "required": [
+          "summary",
+          "softSkills",
+          "experience",
+          "projects",
+          "education",
+          "portfolio",
+          "questionnaire",
+          "updatedAt",
+          "questionnaireHistory",
+          "recommendation",
+          "questions",
+          "answerScale",
+          "questionSets"
+        ],
+        "properties": {
+          "summary": {
+            "type": "string"
+          },
+          "softSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "experience": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResumeExperience"
+            }
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResumeProject"
+            }
+          },
+          "education": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResumeEducation"
+            }
+          },
+          "portfolio": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResumePortfolioLink"
+            }
+          },
+          "questionnaire": {
+            "$ref": "#/components/schemas/ResumeQuestionnaire"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "questionnaireHistory": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/ResumeQuestionnaireHistory"
+            }
+          },
+          "recommendation": {
+            "$ref": "#/components/schemas/ResumeRecommendation"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "title",
+                "question"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": [
+                    "python",
+                    "databases",
+                    "api",
+                    "testing",
+                    "reliability",
+                    "ownership",
+                    "typescript",
+                    "state",
+                    "accessibility",
+                    "performance",
+                    "architecture"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "question": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "answerScale": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "value",
+                "label"
+              ],
+              "properties": {
+                "value": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "questionSets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "key",
+                  "title",
+                  "question"
+                ],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "enum": [
+                      "python",
+                      "databases",
+                      "api",
+                      "testing",
+                      "reliability",
+                      "ownership",
+                      "typescript",
+                      "state",
+                      "accessibility",
+                      "performance",
+                      "architecture"
+                    ]
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "question": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AssessmentContextProfile": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "skills",
+          "coverage"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "api-platform",
+              "data-services",
+              "reliability",
+              "frontend-product",
+              "frontend-platform",
+              "frontend-accessibility"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coverage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssessmentContextCoverage"
+            }
+          }
+        }
+      },
+      "AssessmentContextSnapshot": {
+        "type": "object",
+        "required": [
+          "version",
+          "source",
+          "context",
+          "targetGrade",
+          "roleTitle",
+          "requirements",
+          "unsupportedRequirements",
+          "reason"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "const": "backend-role-context-v1"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "profile",
+              "invitation"
+            ]
+          },
+          "context": {
+            "$ref": "#/components/schemas/AssessmentContextProfile"
+          },
+          "targetGrade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "roleTitle": {
+            "type": "string"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsupportedRequirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "AssessmentContextStartSelection": {
+        "description": "Поля расширяют существующий StartAssessmentAttemptBody. Одновременно contextId и invitationId запрещены. В отсутствие обоих сохраняется исходная форма v4.",
+        "type": "object",
+        "properties": {
+          "contextId": {
+            "type": "string",
+            "enum": [
+              "api-platform",
+              "data-services",
+              "reliability",
+              "frontend-product",
+              "frontend-platform",
+              "frontend-accessibility"
+            ]
+          },
+          "invitationId": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Только собственное активное приглашение Backend / Python; grade должен совпадать с приглашением"
+          }
+        },
+        "not": {
+          "required": [
+            "contextId",
+            "invitationId"
+          ]
+        }
+      },
+      "BackendResumeQuestionnaire": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "industry",
+          "specialization",
+          "answers"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "enum": [
+              "backend-python-v1"
+            ]
+          },
+          "industry": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "Backend / Python"
+            ]
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "python",
+              "databases",
+              "api",
+              "testing",
+              "reliability",
+              "ownership"
+            ],
+            "properties": {
+              "python": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "databases": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "api": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "testing": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "reliability": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "ownership": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              }
+            }
+          }
+        }
+      },
+      "FrontendResumeQuestionnaire": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "industry",
+          "specialization",
+          "answers"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "enum": [
+              "frontend-typescript-v1"
+            ]
+          },
+          "industry": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "specialization": {
+            "type": "string",
+            "enum": [
+              "Frontend / TypeScript"
+            ]
+          },
+          "answers": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "typescript",
+              "state",
+              "accessibility",
+              "performance",
+              "architecture",
+              "ownership"
+            ],
+            "properties": {
+              "typescript": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "state": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "accessibility": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "performance": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "architecture": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              },
+              "ownership": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 3
+              }
+            }
+          }
+        }
+      },
+      "ManagedAssessmentTemplate": {
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "programId",
+          "programVersion",
+          "grade",
+          "competency",
+          "scenario",
+          "slot",
+          "variant",
+          "status",
+          "responseType",
+          "critical",
+          "targetSeconds",
+          "verifiedSkills"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "programId": {
+            "type": "string"
+          },
+          "programVersion": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "competency": {
+            "type": "string"
+          },
+          "scenario": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "responseType": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "slot": {
+            "type": "integer"
+          },
+          "variant": {
+            "type": "integer"
+          },
+          "targetSeconds": {
+            "type": "integer"
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "verifiedSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

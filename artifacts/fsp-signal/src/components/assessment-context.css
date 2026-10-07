@@ -1,0 +1,30 @@
+.assessment-context-picker { margin:20px 0; text-align:left; }
+.assessment-context-picker fieldset { border:0; padding:0; margin:0; min-width:0; }
+.assessment-context-picker legend { font-size:13px; font-weight:800; margin-bottom:6px; }
+.assessment-context-note { font-size:12px; line-height:1.6; color:hsl(var(--muted-foreground)); margin:7px 0 12px; }
+.assessment-context-options { display:grid; gap:9px; }
+.assessment-context-option { display:flex; align-items:flex-start; gap:10px; padding:12px; border:1px solid hsl(var(--border)); border-radius:10px; background:hsl(var(--card)); cursor:pointer; }
+.assessment-context-option.selected { border-color:hsl(var(--primary) / .6); background:hsl(var(--primary) / .06); }
+.assessment-context-option > input { margin-top:3px; accent-color:hsl(var(--primary)); }
+.assessment-context-option > svg { color:hsl(var(--primary)); flex-shrink:0; margin-top:1px; }
+.assessment-context-option > span { display:grid; gap:5px; }
+.assessment-context-option strong { font-size:12px; line-height:1.5; }
+.assessment-context-option small { font-size:11px; line-height:1.6; color:hsl(var(--muted-foreground)); }
+.assessment-context-option:has(input:focus-visible) { outline:2px solid hsl(var(--ring)); outline-offset:3px; }
+.assessment-context-picker fieldset:disabled { opacity:.6; }
+.assessment-invitation-select { margin-top:17px; }
+.assessment-coverage { border-top:1px solid hsl(var(--border)); margin-top:14px; padding-top:12px; text-align:left; }
+.assessment-coverage > summary { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; font-weight:750; color:hsl(var(--primary)); list-style:none; }
+.assessment-coverage > summary::after { content:'+'; margin-left:auto; font-size:18px; }
+.assessment-coverage[open] > summary::after { content:'−'; }
+.assessment-coverage > ul { list-style:none; padding:0; margin:12px 0 0; display:grid; gap:14px; }
+.assessment-coverage li { display:grid; gap:4px; }
+.assessment-coverage strong { font-size:12px; }
+.assessment-coverage li > span { font-size:11px; color:hsl(var(--primary)); }
+.assessment-coverage li p { font-size:11px; line-height:1.6; color:hsl(var(--muted-foreground)); margin:0; }
+.assessment-context-summary { margin-bottom:18px; }
+.assessment-context-heading { display:flex; gap:10px; align-items:flex-start; }
+.assessment-context-heading > svg { color:hsl(var(--primary)); flex-shrink:0; margin-top:2px; }
+.assessment-context-heading strong { font-size:13px; }
+.assessment-context-heading p { font-size:12px; line-height:1.6; color:hsl(var(--muted-foreground)); margin:4px 0 0; }
+@media (max-width:560px) { .assessment-context-option { padding:11px 9px; gap:8px; } .assessment-context-option > svg { display:none; } }

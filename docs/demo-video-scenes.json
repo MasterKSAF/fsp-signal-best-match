@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "signal-demo-montage-v2",
+  "site": "http://127.0.0.1:4310",
+  "frameDirectory": "outputs/video/qa-cycle-02",
+  "brand": "Signal",
+  "disclosure": "Монтаж реальных экранов · вымышленные аккаунты · без озвучки",
+  "bankVersions": [
+    "signal-backend-python-v6",
+    "signal-frontend-typescript-v2"
+  ],
+  "matchingVersion": "fsp-signal-match-v5",
+  "currentImage": "sha256:55a5c92928c6f0f9d22e07ca6d991e32fa39602d86f2ee871cbe41d3f83c0120",
+  "conversionReceipt": "outputs/verification/qa-cycle-02-video-conversion.json",
+  "captureWindowUtc": [
+    "2026-10-06T08:56:25.735Z",
+    "2026-10-06T09:09:51.336Z"
+  ],
+  "captureProvenance": {
+    "proof": "outputs/verification/qa-cycle-02-video-captures.json",
+    "proofSha256": "d03b3b4c03d9f952e157c7aed20a1d9bd2f5a3ac7c25bb4a538be329011bcdf6",
+    "workflow": "Registration, actual local email confirmation, profile/questionnaire/test/save/submit, matching/invitation/consent/contacts and voluntary job application all performed through the real UI on accepted image55a5.",
+    "answers": "Owned-attempt oracle answers used as constructed demonstration inputs; no mocked scores; no human performance claim.",
+    "excludedFrames": [
+      "01-candidate-registration.jpg: earlier unsubmitted form",
+      "13-employer-need.jpg: initial unsupported SQL label request",
+      "14-unsupported-requirement.jpg: correctly blocked historical request",
+      "19-contacts-after-consent.jpg: transient loading state",
+      "22-employer-application.jpg: list before opening",
+      "25-candidate-application-status.jpg: before refreshing cross-account update"
+    ]
+  },
+  "ordinaryAccounts": "Two locally created synthetic ordinary accounts; email confirmed through real UI. Exact owned fixtures removed after capture; protected independent audit accounts retained.",
+  "demoAccounts": "No Demo session used in this montage.",
+  "scenes": [
+    {
+      "frame": "11-entry.png",
+      "durationSeconds": 6,
+      "title": "Signal · нужные люди и подходящая работа",
+      "caption": "Монтаж реальных экранов. Вымышленные аккаунты; текущая версия 0.4.1.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/11-entry.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "02-candidate-registration.png",
+      "durationSeconds": 7,
+      "title": "Обычная регистрация кандидата",
+      "caption": "Регистрация через интерфейс; отдельные согласия. Это личный аккаунт, Demo выключен.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/02-candidate-registration.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "03-email-confirmation.png",
+      "durationSeconds": 5,
+      "title": "Подтверждение электронной почты",
+      "caption": "Код действительно получен локальной почтой и введён через интерфейс.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/03-email-confirmation.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "04-email-verified-profile.png",
+      "durationSeconds": 5,
+      "title": "Новый личный аккаунт",
+      "caption": "Почта подтверждена; профиль начинает работу без вымышленных результатов.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/04-email-verified-profile.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "05-profile-preferences.png",
+      "durationSeconds": 7,
+      "title": "Профиль, условия и приватность",
+      "caption": "Кандидат сохраняет стек, зарплату, псевдоним и разрешение на поиск.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/05-profile-preferences.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "06-questionnaire-saved.png",
+      "durationSeconds": 7,
+      "title": "Шесть вопросов перед проверкой",
+      "caption": "Опрос рекомендует Middle. Самооценка ещё не является подтверждённой категорией.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/06-questionnaire-saved.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "07-assessment-start.png",
+      "durationSeconds": 5,
+      "title": "Практические задания под роль",
+      "caption": "Backend / Python v6; категория Middle и направление «Разработчик API».",
+      "sourceJpeg": "outputs/video/qa-cycle-02/07-assessment-start.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "08-practical-cases.png",
+      "durationSeconds": 7,
+      "title": "Версионные инженерные кейсы",
+      "caption": "API, SQL, диагностика, повторы и архитектура. Ответы для демонстрации сконструированы.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/08-practical-cases.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "09-answers-saved.png",
+      "durationSeconds": 5,
+      "title": "Сохранение и продолжение",
+      "caption": "Ответы сохранены настоящим сервером; итоговый результат ещё не выставлен.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/09-answers-saved.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "10-verified-middle.png",
+      "durationSeconds": 7,
+      "title": "Серверный разбор и категория",
+      "caption": "Middle подтверждён по рубрике. Этот сконструированный пример не доказывает точность оценки людей.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/10-verified-middle.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "12-employer-registration.png",
+      "durationSeconds": 5,
+      "title": "Обычная регистрация компании",
+      "caption": "Работодатель также подтверждает почту; вход отдельный от кандидата.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/12-employer-registration.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "15-matching.png",
+      "durationSeconds": 8,
+      "title": "Подбор по подтверждённым навыкам",
+      "caption": "API и SQL, категория, формат и зарплата. Основной путь работает без истории ФСП.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/15-matching.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "16-matching-explanation.png",
+      "durationSeconds": 8,
+      "title": "Почему кандидат подходит",
+      "caption": "Общее соответствие потребности и сопоставимые проверки; сырой балл разных программ не смешивается.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/16-matching-explanation.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "17-salary-invitation.png",
+      "durationSeconds": 7,
+      "title": "Персональное предложение с зарплатой",
+      "caption": "Работодатель объясняет интерес и отправляет приглашение с конкретными условиями.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/17-salary-invitation.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "18-candidate-offer.png",
+      "durationSeconds": 7,
+      "title": "Решение остаётся у кандидата",
+      "caption": "До принятия видны условия и контакт компании; доступ к своим контактам адресный.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/18-candidate-offer.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "23-contacts-after-consent.png",
+      "durationSeconds": 7,
+      "title": "Контакты после согласия",
+      "caption": "Компания получает контакт только после принятия своего приглашения.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/23-contacts-after-consent.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "20-job-published.png",
+      "durationSeconds": 6,
+      "title": "Открытая вакансия",
+      "caption": "Публикация — отдельное действие. Условия сохраняют версию для будущих откликов.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/20-job-published.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "21-job-application-consent.png",
+      "durationSeconds": 8,
+      "title": "Самостоятельный отклик",
+      "caption": "Кандидат отправляет письмо и явно разрешает передачу данных выбранной компании.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/21-job-application-consent.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "24-application-contacts.png",
+      "durationSeconds": 7,
+      "title": "Работа работодателя с откликом",
+      "caption": "Статус «В рассмотрении», исходные условия и контакты по отдельному согласию.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/24-application-contacts.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "27-candidate-application-status.png",
+      "durationSeconds": 6,
+      "title": "Кандидат видит статус и доступ",
+      "caption": "Снимок исходных условий, решение компании и возможность отозвать отклик.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/27-candidate-application-status.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    },
+    {
+      "frame": "26-quality-current.png",
+      "durationSeconds": 8,
+      "title": "Прозрачная методика",
+      "caption": "Оба контроля, версии и ограничения. Синтетические проверки не подменяют исследование людей.",
+      "sourceJpeg": "outputs/video/qa-cycle-02/26-quality-current.jpg",
+      "captureGroup": "ordinary-live-55a5"
+    }
+  ]
+}

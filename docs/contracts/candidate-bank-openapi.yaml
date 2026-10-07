@@ -1,0 +1,47 @@
+paths:
+  /employer/candidates:
+    get:
+      operationId: getCandidateBank
+      tags: [employer]
+      summary: Visible verified candidates consenting to matching, restricted to own account pool
+      parameters:
+        - {in: query, name: q, schema: {type: string, maxLength: 120}}
+        - {in: query, name: specialization, schema: {type: string, maxLength: 120}}
+        - {in: query, name: grade, schema: {type: string, enum: [Junior, Middle, Senior]}}
+        - {in: query, name: skill, schema: {type: string, maxLength: 80}}
+        - {in: query, name: fsp, schema: {type: string, enum: [yes, no]}}
+        - {in: query, name: page, schema: {type: integer, minimum: 1, maximum: 10000, default: 1}}
+      responses:
+        '200':
+          description: 24 profiles per page, no contact data, survey answers or private resume
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/CandidateBank'}
+        '400': {description: Invalid filters}
+        '401': {description: Authentication required}
+        '403': {description: Employer role required}
+components:
+  schemas:
+    CandidateBankProfile:
+      type: object
+      required: [candidateId, alias, specialization, verifiedGrade, verifiedScore, verifiedSkills, stack, workFormat, fspHistory, evidenceDate]
+      properties:
+        candidateId: {type: integer}
+        alias: {type: string}
+        specialization: {type: string}
+        verifiedGrade: {type: string, enum: [Junior, Middle, Senior]}
+        verifiedScore: {type: [integer, 'null']}
+        verifiedSkills: {type: array, items: {type: string}}
+        stack: {type: array, items: {type: string}}
+        workFormat: {type: string}
+        fspHistory: {type: boolean}
+        evidenceDate: {type: [string, 'null'], format: date-time}
+    CandidateBank:
+      type: object
+      required: [candidates, total, page, pageSize, specializations]
+      properties:
+        candidates: {type: array, items: {$ref: '#/components/schemas/CandidateBankProfile'}}
+        total: {type: integer}
+        page: {type: integer}
+        pageSize: {type: integer}
+        specializations: {type: array, items: {type: string}}

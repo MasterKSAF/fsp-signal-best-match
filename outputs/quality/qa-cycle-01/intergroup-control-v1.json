@@ -1,0 +1,5068 @@
+{
+  "version": "signal-intergroup-control-v1",
+  "evaluationClock": "2026-10-06T00:00:00.000Z",
+  "rubric": {
+    "relevanceScale": {
+      "0": "Forbidden for this need",
+      "1": "Mandatory gate only or material fit mismatch",
+      "2": "Useful but materially incomplete or constrained",
+      "3": "Strong fit with explicit unresolved/limited condition",
+      "4": "Excellent stated business need fit"
+    },
+    "relevanceThreshold": 2,
+    "provenance": "AI-assisted independently authored synthetic business judgements by QA-01 control agent; not external human review. Labels explicitly recorded before new matcher implementation/measurement.",
+    "independence": "Needs and labels authored by concrete tasks/conditions rather than an implementation formula. Quality ranks are claimed only within one grade/program/version/rubric, all other factors held equal.",
+    "holdout": "Scenario split fixed before any run; consumed after measurement; do not tune weights or labels from results.",
+    "tradeoffs": "Freshness scenario intentionally keeps a two-day-old score100 preferred by rubric over today score83; retain losses if primary exact freshness gives another order."
+  },
+  "queries": [
+    {
+      "id": "senior-ledger-fit",
+      "split": "development",
+      "purpose": "A remote ledger API team requires Python, seeks SQL/API contracts/idempotency, and accepts Middle or higher. Proven full ledger fit matters more than exact minimum grade.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700000,
+            "alias": "Z-ledger-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 86,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700000,
+            "candidateId": 700000,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 86,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700001,
+            "alias": "Y-ledger-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 94,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700001,
+            "candidateId": 700001,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 94,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700002,
+            "alias": "X-ledger-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700002,
+            "candidateId": 700002,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700003,
+            "alias": "W-ledger-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700003,
+            "candidateId": 700003,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 90,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700004,
+            "alias": "V-api-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700004,
+            "candidateId": 700004,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "api"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700005,
+            "alias": "U-api-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700005,
+            "candidateId": 700005,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "api"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700006,
+            "alias": "A-generic-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700006,
+            "candidateId": 700006,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700007,
+            "alias": "B-generic-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 96,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700007,
+            "candidateId": 700007,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 96,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "api"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700008,
+            "alias": "C-generic-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700008,
+            "candidateId": 700008,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "api"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700009,
+            "alias": "D-generic-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700009,
+            "candidateId": 700009,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700010,
+            "alias": "E-one-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 91,
+            "verifiedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "stack": [
+              "Python",
+              "SQL"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700010,
+            "candidateId": 700010,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 91,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "api"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700011,
+            "alias": "F-one-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 88,
+            "verifiedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "stack": [
+              "Python",
+              "SQL"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700011,
+            "candidateId": 700011,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 88,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ledger"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700000": 4,
+        "700001": 4,
+        "700002": 4,
+        "700003": 3,
+        "700004": 3,
+        "700005": 2,
+        "700006": 1,
+        "700007": 1,
+        "700008": 1,
+        "700009": 1,
+        "700010": 2,
+        "700011": 1
+      },
+      "labelReasons": {
+        "700000": "Full ledger evidence and remote conditions; higher grade is permitted.",
+        "700001": "Full ledger evidence and remote conditions.",
+        "700002": "Full ledger evidence and remote conditions.",
+        "700003": "Strong same-category ledger evidence; lower result than X.",
+        "700004": "Missing optional idempotency proof.",
+        "700005": "Partial optional ledger evidence with lower comparable result.",
+        "700006": "Mandatory Python only; none of sought ledger proof and office conditions.",
+        "700007": "Mandatory Python only; none of sought ledger proof.",
+        "700008": "Mandatory Python only and office conditions.",
+        "700009": "Seniority alone does not establish ledger fit.",
+        "700010": "One of three optional proofs.",
+        "700011": "One optional proof and mismatched format."
+      },
+      "expectedEligibleIds": [
+        700000,
+        700001,
+        700002,
+        700003,
+        700004,
+        700005,
+        700006,
+        700007,
+        700008,
+        700009,
+        700010,
+        700011
+      ]
+    },
+    {
+      "id": "renamed-banks-fit",
+      "split": "control-holdout",
+      "purpose": "Different opaque bank versions/rubric IDs partition quality comparisons; their lexical IDs must not outrank remote API fit.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700100,
+            "alias": "Z-best-v8",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 84,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700100,
+            "candidateId": 700100,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 84,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700101,
+            "alias": "Y-best-v6",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 91,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700101,
+            "candidateId": 700101,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 91,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700102,
+            "alias": "X-fit-v8",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700102,
+            "candidateId": 700102,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700103,
+            "alias": "W-fit-v6",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700103,
+            "candidateId": 700103,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700104,
+            "alias": "V-two-v8",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700104,
+            "candidateId": 700104,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700105,
+            "alias": "U-two-v6",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700105,
+            "candidateId": 700105,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700106,
+            "alias": "A-empty-v6",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700106,
+            "candidateId": 700106,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700107,
+            "alias": "B-empty-v8",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python"
+            ],
+            "stack": [
+              "Python"
+            ],
+            "statedSkills": [
+              "Python"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700107,
+            "candidateId": 700107,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700108,
+            "alias": "C-one-v6",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 89,
+            "verifiedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "stack": [
+              "Python",
+              "SQL"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700108,
+            "candidateId": 700108,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 89,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700109,
+            "alias": "D-one-v8",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "stack": [
+              "Python",
+              "SQL"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700109,
+            "candidateId": 700109,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 90,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700110,
+            "alias": "E-two-office",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700110,
+            "candidateId": 700110,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "a-schema"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700111,
+            "alias": "F-two-office",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700111,
+            "candidateId": 700111,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "z-schema"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700100": 4,
+        "700101": 4,
+        "700102": 4,
+        "700103": 4,
+        "700104": 3,
+        "700105": 3,
+        "700106": 1,
+        "700107": 1,
+        "700108": 1,
+        "700109": 1,
+        "700110": 2,
+        "700111": 2
+      },
+      "labelReasons": {
+        "700100": "Full API evidence; technical version has no intrinsic business rank.",
+        "700101": "Full API evidence.",
+        "700102": "Full API evidence; higher grade accepted.",
+        "700103": "Full API evidence, cross-grade score is not compared.",
+        "700104": "Two optional API proofs.",
+        "700105": "Two optional API proofs.",
+        "700106": "Opaque old version does not compensate for missing optional fit.",
+        "700107": "Mandatory Python only and office format.",
+        "700108": "One optional proof, office format.",
+        "700109": "One optional proof, office format.",
+        "700110": "Partial evidence and format mismatch.",
+        "700111": "Partial evidence and format mismatch."
+      },
+      "expectedEligibleIds": [
+        700100,
+        700101,
+        700102,
+        700103,
+        700104,
+        700105,
+        700106,
+        700107,
+        700108,
+        700109,
+        700110,
+        700111
+      ]
+    },
+    {
+      "id": "frontend-higher-grade",
+      "split": "control-holdout",
+      "purpose": "An accessible remote TypeScript UI needs confirmed state/accessibility/performance. Minimum Middle is a gate; stronger task fit by Senior must remain visible.",
+      "need": {
+        "specialization": "Frontend / TypeScript",
+        "grade": "Middle",
+        "requiredSkills": [
+          "TypeScript"
+        ],
+        "desirableSkills": [
+          "Frontend state",
+          "Accessibility",
+          "Frontend performance"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700200,
+            "alias": "Z-accessible-senior",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700200,
+            "candidateId": 700200,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Senior",
+            "score": 90,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700201,
+            "alias": "Y-accessible-senior",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 84,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700201,
+            "candidateId": 700201,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v3",
+            "grade": "Senior",
+            "score": 84,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "other-ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700202,
+            "alias": "X-accessible-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility",
+              "Frontend performance"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700202,
+            "candidateId": 700202,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700203,
+            "alias": "W-two-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700203,
+            "candidateId": 700203,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v3",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "other-ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700204,
+            "alias": "V-two-senior",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 88,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700204,
+            "candidateId": 700204,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Senior",
+            "score": 88,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700205,
+            "alias": "U-two-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700205,
+            "candidateId": 700205,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700206,
+            "alias": "A-generic-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "TypeScript"
+            ],
+            "stack": [
+              "TypeScript"
+            ],
+            "statedSkills": [
+              "TypeScript"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700206,
+            "candidateId": 700206,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700207,
+            "alias": "B-generic-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "TypeScript"
+            ],
+            "stack": [
+              "TypeScript"
+            ],
+            "statedSkills": [
+              "TypeScript"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700207,
+            "candidateId": 700207,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v3",
+            "grade": "Middle",
+            "score": 99,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "other-ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700208,
+            "alias": "C-one-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 95,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700208,
+            "candidateId": 700208,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Middle",
+            "score": 95,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700209,
+            "alias": "D-one-senior",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700209,
+            "candidateId": 700209,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v3",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "other-ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700210,
+            "alias": "E-one-middle",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700210,
+            "candidateId": 700210,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v2",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "ui"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700211,
+            "alias": "F-two-office",
+            "specialization": "Frontend / TypeScript",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 95,
+            "verifiedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "stack": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "statedSkills": [
+              "TypeScript",
+              "Frontend state",
+              "Accessibility"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700211,
+            "candidateId": 700211,
+            "programId": "frontend-typescript",
+            "programVersion": "signal-frontend-typescript-v3",
+            "grade": "Senior",
+            "score": 95,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "other-ui"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700200": 4,
+        "700201": 4,
+        "700202": 4,
+        "700203": 3,
+        "700204": 3,
+        "700205": 2,
+        "700206": 1,
+        "700207": 1,
+        "700208": 1,
+        "700209": 1,
+        "700210": 2,
+        "700211": 2
+      },
+      "labelReasons": {
+        "700200": "All UI requirements and remote conditions.",
+        "700201": "All UI requirements; different version is not a penalty.",
+        "700202": "All UI requirements.",
+        "700203": "Accessibility and state; optional performance unproven.",
+        "700204": "Accessibility and state; optional performance unproven.",
+        "700205": "Two optional proofs, lower score in same comparable UI group.",
+        "700206": "TypeScript alone and office format.",
+        "700207": "TypeScript alone.",
+        "700208": "No accessibility/performance and office format.",
+        "700209": "Seniority alone does not confirm UI task fit.",
+        "700210": "One optional proof and remote format.",
+        "700211": "Two proofs with format mismatch."
+      },
+      "expectedEligibleIds": [
+        700200,
+        700201,
+        700202,
+        700203,
+        700204,
+        700205,
+        700206,
+        700207,
+        700208,
+        700209,
+        700210,
+        700211
+      ]
+    },
+    {
+      "id": "equal-fit-comparable-result",
+      "split": "development",
+      "purpose": "All other conditions and assessment timestamp are equal; same grade/program/version/rubric test quality must improve ordering despite reversed aliases.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700300,
+            "alias": "Z-result100",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700300,
+            "candidateId": 700300,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700301,
+            "alias": "Y-result98",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 98,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700301,
+            "candidateId": 700301,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 98,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700302,
+            "alias": "X-result96",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 96,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700302,
+            "candidateId": 700302,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 96,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700303,
+            "alias": "W-result94",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 94,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700303,
+            "candidateId": 700303,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 94,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700304,
+            "alias": "V-result92",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 92,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700304,
+            "candidateId": 700304,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 92,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700305,
+            "alias": "U-result90",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700305,
+            "candidateId": 700305,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 90,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700306,
+            "alias": "A-result83",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700306,
+            "candidateId": 700306,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700307,
+            "alias": "B-result84",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 84,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700307,
+            "candidateId": 700307,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 84,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700308,
+            "alias": "C-result85",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 85,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700308,
+            "candidateId": 700308,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 85,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700309,
+            "alias": "D-result86",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 86,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700309,
+            "candidateId": 700309,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 86,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700310,
+            "alias": "E-result87",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 87,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700310,
+            "candidateId": 700310,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 87,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700311,
+            "alias": "F-result88",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 88,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700311,
+            "candidateId": 700311,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 88,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "equal-quality"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700300": 4,
+        "700301": 4,
+        "700302": 4,
+        "700303": 3,
+        "700304": 3,
+        "700305": 3,
+        "700306": 2,
+        "700307": 2,
+        "700308": 2,
+        "700309": 2,
+        "700310": 2,
+        "700311": 2
+      },
+      "labelReasons": {
+        "700300": "Best real result in the same comparison group.",
+        "700301": "Very strong comparable result.",
+        "700302": "Very strong comparable result.",
+        "700303": "Strong comparable result.",
+        "700304": "Strong comparable result.",
+        "700305": "Strong comparable result.",
+        "700306": "Passing lower result; alias must not reverse quality.",
+        "700307": "Passing lower result.",
+        "700308": "Passing lower result.",
+        "700309": "Passing lower result.",
+        "700310": "Passing lower result.",
+        "700311": "Passing lower result."
+      },
+      "expectedEligibleIds": [
+        700300,
+        700301,
+        700302,
+        700303,
+        700304,
+        700305,
+        700306,
+        700307,
+        700308,
+        700309,
+        700310,
+        700311
+      ]
+    },
+    {
+      "id": "equal-fit-incomparable-and-unknown",
+      "split": "control-holdout",
+      "purpose": "Same common need fit across two measured banks and historical records lacking full attempts. Unknown result is null, not failure or automatic lower business relevance.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700400,
+            "alias": "A-unknown-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700401,
+            "alias": "B-bank6-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700401,
+            "candidateId": 700401,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700402,
+            "alias": "C-bank8-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700402,
+            "candidateId": 700402,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700403,
+            "alias": "D-unknown-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700404,
+            "alias": "E-bank6-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700404,
+            "candidateId": 700404,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700405,
+            "alias": "F-bank8-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700405,
+            "candidateId": 700405,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700406,
+            "alias": "G-unknown-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700407,
+            "alias": "H-bank6-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700407,
+            "candidateId": 700407,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700408,
+            "alias": "I-bank8-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700408,
+            "candidateId": 700408,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700409,
+            "alias": "J-unknown-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700410,
+            "alias": "K-bank6-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700410,
+            "candidateId": 700410,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700411,
+            "alias": "L-bank8-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700411,
+            "candidateId": 700411,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "bank-z"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700400": 3,
+        "700401": 3,
+        "700402": 3,
+        "700403": 3,
+        "700404": 3,
+        "700405": 3,
+        "700406": 3,
+        "700407": 3,
+        "700408": 3,
+        "700409": 3,
+        "700410": 3,
+        "700411": 3
+      },
+      "labelReasons": {
+        "700400": "Same verified skill/work fit; full quality protocol unavailable.",
+        "700401": "Same fit; result only comparable inside its bank/grade/rubric.",
+        "700402": "Same fit; raw100 does not establish superiority over another bank.",
+        "700403": "Same verified fit and accepted higher grade; quality unknown.",
+        "700404": "Same fit; cross-grade quality incomparable.",
+        "700405": "Same fit; cross-grade quality incomparable.",
+        "700406": "Same verified fit; no complete protocol.",
+        "700407": "Same fit and same group result as B.",
+        "700408": "Same fit and same group result as C.",
+        "700409": "Same verified fit; accepted higher grade.",
+        "700410": "Same fit and same group result as E.",
+        "700411": "Same fit and same group result as F."
+      },
+      "expectedEligibleIds": [
+        700400,
+        700401,
+        700402,
+        700403,
+        700404,
+        700405,
+        700406,
+        700407,
+        700408,
+        700409,
+        700410,
+        700411
+      ]
+    },
+    {
+      "id": "salary-actual-context",
+      "split": "control-holdout",
+      "purpose": "Remote API employer has a known monthly gross budget. Full-proof applicants expecting double that budget are less useful than compatible or unresolved applicants; unknown tax basis is not proven mismatch.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700500,
+            "alias": "Z-fit-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700500,
+            "candidateId": 700500,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700501,
+            "alias": "Y-fit-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700501,
+            "candidateId": 700501,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 90,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700502,
+            "alias": "X-fit-annual",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 1920000,
+            "salaryMax": 2400000,
+            "salaryPeriod": "year",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700502,
+            "candidateId": 700502,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700503,
+            "alias": "W-fit-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700503,
+            "candidateId": 700503,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700504,
+            "alias": "V-unknown-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "net",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700504,
+            "candidateId": 700504,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700505,
+            "alias": "U-unknown-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "net",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700505,
+            "candidateId": 700505,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700506,
+            "alias": "A-expensive-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700506,
+            "candidateId": 700506,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700507,
+            "alias": "B-expensive-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700507,
+            "candidateId": 700507,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700508,
+            "alias": "C-expensive-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700508,
+            "candidateId": 700508,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700509,
+            "alias": "D-expensive-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700509,
+            "candidateId": 700509,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700510,
+            "alias": "E-office-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700510,
+            "candidateId": 700510,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700511,
+            "alias": "F-office-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 400000,
+            "salaryMax": 500000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700511,
+            "candidateId": 700511,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "salary-z"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700500": 4,
+        "700501": 4,
+        "700502": 4,
+        "700503": 4,
+        "700504": 3,
+        "700505": 3,
+        "700506": 2,
+        "700507": 2,
+        "700508": 2,
+        "700509": 2,
+        "700510": 1,
+        "700511": 1
+      },
+      "labelReasons": {
+        "700500": "Full fit and compatible known monthly gross expectations.",
+        "700501": "Full fit and compatible known monthly gross expectations.",
+        "700502": "Annual gross expectations genuinely overlap after period alignment.",
+        "700503": "Full fit and compatible expectations.",
+        "700504": "Net expectations cannot be converted without tax facts; unresolved, not mismatch.",
+        "700505": "Unresolved tax basis; full skills and remote format.",
+        "700506": "Full fit but known salary floor exceeds employer ceiling.",
+        "700507": "Full fit but known salary floor exceeds employer ceiling.",
+        "700508": "Known incompatible salary, cannot be hidden by technical group.",
+        "700509": "Known incompatible salary.",
+        "700510": "Both salary and work format disagree.",
+        "700511": "Both salary and work format disagree."
+      },
+      "expectedEligibleIds": [
+        700500,
+        700501,
+        700502,
+        700503,
+        700504,
+        700505,
+        700506,
+        700507,
+        700508,
+        700509,
+        700510,
+        700511
+      ]
+    },
+    {
+      "id": "freshness-tradeoff",
+      "split": "development",
+      "purpose": "An API team uses real recency and adequate work format. Labels retain plausible tradeoffs rather than manufacturing a perfect weighted metric: two-day-old result and today result are substantively alike; 180-day stale proof is less useful.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700600,
+            "alias": "Z-today83",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700600,
+            "candidateId": 700600,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700601,
+            "alias": "Y-day2-100",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-04T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700601,
+            "candidateId": 700601,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-04T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700602,
+            "alias": "X-day1-98",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 98,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-05T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700602,
+            "candidateId": 700602,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 98,
+            "submittedAt": "2026-10-05T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700603,
+            "alias": "W-day3-96",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 96,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-03T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700603,
+            "candidateId": 700603,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 96,
+            "submittedAt": "2026-10-03T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700604,
+            "alias": "V-day7-90",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-29T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700604,
+            "candidateId": 700604,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 90,
+            "submittedAt": "2026-09-29T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700605,
+            "alias": "U-day14-92",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 92,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-09-22T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700605,
+            "candidateId": 700605,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 92,
+            "submittedAt": "2026-09-22T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700606,
+            "alias": "A-stale100",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-04-09T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700606,
+            "candidateId": 700606,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-04-09T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700607,
+            "alias": "B-stale100",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-04-08T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700607,
+            "candidateId": 700607,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-04-08T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700608,
+            "alias": "C-stale83",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-04-09T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700608,
+            "candidateId": 700608,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-04-09T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700609,
+            "alias": "D-stale83",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-03-20T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700609,
+            "candidateId": 700609,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-03-20T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700610,
+            "alias": "E-day60-100",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-08-07T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700610,
+            "candidateId": 700610,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-08-07T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700611,
+            "alias": "F-day60-83",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Офис",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-08-07T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700611,
+            "candidateId": 700611,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-08-07T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fresh-z"
+          }
+        }
+      ],
+      "relevanceLabels": {
+        "700600": 3,
+        "700601": 4,
+        "700602": 4,
+        "700603": 4,
+        "700604": 3,
+        "700605": 3,
+        "700606": 2,
+        "700607": 2,
+        "700608": 1,
+        "700609": 1,
+        "700610": 3,
+        "700611": 2
+      },
+      "labelReasons": {
+        "700600": "Current full fit, lower comparable score.",
+        "700601": "Two days is still current; much stronger same-bank result.",
+        "700602": "Current full fit in accepted higher grade; quality not cross-compared.",
+        "700603": "Current full fit in another group.",
+        "700604": "Recent full fit.",
+        "700605": "Recent full fit.",
+        "700606": "Full proof at freshness boundary; score alone does not make current.",
+        "700607": "Stale full proof; higher grade alone not current.",
+        "700608": "Stale and office format mismatch.",
+        "700609": "Stale and office format mismatch.",
+        "700610": "Some age but strong same-bank result; tradeoff retained.",
+        "700611": "Moderate age and format mismatch."
+      },
+      "expectedEligibleIds": [
+        700600,
+        700601,
+        700602,
+        700603,
+        700604,
+        700605,
+        700606,
+        700607,
+        700608,
+        700609,
+        700610,
+        700611
+      ]
+    },
+    {
+      "id": "fsp-common-fit",
+      "split": "control-holdout",
+      "purpose": "FSP evidence is a bounded positive context signal for admitted applicants with otherwise equal common fit. It must not create an eligibility bypass, nor a technical group ordering.",
+      "need": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "requiredSkills": [
+          "Python"
+        ],
+        "desirableSkills": [
+          "SQL",
+          "API contracts",
+          "Idempotency"
+        ],
+        "workFormat": "Удалённо",
+        "salaryMin": 140000,
+        "salaryMax": 220000,
+        "salaryPeriod": "month",
+        "salaryType": "gross"
+      },
+      "candidates": [
+        {
+          "profile": {
+            "userId": 700700,
+            "alias": "Z-fsp-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700700,
+            "candidateId": 700700,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700701,
+            "alias": "Y-fsp-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700701,
+            "candidateId": 700701,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700702,
+            "alias": "X-fsp-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 90,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700702,
+            "candidateId": 700702,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 90,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700703,
+            "alias": "W-fsp-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700703,
+            "candidateId": 700703,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700704,
+            "alias": "V-fsp-unknown",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700705,
+            "alias": "U-fsp-unknown",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": true,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700706,
+            "alias": "A-no-fsp-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700706,
+            "candidateId": 700706,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Middle",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700707,
+            "alias": "B-no-fsp-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 100,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700707,
+            "candidateId": 700707,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Senior",
+            "score": 100,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700708,
+            "alias": "C-no-fsp-middle",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700708,
+            "candidateId": 700708,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v8",
+            "grade": "Middle",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-z"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700709,
+            "alias": "D-no-fsp-senior",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 83,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": {
+            "attemptId": 1700709,
+            "candidateId": 700709,
+            "programId": "backend-python",
+            "programVersion": "signal-backend-python-v6",
+            "grade": "Senior",
+            "score": 83,
+            "submittedAt": "2026-10-06T00:00:00.000Z",
+            "state": "verified",
+            "comparisonPolicy": "same-program-version-rubric-v1",
+            "rubricKey": "fsp-a"
+          }
+        },
+        {
+          "profile": {
+            "userId": 700710,
+            "alias": "E-no-fsp-unknown",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Middle",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        },
+        {
+          "profile": {
+            "userId": 700711,
+            "alias": "F-no-fsp-unknown",
+            "specialization": "Backend / Python",
+            "verifiedGrade": "Senior",
+            "verifiedScore": 99,
+            "verifiedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "stack": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "statedSkills": [
+              "Python",
+              "SQL",
+              "API contracts",
+              "Idempotency"
+            ],
+            "workFormat": "Удалённо",
+            "salaryMin": 160000,
+            "salaryMax": 200000,
+            "salaryPeriod": "month",
+            "salaryType": "gross",
+            "latestAssessmentAt": "2026-10-06T00:00:00.000Z",
+            "hasFspHistory": false,
+            "visibility": "pseudonymous",
+            "consentMatching": true,
+            "demoMode": true
+          },
+          "assessment": null
+        }
+      ],
+      "relevanceLabels": {
+        "700700": 4,
+        "700701": 4,
+        "700702": 4,
+        "700703": 4,
+        "700704": 4,
+        "700705": 4,
+        "700706": 3,
+        "700707": 3,
+        "700708": 3,
+        "700709": 3,
+        "700710": 3,
+        "700711": 3
+      },
+      "labelReasons": {
+        "700700": "Admitted full fit with verified synthetic FSP signal.",
+        "700701": "Admitted full fit with FSP signal.",
+        "700702": "Admitted full fit with FSP signal.",
+        "700703": "Admitted full fit with FSP signal.",
+        "700704": "Full verified fit plus FSP; unknown quality is not zero.",
+        "700705": "Full verified fit plus FSP in accepted higher grade.",
+        "700706": "Admitted full fit; no FSP context signal.",
+        "700707": "Admitted full fit; no FSP context signal.",
+        "700708": "Admitted full fit; no FSP context signal.",
+        "700709": "Admitted full fit; no FSP context signal.",
+        "700710": "Same full fit; quality unknown.",
+        "700711": "Same full fit and accepted higher grade."
+      },
+      "expectedEligibleIds": [
+        700700,
+        700701,
+        700702,
+        700703,
+        700704,
+        700705,
+        700706,
+        700707,
+        700708,
+        700709,
+        700710,
+        700711
+      ]
+    }
+  ],
+  "metamorphicAssertions": {
+    "renameEquivalentTechnicalIdentifiers": {
+      "versions": {
+        "signal-backend-python-v6": "signal-backend-python-v62",
+        "signal-backend-python-v8": "signal-backend-python-v11",
+        "signal-frontend-typescript-v2": "signal-frontend-typescript-v42",
+        "signal-frontend-typescript-v3": "signal-frontend-typescript-v10"
+      },
+      "rubricRule": "prefix zz- to originally a-prefixed keys and aa- to others; bijective strings preserve partitions"
+    },
+    "gradePromotion": {
+      "queryId": "equal-fit-incomparable-and-unknown",
+      "candidateId": 700400,
+      "from": "Middle",
+      "to": "Senior",
+      "changes": [
+        "verifiedGrade"
+      ],
+      "expectation": "purely accepted higher grade does not worsen order when all common factors and unknown-quality status are unchanged"
+    },
+    "qualityOrder": {
+      "queryId": "equal-fit-comparable-result",
+      "higherId": 700300,
+      "lowerId": 700306,
+      "expectation": "100 above 83 in identical provenance group despite reverse aliases"
+    },
+    "unknownQuality": {
+      "queryId": "equal-fit-incomparable-and-unknown",
+      "candidateIds": [
+        700400,
+        700403,
+        700406,
+        700409
+      ],
+      "expectation": "qualityStatus=not_measured and qualityScore=null; profile verifiedScore=99 is not recovered as quality"
+    },
+    "permutations": [
+      "reverse",
+      "rotate3",
+      "even-then-odd"
+    ],
+    "transitivity": "every admitted triple after pool positions assigned"
+  },
+  "humanValidation": {
+    "participants": 0,
+    "expertReviewers": 0,
+    "status": "not_measured"
+  }
+}

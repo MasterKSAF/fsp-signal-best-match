@@ -1,0 +1,76 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791198099042,
+      "tag": "0000_cynical_ultron",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791211843924,
+      "tag": "0001_required_tz",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791223506668,
+      "tag": "0002_complete_track",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791224667009,
+      "tag": "0003_research_protocol_snapshot",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791299000000,
+      "tag": "0004_multi_resume",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791299100000,
+      "tag": "0005_trust_operations",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791300000000,
+      "tag": "0006_assessment_purpose",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791300100000,
+      "tag": "0007_reviewer_scope",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791300200000,
+      "tag": "0008_resume_pool_digest",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791350000000,
+      "tag": "0009_microtask_resume",
+      "breakpoints": true
+    }
+  ]
+}

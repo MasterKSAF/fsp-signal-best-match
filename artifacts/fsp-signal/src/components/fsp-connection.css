@@ -1,0 +1,41 @@
+.fsp-connection { margin-top: 22px; padding: 26px; }
+.fsp-connection-heading { display: flex; align-items: center; gap: 13px; flex-wrap: wrap; }
+.fsp-connection-heading h2 { margin: 0; font-size: 17px; letter-spacing: -.35px; }
+.fsp-connection-heading p { margin: 3px 0 0; font-size: 12px; color: hsl(var(--muted-foreground)); }
+.fsp-connection-icon, .fsp-achievement-icon { display: grid; place-items: center; flex: 0 0 auto; color: hsl(var(--primary)); background: hsl(var(--primary) / .09); border-radius: 13px; width: 44px; height: 44px; }
+.fsp-connection-status { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 6px 10px; font-size: 10px; font-weight: 800; background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+.fsp-connection-status.connected_demo { color: hsl(var(--primary)); background: hsl(var(--primary) / .1); }
+.fsp-connection-message { margin: 17px 0; color: hsl(var(--muted-foreground)); font-size: 13px; line-height: 1.65; }
+.fsp-connection-id { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px 16px; border: 1px solid hsl(var(--border)); border-radius: 11px; }
+.fsp-connection-id > div:first-child { min-width: 0; }
+.fsp-connection-id span { display: block; margin-bottom: 4px; font-size: 10px; color: hsl(var(--muted-foreground)); }
+.fsp-connection-id b { display: block; font-family: var(--app-font-mono); font-size: 13px; overflow-wrap: anywhere; }
+.fsp-connection-editor { display: grid; gap: 9px; margin-top: 18px; }
+.fsp-connection-editor > label { font-size: 12px; font-weight: 800; }
+.fsp-connection-input-row { display: flex; align-items: stretch; gap: 8px; }
+.fsp-connection-input-row > input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid hsl(var(--input)); border-radius: 9px; background: hsl(var(--background)); color: hsl(var(--foreground)); font-size: 13px; }
+.fsp-connection-input-row .button { flex-shrink: 0; }
+.fsp-connection-help, .fsp-connection-muted { color: hsl(var(--muted-foreground)); font-size: 11px; line-height: 1.6; margin: 0; }
+.fsp-connection-editor .fsp-consent { display: flex; align-items: flex-start; gap: 10px; margin: 6px 0; color: hsl(var(--muted-foreground)); font-size: 11px; line-height: 1.6; font-weight: 500; cursor: pointer; }
+.fsp-consent input { flex: 0 0 auto; width: 17px; height: 17px; margin-top: 2px; accent-color: hsl(var(--primary)); }
+.fsp-connection-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fsp-achievements { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; padding: 0; gap: 12px; margin: 15px 0; }
+.fsp-achievements li { min-width: 0; display: flex; align-items: flex-start; gap: 11px; padding: 15px; background: hsl(var(--muted) / .65); border-radius: 11px; }
+.fsp-achievement-icon { width: 34px; height: 34px; border-radius: 10px; }
+.fsp-achievements b { font-size: 12px; }
+.fsp-achievements p, .fsp-achievements time { margin: 5px 0 0; font-size: 11px; line-height: 1.5; color: hsl(var(--muted-foreground)); }
+.fsp-achievements time { display: block; font-size: 10px; }
+.fsp-connection-details { margin-top: 19px; padding-top: 15px; border-top: 1px solid hsl(var(--border)); color: hsl(var(--muted-foreground)); font-size: 11px; line-height: 1.65; }
+.fsp-connection-details summary { cursor: pointer; display: flex; align-items: center; gap: 7px; font-weight: 700; }
+.fsp-connection-details p { margin: 10px 0 0; }
+.fsp-connection-details p svg { display: inline; vertical-align: middle; }
+.fsp-connection-error { color: hsl(var(--destructive)); font-size: 12px; line-height: 1.6; margin: 13px 0 0; }
+.fsp-connection-feedback { color: hsl(var(--primary)); font-size: 12px; line-height: 1.6; margin: 13px 0 0; }
+.fsp-connection-notice { font-size: 12px; line-height: 1.6; margin-top: 15px; }
+@media (max-width: 650px) {
+  .fsp-connection { padding: 20px; }
+  .fsp-connection-status { margin-left: 0; }
+  .fsp-achievements { grid-template-columns: 1fr; }
+  .fsp-connection-input-row { flex-direction: column; }
+}
+@media print { .fsp-connection .no-print, .fsp-connection-details { display: none !important; } }

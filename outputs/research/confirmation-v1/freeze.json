@@ -1,0 +1,7 @@
+{
+  "protocolSha256": "278fdc8ef232dd2e2bc65c82c246535b5dfca85a8f2c55f6c420754fed12651c",
+  "protocolFreezeStartedUtc": "2026-10-06T13:40:10Z",
+  "frozenBeforeAnyExperimentRun": true,
+  "episodeCount": 17,
+  "outputsGeneratedAtFreeze": false
+}

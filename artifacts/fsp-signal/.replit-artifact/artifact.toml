@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "FSP SIGNAL"
+description = "A Russian-language skills passport and explainable hiring-match app for candidates and employers, with practical KALIBR assessments, salary-transparent invitations, and consent-based contact sharing."
+version = "1.0.0"
+id = "artifacts/fsp-signal"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22553
+
+[services.development]
+run = "pnpm --filter @workspace/fsp-signal run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fsp-signal", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/fsp-signal/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22553"
+BASE_PATH = "/"

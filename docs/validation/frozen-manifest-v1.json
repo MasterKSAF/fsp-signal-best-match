@@ -1,0 +1,14 @@
+{
+  "version": "signal-grade-validation-v1",
+  "frozenBeforeEvaluation": true,
+  "frozenDate": "2026-10-06",
+  "origin": "AI-assisted synthetic team reference, not independent human expertise",
+  "files": {
+    "docs/validation/visible-forms-v1.json": "ba83f00b21168c3b0b2efaeaf825fe7de39ad7d9f66f4bfc227a27ec6ff75cc1",
+    "docs/validation/reference-answers-v1.json": "25baacd01c8b59d49345b6e804d5eefe1eb2d02a3f8bc2f1a416af9c4cf543dc",
+    "docs/validation/work-profiles-v1.json": "6ed2e0e04de649351b14cfe73dd35d5b009c101967c1c107e9d0349a46cb606d"
+  },
+  "development": "independent-v1",
+  "diagnosticHoldout": "independent-holdout-v1 (previous golden seed; diagnostic, not unseen human control)",
+  "freshControl": "grade-validation-20261006-fresh-control; newly generated public instances, labels frozen before scoring; unseen parameters, same semantic templates. Not an unseen construct or recruited people."
+}

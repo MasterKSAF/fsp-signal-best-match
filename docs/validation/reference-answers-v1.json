@@ -1,0 +1,1951 @@
+{
+  "version": "signal-grade-reference-v1",
+  "origin": "AI-assisted team-authored synthetic reference; no recruited people, no independent human experts.",
+  "independence": "Expected answers use only exported public prompts, CPython, SQLite and written semantic reasoning. This file does not read production oracle, scorer or requiredScore. Production assembly supplies public task inputs only.",
+  "forms": [
+    {
+      "id": "backend-python:Junior:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:339|200:339|409:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "3c70365f99c04dad068786e5a72e1a6150310e088399ae0488bdb4411c71ce35"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1615",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "5e3fc9071f4be4647b57a41346b71b7da52c822ea8f2763d03a827ba5afe1491"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять EXPLAIN ANALYZE INC-274 и сопоставить 339 ожидаемых с 1276 фактическими строками для tenant_id=739.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "a582a7dcd9edee2c620e25b13baf634c0e8faf453e86d23ed10022f5daad2bd3"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "339|339|925",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "72693dd9f52f03771cdf68af15ca74ac935d292acf0668368761cb5c4be361b9"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Передавать устойчивый evt-62134 и записывать его ledger вместе с эффектом ord-6897 до ack.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "a26e6f442b598a7762ba8e05a6ae7ff3914b12af022ca290b68de1cff56389b7"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "200:339|409:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "6702e1f0c8c019d868c030389c8a2dc3552c7d76d002e888cb7e5622e44aad00"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:811|412:811|200:812",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "f32adf6a43df6f6e8ca484682894b85afc06fc766a3bbdc1adeab6aa69f86b1e"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "2",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "b40bd22f59dc74343af6746555731a41ba00dd29bac258e1449190c53c9c3ebf"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "0df287f9fd5f782ed685705af050083d84707e619df7556ba66706b267f914f1"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:809|old:809|ok:810",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "882155f726e4ab39c80526f2b521d2076d0c410d65ef4faa9f74cbe3f3f4fc11"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "9d65ea5da9f975df9b5f8c1d11fb2366a40fa2f1e04103f0ecd7166ae6566e96"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "808|813|813",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "da921b6e3f22e866079c4db5f5abb073731789258ff063c5122e547c35e78485"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:197|200:197|409:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "b203c78c7a6b8565a61e153f6dae3d4105cf0ba31b675907a90f26ec8fa9274e"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1282",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "9548868386b7734214730df02c8010188f4cc39336d198639ea5a768a83e29c5"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять EXPLAIN ANALYZE INC-735 и сопоставить 197 ожидаемых с 1085 фактическими строками для tenant_id=482.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "94bf5a3a91fd8885d6f5a8d939fd83bffa7ba5bd8f6d96de63ef7b310ee7e345"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "197|197|897",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "8d735cc350722bc7262df98d9c2aaf1ef03a98cf22fc0d979a18c0278c011aef"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Передавать устойчивый evt-62757 и записывать его ledger вместе с эффектом ord-3655 до ack.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "67623c3b89cb2a8c97e3ec7d80032b6d3119cc5021a9c4a6ba1aac447a50c5fa"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "200:197|409:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "6685324b78124d3e716de14c3a9628b51c137603c20474a4ff06ad91ba977eb4"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:126|412:126|200:127",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "7374994a5f1548ac7351dbe6cd7d88cb769670654a0f094fe1bbe71ff2fe0f66"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "2",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "798ec0badf210abf1c58637164a732163c25ac803e441d36b3610c0c4f32c336"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "2d4cc2b419717171fb73da77dad4285872883862a1591b376357f8f7608b02e3"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:124|old:124|ok:125",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "4cb97373c78e2da9862b0e8eadb3014edffe9f6e7c08e7695645cdf8c84126e4"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "f21280e0b885dc9de76018eaeb6646d3497644ac1b98df87112437c3ddc50b4d"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "123|128|128",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "e9105167eaf6a74d14a94bbb599931a7c2ed1e12d3dd496cc803098a4a094cd2"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:305|200:305|409:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "35caa2175723ae17d2613ff456e7343c2ff21714031899ab8f9fdcd3ede8ad18"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1209",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "83260eae5b70b1c89e97733196f8fbc5cca9e529375b9704fd9f4036f876813c"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять EXPLAIN ANALYZE INC-496 и сопоставить 305 ожидаемых с 904 фактическими строками для tenant_id=760.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "74f1c7f16406c5b81ca2eb15d3166537fa43a136c233d555cef81be4f1f80d86"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "305|305|1046",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "1c9848acbc7d909ff47b86897cfe51ed7bd0a15a33db604cc80dd36535142d3c"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Записать изменение ord-1443 и outbox-событие evt-91173 в одной транзакции, затем доставлять outbox отдельно.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "7a9388009f27e00172067f526959bceaa0ed23e490099f890dfbe995f676097e"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "200:305|409:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "a4f31e63bd491e27398091228546deff2837ffda6e0323a3b11fc18e52642ddf"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Junior:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:589|412:589|200:590",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "524632b47500fc7ef3866ab3cf69cac908f455db8d8bf834b2c4ec15dd206085"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "2",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "c7887d34777f8a9cf50c3459265a49398da959d8d99c2014057e6f020d583b98"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Сопоставить частоту исходящих запросов, лимит провайдера и Retry-After; ограничить повторные запросы.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "4fa736497d2668702dda531383441dc923ba148ffeee2bad7914ff7265261aa8"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:587|old:587|ok:588",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "8da49918cd263a784fbb2fdb3d39ebae56c78240cdacbb164be73bf854126e59"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Добавить необязательное поле с договорённым значением по умолчанию, проверить совместимость старых и новых клиентов.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "21b1547503187e623d9e1df6e9db1dd03a2ac18e1718928e95320391133b2ce1"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "586|591|591",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "12440625d8910ba141ef1da0683aff786931c3994b38841e4db30399eef1eb48"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:339|201:586|200:339|409:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "5b04e4c055b0b9c31eaf1c952a7a55fd6011cc56dc658390cd03af255a4b66ff"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1615",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "7ae476ea91a3222371ed411f6af6b99466063d53d1184da6f6b8402a9b385b08"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять граф pg_locks для INC-274 и связать 339 ожидающих блокировку с запросами tenant_id=739.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "e23d5cad65c336acb6940ab8721427c34157fa3143963502ad9d017d10ad0e7f"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:339|D:339|A:1615|D:1615",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "67566ee50bd56bdc6431173d8bce5f22510bfbdc34a34b3f6f665abae2006fed"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Уникально закрепить (739, evt-62134) и эффект в одной транзакции, затем отправить ack.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "df9aa261e698facb9d99667cf7d55bf96592e1f3dfd89daab0ee13a482ac8452"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "201:586|409:339|200:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "a59fc5346e299154e7618640dfb9c33e2dd7776072dedc9ea48a155623e785c2"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:811|200:811|412:811|200:812",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "95907571396b19b5e19af2fb710e8e389ed3e06f23ad96498a4cd066f771ab69"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1622",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "444905090ca0c9980e1afe1fd530e29d4d3959bb4e1cebf0f23793cc412e651e"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "0efd949cb827a0489c7b43e68963a4a1ab59dbddb0cd7a23d31f91a6f9c0966b"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:810|old:810|old:810|ok:811",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "4d9dd9b40660f6919ceefbf4f14be56bab9f2cf96abf0e223a47424b909d9762"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "c1e5af0342a167b1ccb0bdad42824c69ee982fcbe583a4c7d0a65aa3ab558012"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "808|813|817",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "75c786d9dcb5bc7704527f778aa8dbfff69facd572c213e0f5ef72a748c4ed53"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:197|201:700|200:197|409:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "1b02e5af35599df37e4f3c63c7dda2244a98db3faa7b1fbb29803f2d7b909c46"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1282",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "1aa68faaa4e00f31200b0be3441d14b1baecbedd17a75c0c677d13c8693eae28"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять граф pg_locks для INC-735 и связать 197 ожидающих блокировку с запросами tenant_id=482.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "a83c6af34388f19c44141f52e0423bc95707ad321d7d0b39cd6282b3c58e3827"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:197|D:197|A:1282|D:1282",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "15f76fa51704abae23373a5a055be16b05a3abb3c09c976d225c63987599e290"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Уникально закрепить (482, evt-62757) и эффект в одной транзакции, затем отправить ack.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "88bdccc3a1d72eaafa79d4141c3ec5fbe86e80eefc620714395f03a15c66b958"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "201:700|409:197|200:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "222473e014005a81ec7aa4d9fb3bd27acf219dbaeda2a39f790f5aacaae76b00"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:126|200:126|412:126|200:127",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "789b811b31ffc14a821e1af7993321b5ce61e01ffa6f06c2e0e3d89620492f66"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "252",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "0f8e0b287969ec00c8338fa0d106c830afedbcd811529bc3dc4f479b82e9223d"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "6cb703fa5f167bedd86548f89c8b6373bb47a7f20912cc9557a32ad0c128c7c8"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:125|old:125|old:125|ok:126",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "b2db32e507c51f3d84c737da8433a8aa7799cd476107981c7c4e75df13bd8511"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "fc1fdc6f086940682a99fc6eec99f88e2ad10ef41becf35aa4f5c204a22441f9"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "123|128|132",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "30370da8beda533bab075b07fe5a3b00d51b1f837d36243df11e4c5008ba14d2"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:305|201:741|200:305|409:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "5e47b115a53b049a2e765a46c9a4a19c4040da7e3fed165adfa15f411de1f2fc"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1209",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "69d2ed93b764987b6afbddd280cc1a53b420b0eba319b4fd106cb63f01b7bed8"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Снять граф pg_locks для INC-496 и связать 305 ожидающих блокировку с запросами tenant_id=760.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "5fef1586acae843aa087386cf6514d396af1b208144da57472b50f8b3106053a"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:305|D:305|A:1209|D:1209",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "c9f74d3a53a6c84d1608ca67cbc68f2526b7b3dbe654f7b8786aaad99e50f9c8"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Повторять outbox evt-91173 с тем же id, а consumer фиксирует дедуплицированный эффект ord-1443 до ack.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "040a8f46399904818b7462a82cb1d6161d8c611960b86482647572ab42c79b8d"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "201:741|409:305|200:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "0bfaa3aacc5ac5d33ce66b4d8ee2bf0e23d5e402197519d157758421a84fa242"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Middle:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "200:589|200:589|412:589|200:590",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "e9ac2d1b5482a7c2de7305b43f8e9d5b52e4279987901b44c1c017ca2df664cc"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1178",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "9b6ebe50517d8f77360ec4b389d8dcf2b72027fa4daf61238e7d7e752c9fdb55"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "По trace связать повторы с исходным запросом, задать общий retry budget и deadline; ограничить усиление нагрузки.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "d609afaf7383c2b54efda55a28a8ee62a5a35cc16a73d52f0ea09cdbf7d014b9"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:588|old:588|old:588|ok:589",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "65f75f03b17022f0ff1e2985604ce7a975b5c7886a0c5bc00487b7b8ae53b283"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Расширить схему, развернуть совместимые writers, выполнить проверяемый backfill и переключить readers; удалять старое последним.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "6cee998f404eaad5151d59aa0ae0687cee22c1532556cc0aed8336556bfc03c7"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "586|591|595",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "104d6b88bf628331af64b0df506b41ecc7ef96d34e421f54b52011d55dc17c7b"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:development:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:339|412:339|409:339|200:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "9f5963cca01bc8a8cdd428f1bc0e5e8d60bece6ac88a889125199d7393f4c33a"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1276",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "93e1cd9a9eca7ca5d66ec137bfc265cf8940fc53ee24e00f646d2a34b44ee597"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Остановить canary INC-274 флагом и сохранить plan/lock trace для tenant_id=739 с p99=1276.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "96147aa19f4d952220013d1c1cd7532e8df5adc6d628ba2b312d74a179df7fab"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:44:925|D:44:925|S:44:925|A:45:2201",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "3bd8d34222822718e00fd3dff5c972377b2de7281cbf65867f7728528fbb2066"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Публиковать версионированный evt-62134 через outbox, сохранить совместимый consumer и dedup по стабильному id до cutover.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "32ed1920ca70f8533c0c01f5815b596b1b0c255ea76d825ca2bcd5a35b95662d"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "412:339|409:339|200:339",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "f5eb53b7adce377ba1378ccf8a0792fcc05bb27170ef543e612966ffbceb76e2"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:development:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "422:810|200:811|412:811|200:812",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "5cbaea48b94f75a013910173f732a28ff7422a5b61263643fa247a5e0d92f721"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "811",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "af0dad4ddc4eb7233ccef51d6f9bead8218b934e0f8d35a1364dc7ad4993e651"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "16c503262e77db3aaef5391178f30e4be0aaee29523610714e7f75d6cfc49fc1"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:809|gap:809|ok:810|ok:811",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "6537a36a9fdec795356eb07fe387873592c06c7b374c4927faa2385a95a7d424"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "b311798813d802199df1c38d2502748d2e0a68b5ca42d9c2de87850340bddb9f"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "813|817|817",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "ea5c2ef331dabf6a5564015515b7b7b9b97307c2fe60d7686e87e06ae7b39cb5"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:diagnostic-holdout:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:197|412:197|409:197|200:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "c2f23ca66f384ffc7c1527e687903d62b56f28d56ca062de376c47e5dfefbc13"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "1085",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "01f11e880588b56de62507b99d75fd58e8e8193e974cad1ae95a6083d4c8e96b"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Остановить canary INC-735 флагом и сохранить plan/lock trace для tenant_id=482 с p99=1085.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "95ab1969e4ef5a6773fdeaccca9aa4992720dfbce250cebc61f57db349b90d63"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:39:897|D:39:897|S:39:897|A:40:1982",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "c73e93fe806149ee83bdd4058aa426c03839d548174dc37beaedef9ff33e289e"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Публиковать версионированный evt-62757 через outbox, сохранить совместимый consumer и dedup по стабильному id до cutover.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "1b66ae04f8a3d1e6a1890e2ce15d25b07560565e4cd04b4910b5b1503225416f"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "412:197|409:197|200:197",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "e2b3f6e6c0284421315934518e5f8e8241d98ce1369200afae973410f6ca9808"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:diagnostic-holdout:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "422:125|200:126|412:126|200:127",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "d520d84d190d3f47ab956628d116c78e30120fb18c784f6573b3c8970e454f6c"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "126",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "e631e9a74f6498ed0dcf19f1848e09840f8f11bf555873f333233cd391dc8421"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "46eecdfd25c2de239d759c7dcc1320c6fed7af4427da91d3d45f3e63de8929ce"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:124|gap:124|ok:125|ok:126",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "720bd66713ada125dd06fb372f6b51bd83bdc8e656f2dfbd67dd4c9719dbbaab"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "5e018f1af901c780f736686fd1b047489c10554c534d5a9683118e97e632f110"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "128|132|132",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "c1b9a1622f2ff7ac7dcffddcb14a73c08a5d387dd2beb484bb7744c035b2a598"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:fresh-control:A",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "201:305|412:305|409:305|200:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "3fa8898a61657aa93795d877b51c3cd95c36267f1d2142d93033872a2537616b"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "904",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "45ae6a58e49f1d51acf742c84313f25714e1de4da49d05dca9eb89ce305cf1b3"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Остановить canary INC-496 флагом и сохранить plan/lock trace для tenant_id=760 с p99=904.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "9cf1fbd06086ea6d6c9d993021e30c674108f6dca7b4f6d8bd2504c83ddd1e4f"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "A:35:1046|D:35:1046|S:35:1046|A:36:1950",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "30306a54e87bb65e0a36b34292f0f4d821806a04f888d5910cdb97b883fb46f4"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "Сохранить глобально устойчивый evt-91173, outbox lease и dedup ledger ord-1443 на весь replay-window.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "c303e65e2e5413e7bfd34ccf22e67f58743c53ea75291aed664617ec843d1081"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "412:305|409:305|200:305",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "830986473aed029ed51d971d587983875b1249d7738bfc130e5843242cfeda8b"
+        }
+      ]
+    },
+    {
+      "id": "backend-python:Senior:fresh-control:B",
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "API-контракты",
+          "answer": "422:588|200:589|412:589|200:590",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "344d99f6cd9695e8cc221f59a3d240b7f617ad0309f3f64045e5922ca5abdc20"
+        },
+        {
+          "slot": 1,
+          "family": "SQL и данные",
+          "answer": "589",
+          "reason": "Independent SQLite query/row reconstruction from visible data.",
+          "publicPromptSha256": "854917975610222319c14fe7cdc3aedda9c93f7652c2aa39e46e84a3b6771899"
+        },
+        {
+          "slot": 2,
+          "family": "Диагностика инцидента",
+          "answer": "Ввести admission control по приоритету и возрасту, ограничить ретраи; наблюдать drain rate и ошибки до расширения мощности.",
+          "reason": "Observe evidence before changing capacity; protect budgets/contain the incident rather than magnify retries or guess a database cause.",
+          "publicPromptSha256": "c5e7dbc6680144547fcd3532ac910071d14390e8cf43529bcd66295790bd3a02"
+        },
+        {
+          "slot": 3,
+          "family": "Идемпотентность",
+          "answer": "ok:587|gap:587|ok:588|ok:589",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "f4d47438ace4b138ca0afd4cb9fa8bbd4032f6b9ed80f819ee9eea4892968e12"
+        },
+        {
+          "slot": 4,
+          "family": "Выбор архитектуры",
+          "answer": "После сверки данных, остановки старых writers и наблюдаемого cutover сохранить окно отката, затем убрать старый путь.",
+          "reason": "Persist and scope identity/side effect atomically; acknowledge after effect; version migration keeps compatible readers/writers and rollback.",
+          "publicPromptSha256": "6217ebdfa7375525c7fd66876d168bd7b651fbcb382cadd8cc101ab1b8d62b06"
+        },
+        {
+          "slot": 5,
+          "family": "Изменение условия",
+          "answer": "591|595|595",
+          "reason": "Independent CPython execution of visible state transitions; ordered return values.",
+          "publicPromptSha256": "74e2efc8a969d29bc6f7ce6d533cf101bd94b4a6b1f36517b3e9aaf7f834d1c2"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:808|wait|wait",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "fc5e5611832b9035e4290d9b2a29230eda70a7388bebe378d0cd25c863e25a45"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "813",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "12a272d1df539c2a5e775330971d71d09f2cfafbafc3c8f03488220a88530994"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "7d09133e9c81514c6e7f9f567e60ca3e43b2a355fb2f86ec01ea4605f498c596"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-808|last-808|open-808",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "51306d8e02d07516ef39ba9b2cf27032d81eec9c9d69e88dd8df2e9b4dd230f2"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "26a35d762ac58bf39468225680a92669d9b731aed2535c13029c0c738da6d0c9"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-808|new-808|late-808",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "51b04e83c4fe3534f42dc3acd8cfcd26c4639d4d6b803daa52f34a5fa1cba48d"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "809|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "fe7f8afaeb931bca06086740228806ead29fd378a1f49ed9b5598adb1536bce1"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "812",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "d123d0b1a006b29d244f1653b50b5830bfd365895cccb73710e493e1afa85c00"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "dfb4be89c4c59a27d0fcc8c679992f8a0b3950c3ffa72ad6176d32fefd31af72"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "f478d7a29dc72a44a15c3f4f7da976908e9e6511beac6f0c565cfd7e988bcc95"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "ed3c089755de69a36ea15f052c7caaf27fc9f90529e5fc0297032b19b825315e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "808|810|810",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "75885d6f9e54c8e4d3f8ee04d625dd16cfa83a8fadf6b53dfd2c5cf3ac03351b"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:123|wait|wait",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "326eb46fc179b67a7f2f5374891f662fbaa68be20325e42e2e5927574cd5aaec"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "128",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "23a8fbc78a817ff254a5ac81a0a20edd25e58f48de8a2a5a376ba8a3a5d350c1"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "eecca775b3060896ff83ee00446c7530b4c74abcd9ebb2b7586fd795cf770fd3"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-123|last-123|open-123",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "86fdbcd476fb9341c03e4292d975829c1ec403ca7c4603a3674a41f8de23e44f"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "0a383d5a5d50022a26848ee3681897da3a5a01dea5ebd91508c29c14d63d6eed"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-123|new-123|late-123",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "07f2e728a13b66005d7b0c3dbb14360a9daf4e6c29c55462e7c3a8c317dcac19"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "124|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "103123ca5f26ef780a625d951fcac4bb0d44446b90986d48ac57359c2dbadf61"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "127",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "ea07418034f745dd5da05a0df3f99fed9d96501e287f37054cb614cd166fd2eb"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "5a86a2a3f2235e2427b45d9cd1abd66edad12f32ffac0bbfba4360c3c9b119cf"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "68fffcce8cb33af1058284b97cd10b0e2228eb432c4fb3b3a63df8bec223db57"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "9650c331fa490d5f925bd607fa898f10308b91eccffd0e43b2c47e8a68aadc61"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "123|125|125",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "c15795d425abc4d281a2d0180ab7397479a6078b0321d018e431a3e1afffb165"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:586|wait|wait",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "6b039e1f17c77763029e8212ed9c3a572ac931f2a5f8751c17cca9e81bba6fb9"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "591",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "e4c72431f3b6b520d4d2b946b4413d542cea8bc5c7e98629ff1d21dd63eb22b0"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Сопоставить long task с обработчиком, уменьшить синхронную работу и измерить задержку повторно.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "6eadc8e2a3a136160acd4aee3e9f39e61698a2729b3b24bd843f952adac34ec3"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-586|last-586|open-586",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "8c17fa40d42fd6cba862db8319520a832748b1c97b400d984be5d738beebd60f"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "У общего владельца; передавать значение и событие изменения, производный список вычислять из него.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "ed8b7ea358189df6a930504a5fc1aae8d41b7ed911f4fa60a6dbbdd184ba55f4"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-586|new-586|late-586",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "52773ab4709e2227c4118d10cf9f52f58cfd2c30f088541fdc9197f38c1037e6"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Junior:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Junior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "587|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "46aa9a11afdd12ddbf41a8ff3abaaf00d09fb8cf4b09c5307209016f2c74f079"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "590",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "d2e35e270a68206b810afe83e100f623d3011cdf500d8d7e4b0c3b8f13597d5d"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Запустить независимые запросы одновременно, сохранить обработку ошибки каждого и измерить waterfall.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "c3c60b15aec2eaf158786ce7733266573fd3b14f0e69c2d394e5e52558a5350b"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "83d7cadafe5a0a1d16fef0c77d6bcd06aa994320fbae59c78760bb4409abbe3a"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Проверить поле на границе данных и использовать согласованное значение по умолчанию в модели интерфейса.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "4245af3c44eecb202ef1c22c08f2ecac6ae92e5efb5614cfe1abb23261a8b1c6"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "586|588|588",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "f4747ed523872731d567b551b2acfdcf627732f7bb0b5aafbd2ef2ae7d51df59"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:808|wait|retry",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "fd04d86ec1c5ea924fd05bc9c2b0a34f2f70ce01f53c8510501b78ed88a6f98c"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "817",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "b5a2e0e649ea33d8d165324e908fe209aca8dd61d5159d0acfe678b1649ba95f"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "67b0a8ad47dd6f244c54ff7dd0f6acac7de71ef331024bc56644cca9d51f9936"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-808|last-808|first-808|open-808",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "3c5ce2e47f879e49dfec86013f21889931009ae8a9113973a89579a388f40eaf"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "37b6b7a5f3ee8227aeb27dfacca6b758f63e68cbe836c5d48ae10d627e293a4e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-808|new-808|new-808",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "c7fd15cb644f6378e192b333688f24981030116f462316842b6be9709ae7c260"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "809|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "e07c513ad528cf4c64168087f9537ca364320244b0cf27d24e94ecb54a7d5aad"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "2430",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "137db3e35408b9087bf5ce4f289a884e5c28a7ed583d710deb148af7b7666e35"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "aa2431d2d3bcbaaa18623c37fc3f9307a2e985520ff4613ae204f571ac5b4cb3"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "621f04512ead430fe3f40477b11097b36498e707f8027a25a06c1402155c30aa"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "9deee66778ab899ce8d53046274537f7d83a5cfe3bc6f8d713a9f16bae6fea21"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "810|810|810",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "9178b6262777c7bc2f2ace175522239d2297fa7c7b80541f938aa9797a2a3cbc"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:123|wait|retry",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "2792fddca2d61ec61fc3762d9fd3d9526c0e3addc26031797df09a1c6b421314"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "132",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "7b633cfc1ae7b0e79b300d06f98fef02f9be251e9aab4ed56893b9345710d701"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "152ea6b0826909ea84d33be480101ef5db713e78fec5abbc28960ccbbfcd489a"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-123|last-123|first-123|open-123",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "ac9319d73a21cb5570c089c0b74e39bb1b68a620ea99b117ac0b2590ef0327a8"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "37b6b7a5f3ee8227aeb27dfacca6b758f63e68cbe836c5d48ae10d627e293a4e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-123|new-123|new-123",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "c224bbe0c886e58dadc720c668a8f8a909e318b2eca03cbb3c8616c2493cda20"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "124|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "2a2c3da24027dd84b99cd9e41585f825a14957e4b07261ce19182dd050e81052"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "375",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "3eb46785cc5f4326bc90dc237cbaa8c4461d65dc2f97ff023ca23f340527cfea"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "f2fe951922cb59703862100d78a83b6b327dfcad98e30181eef00d4bd59d3e59"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "cdc902f4a42a0e30a9379f4510d57338c7efe937e4f0f3608ca98857a7f0e292"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "9deee66778ab899ce8d53046274537f7d83a5cfe3bc6f8d713a9f16bae6fea21"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "125|125|125",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "d5ab59c723a82da9f53b86969ea5e7a56302550dd79501fff4492d55206797d3"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:586|wait|retry",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "5764db8f1a8742d2b6ea7e2b03735033e32c4098aa54dc163caaaa77c1a9eac6"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "595",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "248272fd64117035e232ed11b49c4f23f48f5451cf1cf11c36dad8abfcd9f1c1"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Профилировать сам расчёт, вынести тяжёлую обработку из main thread и ограничить объём рендера.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "1c8b949e26e19c66c09b7a31f2b8eb25175bed55633f84a4dac7de8dc7ba0bcf"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-586|last-586|first-586|open-586",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "1998f29d576afdac60d9bcf9650669f401cb106e5ffc8bfd64597d9f86e76552"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Хранить сериализуемый фильтр в URL, серверные ответы в кеше по этому ключу, локальный черновик отдельно.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "37b6b7a5f3ee8227aeb27dfacca6b758f63e68cbe836c5d48ae10d627e293a4e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-586|new-586|new-586",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "8226810e0a2025a70cba85b32e9758b88503c0438935871a4893bd90b73cae63"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Middle:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Middle",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "587|invalid|invalid",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "5ed3ac128d0e6d39733aafb8171544034a80d3a39d222ef46074d40c866a1a6b"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "1764",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "bb3146bc02d84228c26f0a18f41d92fd4cd182fac453480ef01aa421028e7737"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "После получения ID профиля запустить независимые детали параллельно с ограничением числа запросов.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "6ccd670949b1593c7a97a4846e3e3d062e806bfc53aab5320d62845b888c9d87"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|submit:Отправлено|submit:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "f80d85b31c06be97ad0cd7b2a134406c7991454d3bbf4bc73f7e50936fb5c936"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Преобразовать и проверить оба DTO в единую модель на границе API; тестировать обе ветки контракта.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "9deee66778ab899ce8d53046274537f7d83a5cfe3bc6f8d713a9f16bae6fea21"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "588|588|588",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "19253065b30d92c91e3e6d0ec3af222bf6baf2f0844e314fbc8ade6c5f7e4da3"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:development:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:808|wait|retry|stop",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "73c050fbf24aaf3050d95fbcab69eef0bfbd6f292c71bc0229cf7256ebd5d311"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "819",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "74ad58e63fda21b7dc0e8e92bb8a2cc45c82c0bbd3152aec7e058d691b3cb8dc"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "e45d9cafb75f3220f32818019c9a848d418c234a71f17cbb611c931a7121bdc7"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-808|last-808|first-808|heading-808",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "17a22f7c8496b292faf383d442e49306f4529603372f82b05375701697cf4d1e"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "aaecfdfbe9433dd264d0dc58430b78df8fd34fe964b27de570de947046ce50f5"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-808|new-808|new-808",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "e43b9f10f6e27508f54e16f8e9cab2364f28282bebd6baacc4e0054a7053f5f6"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:development:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-v1",
+      "batch": "development",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "809|invalid|version",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "74204612717b7113119b6d33172bc13366d398f00ce87a1bdd6308119b5a2803"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "812",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "561b1ac58311eaab0bce99471b8d32653cd08feef0909462537a5525398e1e1b"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "f082b2e6cb113d4cf43044c304a397ab6f0c7cd3388f4619db844432c427db5e"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|heading:Отправлено|heading:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "4ab5a7d5254663b123ca8c9ae60cdfe343149c4516b6979dbd4f2cc97d4449d7"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "563d1da08ef0e932c8b75af1bf1ed1f4d3f0c1b909b17999d7ae264f1e88f92e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "810|810|810",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "0645b02403edfbe9eeacb9e51d2e434d5cf180817fa806432f0dde1723fe728c"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:diagnostic-holdout:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:123|wait|retry|stop",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "031d527162a8c27bd365f7fed883d5e38c6d14baba73e3b097816a1253ccb007"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "134",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "348c7013b5fdd0f2426c809e4cdc3620cc0fa27066798e668680dc42f6be200e"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "8db56f6cb10f3b30130876ece06bd1ba9b685f2c6519b949da9cac835421b006"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-123|last-123|first-123|heading-123",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "e80561322d9aacba9a350cf3b76fe5312e6df5efc0e1e7c9600e77aea6dfe839"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "aaecfdfbe9433dd264d0dc58430b78df8fd34fe964b27de570de947046ce50f5"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-123|new-123|new-123",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "ee3ace0c1be3289aefa7468a5aeb2428fc3ffc4580107c4503cad5013115d9d3"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:diagnostic-holdout:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "independent-holdout-v1",
+      "batch": "diagnostic-holdout",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "124|invalid|version",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "907d6a30c9a8a255f3b2e62c29e8dee31b453a13548acdc14ad8c29e28232d20"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "127",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "c5eaf991be439cd06f58ea9788fd5d5cf8222f5a6b928a5327641123810d4108"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "f082b2e6cb113d4cf43044c304a397ab6f0c7cd3388f4619db844432c427db5e"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|heading:Отправлено|heading:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "89fc3e87d234f88e82a3befe827817268a97eb34bca89477949238cf30ecbee7"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "563d1da08ef0e932c8b75af1bf1ed1f4d3f0c1b909b17999d7ae264f1e88f92e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "125|125|125",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "4d6e6b7d2219489d48a7f983fd5e2b7beb0e335c78111376a4a53ff88d7fa4f3"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:fresh-control:A",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "A",
+      "variant": 0,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "value:586|wait|retry|stop",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "acbbda1ac74c2f7f39f44d22ba3704ae7c19f2c12d6335975986190e7506d203"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "597",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "26904b5135dcf9c320d3c628e2788b157227e1a50d2a215cc38fbfb11948dc52"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Разделить стоимость сериализации, передачи и commit, сократить данные и виртуализировать видимую часть; повторно измерить.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "3e614f8354a3542d145d0422e59ae7139911d9ea41c569b96ce6d49a5b55567e"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "first-586|last-586|first-586|heading-586",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "2056e278f923328ede4c1852b3f8eaa833e69c1ba2b5d2b92a355882b668debc"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Разделить серверный снимок и черновик, проверять ревизию при записи, показывать конфликт и явное решение пользователю.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "aaecfdfbe9433dd264d0dc58430b78df8fd34fe964b27de570de947046ce50f5"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "new-586|new-586|new-586",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "aedd1c84b6df9e5cf2bf13387c4f0bdcd0e7651b6a7fdd33cfa15cf9f0ce0a51"
+        }
+      ]
+    },
+    {
+      "id": "frontend-typescript:Senior:fresh-control:B",
+      "programId": "frontend-typescript",
+      "programVersion": "signal-frontend-typescript-v1",
+      "grade": "Senior",
+      "seed": "grade-validation-20261006-fresh-control",
+      "batch": "fresh-control",
+      "form": "B",
+      "variant": 1,
+      "reference": [
+        {
+          "slot": 0,
+          "family": "TypeScript",
+          "answer": "587|invalid|version",
+          "reason": "Discriminated union branches / runtime object-number-version checks traced independently.",
+          "publicPromptSha256": "7311f43f4990117cc2f1bcc1b6ba81cab6c84b035f92abbd725a938cf0f1a9db"
+        },
+        {
+          "slot": 1,
+          "family": "Состояние интерфейса",
+          "answer": "590",
+          "reason": "A: sequential add/reset/stale/add; B: filter/map then sum active points; no mutation from ignored action.",
+          "publicPromptSha256": "aaa790308ceba83a775d32ade26875ced351e9110ca2abc79f9d282ace11a96c"
+        },
+        {
+          "slot": 2,
+          "family": "Производительность интерфейса",
+          "answer": "Дедуплицировать запрос в границе аккаунта, сохранить ключи авторизации и параллелить только независимые ветки.",
+          "reason": "Change the measured bottleneck; preserve request dependencies, account-scoped authorization and measurable error handling.",
+          "publicPromptSha256": "f082b2e6cb113d4cf43044c304a397ab6f0c7cd3388f4619db844432c427db5e"
+        },
+        {
+          "slot": 3,
+          "family": "Доступность",
+          "answer": "email:Ошибка|heading:Отправлено|heading:Отправлено",
+          "reason": "Focus skips disabled, wraps, restores surviving trigger/fallback; stale feedback cannot replace current success.",
+          "publicPromptSha256": "99cd232a7326661796ebd0fc8f227cb545db9a25e336f26b602746862cc3a01b"
+        },
+        {
+          "slot": 4,
+          "family": "Архитектура интерфейса",
+          "answer": "Версионировать формат кеша, явно мигрировать или инвалидировать старые записи и сохранить наблюдаемый обратимый переход.",
+          "reason": "Keep explicit ownership and contract boundaries; reject silent conflicting revisions and incompatible cache schemas.",
+          "publicPromptSha256": "563d1da08ef0e932c8b75af1bf1ed1f4d3f0c1b909b17999d7ae264f1e88f92e"
+        },
+        {
+          "slot": 5,
+          "family": "Асинхронный интерфейс",
+          "answer": "588|588|588",
+          "reason": "A: identity/current request plus mounted check; B: only current revision can roll back; a failed old update cannot destroy the newer one.",
+          "publicPromptSha256": "4849daebacf35819e1184c994baf8e50e2088786500162935bb12d4b2e86549c"
+        }
+      ]
+    }
+  ]
+}

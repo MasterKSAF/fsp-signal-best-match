@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "signal-demo-montage-v2",
+  "site": "http://127.0.0.1:4314",
+  "frameDirectory": "outputs/video/release-0.5.0/frames",
+  "brand": "Signal · 0.5.0",
+  "disclosure": "Реальные экраны · вымышленные аккаунты · монтаж без озвучки",
+  "bankVersions": ["signal-backend-python-v6", "signal-frontend-typescript-v2"],
+  "matchingVersion": "fsp-signal-match-v5",
+  "currentImage": null,
+  "conversionReceipt": "outputs/verification/release-0.5.0-media-conversion.json",
+  "captureProvenance": {
+    "proof": "docs/browser-acceptance-0.5.0.md",
+    "workflow": "Actual UI actions on the local 0.5.0 stage: separate reviewer accounts, real server-generated qualifications, profile copies, revision conflict, contact revocation, ordinary comparison/catalog filters and complaint/independent appeal.",
+    "answers": "Reviewer one solved visible generated tasks; reviewer two submitted an intentionally incorrect/partial answer. No hidden oracle, mocked score or automatic grade was used.",
+    "sourceScope": "Genuine stage captures before final performance freeze; evidence of these UI actions, not an attestation of the final API bundle or a human validation study.",
+    "excludedFrames": ["reviewer-two-foreign-attempt-denied.jpg: earlier generic error capture", "reviewer-two-foreign-attempt-denied-current.jpg: captured while loading; replaced by the fully rendered final error capture", "compare-full-pool.jpg: replaced by the later current UI capture with corrected header spacing"]
+  },
+  "scenes": [
+    {"frame":"signal-home-0.5.0.png", "durationSeconds":6, "title":"Signal · нужные люди и подходящая работа", "caption":"Кандидаты подтверждают навыки; работодатели сравнивают их с требованиями задачи."},
+    {"frame":"explicit-signal-qualification-focused.png", "durationSeconds":8, "title":"Кандидат сам подтверждает выбранный уровень", "caption":"Квалификация Signal и практика компании имеют разные назначения и результаты."},
+    {"frame":"reviewer-one-result-context.png", "durationSeconds":8, "title":"Первая независимая проверка · Junior подтверждён", "caption":"Настоящая серверная оценка ответов. Сохранение и повторный вход проверены отдельно."},
+    {"frame":"reviewer-two-result-context.png", "durationSeconds":7, "title":"Вторая проверка · собственная попытка и результат", "caption":"Неполный неверный ответ не подтверждает Middle и не меняет квалификацию первого кандидата."},
+    {"frame":"reviewer-two-copy-cooldown.png", "durationSeconds":7, "title":"Копия резюме сохраняет ограничения человека", "caption":"Смена резюме не снимает cooldown. Готовые достижения не подставляются проверяющему."},
+    {"frame":"reviewer-two-foreign-attempt-denied-final.png", "durationSeconds":6, "title":"Чужая попытка недоступна", "caption":"Второй аккаунт не читает задачи и ответы первого по подставленному attemptId."},
+    {"frame":"five-resumes-specialization.png", "durationSeconds":8, "title":"До пяти резюме · отдельные специализации", "caption":"Frontend-копия не наследует Backend-грейд. Новые копии закрыты до собственного согласия."},
+    {"frame":"two-tabs-revision-conflict.png", "durationSeconds":8, "title":"Две вкладки · защита несохранённого черновика", "caption":"Конфликт ревизий показан человеку; изменения другой вкладки не перезаписываются."},
+    {"frame":"compare-full-pool-final.png", "durationSeconds":8, "title":"Сравнение двух кандидатов в полном пуле", "caption":"Позиции 1 и 2 из 7 относятся ко всей выдаче. Равное соответствие показано отдельно."},
+    {"frame":"catalog-whole-resume-filter.png", "durationSeconds":7, "title":"Каталог · условия выполняются в одном резюме", "caption":"Подтверждённый TypeScript найден; добавление неподтверждённого React даёт пустой результат."},
+    {"frame":"addressed-contact-revoked.png", "durationSeconds":7, "title":"Контакты адресованы выбранной компании", "caption":"После отзыва согласия работодатель видит прекращение доступа вместо контактов."},
+    {"frame":"employer-appeal-accepted.png", "durationSeconds":8, "title":"Жалоба, решение и независимая апелляция", "caption":"Другой модератор снял ограничение; события и причины сохранены в журнале."}
+  ]
+}

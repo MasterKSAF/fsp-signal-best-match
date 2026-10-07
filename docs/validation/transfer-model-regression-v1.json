@@ -1,0 +1,264 @@
+{
+  "version": "signal-transfer-model-regression-v1",
+  "frozenBeforeModelImplementation": true,
+  "frozenAt": "2026-10-06T07:56:23.865275+00:00",
+  "origin": "AI-assisted hand-authored independent mechanism fixtures, not target answer keys or human study",
+  "cases": [
+    {
+      "id": "junior-signed-numbers",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-signed-numbers",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(17, -4)\nwrite(17, -4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:-4|200:-4|409:-4",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    },
+    {
+      "id": "middle-resource-scope",
+      "programId": "backend-python",
+      "grade": "Middle",
+      "sourceId": "backend-python:Middle:development:A",
+      "targetId": "independent-regression:middle-resource-scope",
+      "sourcePrompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(739, \"op-8508\", \"h-a\", 339)\nr2 = create(740, \"op-8508\", \"h-a\", 586)\nr3 = create(739, \"op-8508\", \"h-a\", 1276)\nr4 = create(739, \"op-8508\", \"h-b\", 1419)\n```",
+      "targetPrompt": "```python\nwrite(\"team,a\", 9, 5)\nwrite(\"team,b\", 9, 8)\nwrite(\"team,a\", 9, 5)\nwrite(\"team,a\", 9, 12)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:5|201:8|200:5|409:5",
+        "reasonContains": null,
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "senior-digest-ledger",
+      "programId": "backend-python",
+      "grade": "Senior",
+      "sourceId": "backend-python:Senior:development:A",
+      "targetId": "independent-regression:senior-digest-ledger",
+      "sourcePrompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-8508\", 43, \"h-a\", 339)\nr2 = apply(\"op-8508\", 44, \"h-a\", 586)\nr3 = apply(\"op-8508\", 43, \"h-b\", 1276)\nr4 = apply(\"op-8508\", 43, \"h-a\", 1419)\n```",
+      "targetPrompt": "```python\nwrite(21, 'bad', 4)\nwrite(21, 'ok', 5)\nwrite(22, 'ok', 6)\nwrite(22, 'ok', 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:4|409:4|201:6|200:6",
+        "reasonContains": null,
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "frontend-junior-null",
+      "programId": "frontend-typescript",
+      "grade": "Junior",
+      "sourceId": "frontend-typescript:Junior:development:A",
+      "targetId": "independent-regression:frontend-junior-null",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+      "targetPrompt": "```typescript\nread({count:7,version:2})\nread({count:'7',version:2})\nread(null)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "wait|wait|error:TypeError",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    },
+    {
+      "id": "frontend-middle-branches",
+      "programId": "frontend-typescript",
+      "grade": "Middle",
+      "sourceId": "frontend-typescript:Middle:development:A",
+      "targetId": "independent-regression:frontend-middle-branches",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+      "targetPrompt": "```typescript\nread({kind:'ready',value:-2,count:7})\nread({kind:'error',retry:true,count:'7'})\nread({kind:'error',retry:false,count:-1})\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "value:-2|retry|stop",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    },
+    {
+      "id": "frontend-senior-no-kind",
+      "programId": "frontend-typescript",
+      "grade": "Senior",
+      "sourceId": "frontend-typescript:Senior:development:A",
+      "targetId": "independent-regression:frontend-senior-no-kind",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+      "targetPrompt": "```typescript\nread({count:11,version:2})\nread({count:'11',version:2})\nread({count:11,version:1})\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "wait|wait|wait",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    },
+    {
+      "id": "junior-same-template-source-method",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-same-template-source-method",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nr1 = create(\"new\", \"one\", 11)\nr2 = create(\"new\", \"one\", 12)\nr3 = create(\"new\", \"two\", 13)\n```",
+      "strategy": "same-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:11|200:11|409:11",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    },
+    {
+      "id": "middle-same-template-source-method",
+      "programId": "backend-python",
+      "grade": "Middle",
+      "sourceId": "backend-python:Middle:development:A",
+      "targetId": "independent-regression:middle-same-template-source-method",
+      "sourcePrompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(739, \"op-8508\", \"h-a\", 339)\nr2 = create(740, \"op-8508\", \"h-a\", 586)\nr3 = create(739, \"op-8508\", \"h-a\", 1276)\nr4 = create(739, \"op-8508\", \"h-b\", 1419)\n```",
+      "targetPrompt": "```python\nr1 = create(1, \"k\", \"h\", 11)\nr2 = create(2, \"k\", \"h\", 12)\nr3 = create(1, \"k\", \"h\", 13)\nr4 = create(1, \"k\", \"different\", 14)\n```",
+      "strategy": "same-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:11|201:12|200:11|409:11",
+        "reasonContains": null,
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "senior-same-template-source-method",
+      "programId": "backend-python",
+      "grade": "Senior",
+      "sourceId": "backend-python:Senior:development:A",
+      "targetId": "independent-regression:senior-same-template-source-method",
+      "sourcePrompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-8508\", 43, \"h-a\", 339)\nr2 = apply(\"op-8508\", 44, \"h-a\", 586)\nr3 = apply(\"op-8508\", 43, \"h-b\", 1276)\nr4 = apply(\"op-8508\", 43, \"h-a\", 1419)\n```",
+      "targetPrompt": "```python\nr1 = apply(\"k\", 1, \"h\", 11)\nr2 = apply(\"k\", 2, \"h\", 12)\nr3 = apply(\"k\", 1, \"other\", 13)\nr4 = apply(\"k\", 1, \"h\", 14)\n```",
+      "strategy": "same-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:11|412:11|409:11|200:11",
+        "reasonContains": null,
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "frontend-senior-same-template",
+      "programId": "frontend-typescript",
+      "grade": "Senior",
+      "sourceId": "frontend-typescript:Senior:development:A",
+      "targetId": "independent-regression:frontend-senior-same-template",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+      "targetPrompt": "```typescript\nlabel({kind:'ready',value:14})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\nlabel({kind:'error',retry:false})\n```",
+      "strategy": "same-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "value:14|wait|retry|stop",
+        "reasonContains": null,
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "no-backend-write",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:no-backend-write",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nread(17, 4)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "call-count",
+        "recognizedCallCount": 0
+      }
+    },
+    {
+      "id": "no-frontend-read",
+      "programId": "frontend-typescript",
+      "grade": "Middle",
+      "sourceId": "frontend-typescript:Middle:development:A",
+      "targetId": "independent-regression:no-frontend-read",
+      "sourcePrompt": "Вычислите возвращаемые строки; TypeScript с strict:true. Укажите значения в порядке вызовов через | без пробелов.\n\n```typescript\ntype State = { kind: 'ready'; value: number } | { kind: 'loading' } | { kind: 'error'; retry: boolean };\nfunction label(s: State): string {\n  if (s.kind === 'ready') return `value:${s.value}`;\n  if (s.kind === 'error') return s.retry ? 'retry' : 'stop';\n  return 'wait';\n}\nlabel({kind:'ready',value:808})\nlabel({kind:'loading'})\nlabel({kind:'error',retry:true})\n```",
+      "targetPrompt": "```typescript\nlabel({count:1})\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "call-count",
+        "recognizedCallCount": 0
+      }
+    },
+    {
+      "id": "unsupported-middle-signature",
+      "programId": "backend-python",
+      "grade": "Middle",
+      "sourceId": "backend-python:Middle:development:A",
+      "targetId": "independent-regression:unsupported-middle-signature",
+      "sourcePrompt": "Ключ идемпотентности уникален только внутри арендатора. Проследите вызовы и введите четыре результата строго как `код:заказ|...` без пробелов.\n\n```python\nstored = {}\ndef create(tenant, key, body_hash, next_order):\n    full_key = (tenant, key)\n    previous = stored.get(full_key)\n    if previous is None:\n        stored[full_key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(739, \"op-8508\", \"h-a\", 339)\nr2 = create(740, \"op-8508\", \"h-a\", 586)\nr3 = create(739, \"op-8508\", \"h-a\", 1276)\nr4 = create(739, \"op-8508\", \"h-b\", 1419)\n```",
+      "targetPrompt": "```python\nwrite(1, 9, 5)\nwrite(\"b\", 9, 8)\nwrite(\"a\", 9, 5)\nwrite(\"a\", 10, 12)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "signature",
+        "recognizedCallCount": 4
+      }
+    },
+    {
+      "id": "unsupported-expression",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:unsupported-expression",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(1 + 2, 4)\nwrite(3, 4)\nwrite(3, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "literal",
+        "recognizedCallCount": 2
+      }
+    },
+    {
+      "id": "partial-call-list",
+      "programId": "backend-python",
+      "grade": "Senior",
+      "sourceId": "backend-python:Senior:development:A",
+      "targetId": "independent-regression:partial-call-list",
+      "sourcePrompt": "В региональном API ключ хранит версию и хеш исходной команды. Проследите четыре вызова. Введите результаты строго как `код:заказ|...` без пробелов.\n\n```python\nrecords = {}\ndef apply(key, version, body_hash, next_order):\n    previous = records.get(key)\n    if previous is None:\n        records[key] = (version, body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != version:\n        return f\"412:{previous[2]}\"\n    if previous[1] != body_hash:\n        return f\"409:{previous[2]}\"\n    return f\"200:{previous[2]}\"\n\nr1 = apply(\"op-8508\", 43, \"h-a\", 339)\nr2 = apply(\"op-8508\", 44, \"h-a\", 586)\nr3 = apply(\"op-8508\", 43, \"h-b\", 1276)\nr4 = apply(\"op-8508\", 43, \"h-a\", 1419)\n```",
+      "targetPrompt": "```python\nwrite(21, \"ok\", 4)\nwrite(21, \"ok\", 5)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "call-count",
+        "recognizedCallCount": 2
+      }
+    },
+    {
+      "id": "changed-source-method",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:changed-source-method",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n        return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"202:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(17, 4)\nwrite(17, 4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "source-method",
+        "recognizedCallCount": 0
+      }
+    }
+  ]
+}

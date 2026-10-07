@@ -1,0 +1,498 @@
+{
+  "evaluatorVersion": "signal-traceability-regression-evaluator-v1",
+  "datasetVersion": "signal-traceability-regression-v1",
+  "datasetSha256": "5bcf243f34c7f2be835d2759bdc20f67f63682724a14905487a3ad058824ccab",
+  "boundaryDatasetVersion": "signal-traceability-quality-boundary-v1",
+  "boundaryDatasetSha256": "d15d6d52aa0081f034c11b058ec331a7a1a4b314f1c9aa3eb5ae3d2a9f74be77",
+  "freeze": {
+    "version": "signal-traceability-regression-v1",
+    "frozenAt": "2026-10-06T08:24:13.490Z",
+    "file": "outputs/quality/qa-cycle-01/traceability-regression-v1.json",
+    "sha256": "5bcf243f34c7f2be835d2759bdc20f67f63682724a14905487a3ad058824ccab",
+    "bytes": 26698,
+    "prePatchMatchingSha256": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+    "originalDatasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+    "newCases": 3,
+    "fixedOriginalCases": 3,
+    "labelsAndOldFilesModified": false
+  },
+  "boundaryFreeze": {
+    "version": "signal-traceability-quality-boundary-v1",
+    "frozenAt": "2026-10-06T08:27:51.636Z",
+    "file": "outputs/quality/qa-cycle-01/traceability-quality-boundary-v1.json",
+    "sha256": "d15d6d52aa0081f034c11b058ec331a7a1a4b314f1c9aa3eb5ae3d2a9f74be77",
+    "bytes": 4151,
+    "prePatchMatchingSha256": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44"
+  },
+  "boundaryTimingCorrection": {
+    "status": "authored-semantic-regression-after-patch-before-first-boundary-measurement",
+    "observedSourceSha256AtFreeze": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+    "reason": "Parallel implementation had already changed the matcher when the additional100-vs83/FSP boundary file was frozen. Its earlier prose saying beforeimplementation is superseded by this exact timing disclosure; it is not an independent prepatch control. The main six-case freeze remains prepatch and unchanged."
+  },
+  "algorithmVersion": "fsp-signal-match-v5",
+  "algorithmSha256": "5132063b3585b3e3c7a3cc98644287288058994c1e9b6b12a29ae016ab9bde44",
+  "beforeAlgorithmSha256": "054a9d7879cf622634cb4d6bc2d089f200268550547914ef954b23d883a2df1f",
+  "evaluatorSha256": "6af6fcf5f60446c403dd4ecc841a4a3f028ccdcf2e8b022dfa68fbc1ec7a8d7d",
+  "measurementAt": "2026-10-06T08:32:42.034Z",
+  "evaluationClock": "2026-10-06T00:00:00.000Z",
+  "originalDatasetSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+  "controlUsage": "consumed-original-control regression + frozen semantic counterexamples; not a fresh blind metric benchmark",
+  "checks": {
+    "originalFixedIdsImprove": true,
+    "originalInputsAndLabelsUntouched": true,
+    "originalUnknownRemainsNullAndAdmitted": true,
+    "genericBusinessCasesPass": true,
+    "aliasReversalInvariant": true,
+    "detectsBeforeDefect": true
+  },
+  "originalCases": [
+    {
+      "queryId": "heldout-qstore-import",
+      "originalLabelsAndPoolPreserved": true,
+      "beforeRanking": [
+        6210,
+        6203,
+        6209,
+        6201,
+        6205,
+        6207,
+        6200,
+        6204,
+        6202,
+        6199,
+        6208,
+        6206
+      ],
+      "afterRanking": [
+        6209,
+        6201,
+        6205,
+        6207,
+        6203,
+        6200,
+        6204,
+        6202,
+        6199,
+        6210,
+        6208,
+        6206
+      ],
+      "pairs": [
+        {
+          "betterId": 6203,
+          "lowerId": 6210,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 2,
+            "lowerPosition": 1,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 5,
+            "lowerPosition": 10,
+            "passed": true
+          }
+        }
+      ],
+      "unknown": [
+        {
+          "candidateId": 6210,
+          "qualityScore": null,
+          "qualityStatus": "not_measured",
+          "eligible": true
+        }
+      ]
+    },
+    {
+      "queryId": "heldout-ledger-data",
+      "originalLabelsAndPoolPreserved": true,
+      "beforeRanking": [
+        6165,
+        6171,
+        6172,
+        6159,
+        6163,
+        6170,
+        6161,
+        6167,
+        6166,
+        6158,
+        6164,
+        6160,
+        6157,
+        6162,
+        6168,
+        6169
+      ],
+      "afterRanking": [
+        6159,
+        6165,
+        6163,
+        6170,
+        6161,
+        6167,
+        6166,
+        6158,
+        6164,
+        6160,
+        6157,
+        6162,
+        6171,
+        6172,
+        6168,
+        6169
+      ],
+      "pairs": [
+        {
+          "betterId": 6159,
+          "lowerId": 6171,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 4,
+            "lowerPosition": 2,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 1,
+            "lowerPosition": 13,
+            "passed": true
+          }
+        },
+        {
+          "betterId": 6159,
+          "lowerId": 6172,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 4,
+            "lowerPosition": 3,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 1,
+            "lowerPosition": 14,
+            "passed": true
+          }
+        },
+        {
+          "betterId": 6163,
+          "lowerId": 6171,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 5,
+            "lowerPosition": 2,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 3,
+            "lowerPosition": 13,
+            "passed": true
+          }
+        },
+        {
+          "betterId": 6163,
+          "lowerId": 6172,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 5,
+            "lowerPosition": 3,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 3,
+            "lowerPosition": 14,
+            "passed": true
+          }
+        },
+        {
+          "betterId": 6170,
+          "lowerId": 6171,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 6,
+            "lowerPosition": 2,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 4,
+            "lowerPosition": 13,
+            "passed": true
+          }
+        },
+        {
+          "betterId": 6170,
+          "lowerId": 6172,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 6,
+            "lowerPosition": 3,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 4,
+            "lowerPosition": 14,
+            "passed": true
+          }
+        }
+      ],
+      "unknown": [
+        {
+          "candidateId": 6171,
+          "qualityScore": null,
+          "qualityStatus": "not_measured",
+          "eligible": true
+        },
+        {
+          "candidateId": 6172,
+          "qualityScore": null,
+          "qualityStatus": "not_measured",
+          "eligible": true
+        }
+      ]
+    },
+    {
+      "queryId": "dev-platform-api",
+      "originalLabelsAndPoolPreserved": true,
+      "beforeRanking": [
+        6112,
+        6114,
+        6102,
+        6105,
+        6109,
+        6107,
+        6103,
+        6108,
+        6104,
+        6106,
+        6101,
+        6111,
+        6110,
+        6113
+      ],
+      "afterRanking": [
+        6102,
+        6112,
+        6105,
+        6109,
+        6107,
+        6103,
+        6108,
+        6104,
+        6106,
+        6101,
+        6114,
+        6111,
+        6110,
+        6113
+      ],
+      "pairs": [
+        {
+          "betterId": 6102,
+          "lowerId": 6114,
+          "betterRelevance": 4,
+          "lowerRelevance": 2,
+          "before": {
+            "betterPosition": 3,
+            "lowerPosition": 2,
+            "passed": false
+          },
+          "after": {
+            "betterPosition": 1,
+            "lowerPosition": 11,
+            "passed": true
+          }
+        }
+      ],
+      "unknown": [
+        {
+          "candidateId": 6114,
+          "qualityScore": null,
+          "qualityStatus": "not_measured",
+          "eligible": true
+        }
+      ]
+    }
+  ],
+  "newCases": [
+    {
+      "caseId": "business-fit-before-traceability-fsp",
+      "expected": [
+        880001,
+        880002
+      ],
+      "before": [
+        880001,
+        880002
+      ],
+      "after": [
+        880001,
+        880002
+      ],
+      "beforePassed": true,
+      "afterPassed": true,
+      "aliasReversalPassed": true,
+      "allRemainAdmitted": true,
+      "states": [
+        {
+          "candidateId": 880001,
+          "position": 1,
+          "baseScore": 100,
+          "rankingScore": 100,
+          "fspBonus": 0,
+          "qualityScore": null,
+          "qualityStatus": "not_measured"
+        },
+        {
+          "candidateId": 880002,
+          "position": 2,
+          "baseScore": 49,
+          "rankingScore": 51.9583333333,
+          "fspBonus": 3,
+          "qualityScore": 100,
+          "qualityStatus": "measured"
+        }
+      ]
+    },
+    {
+      "caseId": "equal-fit-full-proof-before-legacy-fsp",
+      "expected": [
+        880010,
+        880011
+      ],
+      "before": [
+        880011,
+        880010
+      ],
+      "after": [
+        880010,
+        880011
+      ],
+      "beforePassed": false,
+      "afterPassed": true,
+      "aliasReversalPassed": true,
+      "allRemainAdmitted": true,
+      "states": [
+        {
+          "candidateId": 880010,
+          "position": 1,
+          "baseScore": 100,
+          "rankingScore": 100,
+          "fspBonus": 0,
+          "qualityScore": 83,
+          "qualityStatus": "measured"
+        },
+        {
+          "candidateId": 880011,
+          "position": 2,
+          "baseScore": 100,
+          "rankingScore": 103,
+          "fspBonus": 3,
+          "qualityScore": null,
+          "qualityStatus": "not_measured"
+        }
+      ]
+    },
+    {
+      "caseId": "fsp-positive-at-equal-fit-complete-proof-result",
+      "expected": [
+        880020,
+        880021
+      ],
+      "before": [
+        880020,
+        880021
+      ],
+      "after": [
+        880020,
+        880021
+      ],
+      "beforePassed": true,
+      "afterPassed": true,
+      "aliasReversalPassed": true,
+      "allRemainAdmitted": true,
+      "states": [
+        {
+          "candidateId": 880020,
+          "position": 1,
+          "baseScore": 100,
+          "rankingScore": 103,
+          "fspBonus": 3,
+          "qualityScore": 100,
+          "qualityStatus": "measured"
+        },
+        {
+          "candidateId": 880021,
+          "position": 2,
+          "baseScore": 100,
+          "rankingScore": 100,
+          "fspBonus": 0,
+          "qualityScore": 100,
+          "qualityStatus": "measured"
+        }
+      ]
+    },
+    {
+      "caseId": "comparable100-before83-with-fsp",
+      "expected": [
+        880031,
+        880030
+      ],
+      "before": [
+        880030,
+        880031
+      ],
+      "after": [
+        880031,
+        880030
+      ],
+      "beforePassed": false,
+      "afterPassed": true,
+      "aliasReversalPassed": true,
+      "allRemainAdmitted": true,
+      "states": [
+        {
+          "candidateId": 880031,
+          "position": 1,
+          "baseScore": 100,
+          "rankingScore": 100,
+          "fspBonus": 0,
+          "qualityScore": 100,
+          "qualityStatus": "measured"
+        },
+        {
+          "candidateId": 880030,
+          "position": 2,
+          "baseScore": 100,
+          "rankingScore": 103,
+          "fspBonus": 3,
+          "qualityScore": 83,
+          "qualityStatus": "measured"
+        }
+      ]
+    }
+  ],
+  "humanValidation": {
+    "status": "not_measured",
+    "participants": 0,
+    "expertReviewers": 0
+  },
+  "workingEnvironment": {
+    "localhost4310": "untouched",
+    "database": "not_used",
+    "docker": "not_used"
+  },
+  "limitations": [
+    "Unknown quality is null and no numeric historical score recovered. Full proof preference is a declared nonnumeric traceability business policy at equal common fit, not crossbank raw score equivalence.",
+    "Business fit stays primary: better concrete task fit must outrank lower-fit current evidence/FSP.",
+    "FSP priority tested only with otherwise equal business/provenance/result; this does not prove any universal dominance of FSP over superior skill quality.",
+    "The original intergroup control has already been measured. Later generic policy changes responding to independent QA must be marked subsequent regression iterations, not reported as untuned holdout proof.",
+    "Before executes an exact preserved pretraceability source054a9d with its preserved catalog dependency. After imports current production functions directly; no Docker/HTTP runtime claim.",
+    "The additional FSP/100-vs83 boundary was frozen after the matcher patch, before its first measurement; it is a semantic regression test, not an independent untouched control."
+  ]
+}

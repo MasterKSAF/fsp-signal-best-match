@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "signal-demo-montage-v060",
+  "applicationVersion": "0.6.0",
+  "site": "http://localhost:4364",
+  "frameDirectory": "outputs/release-0.6.0/media",
+  "brand": "Signal",
+  "disclosure": "Монтаж реальных экранов · синтетические аккаунты · техническая проверка 0.6.0",
+  "bankVersions": ["signal-backend-python-v6", "signal-frontend-typescript-v2"],
+  "matchingVersion": "fsp-signal-match-v6",
+  "humanPilot": false,
+  "captureProvenance": {
+    "proof": "outputs/verification/release-0.6.0/video-capture-provenance.json",
+    "proofSha256": "19cbb6e8f8f4eac7639112abcef815d22c54db1fef49cb322f24c568e20c82d1",
+    "workflow": "Twelve original source-runtime UI screenshots; reviewed by the agent. Compiled API acceptance and load are separate proofs.",
+    "answers": "Synthetic technical scenarios include genuine server scoring; no independent human pilot or performance claim.",
+    "scope": "Questionnaire and requirements-warning native JPEG bytes were copied under correct .jpg names; no pixel editing or image conversion. This inventory is not a continuous session recording."
+  },
+  "ordinaryAccounts": "Technical source UI screenshots; not a new ordinary-account registration recording.",
+  "demoAccounts": "Overview Demo and scoped synthetic reviewer states are explicitly synthetic; no production user is portrayed.",
+  "scenes": [
+    {"frame":"home.jpg","sha256":"e6fece35e40db40a4807a5a973de43a805cd920491ba2ae16990d0da987111a2","durationSeconds":6,"title":"Signal · нужные люди и подходящая работа","caption":"Ценность для кандидата и компании. Реальные экраны, синтетические данные."},
+    {"frame":"auth-demo.jpg","sha256":"2d5621263098dc846e2c9ce42097aeac517872a147809456cd024f8e31303e50","durationSeconds":5,"title":"Вход и обзорный Demo","caption":"Обзорные примеры отделены от личного режима и самостоятельной проверки."},
+    {"frame":"workspace.jpg","sha256":"4f9e0d0684dc1f8253466423e3c64da457f964164ca613e803659134ec4afed1","durationSeconds":8,"title":"Резюме под разные цели","caption":"До пяти документов; свои должность, роль и навыки сохраняются без выдуманных подтверждений."},
+    {"frame":"questionnaire.jpg","sha256":"ef51decdbdcd2c0c98fcd5455426d7edf9fd3a0c33ddb28f41c26c665700a977","durationSeconds":7,"title":"Первичный опрос","caption":"Предметная область и профессиональные цели. Заявленный уровень не является грейдом."},
+    {"frame":"evidence.jpg","sha256":"45f6b516d5b75bd4569d62efd0e161ca59816e9155ecd6548dd7d0efcbb209f5","durationSeconds":9,"title":"Мои подтверждения","caption":"Один источник: критерий, дата, версия и применимость. Копия резюме не создаёт новое достижение."},
+    {"frame":"qualification.jpg","sha256":"89c1eb9bc6da91d42e85fa89b271b4c8d2a77d174ea0bc5bf5c0a89a6f8810d7","durationSeconds":8,"title":"Квалификационный экзамен Signal","caption":"Программа и уровень подтверждаются явно. Сервер оценивает настоящую попытку."},
+    {"frame":"catalog.jpg","sha256":"abd5f09633a52dadf6a50aa048fdfea3e0e2dbb9253d0d8383e365225942fdcc","durationSeconds":8,"title":"Каталог без выдуманного Junior","caption":"Документ без грейда остаётся видимым; следующий шаг — квалификационный экзамен."},
+    {"frame":"requirements-warning.jpg","sha256":"c37470be64fb70eb1cb1e9a7a02aa7572a0a07aa153b8976862a0b3dcd12041b","durationSeconds":6,"title":"Требования с понятными ограничениями","caption":"Неподдерживаемое подтверждение не превращается в доступный проверенный навык."},
+    {"frame":"matching.jpg","sha256":"542136445a018320cff9d730e9794041fceae7145ae08e0d85183b13f98d4e38","durationSeconds":8,"title":"Объяснимый подбор","caption":"Соответствие задаче и основания. Сырые баллы разных программ напрямую не сравниваются."},
+    {"frame":"contacts.jpg","sha256":"e89f94e73be03270a76e68ebf5814dbd437683a0bb5b0913626efa961fb92f1a","durationSeconds":8,"title":"Приглашение и решение кандидата","caption":"Конкретная компания и условия. Контактные поля открываются после адресного согласия."},
+    {"frame":"practice.jpg","sha256":"baf4ff2777c78e939122952294529e7e3e25d1372935efe65b34290bd0481fdd","durationSeconds":8,"title":"Практика компании","caption":"Задание связано с выбранным резюме. Оценка компании не присваивает грейд Signal."},
+    {"frame":"reviewer.jpg","sha256":"993eccf045aa2b61e8fa83479ff0200fcd9fc310fb2196b099d51c4a659c0567","durationSeconds":7,"title":"Реальный неуспех в техническом сценарии","caption":"Неправильный ответ: 0/100 и отсутствие грейда. Готовая успешная оценка не подставляется."}
+  ]
+}

@@ -1,0 +1,2429 @@
+{
+  "paths": {
+    "/research/access": {
+      "get": {
+        "operationId": "getResearchAccess",
+        "tags": [
+          "research"
+        ],
+        "summary": "Read explicit research permissions",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "operator": {
+                      "type": "boolean"
+                    },
+                    "candidate": {
+                      "type": "boolean"
+                    },
+                    "consentVersion": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "operator",
+                    "candidate",
+                    "consentVersion"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research/studies": {
+      "get": {
+        "operationId": "listResearchStudies",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner-only research list; bank snapshots/keys excluded",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studies": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ResearchStudy"
+                      }
+                    },
+                    "programs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "studies",
+                    "programs"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createResearchStudy",
+        "tags": [
+          "research"
+        ],
+        "summary": "Operator creates study and freezes A/B forms, versions and rubric",
+        "responses": {
+          "201": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "study": {
+                      "$ref": "#/components/schemas/ResearchStudy"
+                    }
+                  },
+                  "required": [
+                    "study"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchStudyInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research/studies/{id}": {
+      "get": {
+        "operationId": "getResearchStudy",
+        "tags": [
+          "research"
+        ],
+        "summary": "Own participation or operator cohort; no account mapping",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "study": {
+                      "$ref": "#/components/schemas/ResearchStudy"
+                    },
+                    "operator": {
+                      "type": "boolean"
+                    },
+                    "consentText": {
+                      "type": "string"
+                    },
+                    "consentVersion": {
+                      "type": "string"
+                    },
+                    "enrollment": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/ResearchEnrollment"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "attempts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "study",
+                    "operator",
+                    "consentText",
+                    "consentVersion",
+                    "enrollment",
+                    "attempts",
+                    "participants"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/close": {
+      "post": {
+        "operationId": "closeResearchStudy",
+        "tags": [
+          "research"
+        ],
+        "summary": "Stop enrolment and new forms; issued forms may finish",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "closed"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/enroll": {
+      "post": {
+        "operationId": "enrollResearchStudy",
+        "tags": [
+          "research"
+        ],
+        "summary": "Candidate explicit consent; inactive consent cannot silently reopen",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enrollmentId": {
+                      "type": "integer"
+                    },
+                    "pseudonym": {
+                      "type": "string"
+                    },
+                    "order": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "enrollmentId",
+                    "pseudonym",
+                    "order"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "consent": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "consentVersion": {
+                    "type": "string",
+                    "const": "research-consent-v1"
+                  }
+                },
+                "required": [
+                  "consent",
+                  "consentVersion"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research/studies/{id}/revoke": {
+      "post": {
+        "operationId": "revokeResearchStudy",
+        "tags": [
+          "research"
+        ],
+        "summary": "Erase own attempts, answers, reviewer rows and pseudonym mapping",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "const": "revoked"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/participants/{enrollmentId}/group": {
+      "put": {
+        "operationId": "freezeResearchIndependentGroup",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner assigns independent grade once before any attempt",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "saved": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "saved"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "enrollmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "grade": {
+                    "type": "string",
+                    "enum": [
+                      "Junior",
+                      "Middle",
+                      "Senior"
+                    ]
+                  },
+                  "basis": {
+                    "type": "string",
+                    "minLength": 15,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "grade",
+                  "basis"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research/studies/{id}/attempts/start": {
+      "post": {
+        "operationId": "startResearchAttempt",
+        "tags": [
+          "research"
+        ],
+        "summary": "Exactly two isolated A/B attempts, no production category/cooldown writes",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "attemptId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "attemptId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/attempts/{id}": {
+      "get": {
+        "operationId": "getResearchAttempt",
+        "tags": [
+          "research"
+        ],
+        "summary": "Participant own questions/responses; no answer keys",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "attempt": {
+                      "$ref": "#/components/schemas/ResearchAttempt"
+                    },
+                    "studyId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "attempt",
+                    "studyId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/attempts/{id}/answers": {
+      "put": {
+        "operationId": "saveResearchAnswers",
+        "tags": [
+          "research"
+        ],
+        "summary": "Save bounded self-reported active time and optional ambiguity/skip flags",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "saved": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "saved"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "responses": {
+                    "type": "array",
+                    "maxItems": 6,
+                    "items": {
+                      "$ref": "#/components/schemas/ResearchResponseInput"
+                    }
+                  }
+                },
+                "required": [
+                  "responses"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/research/attempts/{id}/submit": {
+      "post": {
+        "operationId": "submitResearchAttempt",
+        "tags": [
+          "research"
+        ],
+        "summary": "Idempotent submission against immutable snapshot",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "$ref": "#/components/schemas/ResearchResult"
+                    },
+                    "profileChanged": {
+                      "type": "boolean",
+                      "const": false
+                    }
+                  },
+                  "required": [
+                    "result",
+                    "profileChanged"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/report": {
+      "get": {
+        "operationId": "getResearchReport",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner-only report includes reviewer disagreements; never publish as-is",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/aggregate-report": {
+      "get": {
+        "operationId": "getResearchAggregateReport",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner-only aggregate derivative excludes participant and reviewer identifiers",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/export": {
+      "get": {
+        "operationId": "exportResearchMeasurements",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner-only pseudonymous measurements, normalized responses, versions; not anonymous",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "protocolVersion": {
+                      "type": "string"
+                    },
+                    "measurementOrigin": {
+                      "type": "string"
+                    },
+                    "studyId": {
+                      "type": "integer"
+                    },
+                    "rubric": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "measurements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "humanProvenance": {
+                      "type": "string"
+                    },
+                    "privacy": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "protocolVersion",
+                    "measurementOrigin",
+                    "studyId",
+                    "rubric",
+                    "measurements",
+                    "humanProvenance",
+                    "privacy"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/private-responses": {
+      "get": {
+        "operationId": "exportResearchPrivateResponses",
+        "tags": [
+          "research"
+        ],
+        "summary": "Restricted consented raw text: never publish or package; no keys",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "protocolVersion": {
+                      "type": "string"
+                    },
+                    "sensitivity": {
+                      "type": "string"
+                    },
+                    "forms": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/ResearchCase"
+                        }
+                      }
+                    },
+                    "measurements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "protocolVersion",
+                    "sensitivity",
+                    "forms",
+                    "measurements"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/review-packet": {
+      "get": {
+        "operationId": "getResearchBlindReviewPacket",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner distributes two blind packets without Signal scores or group labels",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studyId": {
+                      "type": "integer"
+                    },
+                    "protocolVersion": {
+                      "type": "string"
+                    },
+                    "reviewerId": {
+                      "type": "string"
+                    },
+                    "instructions": {
+                      "type": "string"
+                    },
+                    "ratings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "required": [
+                    "studyId",
+                    "protocolVersion",
+                    "reviewerId",
+                    "instructions",
+                    "ratings"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/research/studies/{id}/reviews": {
+      "get": {
+        "operationId": "getResearchOriginalReviews",
+        "tags": [
+          "research"
+        ],
+        "summary": "Owner-only original ratings, imports and SHA256 receipts",
+        "responses": {
+          "200": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "sensitivity": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reviews",
+                    "sensitivity"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "importResearchIndependentReview",
+        "tags": [
+          "research"
+        ],
+        "summary": "Closed study: append at most two distinct reviewers; preserve disagreements",
+        "responses": {
+          "201": {
+            "description": "Successful response; private endpoints use no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imported": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "imported"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body or consent version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No verified personal session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role or separate operator permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Owned study or attempt not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, frozen group, form availability or retention conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResearchError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchReviewInput"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ResearchError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ResearchStudyInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 120
+          },
+          "programId": {
+            "type": "string",
+            "enum": [
+              "backend-python",
+              "frontend-typescript"
+            ]
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "retentionDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90,
+            "default": 30
+          },
+          "measurementOrigin": {
+            "type": "string",
+            "enum": [
+              "synthetic",
+              "operator_declared_human"
+            ],
+            "default": "synthetic"
+          }
+        },
+        "required": [
+          "title",
+          "programId",
+          "grade"
+        ]
+      },
+      "ResearchStudy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "programId": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ]
+          },
+          "retentionDays": {
+            "type": "integer"
+          },
+          "measurementOrigin": {
+            "type": "string"
+          },
+          "protocolVersion": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "programId",
+          "grade",
+          "status",
+          "retentionDays",
+          "measurementOrigin",
+          "protocolVersion"
+        ]
+      },
+      "ResearchEnrollment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "pseudonym": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "revoked",
+              "expired"
+            ]
+          },
+          "order": {
+            "type": "string",
+            "enum": [
+              "AB",
+              "BA"
+            ]
+          },
+          "independentGrade": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "pseudonym",
+          "status",
+          "order",
+          "independentGrade",
+          "expiresAt"
+        ]
+      },
+      "ResearchEvidence": {
+        "type": "object",
+        "properties": {
+          "skill": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          },
+          "criterionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "programVersion": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "templateVersion": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "skill",
+          "score",
+          "criterionId",
+          "programVersion",
+          "templateId",
+          "templateVersion"
+        ]
+      },
+      "ResearchResult": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResearchEvidence"
+            }
+          }
+        },
+        "required": [
+          "score",
+          "verified",
+          "evidence"
+        ]
+      },
+      "ResearchResponseInput": {
+        "type": "object",
+        "properties": {
+          "caseId": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "activeMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2700000
+          },
+          "skipped": {
+            "type": "boolean"
+          },
+          "ambiguous": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "caseId",
+          "answer",
+          "activeMs",
+          "skipped",
+          "ambiguous"
+        ]
+      },
+      "ResearchResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ResearchResponseInput"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "firstSavedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastSavedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "firstSavedAt",
+              "lastSavedAt"
+            ]
+          }
+        ]
+      },
+      "ResearchCase": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "family": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "responseType": {
+            "type": "string",
+            "enum": [
+              "text",
+              "choice"
+            ]
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "family",
+          "prompt",
+          "responseType",
+          "options"
+        ]
+      },
+      "ResearchAttempt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "form": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResearchResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResearchCase"
+            }
+          },
+          "responses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResearchResponse"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "form",
+          "status",
+          "startedAt",
+          "dueAt",
+          "result",
+          "cases",
+          "responses"
+        ]
+      },
+      "ResearchReviewInput": {
+        "type": "object",
+        "properties": {
+          "studyId": {
+            "type": "integer"
+          },
+          "protocolVersion": {
+            "type": "string",
+            "const": "signal-research-v1"
+          },
+          "reviewerId": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "ratings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pseudonym": {
+                  "type": "string"
+                },
+                "grade": {
+                  "type": "string",
+                  "enum": [
+                    "Junior",
+                    "Middle",
+                    "Senior"
+                  ]
+                },
+                "comment": {
+                  "type": "string",
+                  "minLength": 10,
+                  "maxLength": 1000
+                }
+              },
+              "required": [
+                "pseudonym",
+                "grade",
+                "comment"
+              ]
+            }
+          }
+        },
+        "required": [
+          "studyId",
+          "protocolVersion",
+          "reviewerId",
+          "ratings"
+        ]
+      },
+      "ResearchReport": {
+        "type": "object",
+        "properties": {
+          "protocolVersion": {
+            "type": "string"
+          },
+          "measurementOrigin": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "measured",
+              "not_measured"
+            ]
+          },
+          "humanValidation": {
+            "type": "string"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "attempts": {
+                "type": "integer"
+              },
+              "completed": {
+                "type": "integer"
+              },
+              "expired": {
+                "type": "integer"
+              },
+              "participants": {
+                "type": "integer"
+              },
+              "paired": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "attempts",
+              "completed",
+              "expired",
+              "participants",
+              "paired"
+            ]
+          },
+          "agreementAB": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "scoreChangeBMinusA": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "transitions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "independentReference": {
+            "type": "object",
+            "properties": {
+              "n": {
+                "type": "integer"
+              },
+              "thresholdAgreement": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "n",
+              "thresholdAgreement"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "groupCounts": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "timing": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "skipped": {
+            "type": "integer"
+          },
+          "ambiguous": {
+            "type": "integer"
+          },
+          "expertReview": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "groupDifferences": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "protocolVersion",
+          "measurementOrigin",
+          "status",
+          "humanValidation",
+          "counts",
+          "agreementAB",
+          "scoreChangeBMinusA",
+          "transitions",
+          "independentReference",
+          "items",
+          "groupCounts",
+          "timing",
+          "skipped",
+          "ambiguous",
+          "expertReview",
+          "limitations",
+          "groupDifferences"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "incremental": false, "noEmit": true, "types": ["node"] },
+  "include": ["qa-id-integration.ts", "../tests/postgres-id.test.ts"]
+}

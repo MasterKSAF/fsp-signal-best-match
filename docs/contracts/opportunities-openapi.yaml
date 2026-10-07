@@ -1,0 +1,3561 @@
+{
+  "paths": {
+    "/public/jobs": {
+      "get": {
+        "operationId": "listPublicJobs",
+        "summary": "Published jobs in the current session pool; anonymous sees real pool",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobPublication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/public/jobs/{id}": {
+      "get": {
+        "operationId": "getPublicJob",
+        "summary": "Read current published conditions",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "security": []
+      }
+    },
+    "/employer/jobs": {
+      "get": {
+        "operationId": "listEmployerJobs",
+        "summary": "Own drafts, publications, closed jobs and archive",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobPublication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createJobDraft",
+        "summary": "Create separate draft; never publish a private need implicitly",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPublication"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/jobs/{id}": {
+      "put": {
+        "operationId": "editJob",
+        "summary": "New job version; application snapshots unchanged",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/jobs/{id}/status": {
+      "post": {
+        "operationId": "setJobStatus",
+        "summary": "Explicit publication, closing or archive",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobPublication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "published",
+                      "closed",
+                      "archived"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}/applications": {
+      "post": {
+        "operationId": "applyForJob",
+        "summary": "Explicit addressed consent; one application per candidate/job; replay never restores permission",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "companyId": {
+                    "type": "integer"
+                  },
+                  "jobVersion": {
+                    "type": "integer"
+                  },
+                  "consentDisclosure": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  }
+                },
+                "required": [
+                  "companyId",
+                  "jobVersion",
+                  "consentDisclosure"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/applications": {
+      "get": {
+        "operationId": "listMyApplications",
+        "summary": "Own applications and immutable conditions",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobApplication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/applications": {
+      "get": {
+        "operationId": "listEmployerApplications",
+        "summary": "Own applications; revoked consent withholds message and professional profile",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobApplication"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/applications/{id}/status": {
+      "post": {
+        "operationId": "setApplicationStatus",
+        "summary": "Mark individually opened application or employer decision",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "viewed",
+                      "shortlisted",
+                      "declined"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/applications/{id}/contacts": {
+      "get": {
+        "operationId": "getApplicationContacts",
+        "summary": "Read only this company and active application grant",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressedContact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/me/applications/{id}/withdraw": {
+      "post": {
+        "operationId": "withdrawApplication",
+        "summary": "Withdraw application and every contact permission for this company",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/me/contact-permissions": {
+      "get": {
+        "operationId": "listContactPermissions",
+        "summary": "Addressed grants with invitation/application basis and revoke timestamps",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "companyId": {
+                        "type": "integer"
+                      },
+                      "companyName": {
+                        "type": "string"
+                      },
+                      "invitationId": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "applicationId": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "consentedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "revokedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/contact-permissions/{id}/revoke": {
+      "post": {
+        "operationId": "revokeCompanyContactPermissions",
+        "summary": "ID is company ID. Revoke every existing invitation/application basis atomically",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityMessage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/employer/microtasks": {
+      "get": {
+        "operationId": "listCompanyMicrotasks",
+        "summary": "Own educational programs",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MicrotaskTemplate"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createMicrotask",
+        "summary": "Create recurring educational task with rubric",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskTemplate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskTemplate"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MicrotaskInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/{id}": {
+      "put": {
+        "operationId": "editMicrotask",
+        "summary": "Create new template version; issued snapshots remain unchanged",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskTemplate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MicrotaskInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/{id}/availability": {
+      "post": {
+        "operationId": "setMicrotaskAvailability",
+        "summary": "Control future scheduling only",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskTemplate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "active"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/eligible/candidates": {
+      "get": {
+        "operationId": "listMicrotaskEligibleCandidates",
+        "summary": "Verified visible consenting candidates with voluntary practice opt-in",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
+                      "specialization": {
+                        "type": "string"
+                      },
+                      "verifiedGrade": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/{id}/subscriptions": {
+      "post": {
+        "operationId": "subscribeCandidateMicrotask",
+        "summary": "Create schedule once; cannot reactivate candidate opt-out; server controls due dates",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskSubscription"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "candidateId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "candidateId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks": {
+      "get": {
+        "operationId": "listMyMicrotasks",
+        "summary": "Own offers, results, subscriptions and preference",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "offers": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MicrotaskOffer"
+                      }
+                    },
+                    "subscriptions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MicrotaskSubscription"
+                      }
+                    },
+                    "limits": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "enabled",
+                    "offers",
+                    "subscriptions",
+                    "limits"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/preferences": {
+      "put": {
+        "operationId": "setMicrotaskPreference",
+        "summary": "Opt out stops subscriptions and unfinished offers; re-enable alone does not revive old subscriptions",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/subscriptions/{id}": {
+      "post": {
+        "operationId": "setMyMicrotaskSubscription",
+        "summary": "Explicit candidate resume or pause",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskSubscription"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "active"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/{id}/decision": {
+      "post": {
+        "operationId": "decideMicrotask",
+        "summary": "Accept with company review consent or decline",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "decision": {
+                    "type": "string",
+                    "enum": [
+                      "accept",
+                      "decline"
+                    ]
+                  },
+                  "consentCompanyReview": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "decision"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/{id}/submit": {
+      "post": {
+        "operationId": "submitMicrotask",
+        "summary": "Immutable answer; repeat same answer idempotent; server deadline",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10000
+                  }
+                },
+                "required": [
+                  "answer"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/offers": {
+      "get": {
+        "operationId": "listCompanyMicrotaskOffers",
+        "summary": "Own tasks only; revoked answers/results withheld",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MicrotaskOffer"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employer/microtasks/offers/{id}/evaluate": {
+      "post": {
+        "operationId": "evaluateMicrotask",
+        "summary": "Immutable criterion-specific company evidence; never updates global grade",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scores": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "criterionId": {
+                          "type": "string"
+                        },
+                        "points": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "comment": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "criterionId",
+                        "points",
+                        "comment"
+                      ]
+                    }
+                  },
+                  "feedback": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "scores",
+                  "feedback"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/{id}/visibility": {
+      "post": {
+        "operationId": "shareMicrotaskResult",
+        "summary": "Explicit permission for summary only; answers remain private",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "shareResult": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "shareResult"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/me/microtasks/{id}/revoke": {
+      "post": {
+        "operationId": "revokeMicrotaskConsent",
+        "summary": "Stop program and further company access; preserve owner history",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicrotaskOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    },
+    "/employer/micro-evidence/{id}": {
+      "get": {
+        "operationId": "listSharedMicrotaskEvidence",
+        "summary": "Candidate ID; visible verified same-pool profile plus explicit share; no answers/evaluator identity",
+        "tags": [
+          "Opportunities"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "companyName": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "competency": {
+                        "type": "string"
+                      },
+                      "rubric": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "maxPoints": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "label",
+                            "maxPoints"
+                          ]
+                        }
+                      },
+                      "limits": {
+                        "type": "string"
+                      },
+                      "result": {
+                        "$ref": "#/components/schemas/MicrotaskResult"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found in current pool",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State or version conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityError"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "JobInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 6000
+          },
+          "specialization": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workFormat": {
+            "type": "string",
+            "enum": [
+              "Удалённо",
+              "Офис",
+              "Гибрид"
+            ]
+          },
+          "salaryMin": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryMax": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryPeriod": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ]
+          },
+          "salaryType": {
+            "type": "string",
+            "enum": [
+              "gross",
+              "net"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "specialization",
+          "grade",
+          "skills",
+          "workFormat",
+          "salaryMin",
+          "salaryMax",
+          "salaryPeriod",
+          "salaryType"
+        ]
+      },
+      "JobPublication": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 6000
+          },
+          "specialization": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workFormat": {
+            "type": "string",
+            "enum": [
+              "Удалённо",
+              "Офис",
+              "Гибрид"
+            ]
+          },
+          "salaryMin": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryMax": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryPeriod": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ]
+          },
+          "salaryType": {
+            "type": "string",
+            "enum": [
+              "gross",
+              "net"
+            ]
+          },
+          "id": {
+            "type": "integer"
+          },
+          "companyId": {
+            "type": "integer"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "closed",
+              "archived"
+            ]
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "companyId",
+          "companyName",
+          "version",
+          "status",
+          "title",
+          "description",
+          "specialization",
+          "grade",
+          "skills",
+          "workFormat",
+          "salaryMin",
+          "salaryMax",
+          "salaryPeriod",
+          "salaryType"
+        ]
+      },
+      "JobApplication": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "jobId": {
+            "type": "integer"
+          },
+          "companyId": {
+            "type": "integer"
+          },
+          "candidateUserId": {
+            "type": "integer"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/JobConditionsSnapshot"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "sent",
+              "viewed",
+              "shortlisted",
+              "declined",
+              "withdrawn"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contactShared": {
+            "type": "boolean"
+          },
+          "candidate": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "alias": {
+                "type": "string"
+              },
+              "specialization": {
+                "type": "string"
+              },
+              "verifiedGrade": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "jobId",
+          "companyId",
+          "snapshot",
+          "status"
+        ]
+      },
+      "MicrotaskInput": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "competency": {
+            "type": "string"
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 6000
+          },
+          "expectedMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 45
+          },
+          "intervalDays": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 90
+          },
+          "deadlineDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "educationalOnly": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "rubric": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "maxPoints": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "maxPoints"
+              ]
+            }
+          }
+        },
+        "required": [
+          "title",
+          "competency",
+          "scenario",
+          "expectedMinutes",
+          "intervalDays",
+          "deadlineDays",
+          "educationalOnly",
+          "rubric"
+        ]
+      },
+      "MicrotaskTemplate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "competency": {
+            "type": "string"
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 6000
+          },
+          "expectedMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 45
+          },
+          "intervalDays": {
+            "type": "integer",
+            "minimum": 7,
+            "maximum": 90
+          },
+          "deadlineDays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "educationalOnly": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "rubric": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "maxPoints": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "maxPoints"
+              ]
+            }
+          },
+          "id": {
+            "type": "integer"
+          },
+          "companyId": {
+            "type": "integer"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "active",
+          "title",
+          "competency",
+          "scenario",
+          "expectedMinutes",
+          "intervalDays",
+          "deadlineDays",
+          "educationalOnly",
+          "rubric"
+        ]
+      },
+      "MicrotaskSnapshot": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "competency": {
+            "type": "string"
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 6000
+          },
+          "expectedMinutes": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 45
+          },
+          "rubric": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "maxPoints": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "maxPoints"
+              ]
+            }
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "limits": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "competency",
+          "scenario",
+          "expectedMinutes",
+          "rubric",
+          "version",
+          "companyName",
+          "limits"
+        ]
+      },
+      "MicrotaskResult": {
+        "type": "object",
+        "properties": {
+          "evaluatorUserId": {
+            "type": "integer"
+          },
+          "evaluatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterionId": {
+                  "type": "string"
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "comment": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "criterionId",
+                "points",
+                "comment"
+              ]
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "max": {
+            "type": "integer"
+          },
+          "feedback": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "company_task"
+            ]
+          },
+          "competency": {
+            "type": "string"
+          },
+          "templateVersion": {
+            "type": "integer"
+          }
+        }
+      },
+      "MicrotaskOffer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "subscriptionId": {
+            "type": "integer"
+          },
+          "companyId": {
+            "type": "integer"
+          },
+          "candidateUserId": {
+            "type": "integer"
+          },
+          "snapshot": {
+            "$ref": "#/components/schemas/MicrotaskSnapshot"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "offered",
+              "accepted",
+              "declined",
+              "submitted",
+              "evaluated",
+              "expired",
+              "withdrawn"
+            ]
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "answer": {
+            "type": "string",
+            "nullable": true
+          },
+          "result": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MicrotaskResult"
+              }
+            ],
+            "nullable": true
+          },
+          "shareResult": {
+            "type": "boolean"
+          },
+          "consentRevokedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "snapshot",
+          "status",
+          "dueAt",
+          "shareResult"
+        ]
+      },
+      "OpportunityError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "OpportunityMessage": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "MicrotaskSubscription": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "templateId": {
+            "type": "integer"
+          },
+          "candidateUserId": {
+            "type": "integer"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "nextDueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          }
+        }
+      },
+      "AddressedContact": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "consentedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "displayName",
+          "email",
+          "consentedAt"
+        ]
+      },
+      "JobConditionsSnapshot": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 6000
+          },
+          "specialization": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string",
+            "enum": [
+              "Junior",
+              "Middle",
+              "Senior"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workFormat": {
+            "type": "string",
+            "enum": [
+              "Удалённо",
+              "Офис",
+              "Гибрид"
+            ]
+          },
+          "salaryMin": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryMax": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salaryPeriod": {
+            "type": "string",
+            "enum": [
+              "month",
+              "year"
+            ]
+          },
+          "salaryType": {
+            "type": "string",
+            "enum": [
+              "gross",
+              "net"
+            ]
+          },
+          "version": {
+            "type": "integer"
+          },
+          "companyName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "specialization",
+          "grade",
+          "skills",
+          "workFormat",
+          "salaryMin",
+          "salaryMax",
+          "salaryPeriod",
+          "salaryType",
+          "version",
+          "companyName"
+        ]
+      }
+    }
+  }
+}

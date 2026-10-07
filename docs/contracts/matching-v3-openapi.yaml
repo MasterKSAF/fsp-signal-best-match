@@ -1,0 +1,104 @@
+openapi: 3.1.0
+info: { title: Signal matching additions, version: 3.0.0 }
+paths:
+  /skills/coverage:
+    get:
+      operationId: getSkillCoverage
+      parameters:
+        - { in: query, name: specialization, required: true, schema: { type: string, maxLength: 120 } }
+        - { in: query, name: skills, schema: { type: string, maxLength: 3000 }, description: 'Comma-separated raw requirements. Known aliases are controlled; unknown strings are preserved.' }
+      responses:
+        '200': { description: 'Coverage without granting any skill', content: { application/json: { schema: { $ref: '#/components/schemas/SkillCoverageResult' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+  /me/evidence:
+    get:
+      operationId: getMySkillEvidence
+      responses:
+        '200':
+          description: 'Own candidate evidence; no answer keys, answers, seeds or other candidate records'
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [catalogVersion, evidence]
+                properties:
+                  catalogVersion: { type: string }
+                  evidence: { type: array, items: { $ref: '#/components/schemas/SafeSkillProof' } }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+  /employer/needs/{id}/matching-status:
+    get:
+      operationId: getNeedMatchingStatus
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200':
+          description: 'Owned need only. Counts exclude private and non-consenting profiles.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/SkillCoverageResult' }
+                  - type: object
+                    required: [eligibleCount, status, minimumGrade, note]
+                    properties:
+                      eligibleCount: { type: integer, minimum: 0 }
+                      status: { type: string, enum: [available, unsupported_requirements, no_verified_candidates] }
+                      minimumGrade: { type: string, enum: [Junior, Middle, Senior] }
+                      note: { type: string }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /me/invitations/{id}/view:
+    post:
+      operationId: viewInvitation
+      parameters:
+        - { in: path, name: id, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: 'Own invitation opened. Idempotent sent-to-viewed transition; terminal statuses unchanged.', content: { application/json: { schema: { $ref: '#/components/schemas/Invitation' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+components:
+  schemas:
+    SkillCoverageResult:
+      type: object
+      required: [catalogVersion, coverage]
+      properties:
+        catalogVersion: { type: string }
+        coverage:
+          type: array
+          items:
+            type: object
+            required: [raw, id, label, key, supported, program, evidence, action]
+            properties:
+              raw: { type: string }
+              id: { type: [string, 'null'] }
+              label: { type: string }
+              key: { type: string }
+              supported: { type: boolean }
+              program: { type: [string, 'null'] }
+              evidence: { type: string }
+              action: { type: string, enum: [assessment, review_requirement] }
+    SafeSkillProof:
+      type: object
+      required: [skill, candidateId, attemptId, programId, programVersion, templateId, templateVersion, criterionId, criterion, result, date, sourceType, limitation]
+      properties:
+        skill: { type: string }
+        candidateId: { type: integer }
+        attemptId: { type: [integer, 'null'] }
+        programId: { type: [string, 'null'] }
+        programVersion: { type: [string, 'null'] }
+        templateId: { type: [string, 'null'] }
+        templateVersion: { type: [integer, string, 'null'] }
+        criterionId: { type: [string, 'null'] }
+        criterion: { type: [string, 'null'] }
+        result: { type: [number, 'null'] }
+        date: { type: [string, 'null'], format: date-time }
+        sourceType: { type: string, enum: [signal_assessment, demo_example, legacy_record, company_task, fsp] }
+        limitation: { type: [string, 'null'] }
+# Integration into main schema: MatchEvidence.properties.skillId nullable string;
+# MatchEvidence.properties.provenance anyOf SafeSkillProof/null. MatchExplanation
+# exposes catalogVersion, minimumGrade, categoryNote. CandidateBankResult adds
+# availableTotal integer + catalogVersion string. Existing fields remain compatible.

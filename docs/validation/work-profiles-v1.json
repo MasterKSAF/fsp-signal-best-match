@@ -1,0 +1,20 @@
+{
+  "version": "signal-grade-work-profiles-v1",
+  "origin": "AI-assisted team-authored synthetic ability/error profiles, frozen before scoring; not human participants or external expert judgements.",
+  "seniorContentRule": "Senior readiness requires an explicit safe architectural/change strategy in addition to correct routine traces, SQL and delivery/focus safety. Missing architecture cannot be replaced by points in the other five criteria. Junior/Middle partial coverage can pass the limited screening rubric; this is not a population grade calibration.",
+  "profiles": [
+    { "id": "strong-complete", "description": "All six semantic criteria solved from visible data.", "transform": "all", "expected": { "Junior": true, "Middle": true, "Senior": true } },
+    { "id": "operational-core-only", "description": "Safe technical core and recovery, but no diagnostic or architectural judgement.", "transform": "slots", "correctSlots": [0, 1, 3, 5], "expected": { "Junior": true, "Middle": false, "Senior": false } },
+    { "id": "architecture-gap", "description": "Five correct criteria, architecture intentionally omitted. Senior systems judgement is not evidenced.", "transform": "slots", "correctSlots": [0, 1, 2, 3, 5], "expected": { "Junior": true, "Middle": true, "Senior": false } },
+    { "id": "diagnosis-gap", "description": "Five criteria including safe architecture; one diagnostic choice missing.", "transform": "slots", "correctSlots": [0, 1, 3, 4, 5], "expected": { "Junior": true, "Middle": true, "Senior": true } },
+    { "id": "weak-choice-only", "description": "Recognizes two good proposals but cannot execute any required trace or data calculation.", "transform": "slots", "correctSlots": [2, 4], "expected": { "Junior": false, "Middle": false, "Senior": false } },
+    { "id": "critical-last-transition", "description": "One mistaken component in the core API/runtime trace; high aggregate cannot establish safety.", "transform": "partial", "slot": 0, "expected": { "Junior": false, "Middle": false, "Senior": false } },
+    { "id": "sql-skip", "description": "Data isolation/cardinality has no evidence, despite five correct other criteria.", "transform": "skip", "slot": 1, "expected": { "Junior": false, "Middle": false, "Senior": false } },
+    { "id": "recovery-partial", "description": "Last recovery transition wrong while mandatory safety and architectural judgement are complete.", "transform": "partial", "slot": 5, "expected": { "Junior": true, "Middle": true, "Senior": true } },
+    { "id": "ambiguous-extra-output", "description": "Both alternatives submitted as an extra core trace token. No unambiguous safe answer is established.", "transform": "extra", "slot": 0, "expected": { "Junior": false, "Middle": false, "Senior": false } },
+    { "id": "all-skipped", "description": "No evidence for any criterion; independent readiness is unknown/not established.", "transform": "slots", "correctSlots": [], "expected": { "Junior": false, "Middle": false, "Senior": false } },
+    { "id": "one-template-method-only", "description": "Can solve A mechanism but lacks the distinct B runtime/API-boundary method. Same declared skill profile exposes construct differences.", "transform": "form-gap", "slot": 0, "expected": { "Junior": true, "Middle": true, "Senior": true }, "expectedB": false },
+    { "id": "harmless-whitespace", "description": "Correct answer with leading/trailing whitespace and repeated internal spaces in choices; normalization should preserve meaning.", "transform": "whitespace", "expected": { "Junior": true, "Middle": true, "Senior": true } },
+    { "id": "answer-array-permuted", "description": "Correct independent answers supplied in reverse array order; case identity must preserve evidence.", "transform": "reverse", "expected": { "Junior": true, "Middle": true, "Senior": true } }
+  ]
+}

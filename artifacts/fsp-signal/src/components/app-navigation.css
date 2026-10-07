@@ -1,0 +1,22 @@
+.header-brand-group { display:flex; align-items:center; gap:12px; min-width:0; }
+html { scroll-padding-top:88px; }
+[id],input,textarea,button,select { scroll-margin-top:88px; }
+.app-back-row { display:flex; align-items:center; min-height:44px; position:relative; z-index:1; }
+.app-back-button { width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center; padding:0; color:hsl(var(--muted-foreground)); border:1px solid transparent; border-radius:12px; background:transparent; cursor:pointer; transition:color max(80ms, calc(.18s * var(--motion-time-scale, 1))) ease,background max(80ms, calc(.18s * var(--motion-time-scale, 1))) ease,border-color max(80ms, calc(.18s * var(--motion-time-scale, 1))) ease; }
+.app-back-button:hover:not(:disabled) { color:hsl(var(--primary)); background:hsl(var(--primary)/.07); border-color:hsl(var(--primary)/.15); }
+.app-back-button:active:not(:disabled) { background:hsl(var(--primary)/.13); }
+.app-back-button:focus-visible { outline:2px solid hsl(var(--primary)); outline-offset:2px; }
+.app-back-button:disabled { opacity:.3; cursor:default; }
+.workspace-back-row { margin:-20px 0 15px -12px; }
+.public-back-row { max-width:1280px; margin:0 auto; }
+.entry-back-row { margin-left:-12px; }
+.public-nav { position:sticky; top:0; z-index:40; isolation:isolate; }
+.public-nav::before { content:''; position:absolute; inset:0; z-index:-1; background:hsl(var(--background)); box-shadow:0 0 0 100vmax hsl(var(--background)); clip-path:inset(0 -100vmax); border-bottom:1px solid hsl(var(--border)/.65); }
+.auth-required:has(.auth-required-header) { padding:0 24px 40px; display:block; }
+.auth-required-header { position:sticky; top:0; z-index:40; }
+.auth-required-header .public-nav { height:64px; }
+.auth-required > .empty-state { margin:40px auto; max-width:600px; }
+.topbar { z-index:40; background:hsl(var(--card)/.97); backdrop-filter:blur(16px); }
+@media(max-width:700px) { .workspace-back-row { margin:-17px 0 12px -9px; }.public-back-row { margin-left:-9px; }.header-brand-group { gap:5px; }.topbar .header-brand-group .brand-lockup { min-width:0; }.auth-required:has(.auth-required-header) { padding:0 16px 30px; } }
+@media(max-width:380px) { .topbar .theme-menu summary > svg:last-child { display:none; }.topbar .topbar-right { gap:4px; }.topbar { gap:5px; }.topbar .signal-brand__spark { margin-left:7px; width:17px; } }
+@media(prefers-reduced-motion:reduce) { .app-back-button { transition:none; } }

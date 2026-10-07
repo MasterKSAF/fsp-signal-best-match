@@ -1,0 +1,78 @@
+# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# compiled output
+dist
+tmp
+out-tsc
+*.tsbuildinfo
+.expo
+.expo-shared
+
+# dependencies
+node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+# Replit
+.cache/
+.local/
+.env
+.env.*
+!.env.example
+output/
+
+# Local runtime state, credentials, captured sessions and generated deliveries.
+# Reviewed frozen test inputs under outputs/ are added by an explicit allowlist.
+/outputs/
+/local-backup/
+/.agents/
+/.conversation/
+/scripts/snapshot-qa-preserved-state.ts
+**/.load-runtime/
+**/__pycache__/
+*.pyc
+*.pyo
+*.log
+*.dump
+*.backup
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+*.pfx
+*.p12
+*.cookie
+*.session
+*.session-journal

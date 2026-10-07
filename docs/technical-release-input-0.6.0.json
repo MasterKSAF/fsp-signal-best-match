@@ -1,0 +1,24 @@
+{
+  "applicationVersion":"0.6.0",
+  "draft":true,
+  "generatedAt":"2026-10-07T11:19:32Z",
+  "sliceDate":"07.10.2026",
+  "releaseSummary":"Точная обычная API-сборка e72fc99a… прошла целевые HTTP-сценарии и обе полные фиксированные native-нагрузочные фазы на 5 000 людях с одним и пятью резюме. Ошибок 0; 32 сессии, 30 секунд прогрева и 180 секунд измерения каждой фазы. Независимых человеческих участников — 0. Приёмка именно запечатанного ZIP и визуальных медиакомпаньонов фиксируется отдельно; здесь их будущий успех не утверждается.",
+  "provenance":{
+    "image":"Определяется отдельным фактическим clean-source-launch.json; native процесс не является Docker image.",
+    "runtimeScope":"Native normal-delivery API SHA256 e72fc99a9c9177461c10d0c853b3148d78440d90a08e4424ffeec04724ac5793. Целевые 57 HTTP-групп выполнены на PID11020; полная нагрузка — на отдельном PID35036. Времена и процессы не переименованы. Canonical candidate7a9c0c0e…, 910 источников и 11 API assets; Docker clean-launch имеет собственный отдельный scope."
+  },
+  "checks":[
+    ["Обычный compiled API","57 HTTP-групп PASS, PID11020; compiled-core-http-association-e72f.json"],
+    ["Полная нагрузка","Обе фазы PASS; 8 932/5 781 запросов, ошибок0; load-comparison-1320e58d7650.json"],
+    ["Память и предел","Native peak708 661 248B; expanded объяснение p951 485,18мс, запас14,82мс; не Docker SLA"],
+    ["Качество категорий","Фиксированная синтетическая оценка: nDCG−0,0174701189; исходные labels сохранены"],
+    ["Рабочая миграция0009","Backup и business hashes сохранены; отдельный stage-upgrade-0009.json"],
+    ["Чистый ZIP и медиа","Отдельные фактические companion-протоколы; этот layout preflight не объявляет их PASS"]
+  ],
+  "exactProofs":{
+    "fullLoad":{"path":"outputs/verification/0.6.0/multi-resume/load-comparison-1320e58d7650.json","sha256":"5958b3e62553a341425c0a3bf652e090cd3e66733402d9b82a35d7945e23f06a"},
+    "compiledCore":{"path":"outputs/verification/release-0.6.0/compiled-core-http-association-e72f.json","sha256":"d955d0e562c90dc31e60a632ade0071f9b0a2f9245b4036ae59c66f8cfbf4387"}
+  },
+  "limitations":["Layout-only input; not final artifact acceptance.","Native memory and clean Docker launch are distinct.","Source UI screenshots are a synthetic agent technical scenario, not a compiled GUI run or human pilot."]
+}

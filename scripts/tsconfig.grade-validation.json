@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "incremental": false,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [
+    "export-grade-validation-forms.ts",
+    "validate-grades.ts",
+    "lib/grade-transfer-model.ts",
+    "research-pilot.ts",
+    "pilot-cli-integration.ts",
+    "integration-assessment-managed.ts",
+    "../tests/assessment-managed.test.ts",
+    "../tests/assessment-managed-golden.test.ts",
+    "../tests/grade-transfer-model.test.ts"
+  ],
+  "references": [
+    { "path": "../lib/db" },
+    { "path": "../lib/api-zod" }
+  ]
+}

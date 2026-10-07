@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "signal-artifact-screenshots-v1",
+  "screenshots": {
+    "entry": "outputs/verification/mobile-refinement/28-home-current-desktop.jpg",
+    "matching": "outputs/verification/mobile-refinement/25-desktop-matching-current.jpg",
+    "assessment": "outputs/verification/mobile-refinement/24-desktop-assessment-current.jpg"
+  },
+  "provenance": {
+    "entry": {
+      "captureImage": "sha256:fd500f56fe95f5960add59560928beda3d507bc94738ccbe2f3d62299742822e",
+      "isFinalImageCapture": true,
+      "description": "Главная страница финального образа fd500. Данные проверки синтетические."
+    },
+    "matching": {
+      "captureImagePrefix": "22ee",
+      "isFinalImageCapture": false,
+      "description": "Обычный синтетический кандидат, история ФСП отсутствует. Снимок промежуточного 22ee; последующая UI-правка отдельно показывает бонус ФСП и не меняет этот случай с нулевым бонусом. Это не скриншот финального контейнера."
+    },
+    "assessment": {
+      "captureImagePrefix": "22ee",
+      "isFinalImageCapture": false,
+      "description": "Форма Senior промежуточного 22ee с исправленным переполнением кода. Последняя правка касается отображения бонуса ФСП, CSS формы не менялся. Это не скриншот финального контейнера."
+    }
+  },
+  "verification": {
+    "browserReport": "outputs/verification/mobile-refinement.json",
+    "runtimeSourceReport": "outputs/verification/release-current-build.json",
+    "apiRuntimeBundleEquality": "not_measured",
+    "limitation": "Источники API совпадают с протестированным образом 57cf; бинарное равенство API bundle не измерено. Полный обычный UI-путь не повторяли после последней UI-правки. Финальные fd500 entry, compare, themes, keyboard и motion проверены отдельно."
+  }
+}

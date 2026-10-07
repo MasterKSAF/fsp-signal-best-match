@@ -1,0 +1,53 @@
+{
+  "version": "signal-transfer-model-regression-v3",
+  "extends": [
+    "signal-transfer-model-regression-v1",
+    "signal-transfer-model-regression-v2"
+  ],
+  "frozenBeforeExactDefinitionCorrection": true,
+  "frozenAt": "2026-10-06T08:17:52.438648+00:00",
+  "origin": "Independent valid Python semantic dedent reproduction and separately declared bounded parser-policy change. No target key/oracle-derived expectations.",
+  "cases": [
+    {
+      "id": "python-semantic-dedent-unsupported",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-signed-numbers",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\n\n```python\nstored = {}\ndef create(key, body_hash, next_order):\n    previous = stored.get(key)\n    if previous is None:\n        stored[key] = (body_hash, next_order)\n    return f\"201:{next_order}\"\n    if previous[0] != body_hash:\n        return f\"409:{previous[1]}\"\n    return f\"200:{previous[1]}\"\n\nr1 = create(\"op-8508\", \"h-a\", 339)\nr2 = create(\"op-8508\", \"h-a\", 586)\nr3 = create(\"op-8508\", \"h-b\", 1276)\n```",
+      "targetPrompt": "```python\nwrite(17, -4)\nwrite(17, -4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "not_evaluated",
+        "answer": null,
+        "reasonContains": "source-method",
+        "recognizedCallCount": 0
+      }
+    },
+    {
+      "id": "supported-source-crlf-outer-trim",
+      "programId": "backend-python",
+      "grade": "Junior",
+      "sourceId": "backend-python:Junior:development:A",
+      "targetId": "independent-regression:junior-signed-numbers",
+      "sourcePrompt": "Контракт POST /orders хранит Idempotency-Key и хеш тела. Проследите три вызова для ключа op-8508. Введите результаты строго в формате `код:заказ|код:заказ|код:заказ` без пробелов.\r\n\r\n```python\r\n\r\n\r\nstored = {}\r\ndef create(key, body_hash, next_order):\r\n    previous = stored.get(key)\r\n    if previous is None:\r\n        stored[key] = (body_hash, next_order)\r\n        return f\"201:{next_order}\"\r\n    if previous[0] != body_hash:\r\n        return f\"409:{previous[1]}\"\r\n    return f\"200:{previous[1]}\"\r\n\r\nr1 = create(\"op-8508\", \"h-a\", 339)\r\nr2 = create(\"op-8508\", \"h-a\", 586)\r\nr3 = create(\"op-8508\", \"h-b\", 1276)\r\n```",
+      "targetPrompt": "```python\nwrite(17, -4)\nwrite(17, -4)\nwrite(17, 9)\n```",
+      "strategy": "cross-template",
+      "expected": {
+        "status": "evaluated",
+        "answer": "201:-4|200:-4|409:-4",
+        "reasonContains": null,
+        "recognizedCallCount": 3
+      }
+    }
+  ],
+  "policyOverrides": {
+    "outside-literal-source-formatting-preserved": {
+      "status": "not_evaluated",
+      "answer": null,
+      "reasonContains": "source-method",
+      "recognizedCallCount": 0,
+      "reason": "v4 deliberately recognizes exact definitions only; the original immutable v2 fixture described v3 broader formatting support. Preserve it as historical expectation and reject this syntax conservatively now."
+    }
+  }
+}

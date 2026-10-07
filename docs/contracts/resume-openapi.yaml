@@ -1,0 +1,179 @@
+# Additive OpenAPI 3.1 fragment. All endpoints require the candidate's own session.
+paths:
+  /me/resume:
+    get:
+      operationId: getCandidateResume
+      tags: [ profile ]
+      responses:
+        "200":
+          description: Own resume, questionnaire and up to 20 completed questionnaire snapshots
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CandidateResume" }
+        "401": { description: Authentication required }
+        "403": { description: Candidate role required }
+    put:
+      operationId: saveCandidateResume
+      tags: [ profile ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CandidateResumeInput" }
+      responses:
+        "200":
+          description: Saved resume; changed completed questionnaire adds a history snapshot
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CandidateResume" }
+        "400":
+          description: Invalid fields, unsafe URL, too many entries or reversed dates
+        "401": { description: Authentication required }
+        "403": { description: Candidate role required }
+  /me/resume/pdf:
+    get:
+      operationId: downloadCandidateResumePdf
+      tags: [ profile ]
+      responses:
+        "200":
+          description: Private PDF with embedded Cyrillic fonts, pagination and saved profile/resume; phone and email are omitted
+          headers:
+            Content-Disposition:
+              schema: { type: string }
+              description: attachment; filename="Signal-Resume.pdf"
+            Cache-Control:
+              schema: { type: string }
+              description: no-store, private
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        "401": { description: Authentication required }
+        "403": { description: Candidate role required }
+components:
+  schemas:
+    ResumeQuestionnaire:
+      type: object
+      additionalProperties: false
+      required: [ version, industry, specialization, answers ]
+      properties:
+        version: { type: string, enum: [ backend-python-v1 ] }
+        industry: { type: string, minLength: 1, maxLength: 120 }
+        specialization: { type: string, enum: [ Backend / Python ] }
+        answers:
+          type: object
+          additionalProperties: false
+          required: [ python, databases, api, testing, reliability, ownership ]
+          properties:
+            python: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+            databases: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+            api: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+            testing: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+            reliability: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+            ownership: { type: [ integer, "null" ], minimum: 0, maximum: 3 }
+    ResumeExperience:
+      type: object
+      additionalProperties: false
+      required: [ company, role, start, end, description ]
+      properties:
+        company: { type: string, minLength: 1, maxLength: 160 }
+        role: { type: string, minLength: 1, maxLength: 160 }
+        start: { type: string, pattern: '^(19|20|21)\d{2}-(0[1-9]|1[0-2])$' }
+        end: { type: [ string, "null" ], pattern: '^(19|20|21)\d{2}-(0[1-9]|1[0-2])$' }
+        description: { type: string, maxLength: 2400 }
+    ResumeProject:
+      type: object
+      additionalProperties: false
+      required: [ title, role, description, url ]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 160 }
+        role: { type: string, maxLength: 160 }
+        description: { type: string, maxLength: 2400 }
+        url: { type: [ string, "null" ], format: uri, maxLength: 600, pattern: '^https?://' }
+    ResumeEducation:
+      type: object
+      additionalProperties: false
+      required: [ institution, qualification, start, end ]
+      properties:
+        institution: { type: string, minLength: 1, maxLength: 200 }
+        qualification: { type: string, minLength: 1, maxLength: 200 }
+        start: { type: string, pattern: '^(19|20|21)\d{2}-(0[1-9]|1[0-2])$' }
+        end: { type: [ string, "null" ], pattern: '^(19|20|21)\d{2}-(0[1-9]|1[0-2])$' }
+    ResumePortfolioLink:
+      type: object
+      additionalProperties: false
+      required: [ title, url ]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 100 }
+        url: { type: string, format: uri, maxLength: 600, pattern: '^https?://' }
+    CandidateResumeInput:
+      type: object
+      additionalProperties: false
+      required: [ summary, softSkills, experience, projects, education, portfolio, questionnaire ]
+      properties:
+        summary: { type: string, maxLength: 3000 }
+        softSkills: { type: array, maxItems: 20, items: { type: string, minLength: 1, maxLength: 100 } }
+        experience: { type: array, maxItems: 10, items: { $ref: "#/components/schemas/ResumeExperience" } }
+        projects: { type: array, maxItems: 10, items: { $ref: "#/components/schemas/ResumeProject" } }
+        education: { type: array, maxItems: 5, items: { $ref: "#/components/schemas/ResumeEducation" } }
+        portfolio: { type: array, maxItems: 8, items: { $ref: "#/components/schemas/ResumePortfolioLink" } }
+        questionnaire: { $ref: "#/components/schemas/ResumeQuestionnaire" }
+    ResumeRecommendation:
+      type: object
+      required: [ grade, completedCount, totalQuestions, explanation ]
+      properties:
+        grade: { type: [ string, "null" ], enum: [ Junior, Middle, Senior, null ] }
+        completedCount: { type: integer, minimum: 0, maximum: 6 }
+        totalQuestions: { type: integer, enum: [ 6 ] }
+        explanation: { type: string }
+    ResumeQuestionnaireHistory:
+      type: object
+      required: [ completedAt, recommendedGrade, questionnaire ]
+      properties:
+        completedAt: { type: string, format: date-time }
+        recommendedGrade: { type: string, enum: [ Junior, Middle, Senior ] }
+        questionnaire: { $ref: "#/components/schemas/ResumeQuestionnaire" }
+    CandidateResume:
+      type: object
+      required:
+        [
+          summary,
+          softSkills,
+          experience,
+          projects,
+          education,
+          portfolio,
+          questionnaire,
+          updatedAt,
+          questionnaireHistory,
+          recommendation,
+          questions,
+          answerScale
+        ]
+      properties:
+        summary: { type: string }
+        softSkills: { type: array, items: { type: string } }
+        experience: { type: array, items: { $ref: "#/components/schemas/ResumeExperience" } }
+        projects: { type: array, items: { $ref: "#/components/schemas/ResumeProject" } }
+        education: { type: array, items: { $ref: "#/components/schemas/ResumeEducation" } }
+        portfolio: { type: array, items: { $ref: "#/components/schemas/ResumePortfolioLink" } }
+        questionnaire: { $ref: "#/components/schemas/ResumeQuestionnaire" }
+        updatedAt: { type: [ string, "null" ], format: date-time }
+        questionnaireHistory: { type: array, maxItems: 20, items: { $ref: "#/components/schemas/ResumeQuestionnaireHistory" } }
+        recommendation: { $ref: "#/components/schemas/ResumeRecommendation" }
+        questions:
+          type: array
+          items:
+            type: object
+            required: [ key, title, question ]
+            properties:
+              key: { type: string, enum: [ python, databases, api, testing, reliability, ownership ] }
+              title: { type: string }
+              question: { type: string }
+        answerScale:
+          type: array
+          items:
+            type: object
+            required: [ value, label ]
+            properties:
+              value: { type: integer, minimum: 0, maximum: 3 }
+              label: { type: string }

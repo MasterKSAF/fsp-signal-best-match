@@ -1,0 +1,50 @@
+{
+  "version": "signal-competitive-control-v1-2026-10-06",
+  "frozenAt": "2026-10-05T22:49:17.571937Z",
+  "dataFile": "artifacts/api-server/src/lib/matching-competitive-data.json",
+  "fileSha256": "9f26e447b5c268dbbd7c26f0aeddc90b61ced2c7a14785427d5139e73c9111d7",
+  "canonicalDataSha256": "4fc0c5345efde855cfb32027ebbb82a4377769a14274fa9966b0913c5b32c25c",
+  "rubricSha256": "cfbf8fd8c9f70ca76515defe0683380c315335941071b6dc86651934532a0b35",
+  "labelsSha256": "5e6a45bc581fde6b73a1f90b2c4db56297f06f576a06da10dced5db5ad684c38",
+  "splitSha256": "4aa4ef2be519c00b43374e594d53e469e01fe6a3f455095922486f071b455a8f",
+  "oldMatcherSha256": "882939808ca94b9a8be5b6675a5b4a8c172fa89ac2a345d99a1ebfda9f0b3450",
+  "queries": 9,
+  "profiles": 128,
+  "pairs": 128,
+  "competitivePools": [
+    {
+      "id": "dev-platform-api",
+      "split": "development",
+      "eligible": 14
+    },
+    {
+      "id": "dev-accessible-ui",
+      "split": "development",
+      "eligible": 12
+    },
+    {
+      "id": "dev-service-recovery",
+      "split": "development",
+      "eligible": 12
+    },
+    {
+      "id": "heldout-ledger-data",
+      "split": "control-holdout",
+      "eligible": 16
+    },
+    {
+      "id": "heldout-ui-performance",
+      "split": "control-holdout",
+      "eligible": 14
+    },
+    {
+      "id": "heldout-qstore-import",
+      "split": "control-holdout",
+      "eligible": 12
+    }
+  ],
+  "source": "AI-authored synthetic business judgements; no human expert or participant",
+  "labelDerivation": "Explicit authored arrays, no production matcher/oracle call; AI assistance is not human expertise.",
+  "firstEvaluation": "not_run",
+  "tuningAllowed": false
+}

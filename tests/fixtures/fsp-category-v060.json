@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "policy": "fsp-category-results-v1",
+  "declaredBeforeImplementation": "2026-10-07",
+  "provenance": "Hand-authored synthetic policy controls before changing the matcher; not human relevance labels or FSP registry data.",
+  "at": "2026-10-07T12:00:00.000Z",
+  "need": {"specialization":"Backend / Python","grade":"Junior","requiredSkills":["Python"],"desirableSkills":["SQL"],"workFormat":"Удалённо","salaryMin":100000,"salaryMax":200000,"salaryPeriod":"month","salaryType":"gross"},
+  "scenarios": [
+    {"id":"same-category-same-cohort","people":[{"id":1,"alias":"A","score":83},{"id":2,"alias":"Z","score":83,"result":"participation"}],"expected":[2,1],"withoutFsp":[1,2]},
+    {"id":"different-grades-category-anchor","people":[{"id":3,"alias":"A","score":100,"grade":"Senior"},{"id":4,"alias":"Z","score":83,"result":"win"}],"expected":[3,4],"withoutFsp":[3,4]},
+    {"id":"same-category-different-versions","people":[{"id":5,"alias":"A","score":100},{"id":6,"alias":"Z","score":83,"version":"signal-backend-python-v5","result":"prize"}],"expected":[6,5],"withoutFsp":[5,6]},
+    {"id":"83-plus3-cannot-beat100","people":[{"id":7,"alias":"Z","score":100},{"id":8,"alias":"A","score":83,"result":"win"}],"expected":[7,8],"withoutFsp":[7,8]},
+    {"id":"stronger-need-fit","people":[{"id":9,"alias":"Z","score":83},{"id":10,"alias":"A","score":100,"result":"win","workFormat":"Офис"}],"expected":[9,10],"withoutFsp":[9,10]},
+    {"id":"no-fsp-still-admitted","people":[{"id":11,"alias":"Z","score":100},{"id":12,"alias":"A","score":83}],"expected":[11,12],"withoutFsp":[11,12]},
+    {"id":"legacy-bool-is-not-trusted","people":[{"id":13,"alias":"A","score":83},{"id":14,"alias":"Z","score":83,"legacyBool":true}],"expected":[13,14],"withoutFsp":[13,14]},
+    {"id":"missing-grade-no-admission","people":[{"id":15,"alias":"A","score":100,"grade":null,"result":"win"},{"id":16,"alias":"Z","score":83}],"expected":[16],"withoutFsp":[16]},
+    {"id":"no-global-senior-priority","people":[{"id":17,"alias":"A","score":83},{"id":18,"alias":"Z","score":100,"grade":"Senior","result":"win"}],"expected":[17,18],"withoutFsp":[17,18]},
+    {"id":"anchors-fixed-before-inner-rerank","people":[{"id":21,"alias":"A","score":83},{"id":22,"alias":"Z","score":85,"result":"win"},{"id":23,"alias":"B","score":100,"grade":"Senior"}],"expected":[22,21,23],"withoutFsp":[22,21,23]},
+    {"id":"result-strength-not-count","people":[{"id":24,"alias":"A","score":83,"result":"participation"},{"id":25,"alias":"B","score":83,"result":"prize"},{"id":26,"alias":"Z","score":83,"result":"win"}],"expected":[26,25,24],"withoutFsp":[24,25,26]}
+  ]
+}

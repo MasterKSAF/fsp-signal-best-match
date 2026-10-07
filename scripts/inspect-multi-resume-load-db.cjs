@@ -1,0 +1,9 @@
+// Read-only diagnostics on the exact owned DB, without printing credentials.
+const fs=require('node:fs'),assert=require('node:assert/strict'),{execFileSync}=require('node:child_process');
+const manifest=JSON.parse(fs.readFileSync('outputs/local-backup/multi-resume-load-stand/stand.json','utf8')),container='signal-qa-cycle-01-db-1',database='signal_resume_load_check';
+assert.equal(manifest.owner,'resume_catalog');assert.equal(manifest.database,database);assert.equal(manifest.apiPort,4315);
+const info=JSON.parse(execFileSync('docker',['inspect',container],{encoding:'utf8'}))[0];assert.equal(info.Id,manifest.containerId);
+const user=info.Config.Env.find(value=>value.startsWith('POSTGRES_USER=')).slice('POSTGRES_USER='.length);
+function query(sql){return execFileSync('docker',['exec',container,'psql','-X','-v','ON_ERROR_STOP=1','-U',user,'-d',database,'-Atqc',sql],{encoding:'utf8'}).trim();}
+async function main(){const samples=[];for(let n=0;n<16;n++){samples.push(JSON.parse(query(`SELECT json_build_object('at',clock_timestamp(),'workMem',current_setting('work_mem'),'tempFiles',d.temp_files,'tempBytes',d.temp_bytes,'sessions',(SELECT json_agg(json_build_object('state',state,'waitType',wait_event_type,'wait',wait_event)) FROM pg_stat_activity WHERE datname='${database}' AND pid<>pg_backend_pid())) FROM pg_stat_database d WHERE datname='${database}'`)));await new Promise(resolve=>setTimeout(resolve,1000));}fs.writeFileSync(`outputs/verification/multi-resume/db-${manifest.buildId}-${Date.now()}.json`,JSON.stringify({mode:'read-only-diagnostic-not-acceptance',buildId:manifest.buildId,database,samples},null,2));console.log(JSON.stringify({first:samples[0],last:samples.at(-1),tempDeltaBytes:samples.at(-1).tempBytes-samples[0].tempBytes}));}
+main().catch(error=>{console.error(error.message);process.exitCode=1;});

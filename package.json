@@ -1,0 +1,31 @@
+{
+  "name": "fsp-signal",
+  "version": "0.6.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm run typecheck && pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/fsp-signal run build",
+    "typecheck:libs": "tsc --build --force",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "dev": "node scripts/dev.mjs",
+    "start": "node --env-file-if-exists=.env artifacts/api-server/dist/index.mjs",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:integration": "node --env-file-if-exists=.env --import tsx scripts/integration-test.ts",
+    "test:production": "node --env-file-if-exists=.env --import tsx scripts/production-smoke.ts",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
+    "db:seed": "node --env-file-if-exists=.env scripts/run-seed.mjs",
+    "demo:reset": "node --env-file-if-exists=.env --import tsx scripts/reset-demo.ts",
+    "codegen": "pnpm --filter @workspace/api-spec run codegen",
+    "quality:evaluate": "node --env-file-if-exists=.env --import tsx scripts/evaluate.ts"
+  },
+  "private": true,
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3",
+    "tsx": "4.23.13",
+    "@types/node": "^25.3.3"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
