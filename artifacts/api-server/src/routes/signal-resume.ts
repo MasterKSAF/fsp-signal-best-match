@@ -9,6 +9,14 @@ import { validateAvatarDataUrl } from "../lib/signal-avatar";
 import { renderCandidateResumePdf } from "../lib/signal-resume-pdf";
 import { postgresIntIdParam, postgresIntIdTextSchema } from "../lib/postgres-id";
 import { revokeMicrotasksForResume } from "../lib/microtask-resume";
+import { z } from 'zod';
+import { signalResumeWorkPreferencesTable as workPreferences } from '@workspace/db';
+import { emptyWorkPreferences, readWorkPreferences, recordResumeEvent, resumeCompletion, selectedSkillProgress, workspaceAnalytics } from '../lib/resume-workspace';
+import { guardResumeDocumentProjection, parseResumeDocumentFields, projectResumeDocument, renderResumeDocx, renderResumePdf, type ResumeDocument, type ResumeDocumentField } from '../lib/resume-document';
+import { resolveDocumentAccess } from '../lib/resume-document-access';
+import { resumeRoleRecommendations } from '../lib/resume-progress';
+const workspaceEnabled=()=>process.env.SIGNAL_WORKSPACE_ENABLED==='true';
+async function workspaceQualification(row:CandidateResume){const {getCurrentResumeWorkspaceQualification}=await import('../lib/skill-module-service');return getCurrentResumeWorkspaceQualification(row);}
 
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
@@ -42,7 +50,16 @@ router.get("/me/resumes", async (req, res): Promise<void> => {
   const user = await candidate(req, res); if (!user) return;
   const resumes = await recomputeCandidateResumes(user.id);
   const inputs = await loadCandidateQualificationInputs([user.id]);
-  res.json({ resumes: resumes.map(row => ({ ...responsePayload(row), qualification: getResumeQualification(row, inputs.attempts, inputs.correctedIds) })), count: resumes.length, limit: 5 });
+  if(!workspaceEnabled()){res.json({resumes:resumes.map(row=>({...responsePayload(row),qualification:getResumeQualification(row,inputs.attempts,inputs.correctedIds)})),count:resumes.length,limit:5});return;}
+  const analytics=await workspaceAnalytics(resumes.map(row=>row.id));
+  const preferences=await readWorkPreferences(resumes.map(row=>row.id));
+  const {skillModuleRegistry}=await import('../lib/skill-module-registry');
+  const rows=await Promise.all(resumes.map(async row=>{
+    const qualification=await workspaceQualification(row);
+    const roleRecommendations=resumeRoleRecommendations(qualification.coverage,qualification.skills,skillModuleRegistry);
+    return {...responsePayload(row),qualification,roleRecommendations,legacyQualificationInfo:getResumeQualification(row,inputs.attempts,inputs.correctedIds),completion:resumeCompletion(row),skillProgress:selectedSkillProgress(row,qualification.skills,skillModuleRegistry.map(skill=>skill.label)),analytics:analytics.get(row.id),workPreferences:preferences.get(row.id)??emptyWorkPreferences};
+  }));
+  res.json({ resumes: rows, count: resumes.length, limit: 5 });
 });
 async function createResume(req: Request, res: Response, copyDefaults?: { title?: string }): Promise<void> {
   const user = await candidate(req, res); if (!user) return;
@@ -67,6 +84,7 @@ async function createResume(req: Request, res: Response, copyDefaults?: { title?
       verifiedGrade: null, verifiedScore: null, verifiedSkills: [], latestAssessmentAt: null,
       verifiedGradeChangedAt: null, qualificationAttemptId: null,
     }).returning();
+    if(workspaceEnabled() && source){const [preference]=await tx.select().from(workPreferences).where(eq(workPreferences.resumeId,source.id)).limit(1);if(preference){const {resumeId:_id,updatedAt:_at,...values}=preference;await tx.insert(workPreferences).values({resumeId:created!.id,...values});}}
     await recomputeCandidateResumes(user.id, tx);
     return { kind: "created" as const, row: await resolveCandidateResume(user.id, created!.id, tx) };
   });
@@ -86,13 +104,80 @@ router.post("/me/resumes/:id/copy", async (req, res): Promise<void> => {
   await createResume(req, res, { title: parsed.data.title });
 });
 
+const WorkPreferencesSchema=z.object({revision:z.number().int().positive(),location:z.string().trim().max(160),schedule:z.string().trim().max(160),employment:z.string().trim().max(160),relocation:z.boolean(),startAvailability:z.string().trim().max(160)}).strict();
+router.patch('/me/resumes/:id/work-preferences',async(req,res):Promise<void>=>{
+  if(!workspaceEnabled()){res.status(503).json({error:'Новый кабинет недоступен на этом стенде.'});return;}
+  const user=await candidate(req,res);if(!user)return;const id=requestedId(req),parsed=WorkPreferencesSchema.safeParse(req.body);
+  if(!id||!parsed.success){badInput(res);return;}
+  const result=await db.transaction(async tx=>{
+    await tx.execute(sql`SELECT pg_advisory_xact_lock(3306,${user.id})`);
+    const previous=await resolveCandidateResume(user.id,id,tx);if(!previous)return {kind:'missing' as const};
+    if(previous.revision!==parsed.data.revision)return {kind:'conflict' as const};
+    const {revision,...values}=parsed.data;
+    const [saved]=await tx.insert(workPreferences).values({resumeId:id,...values}).onConflictDoUpdate({target:workPreferences.resumeId,set:{...values,updatedAt:new Date()}}).returning();
+    const [row]=await tx.update(signalCandidateResumesTable).set({revision:sql`${signalCandidateResumesTable.revision}+1`,updatedAt:new Date()}).where(eq(signalCandidateResumesTable.id,id)).returning();
+    return {kind:'saved' as const,preferences:saved,revision:row!.revision};
+  });
+  if(result.kind==='missing'){notFound(res);return;}if(result.kind==='conflict'){res.status(409).json({error:'Резюме изменилось в другой вкладке. Обновите данные перед сохранением.',code:'RESUME_REVISION_CONFLICT'});return;}res.json(result);
+});
+
+async function documentModel(req:Request,res:Response){
+  let fields;
+  try { fields=parseResumeDocumentFields(req.query.fields); } catch { res.status(400).json({error:'Проверьте состав файла.'});return null; }
+  if(!workspaceEnabled()){res.status(503).json({error:'Новый кабинет недоступен на этом стенде.'});return null;}
+  const session=await getSessionUser(req);if(!session){res.status(401).json({error:'Войдите в аккаунт.'});return null;}
+  const id=requestedId(req);if(!id){badInput(res);return null;}
+  const access=await resolveDocumentAccess(session.user,id);if(!access){notFound(res);return null;}
+  const model=await projectCurrentDocument(access,fields);
+  return {actorId:session.user.id,actor:session.user,fields,snapshot:documentAccessSnapshot(access,model),model};
+}
+async function projectCurrentDocument(access:NonNullable<Awaited<ReturnType<typeof resolveDocumentAccess>>>,fields:readonly ResumeDocumentField[]) {
+  const qualification=await workspaceQualification(access.row);
+  const preferences=(await readWorkPreferences([access.row.id])).get(access.row.id)??emptyWorkPreferences;
+  return projectResumeDocument({resumeId:access.row.id,revision:access.row.revision,profile:access.profile,content:resumeContent(access.row),audience:access.audience,contactsAllowed:access.contactsAllowed,publicIdentity:access.publicIdentity,qualification,preferences,fields});
+}
+function documentAccessSnapshot(access:NonNullable<Awaited<ReturnType<typeof resolveDocumentAccess>>>,model:ResumeDocument) {return {resumeId:access.row.id,revision:access.row.revision,contactsPermitted:access.contactsAllowed,publicIdentity:access.publicIdentity,identityRevision:access.profile.identityRevision,projectionVersion:model.projectionVersion};}
+async function finalDocumentProjection<T>(res:Response,document:NonNullable<Awaited<ReturnType<typeof documentModel>>>,render:()=>Promise<T>) {
+  const guarded=await guardResumeDocumentProjection(document.snapshot,render,async()=>{
+    const access=await resolveDocumentAccess(document.actor,document.model.resumeId);if(!access)return null;
+    // Re-read qualification and each individual proof as well as the CV/identity/ACL.
+    // Aggregate CV revision alone does not version incomplete modular evidence.
+    const currentModel=await projectCurrentDocument(access,document.fields);
+    return documentAccessSnapshot(access,currentModel);
+  });
+  if(guarded.status==='unavailable'){notFound(res);return null;}
+  if(guarded.status==='changed'){res.status(409).json({error:'Документ или разрешение изменилось. Откройте предпросмотр заново.',code:'RESUME_DOCUMENT_CHANGED'});return null;}
+  return guarded.output;
+}
+router.get('/resumes/:id/document-preview',async(req,res):Promise<void>=>{res.setHeader('Cache-Control','no-store, private');const document=await documentModel(req,res);if(!document)return;const model=await finalDocumentProjection(res,document,async()=>document.model);if(model)res.json(model);});
+router.post('/resumes/:id/view',async(req,res):Promise<void>=>{
+  res.setHeader('Cache-Control','no-store, private');const document=await documentModel(req,res);if(!document)return;
+  if(document.model.audience==='employer')await recordResumeEvent(document.model.resumeId,document.actorId,'view');res.status(204).end();
+});
+async function downloadDocument(req:Request,res:Response,format:'pdf'|'docx'){
+  res.setHeader('Cache-Control','no-store, private');const document=await documentModel(req,res);if(!document)return;
+  const bytes=await finalDocumentProjection(res,document,()=>format==='pdf'?renderResumePdf(document.model):renderResumeDocx(document.model));if(!bytes)return;
+  res.set({'Content-Type':format==='pdf'?'application/pdf':'application/vnd.openxmlformats-officedocument.wordprocessingml.document','Content-Disposition':`attachment; filename="Signal-Resume-${document.model.resumeId}.${format}"`,'X-Content-Type-Options':'nosniff','Content-Length':String(bytes.length),'X-Signal-Resume-Id':String(document.model.resumeId),'X-Signal-Resume-Revision':String(document.model.revision),'X-Signal-Document-Version':document.model.projectionVersion});
+  // Express also invokes GET handlers for HEAD. Metadata checks have no file body.
+  // Only a completed successful GET file response counts; preview/owner never count.
+  if(req.method==='GET'&&document.model.audience==='employer')res.once('finish',()=>{if(res.statusCode===200)void recordResumeEvent(document.model.resumeId,document.actorId,'download',format).catch(()=>{/* The completed response remains valid; no fabricated event on storage failure. */});});
+  res.status(200).send(bytes);
+}
+router.get('/resumes/:id/document.pdf',(req,res)=>downloadDocument(req,res,'pdf'));
+router.get('/resumes/:id/document.docx',(req,res)=>downloadDocument(req,res,'docx'));
+router.get('/resumes/:id/preview.pdf',async(req,res):Promise<void>=>{
+  res.setHeader('Cache-Control','no-store, private');const document=await documentModel(req,res);if(!document)return;
+  const bytes=await finalDocumentProjection(res,document,()=>renderResumePdf(document.model));if(!bytes)return;res.set({'Content-Type':'application/pdf','Content-Disposition':`inline; filename="Signal-Resume-${document.model.resumeId}.pdf"`,'X-Content-Type-Options':'nosniff','Content-Length':String(bytes.length),'X-Frame-Options':'SAMEORIGIN','Content-Security-Policy':"frame-ancestors 'self'",'X-Signal-Document-Version':document.model.projectionVersion});res.send(bytes);
+});
+
 async function readResume(req: Request, res: Response): Promise<void> {
   const user = await candidate(req, res); if (!user) return;
   const id = requestedId(req); if (id === null) { badInput(res); return; }
   await recomputeCandidateResumes(user.id);
   const row = await resolveCandidateResume(user.id, id); if (!row) { notFound(res); return; }
   const inputs = await loadCandidateQualificationInputs([user.id]);
-  res.json({ ...responsePayload(row), qualification: getResumeQualification(row, inputs.attempts, inputs.correctedIds) });
+  const historical=getResumeQualification(row,inputs.attempts,inputs.correctedIds);
+  res.json({ ...responsePayload(row), qualification:workspaceEnabled()?await workspaceQualification(row):historical,...(workspaceEnabled()?{legacyQualificationInfo:historical}:{}) });
 }
 async function saveResume(req: Request, res: Response): Promise<void> {
   const user = await candidate(req, res); if (!user) return;
@@ -122,9 +207,15 @@ async function resumePdf(req: Request, res: Response): Promise<void> {
   if (!row || !profile) { notFound(res); return; }
   const inputs = await loadCandidateQualificationInputs([user.id]);
   const qualification = getResumeQualification(row, inputs.attempts, inputs.correctedIds);
-  const bytes = await renderCandidateResumePdf({ ...profile, displayName: user.displayName,
-    qualificationSource: qualification.source, qualificationLimitation: qualification.limitation }, resumeContent(row));
-  res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="Signal-Resume-${row.id}.pdf"`, "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff", "Content-Length": String(bytes.length), "X-Signal-Resume-Id": String(row.id), "X-Signal-Resume-Revision": String(row.revision) });
+  let bytes:Buffer|null,projectionVersion:string|undefined;
+  if(workspaceEnabled()){
+    let fields;try{fields=parseResumeDocumentFields(req.query.fields);}catch{res.status(400).json({error:'Проверьте состав файла.'});return;}
+    const access=await resolveDocumentAccess(user,row.id);if(!access){notFound(res);return;}
+    const model=await projectCurrentDocument(access,fields);projectionVersion=model.projectionVersion;
+    bytes=await finalDocumentProjection(res,{actorId:user.id,actor:user,fields,model,snapshot:documentAccessSnapshot(access,model)},()=>renderResumePdf(model));
+    if(!bytes)return;
+  }else bytes=await renderCandidateResumePdf({ ...profile, displayName: user.displayName,qualificationSource: qualification.source, qualificationLimitation: qualification.limitation }, resumeContent(row));
+  res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="Signal-Resume-${row.id}.pdf"`, "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff", "Content-Length": String(bytes.length), "X-Signal-Resume-Id": String(row.id), "X-Signal-Resume-Revision": String(row.revision),...(projectionVersion?{'X-Signal-Document-Version':projectionVersion}:{}) });
   res.status(200).send(bytes);
 }
 router.get("/me/resume", readResume);

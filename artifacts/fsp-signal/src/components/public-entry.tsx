@@ -32,6 +32,7 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
   const [resendSeconds, setResendSeconds] = useState(0);
   // Kept only while this form is mounted; never persisted to storage or logs.
   const registrationInput = useRef<RegistrationInput | null>(null);
+  const registrationId = useRef<string | null>(null);
   const register = useRegister(); const verify = useVerifyEmail(); const login = useLogin(); const demo = useStartDemoSession();
   const queryClient = useQueryClient();
   const session = useGetCurrentUser({ query: { retry: false, queryKey: getGetCurrentUserQueryKey() } });
@@ -43,9 +44,9 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
     const timeout = window.setTimeout(() => setResendSeconds(value => Math.max(0, value - 1)), 1000);
     return () => window.clearTimeout(timeout);
   }, [resendSeconds]);
-  useEffect(() => () => { registrationInput.current = null; }, []);
+  useEffect(() => () => { registrationInput.current = null; registrationId.current = null; }, []);
   useEffect(() => {
-    const open = () => { setModal('auth'); setMode('login'); setDemoMode(false); setError(''); setNotice(''); };
+    const open = () => { registrationInput.current = null; registrationId.current = null; setModal('auth'); setMode('login'); setDemoMode(false); setError(''); setNotice(''); };
     window.addEventListener('signal-open-auth', open);
     return () => window.removeEventListener('signal-open-auth', open);
   }, []);
@@ -54,16 +55,19 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
     if (pending) return;
     setModal(null); setError(''); setNotice(''); setCode(''); setMode('login'); setDemoMode(false); setPassword('');
     registrationInput.current = null;
+    registrationId.current = null;
     if (location === '/auth') setLocation('/');
   };
-  const openLogin = () => { setMode('login'); setModal('auth'); setDemoMode(false); setPassword(''); setError(''); setNotice(''); setCode(''); registrationInput.current = null; };
+  const openLogin = () => { setMode('login'); setModal('auth'); setDemoMode(false); setPassword(''); setError(''); setNotice(''); setCode(''); registrationInput.current = null; registrationId.current = null; };
   const routeAfter = async (result: AuthSession, afterVerification = false) => {
     registrationInput.current = null;
+    registrationId.current = null;
     await replaceAuthQueryCache(queryClient, getGetCurrentUserQueryKey(), result);
     setLocation(result.user.role === 'employer' ? '/employer' : afterVerification ? '/candidate/passport' : '/candidate');
   };
   const authError = (value: unknown) => setError(value instanceof Error ? value.message : 'Не удалось выполнить запрос. Попробуйте ещё раз.');
-  const registerResult = (result: { email: string; notice: string; verificationRequired: boolean }) => {
+  const registerResult = (result: { email: string; notice: string; verificationRequired: boolean; registrationId: string }) => {
+    registrationId.current = result.registrationId;
     setEmail(result.email); setNotice(result.notice); setCode(''); setResendSeconds(60);
     setMode(result.verificationRequired ? 'verify' : 'login');
   };
@@ -78,9 +82,11 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
     if (mode === 'register') {
       const payload: RegistrationInput = { email: String(data.get('email')), password: String(data.get('password')), displayName: String(data.get('name')), role, consentTerms: data.get('terms') === 'on', consentPrivacy: data.get('privacy') === 'on' };
       registrationInput.current = payload;
+      registrationId.current = null;
       register.mutate({ data: payload }, { onSuccess: registerResult, onError: authError });
     } else if (mode === 'verify') {
-      verify.mutate({ data: { email, code: String(data.get('code')) } }, { onSuccess: result => routeAfter(result, true), onError: authError });
+      if (!registrationId.current) { setError('Начните регистрацию заново, чтобы получить код для этой заявки.'); return; }
+      verify.mutate({ data: { email, registrationId: registrationId.current, code: String(data.get('code')) } }, { onSuccess: result => routeAfter(result, true), onError: authError });
     } else {
       login.mutate({ data: { email: String(data.get('email')), password: String(data.get('password')) } }, { onSuccess: result => routeAfter(result), onError: authError });
     }
@@ -88,12 +94,13 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
   const resend = () => {
     if (!registrationInput.current || pending || resendSeconds > 0) return;
     setError(''); setNotice('');
+    registrationId.current = null;
     // The registration endpoint already safely reissues a code for unverified
     // accounts. No separate, nonexistent resend endpoint is assumed.
     register.mutate({ data: registrationInput.current }, { onSuccess: registerResult, onError: authError });
   };
-  const switchMode = (next: AuthMode) => { setMode(next); setDemoMode(false); setPassword(''); setError(''); setNotice(''); setCode(''); };
-  const toggleDemo = () => { setDemoMode(value => !value); setPassword(''); setError(''); setNotice(''); registrationInput.current = null; };
+  const switchMode = (next: AuthMode) => { setMode(next); setDemoMode(false); setPassword(''); setError(''); setNotice(''); setCode(''); registrationInput.current = null; registrationId.current = null; };
+  const toggleDemo = () => { setDemoMode(value => !value); setPassword(''); setError(''); setNotice(''); registrationInput.current = null; registrationId.current = null; };
   // These read-only labels represent the demo preset, not credentials for real authentication.
   const demoLogin = role === 'candidate' ? 'candidate@demo.signal' : 'employer@demo.signal';
 
@@ -108,13 +115,13 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
       <main className="entry-main" id="main-content">
         <section className="entry-intro" aria-labelledby="entry-title"><h1 id="entry-title">Нужные люди.<br /><span>Подходящая работа.</span></h1><p>Проверенные навыки. Предложения с зарплатой.</p></section>
         <section className="entry-role-grid" aria-label="Возможности Signal">
-          <article className="entry-role-card entry-candidate-card">
-            <div className="entry-card-top"><Code2 size={18} strokeWidth={1.75} /><span className="entry-role-caption">КАНДИДАТАМ</span></div>
+          <article className="entry-role-card entry-candidate-card" data-accent="profile">
+            <div className="entry-card-top"><span className="themed-icon"><Code2 size={18} strokeWidth={1.75} aria-hidden="true" /></span><span className="entry-role-caption">КАНДИДАТАМ</span></div>
             <h2><span>Навыки</span> открывают любые двери</h2>
             <ul className="entry-benefits"><li><BadgeCheck />Подтвердите свой уровень</li><li><Mail />Получайте приглашения с зарплатой</li><li><ShieldCheck />Решайте, кому открыть контакты</li></ul>
           </article>
-          <article className="entry-role-card entry-employer-card">
-            <div className="entry-card-top"><BriefcaseBusiness size={18} strokeWidth={1.75} /><span className="entry-role-caption">РАБОТОДАТЕЛЯМ</span></div>
+          <article className="entry-role-card entry-employer-card" data-accent="employer">
+            <div className="entry-card-top"><span className="themed-icon"><BriefcaseBusiness size={18} strokeWidth={1.75} aria-hidden="true" /></span><span className="entry-role-caption">РАБОТОДАТЕЛЯМ</span></div>
             <h2>Найдите своих специалистов</h2>
             <ul className="entry-benefits"><li><BadgeCheck />Выбирайте по проверенным навыкам</li><li><Target />Сравнивайте кандидатов по задаче</li><li><Handshake />Приглашайте напрямую</li></ul>
           </article>
@@ -126,11 +133,11 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
       <div className={`public-auth public-auth-${mode}`}>
         <span className="entry-modal-icon">{mode === 'verify' ? <Mail size={23} /> : role === 'candidate' ? <UserRound size={23} /> : <BriefcaseBusiness size={23} />}</span>
         <div className="entry-auth-title"><h2>{mode === 'verify' ? 'Проверьте почту' : mode === 'register' ? 'Ваш аккаунт в Signal' : 'Рады видеть вас'}</h2>{mode === 'login' && <button className={`entry-demo-toggle${demoMode ? ' is-active' : ''}`} type="button" aria-pressed={demoMode} onClick={toggleDemo} disabled={pending} data-testid="button-demo-toggle">{demoMode ? <Check size={12} /> : <Play size={11} />}Demo</button>}</div>
-        <p className="entry-modal-intro">{mode === 'verify' ? <>Введите код из письма на <strong>{email}</strong>.</> : mode === 'register' ? 'Несколько деталей — и можно начинать.' : demoMode ? 'Готовые профили с вымышленными данными. Выберите роль и войдите.' : 'Войдите в своё рабочее пространство.'}</p>
-        {mode !== 'verify' && <div className="entry-auth-roles" role="group" aria-label="Роль аккаунта">{(['candidate', 'employer'] as const).map(target => <button type="button" key={target} disabled={pending} className={role === target ? 'selected' : ''} aria-pressed={role === target} onClick={() => { setRole(target); setError(''); }} data-testid={`button-role-${target}`}>{target === 'candidate' ? <UserRound size={15} /> : <BriefcaseBusiness size={15} />}{target === 'candidate' ? 'Я кандидат' : 'Я работодатель'}</button>)}</div>}
+        <>{mode === 'verify' && <p className="entry-modal-intro">Введите код из письма на <strong>{email}</strong>.</p>}</>
+        {mode !== 'verify' && <div className="entry-auth-roles" role="group" aria-label="Роль аккаунта">{(['candidate', 'employer'] as const).map(target => <button type="button" key={target} disabled={pending} className={role === target ? 'selected' : ''} aria-pressed={role === target} onClick={() => { setRole(target); registrationInput.current = null; registrationId.current = null; setError(''); }} data-testid={`button-role-${target}`}>{target === 'candidate' ? <UserRound size={15} /> : <BriefcaseBusiness size={15} />}{target === 'candidate' ? 'Я кандидат' : 'Я работодатель'}</button>)}</div>}
         <form className="entry-auth-form" onSubmit={submit} key={mode}>
           {mode === 'register' && <FormField className="entry-field" label={role === 'employer' ? 'Название компании' : 'Имя и фамилия'}><input name="name" required minLength={2} maxLength={120} autoComplete={role === 'employer' ? 'organization' : 'name'} placeholder={role === 'employer' ? 'Название вашей компании' : 'Как к вам обращаться'} disabled={pending} data-testid="input-display-name" /></FormField>}
-          {mode !== 'verify' && <><FormField className="entry-field" label={demoMode ? 'Логин Demo' : 'Электронная почта'}><input name="email" type="email" autoComplete={demoMode ? 'off' : 'email'} required maxLength={254} placeholder="name@example.ru" value={demoMode ? demoLogin : email} onChange={event => setEmail(event.target.value)} readOnly={demoMode} disabled={pending} data-testid="input-email" /></FormField><FormField className="entry-field" label="Пароль" hint={demoMode ? "Заполнен автоматически" : undefined}><input name="password" type="password" autoComplete={demoMode ? 'off' : mode === 'register' ? 'new-password' : 'current-password'} required minLength={mode === 'register' ? 10 : undefined} maxLength={200} placeholder={mode === 'register' ? 'Не менее 10 символов' : 'Ваш пароль'} value={demoMode ? 'signal-demo' : password} onChange={event => setPassword(event.target.value)} readOnly={demoMode} disabled={pending} data-testid="input-password" /></FormField></>}
+          {mode !== 'verify' && <><FormField className="entry-field" label={demoMode ? 'Логин Demo' : 'Электронная почта'}><input name="email" type="email" autoComplete={demoMode ? 'off' : 'email'} required maxLength={254} placeholder="name@example.ru" value={demoMode ? demoLogin : email} onChange={event => { setEmail(event.target.value); registrationInput.current = null; registrationId.current = null; }} readOnly={demoMode} disabled={pending} data-testid="input-email" /></FormField><FormField className="entry-field" label="Пароль" ><input name="password" type="password" autoComplete={demoMode ? 'off' : mode === 'register' ? 'new-password' : 'current-password'} required minLength={mode === 'register' ? 10 : undefined} maxLength={200} placeholder={mode === 'register' ? 'Не менее 10 символов' : 'Ваш пароль'} value={demoMode ? 'signal-demo' : password} onChange={event => setPassword(event.target.value)} readOnly={demoMode} disabled={pending} data-testid="input-password" /></FormField></>}
           {mode === 'verify' && <FormField className="entry-field" label="Код подтверждения"><input className="entry-code-input" name="code" inputMode="numeric" autoComplete="one-time-code" required pattern="[0-9]{6}" minLength={6} maxLength={6} value={code} onChange={event => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="000000" disabled={pending} data-testid="input-verification-code" /></FormField>}
           {mode === 'register' && <div className="entry-consents"><label><input type="checkbox" name="terms" required disabled={pending} data-testid="checkbox-terms" /><span>Принимаю условия использования сервиса.</span></label><label><input type="checkbox" name="privacy" required disabled={pending} data-testid="checkbox-privacy" /><span>Согласен(на) на обработку персональных данных для работы сервиса.</span></label></div>}
           {notice && <p className="entry-auth-notice" role="status" data-testid="status-auth-notice">{notice}</p>}
@@ -138,7 +145,7 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
           <button type="submit" className="button primary full" disabled={pending} data-testid="button-auth-submit">{pending ? 'Подождите…' : mode === 'verify' ? 'Подтвердить почту' : mode === 'register' ? 'Создать аккаунт' : 'Войти'}<ArrowRight size={16} /></button>
         </form>
         {mode !== 'verify' ? <button type="button" className="entry-switch-auth" disabled={pending} onClick={() => switchMode(mode === 'login' ? 'register' : 'login')} data-testid="button-switch-auth">{mode === 'login' ? <>Ещё нет аккаунта? <b>Зарегистрироваться</b></> : <>Уже есть аккаунт? <b>Войти</b></>}</button> : <div className="entry-verification-actions">{registrationInput.current && <button type="button" className="entry-switch-auth" disabled={pending || resendSeconds > 0} onClick={resend} data-testid="button-resend-code">{resendSeconds > 0 ? `Отправить снова через ${resendSeconds} с` : 'Отправить код ещё раз'}</button>}<button type="button" className="entry-switch-auth" disabled={pending} onClick={() => switchMode('register')} data-testid="button-back-register">Изменить адрес или вернуться</button></div>}
-        <p className="entry-auth-privacy"><ShieldCheck size={13} />{mode === 'verify' ? 'Код действует 30 минут. Проверьте папку «Спам».' : 'Вы управляете видимостью профиля и контактов.'}</p>
+        {mode === 'verify' && <p className="entry-auth-privacy"><ShieldCheck size={13} />Код действует 30 минут.</p>}
       </div>
     </Dialog>}
   </>;

@@ -1,0 +1,93 @@
+# Merge paths and components.schemas into lib/api-spec/openapi.yaml (OpenAPI 3.1).
+paths:
+  /me/fsp-connection:
+    get:
+      tags: [profile]
+      operationId: getFspConnection
+      summary: Get the authenticated candidate's FSP connection
+      description: Requires a verified candidate session. An entered identifier is not proof of ownership. No FSP network API is called.
+      responses:
+        '200':
+          description: Connection, consent and imported achievements; empty history is a normal state.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FspConnection' }
+        '401':
+          description: Sign-in required
+        '403':
+          description: Candidate role required
+    put:
+      tags: [profile]
+      operationId: saveFspConnection
+      summary: Save an FSP ID with explicit import consent
+      description: Repeated identical requests preserve timestamps. A user-entered ID remains pending and gives no ranking bonus. Only FSP-DEMO-2026 in a demo account with DEMO_MODE=true imports synthetic achievements. Identifiers are not globally reserved until identity verification exists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FspConnectionInput' }
+      responses:
+        '200':
+          description: Saved connection; unavailable upstream produces an explicit unavailable state without achievements.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FspConnection' }
+        '400':
+          description: Invalid ID, missing consent or unauthorized fixture
+        '401':
+          description: Sign-in required
+        '403':
+          description: Candidate role or trusted browser origin required
+    delete:
+      tags: [profile]
+      operationId: unlinkFspConnection
+      summary: Revoke FSP import consent and unlink the ID
+      description: Idempotent. Removes stored external identifier, achievements and provenance and atomically removes the FSP ranking flag. Keeps the minimal consent/revocation timestamps. Assessment results and the rest of the profile are preserved.
+      responses:
+        '200':
+          description: Unlinked connection
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FspConnection' }
+        '401':
+          description: Sign-in required
+        '403':
+          description: Candidate role or trusted browser origin required
+components:
+  schemas:
+    FspConnectionInput:
+      type: object
+      additionalProperties: false
+      required: [fspId, consentImport]
+      properties:
+        fspId: { type: string, minLength: 1, maxLength: 100, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$', description: 'Opaque user-entered ID; this format is a local input restriction, not an official FSP format.' }
+        consentImport: { type: boolean, const: true }
+    FspAchievement:
+      type: object
+      required: [id, title, event, occurredAt, kind]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        event: { type: string }
+        occurredAt: { type: string, format: date }
+        kind: { type: string, enum: [participation, placement, rank] }
+    FspConnection:
+      type: object
+      required: [status, fspId, demoAvailable, demoFixtureId, hasHistory, achievements, requestedAt, consentedAt, verifiedAt, importedAt, revokedAt, provenance, providerVersion, message]
+      properties:
+        status: { type: string, enum: [unlinked, pending, connected_demo, unavailable] }
+        fspId: { type: [string, 'null'] }
+        demoAvailable: { type: boolean }
+        demoFixtureId: { type: [string, 'null'] }
+        hasHistory: { type: boolean, description: 'True only for trusted, consented imported history; never inferred from an entered ID.' }
+        achievements:
+          type: array
+          items: { $ref: '#/components/schemas/FspAchievement' }
+        requestedAt: { type: [string, 'null'], format: date-time }
+        consentedAt: { type: [string, 'null'], format: date-time }
+        verifiedAt: { type: [string, 'null'], format: date-time, description: 'Fixture validation timestamp, not verification of a real person.' }
+        importedAt: { type: [string, 'null'], format: date-time }
+        revokedAt: { type: [string, 'null'], format: date-time }
+        provenance: { type: [string, 'null'], enum: [user_supplied, synthetic_fixture, null] }
+        providerVersion: { type: [string, 'null'] }
+        message: { type: string }

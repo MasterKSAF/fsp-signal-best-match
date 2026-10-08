@@ -3,7 +3,7 @@
  * A resume reuses the ORIGINAL criterion and earned level. It does not claim
  * that an older exam was sat against a newer rubric or upgrade its program.
  */
-export const EVIDENCE_COMPATIBILITY_VERSION = "signal-evidence-compatibility-v1";
+export const EVIDENCE_COMPATIBILITY_VERSION = "signal-evidence-compatibility-v2";
 export type EvidenceGrade = "Junior" | "Middle" | "Senior";
 export type EvidenceProgramId = "backend-python" | "frontend-typescript";
 
@@ -21,8 +21,8 @@ const criteria = {
 } as const;
 
 export const EVIDENCE_PROGRAMS = [
-  { id: "backend-python", specialization: "Backend / Python", versions: ["kalibr-backend-python-v4", "signal-backend-python-v5", "signal-backend-python-v6"] },
-  { id: "frontend-typescript", specialization: "Frontend / TypeScript", versions: ["signal-frontend-typescript-v1", "signal-frontend-typescript-v2"] },
+  { id: "backend-python", specialization: "Backend / Python", versions: ["kalibr-backend-python-v4", "signal-backend-python-v5", "signal-backend-python-v6", "signal-backend-python-v7"] },
+  { id: "frontend-typescript", specialization: "Frontend / TypeScript", versions: ["signal-frontend-typescript-v1", "signal-frontend-typescript-v2", "signal-frontend-typescript-v3"] },
 ] as const;
 
 export type EvidenceCompatibilityRule = {

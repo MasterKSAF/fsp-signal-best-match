@@ -1,3 +1,4 @@
+import { evidenceNoteForDisplay } from '../lib/qualification-presentation';
 import { ArrowRight, BadgeCheck, ChevronDown, FileText, History, Info, ShieldCheck, ShieldX } from 'lucide-react';
 import { FormField } from './form-field';
 import './candidate-evidence-registry.css';
@@ -62,7 +63,7 @@ export function CandidateEvidenceRegistry({ catalog, loading, error, selectedRes
           <div className="evidence-registry-source"><time dateTime={proof.date}>{originalDate(proof.date)}</time><span>Проверка навыков Signal</span><span>{proof.result}% по критерию</span></div>
           {application && <div className="evidence-registry-reason"><Info size={16} aria-hidden="true" /><div><p>{application.reason}</p>{application.nextStep && <small>{application.nextStep}</small>}</div></div>}
           {proof.correction && <div className="evidence-registry-correction"><b>Исправление от {originalDate(proof.correction.date)}</b><p>{proof.correction.reason}</p></div>}
-          <details><summary>Источник и применение к резюме <ChevronDown size={16} aria-hidden="true" /></summary><div className="evidence-registry-origin"><span>Программа <code>{proof.programId}</code></span><span>Исходная версия <code>{proof.programVersion}</code></span><span>Проверка №{proof.attemptId}</span><span>Критерий <code>{proof.criterionId}</code></span></div>{proof.limitation && <p className="honest-note">{proof.limitation}</p>}
+          <details><summary>Источник и применение к резюме <ChevronDown size={16} aria-hidden="true" /></summary><div className="evidence-registry-origin"><span>Программа <code>{proof.programId}</code></span><span>Исходная версия <code>{proof.programVersion}</code></span><span>Проверка №{proof.attemptId}</span><span>Критерий <code>{proof.criterionId}</code></span></div>{evidenceNoteForDisplay(proof.limitation) && <p className="honest-note">{evidenceNoteForDisplay(proof.limitation)}</p>}
             {proof.applications.length ? <ul className="evidence-registry-applications">{proof.applications.map(app => {
               const resume = catalog.resumes.find(row => row.id === app.resumeId);
               return <li key={app.resumeId}><div><button className="evidence-registry-resume-link" onClick={() => onSelectResume(app.resumeId)}>{resume?.title ?? `Резюме №${app.resumeId}`}</button><small>{resume?.specialization}{resume?.visibility === 'private' ? ' · скрыто' : ''}</small></div><div><b>{app.selected ? 'Используется' : app.applied ? 'Совместимо' : 'Не применяется'}</b><p>{app.reason}</p></div></li>;
@@ -70,7 +71,7 @@ export function CandidateEvidenceRegistry({ catalog, loading, error, selectedRes
           </details>
         </article>;
       })}</div>
-      {catalog.historicalQualifications.length > 0 && <section className="panel evidence-registry-history" aria-labelledby="evidence-registry-history"><h3 id="evidence-registry-history"><History size={19} aria-hidden="true" /> Исторические итоги</h3><p>Для этих записей полная версия программы или отдельные критерии не сохранены. Они не выдаются за новые подтверждения навыков.</p>{catalog.historicalQualifications.map(row => <details key={row.id}><summary>{row.specialization} · {row.grade ?? 'Без грейда'} · {originalDate(row.date)}{row.status === 'revoked' ? ' · отозвано' : ''}<ChevronDown size={16} aria-hidden="true" /></summary><p>{row.limitation}</p><p>{row.skills.join(' · ') || 'Отдельные навыки не сохранены'}</p>{row.applications.map(app => <p key={app.resumeId}><b>{catalog.resumes.find(resume => resume.id === app.resumeId)?.title ?? `Резюме №${app.resumeId}`}: </b>{app.reason}</p>)}</details>)}</section>}
+      {catalog.historicalQualifications.length > 0 && <section className="panel evidence-registry-history" aria-labelledby="evidence-registry-history"><h3 id="evidence-registry-history"><History size={19} aria-hidden="true" /> Исторические итоги</h3>{catalog.historicalQualifications.map(row => <details key={row.id}><summary>{row.specialization} · {row.grade ?? 'Без грейда'} · {originalDate(row.date)}{row.status === 'revoked' ? ' · отозвано' : ''}<ChevronDown size={16} aria-hidden="true" /></summary><p>{row.skills.join(' · ') || 'Отдельные навыки не сохранены'}</p>{row.applications.map(app => <p key={app.resumeId}><b>{catalog.resumes.find(resume => resume.id === app.resumeId)?.title ?? `Резюме №${app.resumeId}`}: </b>{app.applied ? 'Применяется' : 'Не применяется'}</p>)}</details>)}</section>}
     </>}
   </section>;
 }

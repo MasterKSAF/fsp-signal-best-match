@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { GetResearchStudy200AttemptsItem } from './getResearchStudy200AttemptsItem';
 import type { GetResearchStudy200ParticipantsItem } from './getResearchStudy200ParticipantsItem';
@@ -13,6 +13,8 @@ import type { ResearchStudy } from './researchStudy';
 export type GetResearchStudy200 = {
   study: ResearchStudy;
   operator: boolean;
+  /** False under the current read_complete_only legacy policy; already open attempts may continue. */
+  newFormsAvailable?: boolean;
   consentText: string;
   consentVersion: string;
   enrollment: ResearchEnrollment | null;

@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 
 export type GetNeedMatchingStatus200Status = typeof GetNeedMatchingStatus200Status[keyof typeof GetNeedMatchingStatus200Status];
@@ -13,4 +13,5 @@ export const GetNeedMatchingStatus200Status = {
   available: 'available',
   unsupported_requirements: 'unsupported_requirements',
   no_verified_candidates: 'no_verified_candidates',
+  invalid_requirements: 'invalid_requirements',
 } as const;

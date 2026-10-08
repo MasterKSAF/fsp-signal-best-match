@@ -32,7 +32,7 @@ test('invited qualification preserves vacancy context while declared candidate l
   assert.match(snapshot.reason, /кандидатом уровень Junior/);
 });
 test('company or unknown-origin rows cannot award platform grade or even skill evidence despite a full copied form', () => {
-  const form = assembleManagedAttempt('backend-python', 'Senior', 'purpose-guard');
+  const form = assembleManagedAttempt('backend-python', 'Senior', 'purpose-guard', {programVersion:'signal-backend-python-v6'});
   const attempt = { id: 7, userId: 17, resumeId: 9, resumeRevision: 1, resumeSpecialization: 'Backend / Python', programId: 'backend-python', programVersion: 'signal-backend-python-v6',
     grade: 'Senior', purpose: 'company_task', purposeOrigin: 'legacy_signal_bank', gradeConfirmedAt: null, status: 'submitted', ...form,
     answers: form.cases.map(item => ({ caseId: item.id, answer: form.oracles[item.id]!.answer })), score: 100, verified: true, gradeChanged: true,

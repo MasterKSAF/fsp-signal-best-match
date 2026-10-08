@@ -13,6 +13,14 @@ test('resume accepts structured Russian work history, projects and learning with
   assert.equal(input.experience.length, 0);
 });
 
+test('historical education years remain exact without invented months, while impossible or reversed years fail',()=>{
+  const education={institution:'Университет',qualification:'Информатика',start:'2018',end:'2022'};
+  const input={...emptyResume(),education:[education]};const parsed=SaveResumeSchema.parse(input);assert.deepEqual(parsed.education,[education]);
+  assert.equal(SaveResumeSchema.safeParse({...input,education:[{...education,start:'2022',end:'2021'}]}).success,false);
+  assert.equal(SaveResumeSchema.safeParse({...input,education:[{...education,start:'2022-13'}]}).success,false);
+  assert.equal(SaveResumeSchema.safeParse({...input,education:[{...education,start:'2022-09',end:'2022'}]}).success,true);
+});
+
 test('resume rejects script URLs, credentials, impossible dates, reversed periods and forged grade fields', () => {
   for (const url of ['javascript:alert(1)', 'data:text/html,hello', 'file:///C:/secret', 'https://name:password@example.org']) {
     assert.equal(SaveResumeSchema.safeParse({ ...emptyResume(), portfolio: [{ title: 'Портфолио', url }] }).success, false, url);

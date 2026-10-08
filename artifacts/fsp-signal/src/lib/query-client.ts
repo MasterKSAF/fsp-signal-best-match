@@ -4,8 +4,11 @@ type QueryClientModuleState = { queryClient?: QueryClient };
 
 /** Mounted observers must keep the same cache when an App module is replaced. */
 export function queryClientForModule(hotData?: QueryClientModuleState): QueryClient {
-  if (hotData?.queryClient) return hotData.queryClient;
-  const client = new QueryClient();
+  const client = hotData?.queryClient ?? new QueryClient();
+  // A failed session check is a settled anonymous/error result. Remounting
+  // a public header must not restart it and repeatedly replace the route tree.
+  // Explicit auth cache updates, refetch and invalidation still work normally.
+  client.setQueryDefaults(['/api/me'], { retry: false, retryOnMount: false });
   if (hotData) hotData.queryClient = client;
   return client;
 }

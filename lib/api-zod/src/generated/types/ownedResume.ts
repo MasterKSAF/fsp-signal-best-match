@@ -3,12 +3,18 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { CandidateResume } from './candidateResume';
+import type { OwnedResumeAnalytics } from './ownedResumeAnalytics';
+import type { OwnedResumeCompletion } from './ownedResumeCompletion';
+import type { OwnedResumeLegacyQualificationInfo } from './ownedResumeLegacyQualificationInfo';
 import type { OwnedResumeQualification } from './ownedResumeQualification';
+import type { OwnedResumeRoleRecommendationsItem } from './ownedResumeRoleRecommendationsItem';
+import type { OwnedResumeSkillProgress } from './ownedResumeSkillProgress';
 import type { OwnedResumeSpecialization } from './ownedResumeSpecialization';
 import type { ResumeMetadata } from './resumeMetadata';
+import type { ResumeWorkPreferences } from './resumeWorkPreferences';
 
 export type OwnedResume = CandidateResume & ResumeMetadata & ({
   /**
@@ -25,6 +31,12 @@ export type OwnedResume = CandidateResume & ResumeMetadata & ({
   specialization: OwnedResumeSpecialization;
   verifiedGrade?: string | null;
   qualification?: OwnedResumeQualification;
+  completion?: OwnedResumeCompletion;
+  skillProgress?: OwnedResumeSkillProgress;
+  analytics?: OwnedResumeAnalytics;
+  workPreferences?: ResumeWorkPreferences;
+  legacyQualificationInfo?: OwnedResumeLegacyQualificationInfo;
+  roleRecommendations?: OwnedResumeRoleRecommendationsItem[];
 }) & Required<Pick<CandidateResume & ResumeMetadata & ({
   /**
      * @minimum 1
@@ -40,4 +52,10 @@ export type OwnedResume = CandidateResume & ResumeMetadata & ({
   specialization: OwnedResumeSpecialization;
   verifiedGrade?: string | null;
   qualification?: OwnedResumeQualification;
+  completion?: OwnedResumeCompletion;
+  skillProgress?: OwnedResumeSkillProgress;
+  analytics?: OwnedResumeAnalytics;
+  workPreferences?: ResumeWorkPreferences;
+  legacyQualificationInfo?: OwnedResumeLegacyQualificationInfo;
+  roleRecommendations?: OwnedResumeRoleRecommendationsItem[];
 }), 'revision'>>;

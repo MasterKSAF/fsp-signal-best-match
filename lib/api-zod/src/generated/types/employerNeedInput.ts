@@ -3,9 +3,10 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { EmployerNeedInputGrade } from './employerNeedInputGrade';
+import type { EmployerNeedInputRequiredSkillLevels } from './employerNeedInputRequiredSkillLevels';
 import type { EmployerNeedInputSalaryPeriod } from './employerNeedInputSalaryPeriod';
 import type { EmployerNeedInputSalaryType } from './employerNeedInputSalaryType';
 
@@ -18,11 +19,16 @@ export interface EmployerNeedInput {
   specialization: string;
   grade: EmployerNeedInputGrade;
   /**
+     * Every item must remain nonempty after NFKC and whitespace normalization. Known aliases are canonicalized before saving; unknown nonempty requirements are retained.
      * @minItems 1
      * @maxItems 40
+     * @items.minLength 1
      * @items.maxLength 100
+     * @items.pattern \S
      */
   requiredSkills: string[];
+  /** Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum. */
+  requiredSkillLevels?: EmployerNeedInputRequiredSkillLevels;
   /**
      * @maxItems 40
      * @items.maxLength 100

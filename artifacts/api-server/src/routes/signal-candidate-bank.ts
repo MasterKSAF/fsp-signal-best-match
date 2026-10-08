@@ -1,3 +1,5 @@
+import { skillModulesEnabled } from '../lib/skill-module-service';
+import { loadNeedSkillLevels } from '../lib/need-skill-levels';
 import { and, eq } from "drizzle-orm";
 import { Router, type IRouter } from "express";
 import { z } from "zod";
@@ -16,6 +18,7 @@ import {
 import {
   loadResumeCandidates,
   withResumeSkillEvidence,
+  withResumePhotos,
 } from "../lib/signal-resume-matching";
 import { withAssessmentRankingEvidence } from "../lib/assessment-ranking-evidence";
 import { evaluateResumeCandidates } from "../lib/signal-resume-evaluation";
@@ -93,6 +96,7 @@ async function card(
     avatarDataUrl: resume.visibility === "public" ? resume.avatarDataUrl : null,
     fspHistory: resume.hasFspHistory,
     skillEvidence: evidence,
+    categoryEvidence: resume.categoryEvidence?.grade === resume.verifiedGrade ? resume.categoryEvidence : null,
     badges: factBadges(evidence, now),
     qualificationBasis: resume.assessmentEvidence
       ? {
@@ -128,9 +132,10 @@ router.get("/employer/candidates", async (req, res): Promise<void> => {
     purpose: "catalog",
     immutableProjection:true,
   });
-  const enriched = await withAssessmentRankingEvidence(raw, db, undefined, {
+  const legacyEnriched = await withAssessmentRankingEvidence(raw, db, undefined, {
     mutateLocalProjection: true,
   });
+  const enriched = skillModulesEnabled() ? await withResumeSkillEvidence(legacyEnriched,db,{includePhotos:false}) : legacyEnriched;
   const {page:_page,needId:_needId,...filterInput}=input;
   const filters = {
     ...filterInput,
@@ -162,7 +167,7 @@ router.get("/employer/candidates", async (req, res): Promise<void> => {
       res.status(404).json({ error: "Потребность не найдена." });
       return;
     }
-    const definition: MatchNeed = { ...need, grade: need.grade };
+    const definition: MatchNeed = { ...need, grade: need.grade, requiredSkillLevels: (await loadNeedSkillLevels([need.id])).get(need.id) ?? {} };
     const entries = evaluateResumeCandidates(
       definition,
       filtered,
@@ -180,9 +185,8 @@ router.get("/employer/candidates", async (req, res): Promise<void> => {
   }
   const start = (input.page - 1) * pageSize;
   const pagePeople = people.slice(start, start + pageSize);
-  const proofRows = await withResumeSkillEvidence(
-    pagePeople.map((person) => person.selected),
-  );
+  const selectedPage=pagePeople.map(person=>person.selected);
+  const proofRows=skillModulesEnabled()?await withResumePhotos(selectedPage):await withResumeSkillEvidence(selectedPage);
   const candidates = await Promise.all(
     pagePeople.map(async (person, index) => ({
       ...(await card(proofRows[index]!, person.alternatives, now)),

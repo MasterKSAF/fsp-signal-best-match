@@ -1,0 +1,1535 @@
+{
+  "version": "c03-matching-supplement-v1",
+  "now": "2026-10-08T12:00:00.000Z",
+  "resumes": [
+    {
+      "userId": 1001,
+      "resumeId": 10010,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1001",
+      "alias": "B Current strong",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1002,
+      "resumeId": 10020,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1002",
+      "alias": "A Current peer",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1003,
+      "resumeId": 10030,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1003",
+      "alias": "Z Current Demo FSP",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "trusted-demo-win"
+    },
+    {
+      "userId": 1004,
+      "resumeId": 10040,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1004",
+      "alias": "0 Senior category",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Senior",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "trusted-demo-win"
+    },
+    {
+      "userId": 1005,
+      "resumeId": 10050,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1005",
+      "alias": "Incomplete mandatory",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1006,
+      "resumeId": 10060,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1006",
+      "alias": "C Two CV one owner",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Docker"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1006,
+      "resumeId": 10061,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1006 declared Python",
+      "alias": "C Two CV one owner",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1007,
+      "resumeId": 10070,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1007",
+      "alias": "D Mixed legacy current",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "score": 92,
+        "skills": [
+          "Python",
+          "SQL"
+        ],
+        "assessedAt": "2026-10-01T12:00:00.000Z",
+        "gradeChangedAt": null,
+        "attemptId": null,
+        "limitation": "Synthetic historical summary: version/criterion source unavailable."
+      },
+      "fsp": "none"
+    },
+    {
+      "userId": 1008,
+      "resumeId": 10080,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1008",
+      "alias": "Revoked module",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1009,
+      "resumeId": 10090,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1009",
+      "alias": "A Ordinary ID only",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": false,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "id-only"
+    },
+    {
+      "userId": 1010,
+      "resumeId": 10100,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1010",
+      "alias": "Private CV",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "private",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1011,
+      "resumeId": 10110,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1011",
+      "alias": "No matching consent",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": false,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1012,
+      "resumeId": 10120,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1012",
+      "alias": "Deleted CV",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": "2026-10-07T12:00:00.000Z",
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1013,
+      "resumeId": 10130,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1013",
+      "alias": "A Frontend peer",
+      "specialization": "Frontend / TypeScript",
+      "assumedGrade": "Middle",
+      "stack": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1014,
+      "resumeId": 10140,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1014",
+      "alias": "Z Frontend Demo FSP",
+      "specialization": "Frontend / TypeScript",
+      "assumedGrade": "Middle",
+      "stack": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "trusted-demo-win"
+    },
+    {
+      "userId": 1015,
+      "resumeId": 10150,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1015",
+      "alias": "Frontend undeclared framework",
+      "specialization": "Frontend / TypeScript",
+      "assumedGrade": "Middle",
+      "stack": [
+        "TypeScript"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1016,
+      "resumeId": 10160,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1016",
+      "alias": "Other owner no language",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1017,
+      "resumeId": 10170,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1017",
+      "alias": "Demo ID only",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "id-only"
+    },
+    {
+      "userId": 1018,
+      "resumeId": 10180,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1018",
+      "alias": "Demo revoked FSP",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "revoked-demo-win"
+    },
+    {
+      "userId": 1020,
+      "resumeId": 10200,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1020",
+      "alias": "Z Exam stronger",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1021,
+      "resumeId": 10210,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1021",
+      "alias": "A Exam weaker",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1022,
+      "resumeId": 10220,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1022",
+      "alias": "B Other exam scale",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1024,
+      "resumeId": 10240,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1024",
+      "alias": "Revoked full exam",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL"
+      ],
+      "statedSkills": [],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": true,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    },
+    {
+      "userId": 1030,
+      "resumeId": 10300,
+      "resumeRevision": 1,
+      "title": "Synthetic CV 1030",
+      "alias": "B Ordinary peer",
+      "specialization": "Backend / Python",
+      "assumedGrade": "Middle",
+      "stack": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "statedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3,
+      "workFormat": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "visibility": "pseudonymous",
+      "consentMatching": true,
+      "consentCatalog": true,
+      "readyForOffers": true,
+      "demoMode": false,
+      "deletedAt": null,
+      "legacyQualification": null,
+      "fsp": "none"
+    }
+  ],
+  "moduleProofs": [
+    {
+      "id": 100100,
+      "userId": 1001,
+      "attemptId": 600100,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1001-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100101,
+      "userId": 1001,
+      "attemptId": 600101,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1001-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100102,
+      "userId": 1001,
+      "attemptId": 600102,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1001-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100200,
+      "userId": 1002,
+      "attemptId": 600200,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1002-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100201,
+      "userId": 1002,
+      "attemptId": 600201,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1002-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100202,
+      "userId": 1002,
+      "attemptId": 600202,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1002-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100300,
+      "userId": 1003,
+      "attemptId": 600300,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1003-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100301,
+      "userId": 1003,
+      "attemptId": 600301,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1003-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100302,
+      "userId": 1003,
+      "attemptId": 600302,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1003-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100400,
+      "userId": 1004,
+      "attemptId": 600400,
+      "skillId": "python",
+      "level": "Senior",
+      "seed": "correction01-module-1004-python-Senior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100401,
+      "userId": 1004,
+      "attemptId": 600401,
+      "skillId": "sql",
+      "level": "Senior",
+      "seed": "correction01-module-1004-sql-Senior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100402,
+      "userId": 1004,
+      "attemptId": 600402,
+      "skillId": "backend-engineering",
+      "level": "Senior",
+      "seed": "correction01-module-1004-backend-engineering-Senior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100500,
+      "userId": 1005,
+      "attemptId": 600500,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1005-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100600,
+      "userId": 1006,
+      "attemptId": 600600,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1006-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100601,
+      "userId": 1006,
+      "attemptId": 600601,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1006-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100602,
+      "userId": 1006,
+      "attemptId": 600602,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1006-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100700,
+      "userId": 1007,
+      "attemptId": 600700,
+      "skillId": "python",
+      "level": "Junior",
+      "seed": "correction01-module-1007-python-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100701,
+      "userId": 1007,
+      "attemptId": 600701,
+      "skillId": "sql",
+      "level": "Junior",
+      "seed": "correction01-module-1007-sql-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100702,
+      "userId": 1007,
+      "attemptId": 600702,
+      "skillId": "backend-engineering",
+      "level": "Junior",
+      "seed": "correction01-module-1007-backend-engineering-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100800,
+      "userId": 1008,
+      "attemptId": 600800,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1008-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100801,
+      "userId": 1008,
+      "attemptId": 600801,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1008-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100802,
+      "userId": 1008,
+      "attemptId": 600802,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1008-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100900,
+      "userId": 1009,
+      "attemptId": 600900,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1009-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100901,
+      "userId": 1009,
+      "attemptId": 600901,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1009-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 100902,
+      "userId": 1009,
+      "attemptId": 600902,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1009-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101000,
+      "userId": 1010,
+      "attemptId": 601000,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1010-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101001,
+      "userId": 1010,
+      "attemptId": 601001,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1010-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101002,
+      "userId": 1010,
+      "attemptId": 601002,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1010-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101100,
+      "userId": 1011,
+      "attemptId": 601100,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1011-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101101,
+      "userId": 1011,
+      "attemptId": 601101,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1011-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101102,
+      "userId": 1011,
+      "attemptId": 601102,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1011-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101200,
+      "userId": 1012,
+      "attemptId": 601200,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1012-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101201,
+      "userId": 1012,
+      "attemptId": 601201,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1012-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101202,
+      "userId": 1012,
+      "attemptId": 601202,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1012-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101300,
+      "userId": 1013,
+      "attemptId": 601300,
+      "skillId": "typescript",
+      "level": "Middle",
+      "seed": "correction01-module-1013-typescript-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101301,
+      "userId": 1013,
+      "attemptId": 601301,
+      "skillId": "react",
+      "level": "Middle",
+      "seed": "correction01-module-1013-react-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101302,
+      "userId": 1013,
+      "attemptId": 601302,
+      "skillId": "frontend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1013-frontend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101400,
+      "userId": 1014,
+      "attemptId": 601400,
+      "skillId": "typescript",
+      "level": "Middle",
+      "seed": "correction01-module-1014-typescript-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101401,
+      "userId": 1014,
+      "attemptId": 601401,
+      "skillId": "react",
+      "level": "Middle",
+      "seed": "correction01-module-1014-react-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101402,
+      "userId": 1014,
+      "attemptId": 601402,
+      "skillId": "frontend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1014-frontend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101500,
+      "userId": 1015,
+      "attemptId": 601500,
+      "skillId": "typescript",
+      "level": "Middle",
+      "seed": "correction01-module-1015-typescript-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101501,
+      "userId": 1015,
+      "attemptId": 601501,
+      "skillId": "react",
+      "level": "Middle",
+      "seed": "correction01-module-1015-react-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101502,
+      "userId": 1015,
+      "attemptId": 601502,
+      "skillId": "frontend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1015-frontend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101600,
+      "userId": 1016,
+      "attemptId": 601600,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1016-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101601,
+      "userId": 1016,
+      "attemptId": 601601,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1016-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101700,
+      "userId": 1017,
+      "attemptId": 601700,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1017-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101701,
+      "userId": 1017,
+      "attemptId": 601701,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1017-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101702,
+      "userId": 1017,
+      "attemptId": 601702,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1017-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101800,
+      "userId": 1018,
+      "attemptId": 601800,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1018-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101801,
+      "userId": 1018,
+      "attemptId": 601801,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1018-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 101802,
+      "userId": 1018,
+      "attemptId": 601802,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1018-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102000,
+      "userId": 1020,
+      "attemptId": 602000,
+      "skillId": "python",
+      "level": "Junior",
+      "seed": "correction01-module-1020-python-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102001,
+      "userId": 1020,
+      "attemptId": 602001,
+      "skillId": "sql",
+      "level": "Junior",
+      "seed": "correction01-module-1020-sql-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102002,
+      "userId": 1020,
+      "attemptId": 602002,
+      "skillId": "backend-engineering",
+      "level": "Junior",
+      "seed": "correction01-module-1020-backend-engineering-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102100,
+      "userId": 1021,
+      "attemptId": 602100,
+      "skillId": "python",
+      "level": "Junior",
+      "seed": "correction01-module-1021-python-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102101,
+      "userId": 1021,
+      "attemptId": 602101,
+      "skillId": "sql",
+      "level": "Junior",
+      "seed": "correction01-module-1021-sql-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102102,
+      "userId": 1021,
+      "attemptId": 602102,
+      "skillId": "backend-engineering",
+      "level": "Junior",
+      "seed": "correction01-module-1021-backend-engineering-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102200,
+      "userId": 1022,
+      "attemptId": 602200,
+      "skillId": "python",
+      "level": "Junior",
+      "seed": "correction01-module-1022-python-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102201,
+      "userId": 1022,
+      "attemptId": 602201,
+      "skillId": "sql",
+      "level": "Junior",
+      "seed": "correction01-module-1022-sql-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102202,
+      "userId": 1022,
+      "attemptId": 602202,
+      "skillId": "backend-engineering",
+      "level": "Junior",
+      "seed": "correction01-module-1022-backend-engineering-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102400,
+      "userId": 1024,
+      "attemptId": 602400,
+      "skillId": "python",
+      "level": "Junior",
+      "seed": "correction01-module-1024-python-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102401,
+      "userId": 1024,
+      "attemptId": 602401,
+      "skillId": "sql",
+      "level": "Junior",
+      "seed": "correction01-module-1024-sql-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 102402,
+      "userId": 1024,
+      "attemptId": 602402,
+      "skillId": "backend-engineering",
+      "level": "Junior",
+      "seed": "correction01-module-1024-backend-engineering-Junior",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 103000,
+      "userId": 1030,
+      "attemptId": 603000,
+      "skillId": "python",
+      "level": "Middle",
+      "seed": "correction01-module-1030-python-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 103001,
+      "userId": 1030,
+      "attemptId": 603001,
+      "skillId": "sql",
+      "level": "Middle",
+      "seed": "correction01-module-1030-sql-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    },
+    {
+      "id": 103002,
+      "userId": 1030,
+      "attemptId": 603002,
+      "skillId": "backend-engineering",
+      "level": "Middle",
+      "seed": "correction01-module-1030-backend-engineering-Middle",
+      "verifiedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses"
+    }
+  ],
+  "assessmentProofs": [
+    {
+      "id": 801020,
+      "userId": 1020,
+      "resumeId": 10200,
+      "resumeRevision": 1,
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v6",
+      "grade": "Middle",
+      "seed": "correction01-assessment-1020",
+      "submittedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses",
+      "errorFamily": null
+    },
+    {
+      "id": 801021,
+      "userId": 1021,
+      "resumeId": 10210,
+      "resumeRevision": 1,
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v6",
+      "grade": "Middle",
+      "seed": "correction01-assessment-1021",
+      "submittedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "one-noncritical-error",
+      "errorFamily": "incident-diagnosis"
+    },
+    {
+      "id": 801022,
+      "userId": 1022,
+      "resumeId": 10220,
+      "resumeRevision": 1,
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v5",
+      "grade": "Middle",
+      "seed": "correction01-assessment-1022",
+      "submittedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "one-noncritical-error",
+      "errorFamily": "incident-diagnosis"
+    },
+    {
+      "id": 801024,
+      "userId": 1024,
+      "resumeId": 10240,
+      "resumeRevision": 1,
+      "programId": "backend-python",
+      "programVersion": "signal-backend-python-v6",
+      "grade": "Middle",
+      "seed": "correction01-assessment-1024",
+      "submittedAt": "2026-10-08T12:00:00.000Z",
+      "responseModel": "all-authoritative-wire-responses",
+      "errorFamily": null
+    }
+  ],
+  "revokedModuleEvidenceIds": [
+    100801
+  ],
+  "correctedAssessmentAttemptIds": [
+    801024
+  ],
+  "needs": [
+    {
+      "needId": "backend-demo-middle",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": true
+    },
+    {
+      "needId": "backend-demo-explicit-skill-minimum",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "requiredSkillLevels": {
+        "python": "Middle"
+      },
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": true
+    },
+    {
+      "needId": "frontend-demo-middle",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "React"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": true
+    },
+    {
+      "needId": "backend-ordinary-middle",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false
+    }
+  ]
+}

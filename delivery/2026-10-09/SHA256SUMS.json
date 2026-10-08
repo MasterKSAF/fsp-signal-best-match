@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "algorithm": "SHA-256",
+  "files": {
+    "Signal-Demo.mp4": {
+      "sha256": "1942868ebe2eb348f52133358e92b6e2a0e9f38d6075b702b638114f5a6f61e4",
+      "bytes": 6305420
+    },
+    "Signal-Presentation.pptx": {
+      "sha256": "b1acb1fe7fe2754faac3c736618dc269f983b285193fc4c86fe2cc8ee1119b35",
+      "bytes": 12597203
+    },
+    "Signal-Technical-Description.pdf": {
+      "sha256": "057a60710274de821674b663a1b4983274b91d0e9e3b3498accbb399b1760e36",
+      "bytes": 130210
+    },
+    "Signal-Source.zip": {
+      "sha256": "469d5d2cb7c57e3e7c4a0d519be2242b4e81a0772ccc06f1df884ea0c57131da",
+      "bytes": 4466659
+    },
+    "README-FIRST.md": {
+      "sha256": "f27b6732c626cba11ff9cfa08c9aafc06c23e9a5c943a29e9ae9d25ca7960b01",
+      "bytes": 2872
+    },
+    "Signal-Presentation.pdf": {
+      "sha256": "59e8d45473180f9e5d2d3d10745f5db93745ff51e027897b40f6e6dfe12ac28d",
+      "bytes": 19721267
+    },
+    "Signal-Demo.srt": {
+      "sha256": "2d87975f58cb5f58ac5f23fa3dd10533a342812a5ebb35e10aa2d306b02a6c31",
+      "bytes": 4342
+    },
+    "Signal-Source.manifest.json": {
+      "sha256": "334cfd1d31e1d53387924696657f70863e85c377d93ac92af9df65b14e96c3e8",
+      "bytes": 296958
+    }
+  }
+}

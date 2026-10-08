@@ -14,6 +14,7 @@ export type CatalogResume = MatchCandidate & {
   resumeId: number;
   resumeRevision: number;
   title: string;
+  assumedGrade?: "Junior" | "Middle" | "Senior";
   yearsExperience: number;
   consentCatalog: boolean;
   readyForOffers: boolean;
@@ -324,6 +325,7 @@ export function safeCatalogResume(resume: CatalogResume) {
     specialization: resume.specialization,
     verifiedGrade: resume.verifiedGrade,
     verifiedScore: resume.verifiedScore,
+    categoryEvidence: resume.categoryEvidence ?? null,
     verifiedSkills: canonicalSkillLabels(resume.verifiedSkills),
     stack: canonicalSkillLabels(resume.stack),
     yearsExperience: resume.yearsExperience,

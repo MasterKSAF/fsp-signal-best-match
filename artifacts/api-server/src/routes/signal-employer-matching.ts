@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { Router, type IRouter, type Request, type Response } from "express";
 import { z } from "zod";
 import {
@@ -15,8 +15,17 @@ import {
   signalCandidateProfilesTable,
   signalCompaniesTable,
   signalNeedsTable,
+  signalNeedSkillLevelsTable,
   signalUsersTable,
+  signalShortlistTable,
 } from "@workspace/db";
+import { NeedPatchBody, NeedDeleteBody, contextBaseFields } from '../lib/employer-context-edit';
+import { CompanyUpdateBody, companyInnUpdate } from '../lib/company-profile-input';
+import { signalBankTemplateOverridesTable } from '@workspace/db';
+import { CURRENT_SKILL_COVERAGE_VERSION, currentSkillCoverage } from '../lib/current-skill-coverage';
+import { skillModulesEnabled } from '../lib/skill-module-service';
+import { mergePresentFields, selectionContextKey } from '../lib/selection-context-contract';
+import { loadSelectionCounters } from '../lib/signal-employer-context';
 import {
   evaluateMatch,
   rankMatches,
@@ -27,14 +36,13 @@ import {
 } from "../lib/signal-matching";
 import {
   SKILL_CATALOG_VERSION,
-  skillCoverage,
   resolveSkill,
 } from "../lib/skill-catalog";
 import { withAssessmentRankingEvidence } from "../lib/assessment-ranking-evidence";
 import {
   loadResumeCandidates,
   rankedResumePool,
-  serializeRankedResumeMatches,
+  respondRankedResumeMatches,
   withResumeSkillEvidence,
 } from "../lib/signal-resume-matching";
 import {
@@ -44,6 +52,7 @@ import {
 import { compareResumeFacts } from "../lib/signal-resume-comparison";
 import {presentFspSignal} from '../lib/fsp-results';
 import {SkillCoverageQuerySchema} from '../lib/skill-coverage-input';
+import { EmployerRequiredSkills, hasMeaningfulRequiredSkills } from '../lib/employer-required-skills';
 import { getSessionUser } from "../lib/signal-auth";
 import {
   poolScopeForAccount,
@@ -55,25 +64,10 @@ import {
   postgresIntIdParam,
 } from "../lib/postgres-id";
 
+import { loadNeedSkillLevels, validateSkillLevelRequirements, retainedSkillLevelRequirements } from "../lib/need-skill-levels";
+
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
-
-const CompanyUpdateBody = z
-  .object({
-    name: z.string().trim().min(2).max(160),
-    description: z.string().trim().max(3000),
-    industry: z.string().trim().min(2).max(160),
-    contactEmail: z.string().trim().email().max(320),
-    contactPhone: z
-      .string()
-      .trim()
-      .max(64)
-      .regex(/^[0-9+() .-]*$/)
-      .nullable()
-      .optional(),
-    contactMethod: z.enum(["Электронная почта", "Телефон", "Мессенджер"]),
-  })
-  .strict();
 
 type EmployerContext = SignalPoolScope & {
   userId: number;
@@ -112,11 +106,13 @@ async function employerContext(
   };
 }
 
-function needForMatch(need: typeof signalNeedsTable.$inferSelect): MatchNeed {
+async function needForMatch(need: typeof signalNeedsTable.$inferSelect): Promise<MatchNeed> {
+  const levels = (await loadNeedSkillLevels([need.id])).get(need.id) ?? {};
   return {
     specialization: need.specialization,
     grade: need.grade as SignalGrade,
     requiredSkills: need.requiredSkills,
+    requiredSkillLevels: levels,
     desirableSkills: need.desirableSkills,
     workFormat: need.workFormat,
     salaryMin: need.salaryMin,
@@ -132,6 +128,7 @@ function companyPayload(company: typeof signalCompaniesTable.$inferSelect) {
     name: company.name,
     description: company.description,
     industry: company.industry,
+    inn: company.inn??'',
     contactEmail: company.contactEmail,
     contactPhone: company.contactPhone,
     contactMethod: company.contactMethod,
@@ -153,6 +150,9 @@ function needPayload(need: typeof signalNeedsTable.$inferSelect) {
     salaryPeriod: need.salaryPeriod,
     salaryType: need.salaryType,
     createdAt: need.createdAt.toISOString(),
+    revision: need.revision,
+    status: need.status,
+    updatedAt: need.updatedAt.toISOString(),
   };
 }
 
@@ -167,6 +167,8 @@ async function ownedNeed(
       and(
         eq(signalNeedsTable.id, needId),
         eq(signalNeedsTable.companyId, companyId),
+        isNull(signalNeedsTable.deletedAt),
+        eq(signalNeedsTable.status, 'active'),
       ),
     )
     .limit(1);
@@ -177,23 +179,23 @@ async function rankedNeedPool(
   need: typeof signalNeedsTable.$inferSelect,
   context: EmployerContext,
   overrides: ReadonlyMap<number, number> = new Map(),
+  onlyDefault?: {userId:number;resumeId:number},
 ) {
-  return rankedResumePool(needForMatch(need), context, overrides);
+  return rankedResumePool(await needForMatch(need), context, overrides,undefined,onlyDefault);
 }
 
-router.get("/skills/coverage", (req, res): void => {
+async function activeSkillCoverage(skills: readonly string[]) {
+  const disabled=await db.select({templateId:signalBankTemplateOverridesTable.templateId}).from(signalBankTemplateOverridesTable).where(eq(signalBankTemplateOverridesTable.status,'disabled'));
+  return currentSkillCoverage(skills,{enabled:skillModulesEnabled(),disabled:new Set(disabled.map(item=>item.templateId))});
+}
+router.get("/skills/coverage", async (req, res): Promise<void> => {
   const query = SkillCoverageQuerySchema.safeParse(req.query);
   if (!query.success) {
     res.status(400).json({ error: "Проверьте требования." });
     return;
   }
-  res.json({
-    catalogVersion: SKILL_CATALOG_VERSION,
-    coverage: skillCoverage(
-      query.data.skills.split(","),
-      query.data.specialization,
-    ),
-  });
+  res.setHeader('Cache-Control','no-store');
+  res.json({catalogVersion:CURRENT_SKILL_COVERAGE_VERSION,coverage:await activeSkillCoverage(query.data.skills.split(','))});
 });
 
 router.get("/me/evidence", async (req, res): Promise<void> => {
@@ -249,20 +251,24 @@ router.get(
       res.status(404).json({ error: "Потребность не найдена." });
       return;
     }
-    const coverage = skillCoverage(need.requiredSkills, need.specialization);
+    const coverage = await activeSkillCoverage(need.requiredSkills);
     const matches = (await rankedNeedPool(need, context)).length;
     res.setHeader("Cache-Control", "no-store");
     res.json({
-      catalogVersion: SKILL_CATALOG_VERSION,
+      catalogVersion: CURRENT_SKILL_COVERAGE_VERSION,
       coverage,
       eligibleCount: matches,
-      status: matches
+      status: !hasMeaningfulRequiredSkills(need.requiredSkills)
+        ? "invalid_requirements"
+        : matches
         ? "available"
         : coverage.some((item) => !item.supported)
           ? "unsupported_requirements"
           : "no_verified_candidates",
       minimumGrade: need.grade,
-      note: "Обязательные требования сохраняются. Измените условия явно в новой потребности; неподтверждённые навыки не дают допуска.",
+      note: hasMeaningfulRequiredSkills(need.requiredSkills)
+        ? "Обязательные требования сохраняются. Измените условия явно в новой потребности; неподтверждённые навыки не дают допуска."
+        : "В сохранённой потребности есть пустые обязательные навыки. Подбор приостановлен. Создайте потребность с содержательными требованиями; эта запись сохранится в истории.",
     });
   },
 );
@@ -292,7 +298,8 @@ router.put("/employer/company", async (req, res): Promise<void> => {
   if (!context) return;
   const parsed = CompanyUpdateBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: "Проверьте данные профиля компании." });
+    const innIssue=parsed.error.issues.find(issue=>issue.path[0]==='inn');
+    res.status(400).json({ error: innIssue ? (typeof req.body?.inn==='string'?innIssue.message:'ИНН должен быть строкой из 10 или 12 цифр.') : "Проверьте данные профиля компании.",...(innIssue?{code:'INVALID_INN'}:{}) });
     return;
   }
   const input = parsed.data;
@@ -302,6 +309,7 @@ router.put("/employer/company", async (req, res): Promise<void> => {
       name: input.name,
       description: input.description,
       industry: input.industry,
+      ...companyInnUpdate(input.inn),
       contactEmail: input.contactEmail.toLowerCase(),
       contactPhone: input.contactPhone?.trim() || null,
       contactMethod: input.contactMethod,
@@ -326,15 +334,25 @@ router.get("/employer/needs", async (req, res): Promise<void> => {
   const needs = await db
     .select()
     .from(signalNeedsTable)
-    .where(eq(signalNeedsTable.companyId, context.companyId))
+    .where(and(eq(signalNeedsTable.companyId, context.companyId),isNull(signalNeedsTable.deletedAt)))
     .orderBy(desc(signalNeedsTable.createdAt));
-  res.json(ListEmployerNeedsResponse.parse(needs.map(needPayload)));
+  const levels = await loadNeedSkillLevels(needs.map(need => need.id));
+  const counters = await loadSelectionCounters(context.companyId);
+  res.setHeader('Cache-Control','no-store');
+  res.json(needs.map(need => ({ ...ListEmployerNeedsResponse.parse([{...needPayload(need),requiredSkillLevels:levels.get(need.id)??{}}])[0],
+    revision:need.revision,status:need.status,updatedAt:need.updatedAt.toISOString(),
+    shortlistCount:counters.shortlist.get(selectionContextKey({type:'need',id:need.id}))??0 })));
 });
 
 router.post("/employer/needs", async (req, res): Promise<void> => {
   const context = await employerContext(req, res);
   if (!context) return;
-  const parsed = CreateEmployerNeedBody.safeParse(req.body);
+  const required = EmployerRequiredSkills.safeParse(req.body?.requiredSkills);
+  if (!required.success) {
+    res.status(400).json({ error: "Укажите от 1 до 40 обязательных навыков: каждый должен содержать текст и не превышать 100 символов.", code: "INVALID_REQUIRED_SKILLS" });
+    return;
+  }
+  const parsed = CreateEmployerNeedBody.safeParse({ ...req.body, requiredSkills: required.data });
   if (!parsed.success) {
     res.status(400).json({ error: "Проверьте обязательные поля потребности." });
     return;
@@ -346,20 +364,70 @@ router.post("/employer/needs", async (req, res): Promise<void> => {
       .json({ error: "Минимальная зарплата не может быть выше максимальной." });
     return;
   }
-  const [need] = await db
-    .insert(signalNeedsTable)
-    .values({ ...input, companyId: context.companyId })
-    .returning();
+  const levelInput = validateSkillLevelRequirements(req.body?.requiredSkillLevels, input.requiredSkills);
+  if (!levelInput.success) { res.status(400).json({ error: 'Укажите допустимые уровни только для обязательных навыков.', code: 'INVALID_SKILL_LEVELS' }); return; }
+  if (Object.keys(levelInput.data).length && process.env.SIGNAL_WORKSPACE_ENABLED !== 'true') { res.status(503).json({ error: 'Требования по уровням пока недоступны.' }); return; }
+  const need = await db.transaction(async tx => {
+    const { requiredSkillLevels: _levels, ...baseInput } = input as typeof input & { requiredSkillLevels?: unknown };
+    const [created] = await tx.insert(signalNeedsTable).values({ ...baseInput, companyId: context.companyId }).returning();
+    if (created && process.env.SIGNAL_WORKSPACE_ENABLED === 'true') await tx.insert(signalNeedSkillLevelsTable).values({ needId: created.id, levels: levelInput.data });
+    return created;
+  });
   if (!need) {
     res.status(500).json({ error: "Не удалось сохранить потребность." });
     return;
   }
   res.status(201).json({
-    ...CreateEmployerNeedResponse.parse(needPayload(need)),
-    catalogVersion: SKILL_CATALOG_VERSION,
+    ...CreateEmployerNeedResponse.parse({ ...needPayload(need), requiredSkillLevels: levelInput.data }),
+    revision:need.revision,status:need.status,updatedAt:need.updatedAt.toISOString(),shortlistCount:0,
+    catalogVersion: CURRENT_SKILL_COVERAGE_VERSION,
     requirements: need.requiredSkills.map(resolveSkill),
-    coverage: skillCoverage(need.requiredSkills, need.specialization),
+    coverage: await activeSkillCoverage(need.requiredSkills),
   });
+});
+
+router.put('/employer/needs/:id', async (req,res):Promise<void> => {
+  const actor = await employerContext(req,res); if(!actor)return;
+  const parsed = NeedPatchBody.safeParse(req.body);
+  if(!parsed.success){res.status(400).json({error:'Проверьте изменения запроса.',code:'INVALID_NEED_PATCH'});return;}
+  const result = await db.transaction(async tx => {
+    const [current] = await tx.select().from(signalNeedsTable).where(and(eq(signalNeedsTable.id,Number(req.params.id)),eq(signalNeedsTable.companyId,actor.companyId),isNull(signalNeedsTable.deletedAt))).for('update');
+    if(!current)return {code:404 as const};
+    if(current.revision!==parsed.data.revision)return {code:409 as const};
+    const {revision:_revision,status,requiredSkillLevels:levelPatch,...basePatch}=parsed.data;
+    const merged = CreateEmployerNeedBody.safeParse(mergePresentFields(contextBaseFields(current,CreateEmployerNeedBody.shape),basePatch));
+    if(!merged.success||merged.data.salaryMin>merged.data.salaryMax)return {code:400 as const};
+    const [existingLevels] = await tx.select().from(signalNeedSkillLevelsTable).where(eq(signalNeedSkillLevelsTable.needId,current.id)).limit(1);
+    const preservedLevels = retainedSkillLevelRequirements(existingLevels?.levels??{},merged.data.requiredSkills);
+    const validated = validateSkillLevelRequirements(levelPatch===undefined?preservedLevels:levelPatch,merged.data.requiredSkills);
+    if(!validated.success)return {code:400 as const};
+    const {requiredSkillLevels:_levels,...base}=merged.data;
+    const [need] = await tx.update(signalNeedsTable).set({...base,status:status??current.status,revision:current.revision+1,updatedAt:new Date()})
+      .where(and(eq(signalNeedsTable.id,current.id),eq(signalNeedsTable.companyId,actor.companyId),eq(signalNeedsTable.revision,parsed.data.revision))).returning();
+    if(!need)return {code:409 as const};
+    await tx.insert(signalNeedSkillLevelsTable).values({needId:need.id,levels:validated.data}).onConflictDoUpdate({target:signalNeedSkillLevelsTable.needId,set:{levels:validated.data}});
+    if(status==='archived')await tx.delete(signalShortlistTable).where(and(eq(signalShortlistTable.companyId,actor.companyId),eq(signalShortlistTable.contextType,'need'),eq(signalShortlistTable.contextId,need.id)));
+    return {need,levels:validated.data};
+  });
+  if(!result.need){res.status(result.code!).json({error:result.code===409?'Запрос изменился. Обновите данные и повторите сохранение.':result.code===404?'Запрос не найден.':'Проверьте требования и зарплатную вилку.',code:result.code===409?'VERSION_CONFLICT':undefined});return;}
+  const counters=await loadSelectionCounters(actor.companyId);
+  res.json({...needPayload(result.need),requiredSkillLevels:result.levels,shortlistCount:counters.shortlist.get(`need:${result.need.id}`)??0});
+});
+
+router.delete('/employer/needs/:id', async(req,res):Promise<void> => {
+  const actor=await employerContext(req,res);if(!actor)return;
+  const input=NeedDeleteBody.safeParse(req.body);if(!input.success){res.status(400).json({error:'Укажите текущую редакцию запроса.'});return;}
+  const result=await db.transaction(async tx=>{
+    const [current]=await tx.select().from(signalNeedsTable).where(and(eq(signalNeedsTable.id,Number(req.params.id)),eq(signalNeedsTable.companyId,actor.companyId))).for('update');
+    if(!current)return 404;
+    if(current.deletedAt)return 200;
+    if(current.revision!==input.data.revision)return 409;
+    const now=new Date();
+    await tx.update(signalNeedsTable).set({deletedAt:now,status:'archived',updatedAt:now,revision:current.revision+1}).where(eq(signalNeedsTable.id,current.id));
+    await tx.delete(signalShortlistTable).where(and(eq(signalShortlistTable.companyId,actor.companyId),eq(signalShortlistTable.contextType,'need'),eq(signalShortlistTable.contextId,current.id)));
+    return 200;
+  });
+  res.status(result).json(result===200?{deleted:true}:{error:result===409?'Запрос изменился. Обновите данные.':'Запрос не найден.',code:result===409?'VERSION_CONFLICT':undefined});
 });
 
 router.get("/matches", async (req, res): Promise<void> => {
@@ -423,7 +491,8 @@ router.get("/matches", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Резюме не найдены." });
     return;
   }
-  const serialized=serializeRankedResumeMatches(matches,()=>{
+  res.setHeader('Cache-Control','no-store');
+  respondRankedResumeMatches(matches,()=>{
   const core = GetMatchesResponse.parse(
     matches.map(({ candidate, evaluation }) => ({
       candidateId: candidate.userId,
@@ -455,6 +524,9 @@ router.get("/matches", async (req, res): Promise<void> => {
         availableResumeSummary,
       ),
       baseScore: matches[index]?.evaluation.baseScore,
+      categoryEvidence: matches[index]?.candidate.categoryEvidence ?? null,
+      skillProofs: matches[index]?.candidate.skillEvidence?.filter(proof=>proof.sourceType==='signal_skill_module'&&proof.level).map(({skill,sourceType,level,programVersion})=>({skill,sourceType,level,programVersion})) ?? [],
+      qualificationSource: matches[index]?.candidate.categoryEvidence?.grade===match.verifiedGrade ? 'skill_matrix' : matches[index]?.candidate.assessmentEvidence ? 'assessment' : 'legacy',
       rankingScore: matches[index]?.evaluation.rankingScore,
       salaryCompatibility: matches[index]?.evaluation.salaryCompatibility,
       ranking: matches[index]?.evaluation.ranking,
@@ -462,9 +534,7 @@ router.get("/matches", async (req, res): Promise<void> => {
       scoreScope: matches[index]?.evaluation.scoreScope,
     })),
   );
-  });
-  res.setHeader('Cache-Control','no-store');
-  res.type('application/json').send(serialized);
+  },res);
 });
 
 router.get("/matches/explanation", async (req, res): Promise<void> => {
@@ -489,27 +559,20 @@ router.get("/matches/explanation", async (req, res): Promise<void> => {
       resumeId: parsed.data.resumeId,
     }),
   ]);
-  const candidate = candidates[0];
+  const [candidate] = candidates;
   if (!need || !candidate) {
     res.status(404).json({ error: "Кандидат или потребность не найдены." });
     return;
   }
-  const evaluation = evaluateMatch(
-    needForMatch(need),
-    candidate,
-    context.demoMode,
-  );
-  if (!evaluation.eligible) {
-    // Do not reveal whether a private, non-consenting or cross-pool profile
-    // exists to a company.
-    res.status(404).json({ error: "Кандидат или потребность не найдены." });
-    return;
-  }
+  // The addressed read checks current visibility/consent/pool ownership. The
+  // full ranked pool below is the single fresh proof/evaluation pass and still
+  // decides eligibility, alternatives and the original whole-pool ordinal.
   const selected = (
     await rankedNeedPool(
       need,
       context,
       new Map([[candidate.userId, candidate.resumeId]]),
+      {userId:candidate.userId,resumeId:candidate.resumeId},
     )
   ).find(
     (entry) =>
@@ -520,21 +583,11 @@ router.get("/matches/explanation", async (req, res): Promise<void> => {
     res.status(404).json({ error: "Кандидат или потребность не найдены." });
     return;
   }
-  const [enrichedCandidate] = await withResumeSkillEvidence([
-    selected.candidate,
-  ]);
-  const enriched = {
-    ...selected.evaluation,
-    evidence: evaluateMatch(
-      needForMatch(need),
-      enrichedCandidate,
-      context.demoMode,
-    ).evidence,
-  };
+  const enriched = selected.evaluation;
   const response = GetMatchExplanationResponse.parse({
     candidateId: candidate.userId,
     resumeId: candidate.resumeId,
-    resumeRevision: candidate.resumeRevision,
+    resumeRevision: selected.candidate.resumeRevision,
     alias: selected.candidate.alias,
     score: enriched.baseScore,
     fspBonus: enriched.fspBonus,
@@ -549,8 +602,8 @@ router.get("/matches/explanation", async (req, res): Promise<void> => {
   res.json({
     ...response,
     resumeId: candidate.resumeId,
-    resumeRevision: candidate.resumeRevision,
-    title: candidate.title,
+    resumeRevision: selected.candidate.resumeRevision,
+    title: selected.candidate.title,
     availableResumes: selected.alternatives.map(availableResumeSummary),
     evidence: enriched.evidence,
     catalogVersion: SKILL_CATALOG_VERSION,
@@ -620,7 +673,7 @@ router.get("/employer/compare", async (req, res): Promise<void> => {
     left!.skillEvidence ?? [],
     right!.skillEvidence ?? [],
   ];
-  const definition = needForMatch(need);
+  const definition = await needForMatch(need);
   const evaluated = [left!, right!].map((candidate, index) => ({
     candidate: {
       ...candidate,

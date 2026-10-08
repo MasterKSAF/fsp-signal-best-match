@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useSearch } from "wouter";
+import { professionLabel } from "@/lib/employer-workspace-navigation";
+import "./employer-workspace.css";
+import "./employer-task-answer.css";
+import { employerTaskAnswerView } from "@/lib/employer-task-answer";
+import { InlineInfo } from "./inline-info";
 import { DictionaryCombobox, useSkillDictionary } from "./dictionary-input";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   BookOpen,
   Check,
@@ -60,7 +66,7 @@ const employerKeys = [
 function ResumeContext({ binding }: { binding: any }) {
   return <div className="opportunity-detail">
     <b>{binding.resumeContext?.title ?? (binding.resumeProvenance === "captured" ? "Контекст резюме недоступен" : "Резюме не сохранено")}</b>
-    {binding.resumeContext ? <p className="muted">{binding.resumeContext.specialization} · {binding.resumeContext.verifiedGrade} · ревизия {binding.resumeRevision}</p>
+    {binding.resumeContext ? <p className="muted">{professionLabel(binding.resumeContext.specialization)} · {binding.resumeContext.verifiedGrade}</p>
       : binding.resumeProvenance === "legacy_unbound" ? <p className="muted">Прежняя запись без снимка резюме. Ей не назначается текущее основное резюме.</p> : null}
     {binding.resumeLimitation && <small role="status">{binding.resumeLimitation}</small>}
   </div>;
@@ -135,13 +141,11 @@ export function CandidateMicrotasksPage() {
   const act = useOpportunityAction(candidateKeys);
   return (
     <div className="opportunity-page">
-      <header>
-        <h1>Практика компаний</h1>
-        <p className="opportunity-intro">
-          Добровольные учебные ситуации от компаний, 5–45 минут. Получайте
-          обратную связь по конкретному навыку. Рабочие задачи компании и
-          контакты в этот формат не входят. Результат компании не меняет подтверждённый грейд Signal.
-        </p>
+      <header className="page-title">
+        <div>
+          <h1>Практика компаний<InlineInfo label="Практика компаний: подробнее">Добровольные учебные ситуации на 5–45 минут. Обратная связь компании не присваивает грейд Signal; рабочие задачи и реальные клиентские данные сюда не входят.</InlineInfo></h1>
+
+        </div>
       </header>
       {query.isLoading && <p role="status">Загружаем задания…</p>}
       {query.isError && (
@@ -156,13 +160,7 @@ export function CandidateMicrotasksPage() {
         <>
           <section className="panel opportunity-settings">
             <div>
-              <h2>Предложения от компаний</h2>
-              <p>
-                Не чаще одного задания в 7 дней, только после подтверждения
-                категории и разрешения подбора в выбранном резюме. Отключение остановит
-                подписки и незавершённые задания. Сохранённые результаты
-                останутся у вас.
-              </p>
+              <h2>Предложения от компаний<InlineInfo label="Расписание и отключение предложений">Не чаще одного задания за 7 дней. Нужны подтверждённая категория и согласие на подбор выбранного резюме. Отключение остановит подписки и незавершённые задания; сохранённые результаты останутся.</InlineInfo></h2>
             </div>
             <button
               className={`button ${query.data.enabled ? "secondary" : ""}`}
@@ -380,121 +378,40 @@ function CandidateOffer({ offer }: { offer: any }) {
 }
 
 export function EmployerMicrotasksPage() {
-  const templates = useQuery({
-    queryKey: ["employer-microtasks"],
-    queryFn: () => opportunityApi<any[]>("/employer/microtasks"),
-  });
-  const offers = useQuery({
-    queryKey: ["employer-micro-offers"],
-    queryFn: () => opportunityApi<any[]>("/employer/microtasks/offers"),
-    refetchInterval: 60000,
-  });
-  const me = useQuery({
-    queryKey: ["opportunity-me"],
-    queryFn: () => opportunityApi("/me"),
-  });
-  const [edit, setEdit] = useState<any>(null);
-  const [tab, setTab] = useState("programs");
-  return (
-    <div className="opportunity-page">
-      <header>
-        <h1>Практика от компании</h1>
-        <p className="opportunity-intro">
-          Предложите короткую учебную ситуацию и дайте полезную обратную связь.
-          Используйте вымышленные данные: задания для бесплатной разработки
-          продукта, доступа к инфраструктуре или обработки клиентских данных
-          здесь не допускаются.
-        </p>
-      </header>
-      <div className="opportunity-tabs">
-        <button
-          className={`button ${tab === "programs" ? "" : "secondary"}`}
-          onClick={() => setTab("programs")}
-        >
-          <BookOpen size={17} /> Программы
-        </button>
-        <button
-          className={`button ${tab === "answers" ? "" : "secondary"}`}
-          onClick={() => setTab("answers")}
-        >
-          <Send size={17} /> Ответы и результаты
-        </button>
-        {tab === "programs" && (
-          <button className="button secondary" onClick={() => setEdit("new")}>
-            <Plus size={17} /> Создать задание
-          </button>
-        )}
-      </div>
-      {edit && me.data && (
-        <MicroEditor
-          key={edit === "new" ? `new-${me.data.user.id}` : edit.id}
-          template={edit === "new" ? null : edit}
-          ownerId={me.data.user.id}
-          close={() => setEdit(null)}
-        />
-      )}
-      {tab === "programs" && (
-        <>
-          {templates.isLoading && <p role="status">Загружаем программы…</p>}
-          {templates.isError && (
-            <p role="alert">
-              Данные временно недоступны.{" "}
-              <button
-                className="button secondary"
-                onClick={() => {
-                  templates.refetch();
-                }}
-              >
-                Повторить
-              </button>
-            </p>
-          )}
-          {templates.data?.length === 0 && (
-            <div className="panel opportunity-empty">
-              Создайте учебное задание с рубрикой, затем выберите кандидата,
-              разрешившего предложения. Сервер будет предлагать задания по
-              сохранённому расписанию.
-            </div>
-          )}
-          <div className="opportunity-grid">
-            {templates.data?.map((t) => (
-              <EmployerTemplate
-                key={t.id}
-                template={t}
-                edit={() => setEdit(t)}
-              />
-            ))}
-          </div>
-        </>
-      )}
-      {tab === "answers" && (
-        <>
-          {offers.isLoading && <p role="status">Загружаем ответы…</p>}
-          {offers.isError && (
-            <p role="alert">
-              Не удалось загрузить ответы.{" "}
-              <button
-                className="button secondary"
-                onClick={() => offers.refetch()}
-              >
-                Повторить
-              </button>
-            </p>
-          )}
-          {offers.data?.length === 0 && (
-            <div className="panel opportunity-empty">
-              Предложения, ответы и результаты появятся здесь.
-            </div>
-          )}
-          <div className="opportunity-grid">
-            {offers.data?.map((o) => (
-              <EmployerOffer key={o.id} offer={o} />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
+  const templates = useQuery({ queryKey: ["employer-microtasks"], queryFn: () => opportunityApi<any[]>("/employer/microtasks"), staleTime: 0, refetchInterval: 30000 });
+  const me = useQuery({ queryKey: ["opportunity-me"], queryFn: () => opportunityApi("/me") });
+  const search = useSearch(), params = new URLSearchParams(search), [,navigate] = useLocation();
+  const templateId = Number(params.get("task")), tab = params.get("tab") === "answers" ? "answers" : "task";
+  const profileOfferId = params.get('profile') === '1' ? Number(params.get('offer')) : null;
+  const selected = !templates.isError && templates.data?.find(item => item.id === templateId);
+  const [edit,setEdit] = useState<any>(null);
+  const offers = useQuery({ queryKey: ["employer-micro-offers", templateId, "submitted"],
+    queryFn: () => opportunityApi<any[]>(`/employer/microtasks/offers?templateId=${templateId}&submittedOnly=1`),
+    enabled: !!selected && tab === "answers", staleTime: 0, gcTime: 0, retry: false, refetchInterval: 30000, refetchOnWindowFocus: 'always' });
+  const open = (id:number, nextTab="task") => { setEdit(null); navigate(`/employer/microtasks?task=${id}&tab=${nextTab}`); };
+  useEffect(() => {setEdit(null);}, [templateId]);
+  const answers = offers.isError || offers.isFetching ? [] : offers.data?.filter(item => item.templateId === templateId && ["submitted", "evaluated"].includes(item.status) && !item.consentRevokedAt && item.resumeAvailable) ?? [];
+  return <div className="opportunity-page employer-workspace">
+    <header className="page-title"><h1>Задания кандидатам<InlineInfo label="Задания кандидатам: подробнее">Добровольная учебная практика с обратной связью компании. Результат задания не присваивает грейд Signal.</InlineInfo></h1><button className="button primary" onClick={()=>setEdit("new")}><Plus size={17}/>Создать задание</button></header>
+    {edit && me.data && <MicroEditor key={edit === "new" ? `new-${me.data.user.id}` : `${edit.id}-${edit.version}`} template={edit === "new" ? null : edit} ownerId={me.data.user.id} close={()=>{setEdit(null); void templates.refetch();}}/>}
+    {me.isError && edit && <p role="alert">Не удалось открыть редактор. <button className="button secondary" onClick={()=>me.refetch()}>Повторить</button></p>}
+    {templates.isLoading ? <p role="status">Загружаем задания…</p> : templates.isError ? <div className="panel opportunity-empty" role="alert">Не удалось загрузить задания. <button className="button secondary" onClick={()=>templates.refetch()}>Повторить</button></div> : <>
+      {!templates.data?.length && <div className="panel opportunity-empty">Создайте учебное задание с понятными условиями и критериями оценки.</div>}
+      <div className="employer-task-list">{templates.data?.map(t=><article className="panel employer-task-row" key={t.id}>
+        <button className="employer-task-open" onClick={()=>open(t.id)}><h2>{t.title}</h2><p>{t.competency} · {professionLabel(t.specialization)} · {t.expectedMinutes} мин.</p></button>
+        <span className="opportunity-status">{t.active ? "Активно" : "Приостановлено"}</span>
+        <div className="employer-task-counters"><button className="employer-counter" onClick={()=>open(t.id,"answers")}>Ответы <b>{t.answerCount ?? '—'}</b></button><button className="employer-counter applications" onClick={()=>open(t.id,"answers")}>Новые <b>{t.newAnswerCount ?? '—'}</b></button><button className="employer-counter shortlisted" onClick={()=>open(t.id,"answers")}>Проверены <b>{t.evaluatedAnswerCount ?? '—'}</b></button>{typeof t.recipientCount === 'number' && <span className="employer-counter">Адресаты <b>{t.recipientCount}</b></span>}</div>
+      </article>)}</div>
+      {templateId && !selected ? <div className="panel opportunity-empty">Задание недоступно. <button className="button secondary" onClick={()=>navigate('/employer/microtasks')}>К заданиям</button></div> : null}
+      {selected && <section className="panel employer-task-detail">
+        <div className="opportunity-form-title"><h2>{selected.title}</h2><button className="icon-button" aria-label="Закрыть задание" onClick={()=>navigate('/employer/microtasks')}><X size={18}/></button></div>
+        <div className="opportunity-tabs" role="tablist" aria-label="Содержание задания"><button role="tab" aria-selected={tab === "task"} className={`button ${tab === "task" ? '' : 'secondary'}`} onClick={()=>open(templateId,"task")}>Задание</button><button role="tab" aria-selected={tab === "answers"} className={`button ${tab === "answers" ? '' : 'secondary'}`} onClick={()=>open(templateId,"answers")}>Ответы · {selected.answerCount ?? '—'}</button></div>
+        {tab === "task" ? <EmployerTemplate key={`${selected.id}-${selected.version}`} template={selected} edit={()=>setEdit(selected)}/> : <>
+          {profileOfferId && !offers.isFetching && !offers.isError && offers.data && !answers.some(offer => offer.id === profileOfferId) && <p className="muted" role="status">Профиль кандидата сейчас недоступен для этого ответа.</p>}{offers.isLoading || offers.isFetching ? <p role="status">Загружаем ответы…</p> : offers.isError ? <p role="alert">Не удалось загрузить ответы. <button className="button secondary" onClick={()=>offers.refetch()}>Повторить</button></p> : !answers.length ? <div className="opportunity-empty">По этому заданию пока нет доступных отправленных ответов.</div> : <div className="opportunity-list">{answers.map(offer=><EmployerOffer key={offer.id} offer={offer} profileOpen={offer.id === profileOfferId}/>)}</div>}
+        </>}
+      </section>}
+    </>}
+  </div>;
 }
 function EmployerTemplate({
   template: t,
@@ -503,13 +420,25 @@ function EmployerTemplate({
   template: any;
   edit: () => void;
 }) {
-  const eligible = useQuery({ queryKey: ["micro-eligible", t.id, t.specialization],
-    queryFn: () => opportunityApi<any[]>(`/employer/microtasks/eligible/candidates?templateId=${t.id}`),
+  const [searchDraft, setSearchDraft] = useState("");
+  const [search, setSearch] = useState("");
+  const [grade, setGrade] = useState("");
+  const eligible = useInfiniteQuery({ queryKey: ["micro-eligible", t.id, t.specialization, t.version, search, grade],
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) => {
+      const params = new URLSearchParams({ templateId: String(t.id), limit: "25" });
+      if (search) params.set("search", search);
+      if (grade) params.set("grade", grade);
+      if (pageParam) params.set("cursor", pageParam);
+      return opportunityApi<{ items: any[]; nextCursor: string | null }>(`/employer/microtasks/eligible/candidates?${params}`);
+    },
+    getNextPageParam: (page) => page.nextCursor,
     enabled: t.active && Boolean(t.specialization), staleTime: 0 });
-  const candidates = eligible.data ?? [];
+  const candidates = eligible.data?.pages.flatMap(page => page.items) ?? [];
   const [resumeId, setResumeId] = useState("");
   const selected = candidates.find(candidate => candidate.resumeId === Number(resumeId));
   const [subscriptionNote, setSubscriptionNote] = useState("");
+  useEffect(() => { setResumeId(""); setSubscriptionNote(""); }, [t.id, t.specialization, t.version, search, grade, t.active]);
   const act = useOpportunityAction(employerKeys);
   return (
     <article className="panel opportunity-card">
@@ -521,7 +450,7 @@ function EmployerTemplate({
       </header>
       <div className="opportunity-tags">
         <span>{t.competency}</span>
-        <span>{t.specialization ?? "Направление не указано"}</span>
+        <span>{professionLabel(t.specialization)}</span>
         <span>{t.expectedMinutes} мин.</span>
         <span>Раз в {t.intervalDays} дней</span>
       </div>
@@ -561,6 +490,25 @@ function EmployerTemplate({
       {!t.specialization && <p className="muted">Для новых предложений откройте редактор и выберите направление. Прежняя история сохранена.</p>}
       {t.active && t.specialization && (
         <div className="opportunity-detail">
+          <div className="micro-recipient-search">
+            <Field label="Поиск получателя по псевдониму или резюме">
+              <input className="input" value={searchDraft} maxLength={100}
+                placeholder="Псевдоним или название резюме"
+                onChange={(event) => setSearchDraft(event.target.value)}
+                onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); setSearch(searchDraft.trim()); } }} />
+            </Field>
+            <Field label="Подтверждённый уровень получателя">
+              <select className="input" value={grade} onChange={(event) => setGrade(event.target.value)}>
+                <option value="">Любой уровень</option><option value="Junior">Junior</option>
+                <option value="Middle">Middle</option><option value="Senior">Senior</option>
+              </select>
+            </Field>
+            <button type="button" className="button secondary" disabled={eligible.isFetching}
+              onClick={() => setSearch(searchDraft.trim())}>Найти получателя</button>
+            {(search || grade) && <button type="button" className="button secondary" onClick={() => {
+              setSearchDraft(""); setSearch(""); setGrade("");
+            }}>Сбросить поиск</button>}
+          </div>
           <Field label="Резюме кандидата, разрешившего предложения">
             <select
               className="input"
@@ -570,7 +518,7 @@ function EmployerTemplate({
               <option value="">Выберите подтверждённое резюме</option>
               {candidates.map((c) => (
                 <option key={c.resumeId} value={c.resumeId}>
-                  {c.alias} · {c.resumeTitle} · {c.specialization} · {c.verifiedGrade}
+                  {c.alias} · {c.resumeTitle} · {professionLabel(c.specialization)} · {c.verifiedGrade}
                 </option>
               ))}
             </select>
@@ -579,9 +527,13 @@ function EmployerTemplate({
           {eligible.isError && <p role="alert">Не удалось загрузить резюме. <button type="button" className="button secondary" onClick={() => eligible.refetch()}>Повторить</button></p>}
           {!eligible.isLoading && !eligible.isError && !candidates.length && (
             <small>
-              Пока нет подходящих открытых подтверждённых резюме этого направления. Кандидат включает практику и разрешает подбор в выбранном резюме.
+              {search || grade ? "По этому поиску доступные резюме не найдены. Измените запрос или уровень." : "Пока нет подходящих открытых подтверждённых резюме этого направления. Кандидат включает практику и разрешает подбор в выбранном резюме."}
             </small>
           )}
+          {eligible.hasNextPage && <button type="button" className="button secondary"
+            disabled={eligible.isFetching} onClick={() => eligible.fetchNextPage()}>
+            {eligible.isFetchingNextPage ? "Загружаем ещё резюме…" : "Показать ещё резюме"}
+          </button>}
           <button
             className="button"
             disabled={!selected || act.isPending || eligible.isFetching}
@@ -589,7 +541,8 @@ function EmployerTemplate({
               act.mutate({
                 path: `/employer/microtasks/${t.id}/subscriptions`,
                 body: { candidateId: selected.id, resumeId: selected.resumeId },
-              }, { onSuccess: (subscription: any) => setSubscriptionNote(subscription.active ? "Резюме выбрано. Предложение появится в ближайший допустимый срок." : "Резюме выбрано. Возобновить эту подписку может только кандидат.") })
+              }, { onSuccess: (subscription: any) => setSubscriptionNote(subscription.active ? "Резюме выбрано. Предложение появится в ближайший допустимый срок." : "Резюме выбрано. Возобновить эту подписку может только кандидат."),
+                onError: () => { setResumeId(""); void eligible.refetch(); } })
             }
           >
             Предложить регулярную практику
@@ -629,7 +582,7 @@ function MicroEditor({
         educationalOnly: false as unknown as true,
       };
   const [draft, setDraft] = useOpportunityDraft(
-    `signal-micro-draft-${ownerId}-${template?.id ?? "new"}`,
+    `signal-micro-draft-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}`,
     initial,
   );
   const act = useOpportunityAction(employerKeys);
@@ -646,12 +599,12 @@ function MicroEditor({
               ? `/employer/microtasks/${template.id}`
               : "/employer/microtasks",
             method: template ? "PUT" : "POST",
-            body: draft,
+            body: template ? { ...draft, version: template.version } : draft,
           },
           {
             onSuccess: () => {
               sessionStorage.removeItem(
-                `signal-micro-draft-${ownerId}-${template?.id ?? "new"}`,
+                `signal-micro-draft-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}`,
               );
               close();
             },
@@ -660,7 +613,7 @@ function MicroEditor({
       }}
     >
       <div className="opportunity-form-title">
-        <h2>{template ? "Новая версия программы" : "Учебное задание"}</h2>
+        <h2>{template ? "Редактирование задания" : "Учебное задание"}</h2>
         <button
           className="icon-button"
           type="button"
@@ -688,8 +641,8 @@ function MicroEditor({
         <Field label="Направление практики">
           <select className="input" required value={draft.specialization} onChange={event => set("specialization", event.target.value)}>
             <option value="">Выберите направление</option>
-            <option value="Backend / Python">Backend / Python</option>
-            <option value="Frontend / TypeScript">Frontend / TypeScript</option>
+            <option value="Backend / Python">Backend-разработчик</option>
+            <option value="Frontend / TypeScript">Frontend-разработчик</option>
           </select>
         </Field>
         <div className="opportunity-form-grid">
@@ -811,7 +764,7 @@ function MicroEditor({
         </label>
         <button className="button">
           <Check size={17} />{" "}
-          {act.isPending ? "Сохраняем…" : "Сохранить программу"}
+          {act.isPending ? "Сохраняем…" : "Сохранить задание"}
         </button>
         <small>
           Изменения действуют только для будущих предложений. Ранее выданные
@@ -822,7 +775,17 @@ function MicroEditor({
     </form>
   );
 }
-function EmployerOffer({ offer }: { offer: any }) {
+function EmployerOffer({ offer, profileOpen = false }: { offer: any; profileOpen?: boolean }) {
+  const [, navigate] = useLocation();
+  const view = employerTaskAnswerView(offer);
+  const [overviewOpen, setOverviewOpen] = useState(profileOpen);
+  const overview = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (!profileOpen) return;
+    setOverviewOpen(true);
+    const frame = requestAnimationFrame(() => { overview.current?.scrollIntoView({ block: 'nearest' }); overview.current?.querySelector('summary')?.focus({ preventScroll: true }); });
+    return () => cancelAnimationFrame(frame);
+  }, [profileOpen]);
   const [scores, setScores] = useOpportunityDraft(
     `signal-micro-grade-${offer.companyId}-${offer.id}`,
     offer.snapshot.rubric.map((r: any) => ({
@@ -837,29 +800,38 @@ function EmployerOffer({ offer }: { offer: any }) {
   );
   const act = useOpportunityAction(employerKeys);
   return (
-    <article className="panel opportunity-card">
+    <article className="panel opportunity-card employer-task-answer" id={`task-answer-${offer.id}`}>
       <header>
         <div>
-          <small>{offer.alias}</small>
-          <h2>{offer.snapshot.title}</h2>
+          <small className="employer-task-answer-label">Ответ от {view.pseudonymous ? 'кандидата · псевдоним' : 'кандидата'}</small>
+          <h3>{view.name}</h3>
+          <p className="employer-task-answer-resume">{view.resumeLabel}</p>
+          {offer.submittedAt && <small>Ответ отправлен <time dateTime={offer.submittedAt}>{new Date(offer.submittedAt).toLocaleString('ru-RU')}</time></small>}
         </div>
         <OpportunityStatus status={offer.status} />
       </header>
-      <details>
+      {view.profileHref && <a className="employer-task-answer-profile text-link" href={view.profileHref} onClick={event => { if (!event.ctrlKey && !event.metaKey && !event.shiftKey && event.button === 0) { event.preventDefault(); setOverviewOpen(true); navigate(view.profileHref!); } }}>Профиль кандидата</a>}
+      {view.readable && <details ref={overview} className="employer-task-answer-section employer-task-answer-overview" open={overviewOpen} onToggle={event => setOverviewOpen(event.currentTarget.open)}>
+        <summary><ChevronDown size={16}/><span><b>Профиль кандидата</b><small>{view.resumeLabel}</small></span></summary>
+        <div className="employer-task-answer-section-body"><h4>{view.name}</h4>{!view.pseudonymous && <p className="muted">Псевдоним: {view.alias}</p>}<ResumeContext binding={offer}/><p className="muted">Сохранённый контекст выбранного резюме на момент выдачи задания. Доступ проверяется по этому резюме. Результат практики не меняет грейд Signal.</p></div>
+      </details>}
+      <details className="employer-task-answer-section">
         <summary>
-          <ChevronDown size={16} /> Выданные условия
+          <ChevronDown size={16} /><span><b>Задание</b><small>{offer.snapshot.title} · сохранённые условия</small></span>
         </summary>
-        <Conditions offer={offer} />
+        <div className="employer-task-answer-section-body"><h4>{offer.snapshot.title}</h4><Conditions offer={offer}/></div>
       </details>
-      {offer.answer && (
-        <div className="opportunity-detail">
-          <h3>Ответ кандидата</h3>
-          <p className="opportunity-description">{offer.answer}</p>
-        </div>
+      {offer.answer && !offer.consentRevokedAt && offer.resumeAvailable && (
+        <details className="employer-task-answer-section">
+          <summary><ChevronDown size={16}/><span><b>Ответ кандидата</b><small>{view.preview}</small></span></summary>
+          <div className="employer-task-answer-section-body"><p className="opportunity-description">{offer.answer}</p></div>
+        </details>
       )}
       {offer.status === "submitted" && !offer.consentRevokedAt && offer.resumeAvailable && (
+        <details className="employer-task-answer-section">
+        <summary><ChevronDown size={16}/><span><b>Оценить ответ</b><small>По сохранённой рубрике задания · {offer.snapshot.rubric.length} критерия</small></span></summary>
         <form
-          className="opportunity-list"
+          className="opportunity-list employer-task-answer-section-body"
           onSubmit={(e) => {
             e.preventDefault();
             act.mutate({
@@ -932,8 +904,9 @@ function EmployerOffer({ offer }: { offer: any }) {
             навыки. После сохранения оценка неизменяема.
           </small>
         </form>
+        </details>
       )}
-      <Result offer={offer} />
+      {!offer.consentRevokedAt && offer.resumeAvailable && offer.result && <details className="employer-task-answer-section"><summary><ChevronDown size={16}/><span><b>Оценка компании</b><small>{offer.result.total} из {offer.result.max} · грейд Signal не меняет</small></span></summary><div className="employer-task-answer-section-body"><Result offer={offer}/></div></details>}
       {offer.consentRevokedAt && (
         <small>
           Кандидат отозвал согласие. Ответ и результат больше недоступны.

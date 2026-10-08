@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "freezeId": "independent-employer-business-20261007-v1",
+  "frozenAt": "2026-10-07T13:48:28Z",
+  "timeSource": "tools.clock__curr_time UTC",
+  "status": "FROZEN_BEFORE_ANY_NEW_PRODUCT_RANKING",
+  "immutableInputs": {
+    "rubric": {
+      "path": "docs\\validation\\independent-matching-20261007\\rubric.json",
+      "sha256": "d4e9e1fc3e3b765f0156e73b48e74e6842243b26ce7b70bfb89f1184a81fa66f",
+      "bytes": 7757
+    },
+    "dataset": {
+      "path": "docs\\validation\\independent-matching-20261007\\dataset.json",
+      "sha256": "4409b9f0d19ddbe2cce6f74bbdbf2c421010b9bb1f5432d73836e5c57485a1ca",
+      "bytes": 92870
+    },
+    "labels": {
+      "path": "docs\\validation\\independent-matching-20261007\\labels.json",
+      "sha256": "b29666566d192b9041ae7a0d933248ec7332f00e418c201acb7bd5cd6dbe8559",
+      "bytes": 724437
+    }
+  },
+  "scope": {
+    "diagnosticNeeds": 12,
+    "untouchedFinalNeeds": 12,
+    "disjointPeople": 24,
+    "resumes": 32,
+    "pointwiseLabels": 288
+  },
+  "blindness": "Limited: author knows historical policies; only business §6, public DTO and skill/program taxonomy were consulted during this task. No current comparator implementation, individual results, prior expected orders or new product ranking/admission output read/run.",
+  "semanticAuthoring": "Manual employer-business0..3 label vectors; per-resume facts explain the decisions. Source-neutral adapter mapping is a subsequent separately hashed artifact.",
+  "newRankingRuns": 0,
+  "newProductAdmissionRuns": 0,
+  "measuredResultsIncluded": false,
+  "sortedExpectedIdsIncluded": false,
+  "postFreezePolicy": "Do not tune on untouched_final. Once used for tuning, reclassify it diagnostic and author a new control. Preserve all old labels/results. Do not silently remove empty or adapter-unsupported cases.",
+  "emptyMetricConvention": "P@k0 for empty; nDCG0 when positive ideal exists; nDCGnull when ideal denominator0; all case counts explicitly reported."
+}

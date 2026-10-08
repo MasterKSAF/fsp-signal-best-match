@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import * as zod from 'zod';
 
@@ -16,6 +16,10 @@ export const getEmployerCompanyResponseCompanyOneDescriptionMax = 3000;
 export const getEmployerCompanyResponseCompanyOneIndustryMin = 2;
 export const getEmployerCompanyResponseCompanyOneIndustryMax = 160;
 
+export const getEmployerCompanyResponseCompanyOneInnMax = 12;
+
+
+export const getEmployerCompanyResponseCompanyOneInnRegExp = new RegExp('^(?:[0-9]{10}|[0-9]{12})?$');
 export const getEmployerCompanyResponseCompanyOneContactPhoneMax = 80;
 
 
@@ -25,11 +29,13 @@ export const GetEmployerCompanyResponse = zod.object({
   "name": zod.string().min(getEmployerCompanyResponseCompanyOneNameMin).max(getEmployerCompanyResponseCompanyOneNameMax),
   "description": zod.string().max(getEmployerCompanyResponseCompanyOneDescriptionMax),
   "industry": zod.string().min(getEmployerCompanyResponseCompanyOneIndustryMin).max(getEmployerCompanyResponseCompanyOneIndustryMax),
+  "inn": zod.string().max(getEmployerCompanyResponseCompanyOneInnMax).regex(getEmployerCompanyResponseCompanyOneInnRegExp).describe('Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.'),
   "contactEmail": zod.string().email(),
   "contactPhone": zod.string().max(getEmployerCompanyResponseCompanyOneContactPhoneMax).nullish(),
   "contactMethod": zod.enum(['Электронная почта', 'Телефон', 'Мессенджер'])
 }).and(zod.object({
-  "id": zod.number().int()
+  "id": zod.number().int(),
+  "inn": zod.string().describe('Current company INN or an empty string when it has not been provided.')
 }))
 })
 
@@ -42,6 +48,10 @@ export const saveEmployerCompanyBodyDescriptionMax = 3000;
 export const saveEmployerCompanyBodyIndustryMin = 2;
 export const saveEmployerCompanyBodyIndustryMax = 160;
 
+export const saveEmployerCompanyBodyInnMax = 12;
+
+
+export const saveEmployerCompanyBodyInnRegExp = new RegExp('^(?:[0-9]{10}|[0-9]{12})?$');
 export const saveEmployerCompanyBodyContactPhoneMax = 80;
 
 
@@ -50,6 +60,7 @@ export const SaveEmployerCompanyBody = zod.object({
   "name": zod.string().min(saveEmployerCompanyBodyNameMin).max(saveEmployerCompanyBodyNameMax),
   "description": zod.string().max(saveEmployerCompanyBodyDescriptionMax),
   "industry": zod.string().min(saveEmployerCompanyBodyIndustryMin).max(saveEmployerCompanyBodyIndustryMax),
+  "inn": zod.string().max(saveEmployerCompanyBodyInnMax).regex(saveEmployerCompanyBodyInnRegExp).optional().describe('Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.'),
   "contactEmail": zod.string().email(),
   "contactPhone": zod.string().max(saveEmployerCompanyBodyContactPhoneMax).nullish(),
   "contactMethod": zod.enum(['Электронная почта', 'Телефон', 'Мессенджер'])
@@ -63,6 +74,10 @@ export const saveEmployerCompanyResponseCompanyOneDescriptionMax = 3000;
 export const saveEmployerCompanyResponseCompanyOneIndustryMin = 2;
 export const saveEmployerCompanyResponseCompanyOneIndustryMax = 160;
 
+export const saveEmployerCompanyResponseCompanyOneInnMax = 12;
+
+
+export const saveEmployerCompanyResponseCompanyOneInnRegExp = new RegExp('^(?:[0-9]{10}|[0-9]{12})?$');
 export const saveEmployerCompanyResponseCompanyOneContactPhoneMax = 80;
 
 
@@ -72,11 +87,13 @@ export const SaveEmployerCompanyResponse = zod.object({
   "name": zod.string().min(saveEmployerCompanyResponseCompanyOneNameMin).max(saveEmployerCompanyResponseCompanyOneNameMax),
   "description": zod.string().max(saveEmployerCompanyResponseCompanyOneDescriptionMax),
   "industry": zod.string().min(saveEmployerCompanyResponseCompanyOneIndustryMin).max(saveEmployerCompanyResponseCompanyOneIndustryMax),
+  "inn": zod.string().max(saveEmployerCompanyResponseCompanyOneInnMax).regex(saveEmployerCompanyResponseCompanyOneInnRegExp).describe('Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.'),
   "contactEmail": zod.string().email(),
   "contactPhone": zod.string().max(saveEmployerCompanyResponseCompanyOneContactPhoneMax).nullish(),
   "contactMethod": zod.enum(['Электронная почта', 'Телефон', 'Мессенджер'])
 }).and(zod.object({
-  "id": zod.number().int()
+  "id": zod.number().int(),
+  "inn": zod.string().describe('Current company INN or an empty string when it has not been provided.')
 }))
 })
 
@@ -497,6 +514,7 @@ export const RegisterBody = zod.object({
 
 export const RegisterResponse = zod.object({
   "email": zod.string(),
+  "registrationId": zod.string().uuid().describe('Opaque browser registration intent. Keep it with this form and submit it with the mailbox code; it is never included in the email.'),
   "verificationRequired": zod.boolean(),
   "demoVerificationCode": zod.string().nullish(),
   "notice": zod.string()
@@ -510,7 +528,8 @@ export const verifyEmailBodyCodeMax = 6;
 
 export const VerifyEmailBody = zod.object({
   "email": zod.string().email(),
-  "code": zod.string().min(verifyEmailBodyCodeMin).max(verifyEmailBodyCodeMax)
+  "code": zod.string().min(verifyEmailBodyCodeMin).max(verifyEmailBodyCodeMax),
+  "registrationId": zod.string().uuid().describe('The exact opaque intent returned to this browser by its registration request. Email and code alone cannot activate an account.')
 })
 
 export const VerifyEmailResponse = zod.object({
@@ -586,6 +605,11 @@ export const GetCurrentUserResponse = zod.object({
 })
 
 
+export const getCandidateProfileResponseIdentityRevisionMin = 64;
+export const getCandidateProfileResponseIdentityRevisionMax = 64;
+
+
+export const getCandidateProfileResponseIdentityRevisionRegExp = new RegExp('^[a-f0-9]{64}$');
 export const getCandidateProfileResponseResumeIdMax = 2147483647;
 
 export const getCandidateProfileResponseTitleMin = 2;
@@ -599,6 +623,7 @@ export const GetCandidateProfileResponse = zod.object({
   "userId": zod.number().int(),
   "displayName": zod.string(),
   "professionalAlias": zod.string(),
+  "identityRevision": zod.string().min(getCandidateProfileResponseIdentityRevisionMin).max(getCandidateProfileResponseIdentityRevisionMax).regex(getCandidateProfileResponseIdentityRevisionRegExp).describe('Opaque revision of the current shared displayName, professionalAlias, phone and contactEmail. Identical across this account\'s CVs; not an authorization credential.'),
   "specialization": zod.string(),
   "assumedGrade": zod.enum(['Junior', 'Middle', 'Senior']),
   "verifiedGrade": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullish(),
@@ -617,20 +642,28 @@ export const GetCandidateProfileResponse = zod.object({
   "contactEmail": zod.string().nullish(),
   "latestAssessmentAt": zod.coerce.date().nullish(),
   "updatedAt": zod.coerce.date(),
-  "resumeId": zod.number().int().min(1).max(getCandidateProfileResponseResumeIdMax).optional(),
+  "resumeId": zod.number().int().min(1).max(getCandidateProfileResponseResumeIdMax),
   "title": zod.string().min(getCandidateProfileResponseTitleMin).max(getCandidateProfileResponseTitleMax).optional(),
-  "revision": zod.number().int().min(1).max(getCandidateProfileResponseRevisionMax).optional(),
+  "revision": zod.number().int().min(1).max(getCandidateProfileResponseRevisionMax),
   "consentCatalog": zod.boolean().optional(),
   "readyForOffers": zod.boolean().optional()
 })
 
 
+/**
+ * Save one explicitly addressed owned CV and shared identity atomically. Body resumeId and both current CV revision and identityRevision from an owner GET are mandatory; query resumeId alone never selects a CV for writes. A stale version returns409 before any field changes.
+ */
 export const saveCandidateProfileBodyDisplayNameMin = 2;
 export const saveCandidateProfileBodyDisplayNameMax = 120;
 
 export const saveCandidateProfileBodyProfessionalAliasMin = 2;
 export const saveCandidateProfileBodyProfessionalAliasMax = 120;
 
+export const saveCandidateProfileBodyIdentityRevisionMin = 64;
+export const saveCandidateProfileBodyIdentityRevisionMax = 64;
+
+
+export const saveCandidateProfileBodyIdentityRevisionRegExp = new RegExp('^[a-f0-9]{64}$');
 export const saveCandidateProfileBodyStackItemMax = 100;
 
 export const saveCandidateProfileBodyStackMax = 30;
@@ -658,6 +691,7 @@ export const saveCandidateProfileBodyRevisionMax = 2147483647;
 export const SaveCandidateProfileBody = zod.object({
   "displayName": zod.string().min(saveCandidateProfileBodyDisplayNameMin).max(saveCandidateProfileBodyDisplayNameMax),
   "professionalAlias": zod.string().min(saveCandidateProfileBodyProfessionalAliasMin).max(saveCandidateProfileBodyProfessionalAliasMax),
+  "identityRevision": zod.string().min(saveCandidateProfileBodyIdentityRevisionMin).max(saveCandidateProfileBodyIdentityRevisionMax).regex(saveCandidateProfileBodyIdentityRevisionRegExp).describe('The unmodified shared identity revision from the form\'s owner GET. Required even when only the CV title or professional fields change.'),
   "specialization": zod.string(),
   "assumedGrade": zod.enum(['Junior', 'Middle', 'Senior']),
   "stack": zod.array(zod.string().max(saveCandidateProfileBodyStackItemMax)).max(saveCandidateProfileBodyStackMax),
@@ -672,13 +706,18 @@ export const SaveCandidateProfileBody = zod.object({
   "consentMatching": zod.boolean(),
   "phone": zod.string().nullish(),
   "contactEmail": zod.string().email().nullish(),
-  "resumeId": zod.number().int().min(1).max(saveCandidateProfileBodyResumeIdMax).optional(),
+  "resumeId": zod.number().int().min(1).max(saveCandidateProfileBodyResumeIdMax),
   "title": zod.string().min(saveCandidateProfileBodyTitleMin).max(saveCandidateProfileBodyTitleMax).optional(),
-  "revision": zod.number().int().min(1).max(saveCandidateProfileBodyRevisionMax).optional(),
+  "revision": zod.number().int().min(1).max(saveCandidateProfileBodyRevisionMax),
   "consentCatalog": zod.boolean().optional(),
   "readyForOffers": zod.boolean().optional()
 })
 
+export const saveCandidateProfileResponseIdentityRevisionMin = 64;
+export const saveCandidateProfileResponseIdentityRevisionMax = 64;
+
+
+export const saveCandidateProfileResponseIdentityRevisionRegExp = new RegExp('^[a-f0-9]{64}$');
 export const saveCandidateProfileResponseResumeIdMax = 2147483647;
 
 export const saveCandidateProfileResponseTitleMin = 2;
@@ -692,6 +731,7 @@ export const SaveCandidateProfileResponse = zod.object({
   "userId": zod.number().int(),
   "displayName": zod.string(),
   "professionalAlias": zod.string(),
+  "identityRevision": zod.string().min(saveCandidateProfileResponseIdentityRevisionMin).max(saveCandidateProfileResponseIdentityRevisionMax).regex(saveCandidateProfileResponseIdentityRevisionRegExp).describe('Opaque revision of the current shared displayName, professionalAlias, phone and contactEmail. Identical across this account\'s CVs; not an authorization credential.'),
   "specialization": zod.string(),
   "assumedGrade": zod.enum(['Junior', 'Middle', 'Senior']),
   "verifiedGrade": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullish(),
@@ -710,9 +750,9 @@ export const SaveCandidateProfileResponse = zod.object({
   "contactEmail": zod.string().nullish(),
   "latestAssessmentAt": zod.coerce.date().nullish(),
   "updatedAt": zod.coerce.date(),
-  "resumeId": zod.number().int().min(1).max(saveCandidateProfileResponseResumeIdMax).optional(),
+  "resumeId": zod.number().int().min(1).max(saveCandidateProfileResponseResumeIdMax),
   "title": zod.string().min(saveCandidateProfileResponseTitleMin).max(saveCandidateProfileResponseTitleMax).optional(),
-  "revision": zod.number().int().min(1).max(saveCandidateProfileResponseRevisionMax).optional(),
+  "revision": zod.number().int().min(1).max(saveCandidateProfileResponseRevisionMax),
   "consentCatalog": zod.boolean().optional(),
   "readyForOffers": zod.boolean().optional()
 })
@@ -815,6 +855,8 @@ export const ListAssessmentProgramsResponseItem = zod.object({
   "title": zod.string(),
   "grades": zod.array(zod.string()),
   "available": zod.boolean(),
+  "issuancePolicy": zod.enum(['read_complete_only']).optional(),
+  "existingAttemptsAvailable": zod.boolean().optional(),
   "estimatedMinutes": zod.number().int(),
   "description": zod.string(),
   "version": zod.string().optional()
@@ -822,6 +864,9 @@ export const ListAssessmentProgramsResponseItem = zod.object({
 export const ListAssessmentProgramsResponse = zod.array(ListAssessmentProgramsResponseItem)
 
 
+/**
+ * New legacy issuance is closed under read_complete_only regardless of feature flags. An already open owned attempt may be resumed; use skill-attempts for new modular checks.
+ */
 export const startAssessmentAttemptBodyInvitationIdMax = 2147483647;
 
 export const startAssessmentAttemptBodyResumeIdMax = 2147483647;
@@ -1245,6 +1290,7 @@ export const ListEmployerNeedsResponseItem = zod.object({
   "specialization": zod.string(),
   "grade": zod.enum(['Junior', 'Middle', 'Senior']),
   "requiredSkills": zod.array(zod.string()),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional().describe('Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.'),
   "desirableSkills": zod.array(zod.string()),
   "description": zod.string(),
   "workFormat": zod.string(),
@@ -1262,6 +1308,8 @@ export const createEmployerNeedBodyTitleMax = 160;
 
 export const createEmployerNeedBodyRequiredSkillsItemMax = 100;
 
+
+export const createEmployerNeedBodyRequiredSkillsItemRegExp = new RegExp('\\S');
 export const createEmployerNeedBodyRequiredSkillsMax = 40;
 
 export const createEmployerNeedBodyDesirableSkillsItemMax = 100;
@@ -1279,7 +1327,8 @@ export const CreateEmployerNeedBody = zod.object({
   "title": zod.string().min(createEmployerNeedBodyTitleMin).max(createEmployerNeedBodyTitleMax),
   "specialization": zod.string(),
   "grade": zod.enum(['Junior', 'Middle', 'Senior']),
-  "requiredSkills": zod.array(zod.string().max(createEmployerNeedBodyRequiredSkillsItemMax)).min(1).max(createEmployerNeedBodyRequiredSkillsMax),
+  "requiredSkills": zod.array(zod.string().min(1).max(createEmployerNeedBodyRequiredSkillsItemMax).regex(createEmployerNeedBodyRequiredSkillsItemRegExp)).min(1).max(createEmployerNeedBodyRequiredSkillsMax).describe('Every item must remain nonempty after NFKC and whitespace normalization. Known aliases are canonicalized before saving; unknown nonempty requirements are retained.'),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional().describe('Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.'),
   "desirableSkills": zod.array(zod.string().max(createEmployerNeedBodyDesirableSkillsItemMax)).max(createEmployerNeedBodyDesirableSkillsMax),
   "description": zod.string().min(createEmployerNeedBodyDescriptionMin).max(createEmployerNeedBodyDescriptionMax),
   "workFormat": zod.string(),
@@ -1295,6 +1344,7 @@ export const CreateEmployerNeedResponse = zod.object({
   "specialization": zod.string(),
   "grade": zod.enum(['Junior', 'Middle', 'Senior']),
   "requiredSkills": zod.array(zod.string()),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional().describe('Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.'),
   "desirableSkills": zod.array(zod.string()),
   "description": zod.string(),
   "workFormat": zod.string(),
@@ -1354,6 +1404,28 @@ export const getMatchesResponseAvailableResumesItemResumeRevisionMax = 214748364
 
 
 export const GetMatchesResponseItem = zod.object({
+  "qualificationSource": zod.enum(['skill_matrix', 'assessment', 'legacy']).optional(),
+  "skillProofs": zod.array(zod.object({
+  "skill": zod.string(),
+  "sourceType": zod.enum(['signal_skill_module']),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string()
+})).optional(),
+  "categoryEvidence": zod.object({
+  "matrixVersion": zod.string(),
+  "specialization": zod.string(),
+  "grade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "targetGrade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "requirements": zod.array(zod.object({
+  "id": zod.string(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.string()
+}))
+}).nullish(),
   "candidateId": zod.number().int(),
   "alias": zod.string(),
   "specialization": zod.string(),
@@ -1496,7 +1568,9 @@ export const GetMatchExplanationResponse = zod.object({
   "criterion": zod.string().nullable(),
   "result": zod.number().nullable(),
   "date": zod.coerce.date().nullable(),
-  "sourceType": zod.enum(['signal_assessment', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "sourceType": zod.enum(['signal_assessment', 'signal_skill_module', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "evidenceId": zod.number().int().optional(),
   "limitation": zod.string().nullable()
 }),zod.null()]).optional()
 })),
@@ -2629,6 +2703,7 @@ export const GetFspConnectionResponse = zod.object({
   "status": zod.enum(['unlinked', 'pending', 'connected_demo', 'unavailable']),
   "fspId": zod.string().nullable(),
   "demoAvailable": zod.boolean(),
+  "importAvailable": zod.boolean(),
   "demoFixtureId": zod.string().nullable(),
   "hasHistory": zod.boolean().describe('True only for trusted, consented imported history; never inferred from an entered ID.'),
   "fspSignal": zod.object({
@@ -2660,8 +2735,8 @@ export const GetFspConnectionResponse = zod.object({
 
 
 /**
- * Repeated identical requests preserve timestamps. A user-entered ID remains pending and gives no ranking bonus. Only FSP-DEMO-2026 in a demo account with DEMO_MODE=true imports synthetic achievements. Identifiers are not globally reserved until identity verification exists.
- * @summary Save an FSP ID with explicit import consent
+ * Accepts only fspId. Each save records a fresh requestedAt and clears previous external proof and consent. Every entered ID, including FSP-DEMO-2026, remains pending with no achievements or ranking bonus. Saving does not call a registry, verify identity, grant import consent or reserve the ID globally.
+ * @summary Save an opaque FSP ID without importing results
  */
 export const saveFspConnectionBodyFspIdMax = 100;
 
@@ -2670,8 +2745,7 @@ export const saveFspConnectionBodyFspIdRegExp = new RegExp('^[A-Za-z0-9][A-Za-z0
 
 
 export const SaveFspConnectionBody = zod.object({
-  "fspId": zod.string().min(1).max(saveFspConnectionBodyFspIdMax).regex(saveFspConnectionBodyFspIdRegExp).describe('Opaque user-entered ID; this format is a local input restriction, not an official FSP format.'),
-  "consentImport": zod.literal(true)
+  "fspId": zod.string().min(1).max(saveFspConnectionBodyFspIdMax).regex(saveFspConnectionBodyFspIdRegExp).describe('User-entered ID; saving it grants no verified status or ranking bonus.')
 })
 
 export const saveFspConnectionResponseFspSignalBonusMin = 0;
@@ -2684,6 +2758,7 @@ export const SaveFspConnectionResponse = zod.object({
   "status": zod.enum(['unlinked', 'pending', 'connected_demo', 'unavailable']),
   "fspId": zod.string().nullable(),
   "demoAvailable": zod.boolean(),
+  "importAvailable": zod.boolean(),
   "demoFixtureId": zod.string().nullable(),
   "hasHistory": zod.boolean().describe('True only for trusted, consented imported history; never inferred from an entered ID.'),
   "fspSignal": zod.object({
@@ -2728,6 +2803,7 @@ export const UnlinkFspConnectionResponse = zod.object({
   "status": zod.enum(['unlinked', 'pending', 'connected_demo', 'unavailable']),
   "fspId": zod.string().nullable(),
   "demoAvailable": zod.boolean(),
+  "importAvailable": zod.boolean(),
   "demoFixtureId": zod.string().nullable(),
   "hasHistory": zod.boolean().describe('True only for trusted, consented imported history; never inferred from an entered ID.'),
   "fspSignal": zod.object({
@@ -3151,7 +3227,9 @@ export const GetMySkillEvidenceResponse = zod.object({
   "criterion": zod.string().nullable(),
   "result": zod.number().nullable(),
   "date": zod.coerce.date().nullable(),
-  "sourceType": zod.enum(['signal_assessment', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "sourceType": zod.enum(['signal_assessment', 'signal_skill_module', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "evidenceId": zod.number().int().optional(),
   "limitation": zod.string().nullable()
 }))
 })
@@ -3183,7 +3261,7 @@ export const GetNeedMatchingStatusResponse = zod.object({
 }))
 }).and(zod.object({
   "eligibleCount": zod.number().int().min(getNeedMatchingStatusResponseTwoEligibleCountMin),
-  "status": zod.enum(['available', 'unsupported_requirements', 'no_verified_candidates']),
+  "status": zod.enum(['available', 'unsupported_requirements', 'no_verified_candidates', 'invalid_requirements']),
   "minimumGrade": zod.enum(['Junior', 'Middle', 'Senior']),
   "note": zod.string()
 }))
@@ -3237,6 +3315,8 @@ export const GetAssessmentCompetenciesResponse = zod.object({
   "title": zod.string(),
   "grades": zod.array(zod.string()),
   "available": zod.boolean(),
+  "issuancePolicy": zod.enum(['read_complete_only']).optional(),
+  "existingAttemptsAvailable": zod.boolean().optional(),
   "estimatedMinutes": zod.number().int(),
   "description": zod.string(),
   "version": zod.string().optional()
@@ -4131,29 +4211,46 @@ export const SetMicrotaskAvailabilityResponse = zod.object({
  */
 export const listMicrotaskEligibleCandidatesQueryTemplateIdMax = 2147483647;
 
+export const listMicrotaskEligibleCandidatesQuerySearchMax = 100;
+
+export const listMicrotaskEligibleCandidatesQueryLimitDefault = 25;
+export const listMicrotaskEligibleCandidatesQueryLimitMax = 50;
+
+export const listMicrotaskEligibleCandidatesQueryCursorMax = 512;
+
 
 
 export const ListMicrotaskEligibleCandidatesQueryParams = zod.object({
-  "templateId": zod.coerce.number().int().min(1).max(listMicrotaskEligibleCandidatesQueryTemplateIdMax).optional().describe('Own template ID; limits resumes to its explicit specialization. Legacy templates without specialization return an empty list.')
+  "templateId": zod.coerce.number().int().min(1).max(listMicrotaskEligibleCandidatesQueryTemplateIdMax).optional().describe('Own template ID; limits resumes to its explicit specialization. Legacy templates without specialization return an empty list.'),
+  "search": zod.coerce.string().max(listMicrotaskEligibleCandidatesQuerySearchMax).optional().describe('Search permitted aliases and resume titles; never reveals excluded people.'),
+  "grade": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "limit": zod.coerce.number().int().min(1).max(listMicrotaskEligibleCandidatesQueryLimitMax).default(listMicrotaskEligibleCandidatesQueryLimitDefault),
+  "cursor": zod.coerce.string().min(1).max(listMicrotaskEligibleCandidatesQueryCursorMax).optional().describe('Opaque continuation bound to company, scope, template and filters; restart after changing filters.')
 })
 
-export const listMicrotaskEligibleCandidatesResponseIdMax = 2147483647;
+export const listMicrotaskEligibleCandidatesResponseItemsItemIdMax = 2147483647;
 
-export const listMicrotaskEligibleCandidatesResponseResumeIdMax = 2147483647;
-
-
+export const listMicrotaskEligibleCandidatesResponseItemsItemResumeIdMax = 2147483647;
 
 
-export const ListMicrotaskEligibleCandidatesResponseItem = zod.object({
-  "id": zod.number().int().min(1).max(listMicrotaskEligibleCandidatesResponseIdMax).describe('Candidate account ID; it is not the resume ID.'),
-  "resumeId": zod.number().int().min(1).max(listMicrotaskEligibleCandidatesResponseResumeIdMax),
+export const listMicrotaskEligibleCandidatesResponseItemsMax = 50;
+
+export const listMicrotaskEligibleCandidatesResponseNextCursorMax = 512;
+
+
+
+export const ListMicrotaskEligibleCandidatesResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number().int().min(1).max(listMicrotaskEligibleCandidatesResponseItemsItemIdMax).describe('Candidate account ID; it is not the resume ID.'),
+  "resumeId": zod.number().int().min(1).max(listMicrotaskEligibleCandidatesResponseItemsItemResumeIdMax),
   "resumeRevision": zod.number().int().min(1),
   "resumeTitle": zod.string(),
   "alias": zod.string(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.enum(['Junior', 'Middle', 'Senior'])
+})).max(listMicrotaskEligibleCandidatesResponseItemsMax),
+  "nextCursor": zod.string().max(listMicrotaskEligibleCandidatesResponseNextCursorMax).nullable()
 })
-export const ListMicrotaskEligibleCandidatesResponse = zod.array(ListMicrotaskEligibleCandidatesResponseItem)
 
 
 /**
@@ -5074,7 +5171,8 @@ export const ListResearchStudiesResponse = zod.object({
 
 
 /**
- * @summary Operator creates study and freezes A/B forms, versions and rubric
+ * Current read_complete_only policy returns 409 for new studies. Existing results and already open attempts remain accessible to their authorized users.
+ * @summary Historical study creation endpoint; new legacy forms are closed
  */
 export const createResearchStudyBodyTitleMin = 3;
 export const createResearchStudyBodyTitleMax = 120;
@@ -5129,6 +5227,7 @@ export const GetResearchStudyResponse = zod.object({
   "protocolVersion": zod.string()
 }),
   "operator": zod.boolean(),
+  "newFormsAvailable": zod.boolean().optional().describe('False under the current read_complete_only legacy policy; already open attempts may continue.'),
   "consentText": zod.string(),
   "consentVersion": zod.string(),
   "enrollment": zod.union([zod.object({
@@ -5822,7 +5921,44 @@ export const ListOwnedResumesResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))),
   "count": zod.number().int().min(listOwnedResumesResponseCountMin).max(listOwnedResumesResponseCountMax),
   "limit": zod.literal(5)
@@ -6088,7 +6224,44 @@ export const CreateOwnedResumeResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -6346,7 +6519,44 @@ export const GetOwnedResumeResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -6747,7 +6957,44 @@ export const SaveOwnedResumeResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -7021,7 +7268,44 @@ export const EditOwnedResumeMetadataResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -7293,7 +7577,44 @@ export const CopyOwnedResumeResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -7551,7 +7872,44 @@ export const SetPrimaryOwnedResumeResponse = zod.object({
   "isPrimary": zod.boolean(),
   "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
   "verifiedGrade": zod.string().nullish(),
-  "qualification": zod.record(zod.string(), zod.unknown()).optional()
+  "qualification": zod.record(zod.string(), zod.unknown()).optional(),
+  "completion": zod.object({
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "sections": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "completed": zod.boolean()
+})).optional()
+}).optional(),
+  "skillProgress": zod.object({
+  "confirmed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "supported": zod.number().int().optional(),
+  "unsupported": zod.number().int().optional(),
+  "items": zod.array(zod.record(zod.string(), zod.unknown())).optional()
+}).optional(),
+  "analytics": zod.object({
+  "views": zod.number().int().optional(),
+  "downloads": zod.number().int().optional(),
+  "periodDays": zod.number().int().optional(),
+  "since": zod.coerce.date().optional(),
+  "policy": zod.string().optional()
+}).optional(),
+  "workPreferences": zod.object({
+  "location": zod.string(),
+  "schedule": zod.string(),
+  "employment": zod.string(),
+  "relocation": zod.boolean(),
+  "startAvailability": zod.string()
+}).optional(),
+  "legacyQualificationInfo": zod.record(zod.string(), zod.unknown()).optional(),
+  "roleRecommendations": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedLevel": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable()
+})).optional()
 }))
 
 
@@ -8128,7 +8486,9 @@ export const CompareResumePairResponse = zod.object({
   "criterion": zod.string().nullable(),
   "result": zod.number().nullable(),
   "date": zod.coerce.date().nullable(),
-  "sourceType": zod.enum(['signal_assessment', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "sourceType": zod.enum(['signal_assessment', 'signal_skill_module', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "evidenceId": zod.number().int().optional(),
   "limitation": zod.string().nullable()
 }),zod.null()]).optional()
 })),
@@ -8225,7 +8585,9 @@ export const CompareResumePairResponse = zod.object({
   "criterion": zod.string().nullable(),
   "result": zod.number().nullable(),
   "date": zod.coerce.date().nullable(),
-  "sourceType": zod.enum(['signal_assessment', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "sourceType": zod.enum(['signal_assessment', 'signal_skill_module', 'demo_example', 'legacy_record', 'company_task', 'fsp']),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "evidenceId": zod.number().int().optional(),
   "limitation": zod.string().nullable()
 }),zod.null()]).optional()
 })),
@@ -8249,5 +8611,746 @@ export const CompareResumePairResponse = zod.object({
   "note": zod.string()
 })
 })
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const GetSkillModuleMatrixQueryParams = zod.object({
+  "resumeId": zod.coerce.number().int().optional()
+})
+
+
+
+
+export const GetSkillModuleMatrixResponse = zod.object({
+  "bankVersion": zod.string(),
+  "policy": zod.record(zod.string(), zod.unknown()).optional(),
+  "resume": zod.object({
+  "id": zod.number().int().optional(),
+  "title": zod.string().optional(),
+  "specialization": zod.string().optional(),
+  "targetGrade": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "statedSkills": zod.array(zod.string()).optional(),
+  "revision": zod.number().int().min(1).optional()
+}).nullable(),
+  "modules": zod.array(zod.object({
+  "levels": zod.array(zod.object({
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "available": zod.boolean(),
+  "reason": zod.string().nullable(),
+  "availabilityCode": zod.union([zod.literal('unsupported_skill_level'),zod.literal('skill_bank_unavailable'),zod.literal(null)]).nullable(),
+  "activeAttemptId": zod.number().int().nullable()
+})).optional()
+})),
+  "qualification": zod.union([zod.object({
+  "verifiedGrade": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable(),
+  "verifiedScore": zod.null(),
+  "verifiedSkills": zod.array(zod.string()).optional(),
+  "skills": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.coerce.date()
+})),
+  "coverage": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "label": zod.string().optional(),
+  "skillId": zod.string().nullish(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "covered": zod.boolean().optional(),
+  "evidenceId": zod.number().int().nullish(),
+  "reason": zod.string().optional()
+})),
+  "missing": zod.array(zod.string()),
+  "category": zod.object({
+  "matrixVersion": zod.string(),
+  "specialization": zod.string(),
+  "grade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "targetGrade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "requirements": zod.array(zod.object({
+  "id": zod.string(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.string()
+}))
+}).nullable(),
+  "source": zod.string().optional(),
+  "limitation": zod.string().nullish(),
+  "latestAssessmentAt": zod.string().nullish()
+}),zod.null()]),
+  "accountEvidence": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.coerce.date()
+})),
+  "history": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "historicalQualification": zod.record(zod.string(), zod.unknown()).nullish(),
+  "historicalAttempts": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "skillContexts": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "accountSkills": zod.array(zod.object({
+  "skillId": zod.string().nullable(),
+  "label": zod.string(),
+  "state": zod.enum(['declared', 'recommended']),
+  "resumeIds": zod.array(zod.number().int()),
+  "contexts": zod.array(zod.object({
+  "resumeId": zod.number().int(),
+  "state": zod.enum(['declared', 'recommended']),
+  "targetLevel": zod.union([zod.enum(['Junior', 'Middle', 'Senior']),zod.null()]),
+  "reason": zod.string().nullable()
+})),
+  "targetLevel": zod.union([zod.enum(['Junior', 'Middle', 'Senior']),zod.null()]),
+  "verifiedLevel": zod.union([zod.enum(['Junior', 'Middle', 'Senior']),zod.null()])
+})).optional()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const GetSkillModuleQualificationQueryParams = zod.object({
+  "resumeId": zod.coerce.number().int()
+})
+
+export const GetSkillModuleQualificationResponse = zod.object({
+  "verifiedGrade": zod.union([zod.literal('Junior'),zod.literal('Middle'),zod.literal('Senior'),zod.literal(null)]).nullable(),
+  "verifiedScore": zod.null(),
+  "verifiedSkills": zod.array(zod.string()).optional(),
+  "skills": zod.array(zod.object({
+  "skillId": zod.string(),
+  "label": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.coerce.date()
+})),
+  "coverage": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "label": zod.string().optional(),
+  "skillId": zod.string().nullish(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional(),
+  "covered": zod.boolean().optional(),
+  "evidenceId": zod.number().int().nullish(),
+  "reason": zod.string().optional()
+})),
+  "missing": zod.array(zod.string()),
+  "category": zod.object({
+  "matrixVersion": zod.string(),
+  "specialization": zod.string(),
+  "grade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "targetGrade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "requirements": zod.array(zod.object({
+  "id": zod.string(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "evidenceId": zod.number().int(),
+  "attemptId": zod.number().int(),
+  "programVersion": zod.string(),
+  "verifiedAt": zod.string()
+}))
+}).nullable(),
+  "source": zod.string().optional(),
+  "limitation": zod.string().nullish(),
+  "latestAssessmentAt": zod.string().nullish()
+})
+
+
+/**
+ * Change one owned resume declared target with revision conflict protection; it grants no qualification.
+ */
+
+
+
+
+export const SetSkillModuleTargetBody = zod.object({
+  "resumeId": zod.number().int().min(1),
+  "revision": zod.number().int().min(1),
+  "grade": zod.enum(['Junior', 'Middle', 'Senior'])
+})
+
+export const SetSkillModuleTargetResponse = zod.object({
+  "saved": zod.boolean()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const startSkillModuleAttemptBodyResumeIdMax = 2147483647;
+
+export const startSkillModuleAttemptBodyProgramVersionMax = 120;
+
+
+
+export const StartSkillModuleAttemptBody = zod.object({
+  "resumeId": zod.number().int().min(1).max(startSkillModuleAttemptBodyResumeIdMax),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string().min(1).max(startSkillModuleAttemptBodyProgramVersionMax).optional()
+})
+
+
+
+
+export const StartSkillModuleAttemptResponse = zod.object({
+  "attempt": zod.object({
+  "id": zod.number().int(),
+  "resumeId": zod.number().int().nullish(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string(),
+  "status": zod.enum(['active', 'submitted', 'expired']),
+  "cases": zod.array(zod.object({
+  "id": zod.string(),
+  "templateId": zod.string(),
+  "competencyId": zod.string(),
+  "title": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string()
+})).optional(),
+  "responseType": zod.string(),
+  "critical": zod.boolean(),
+  "templateVersion": zod.number().int().min(1),
+  "seniorOutcome": zod.string().optional()
+})),
+  "answers": zod.record(zod.string(), zod.string()),
+  "revision": zod.number().int(),
+  "policy": zod.object({
+  "durationMinutes": zod.number().int().optional(),
+  "retryHours": zod.number().int().optional(),
+  "maxDailyIssues": zod.number().int().optional(),
+  "maxModuleDailyIssues": zod.number().int().optional(),
+  "threshold": zod.number().int().optional(),
+  "rubricVersion": zod.string().optional()
+}).optional(),
+  "startedAt": zod.string(),
+  "expiresAt": zod.string(),
+  "submittedAt": zod.string().nullish(),
+  "decision": zod.record(zod.string(), zod.unknown()).nullish(),
+  "feedback": zod.array(zod.object({
+  "competencyId": zod.string().optional(),
+  "title": zod.string().optional(),
+  "explanation": zod.string().optional(),
+  "passed": zod.boolean().optional()
+})).optional(),
+  "revocation": zod.object({
+  "reason": zod.string(),
+  "date": zod.coerce.date()
+}).nullish()
+}),
+  "resumed": zod.boolean()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetSkillModuleAttemptParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+
+
+
+export const GetSkillModuleAttemptResponse = zod.object({
+  "id": zod.number().int(),
+  "resumeId": zod.number().int().nullish(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string(),
+  "status": zod.enum(['active', 'submitted', 'expired']),
+  "cases": zod.array(zod.object({
+  "id": zod.string(),
+  "templateId": zod.string(),
+  "competencyId": zod.string(),
+  "title": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string()
+})).optional(),
+  "responseType": zod.string(),
+  "critical": zod.boolean(),
+  "templateVersion": zod.number().int().min(1),
+  "seniorOutcome": zod.string().optional()
+})),
+  "answers": zod.record(zod.string(), zod.string()),
+  "revision": zod.number().int(),
+  "policy": zod.object({
+  "durationMinutes": zod.number().int().optional(),
+  "retryHours": zod.number().int().optional(),
+  "maxDailyIssues": zod.number().int().optional(),
+  "maxModuleDailyIssues": zod.number().int().optional(),
+  "threshold": zod.number().int().optional(),
+  "rubricVersion": zod.string().optional()
+}).optional(),
+  "startedAt": zod.string(),
+  "expiresAt": zod.string(),
+  "submittedAt": zod.string().nullish(),
+  "decision": zod.record(zod.string(), zod.unknown()).nullish(),
+  "feedback": zod.array(zod.object({
+  "competencyId": zod.string().optional(),
+  "title": zod.string().optional(),
+  "explanation": zod.string().optional(),
+  "passed": zod.boolean().optional()
+})).optional(),
+  "revocation": zod.object({
+  "reason": zod.string(),
+  "date": zod.coerce.date()
+}).nullish()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const SaveSkillModuleAnswersParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const saveSkillModuleAnswersBodyAnswersMaxOne = 2000;
+
+
+
+export const SaveSkillModuleAnswersBody = zod.object({
+  "revision": zod.number().int(),
+  "answers": zod.record(zod.string(), zod.string().max(saveSkillModuleAnswersBodyAnswersMaxOne))
+})
+
+
+
+
+export const SaveSkillModuleAnswersResponse = zod.object({
+  "attempt": zod.object({
+  "id": zod.number().int(),
+  "resumeId": zod.number().int().nullish(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string(),
+  "status": zod.enum(['active', 'submitted', 'expired']),
+  "cases": zod.array(zod.object({
+  "id": zod.string(),
+  "templateId": zod.string(),
+  "competencyId": zod.string(),
+  "title": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string()
+})).optional(),
+  "responseType": zod.string(),
+  "critical": zod.boolean(),
+  "templateVersion": zod.number().int().min(1),
+  "seniorOutcome": zod.string().optional()
+})),
+  "answers": zod.record(zod.string(), zod.string()),
+  "revision": zod.number().int(),
+  "policy": zod.object({
+  "durationMinutes": zod.number().int().optional(),
+  "retryHours": zod.number().int().optional(),
+  "maxDailyIssues": zod.number().int().optional(),
+  "maxModuleDailyIssues": zod.number().int().optional(),
+  "threshold": zod.number().int().optional(),
+  "rubricVersion": zod.string().optional()
+}).optional(),
+  "startedAt": zod.string(),
+  "expiresAt": zod.string(),
+  "submittedAt": zod.string().nullish(),
+  "decision": zod.record(zod.string(), zod.unknown()).nullish(),
+  "feedback": zod.array(zod.object({
+  "competencyId": zod.string().optional(),
+  "title": zod.string().optional(),
+  "explanation": zod.string().optional(),
+  "passed": zod.boolean().optional()
+})).optional(),
+  "revocation": zod.object({
+  "reason": zod.string(),
+  "date": zod.coerce.date()
+}).nullish()
+})
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const SubmitSkillModuleAttemptParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const submitSkillModuleAttemptBodyAnswersMaxOne = 2000;
+
+
+
+export const SubmitSkillModuleAttemptBody = zod.object({
+  "revision": zod.number().int(),
+  "answers": zod.record(zod.string(), zod.string().max(submitSkillModuleAttemptBodyAnswersMaxOne))
+})
+
+
+
+
+export const SubmitSkillModuleAttemptResponse = zod.object({
+  "attempt": zod.object({
+  "id": zod.number().int(),
+  "resumeId": zod.number().int().nullish(),
+  "skillId": zod.string(),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']),
+  "programVersion": zod.string(),
+  "status": zod.enum(['active', 'submitted', 'expired']),
+  "cases": zod.array(zod.object({
+  "id": zod.string(),
+  "templateId": zod.string(),
+  "competencyId": zod.string(),
+  "title": zod.string(),
+  "prompt": zod.string(),
+  "options": zod.array(zod.object({
+  "id": zod.string(),
+  "text": zod.string()
+})).optional(),
+  "responseType": zod.string(),
+  "critical": zod.boolean(),
+  "templateVersion": zod.number().int().min(1),
+  "seniorOutcome": zod.string().optional()
+})),
+  "answers": zod.record(zod.string(), zod.string()),
+  "revision": zod.number().int(),
+  "policy": zod.object({
+  "durationMinutes": zod.number().int().optional(),
+  "retryHours": zod.number().int().optional(),
+  "maxDailyIssues": zod.number().int().optional(),
+  "maxModuleDailyIssues": zod.number().int().optional(),
+  "threshold": zod.number().int().optional(),
+  "rubricVersion": zod.string().optional()
+}).optional(),
+  "startedAt": zod.string(),
+  "expiresAt": zod.string(),
+  "submittedAt": zod.string().nullish(),
+  "decision": zod.record(zod.string(), zod.unknown()).nullish(),
+  "feedback": zod.array(zod.object({
+  "competencyId": zod.string().optional(),
+  "title": zod.string().optional(),
+  "explanation": zod.string().optional(),
+  "passed": zod.boolean().optional()
+})).optional(),
+  "revocation": zod.object({
+  "reason": zod.string(),
+  "date": zod.coerce.date()
+}).nullish()
+})
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetResumeDocumentPreviewParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetResumeDocumentPreviewQueryParams = zod.object({
+  "fields": zod.coerce.string().optional().describe('Whitelist of optional file fields; empty selects no optional sections. ACL always applies.')
+})
+
+export const getResumeDocumentPreviewResponseProjectionVersionRegExp = new RegExp('^signal-document-v1:[a-f0-9]{64}$');
+
+
+export const GetResumeDocumentPreviewResponse = zod.object({
+  "resumeId": zod.number().int(),
+  "revision": zod.number().int().optional(),
+  "name": zod.string(),
+  "title": zod.string(),
+  "specialization": zod.string().optional(),
+  "audience": zod.enum(['owner', 'employer']),
+  "contactsAllowed": zod.boolean(),
+  "sections": zod.array(zod.object({
+  "title": zod.string(),
+  "paragraphs": zod.array(zod.object({
+  "text": zod.string(),
+  "link": zod.string().optional()
+}))
+})),
+  "composition": zod.array(zod.string()).optional(),
+  "contactsPermitted": zod.boolean().optional(),
+  "projectionVersion": zod.string().regex(getResumeDocumentPreviewResponseProjectionVersionRegExp).describe('Stable opaque fingerprint of the effective authorised document, including identity, qualification and included skill evidence. No volatile generation time.')
+})
+
+
+/**
+ * Explicit user-triggered employer view. Owners and prefetch never count; UTC daily deduplication.
+ */
+
+
+
+export const RecordAuthorizedResumeViewParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const RecordAuthorizedResumeViewResponse = zod.void()
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetResumeAnalyticsParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetResumeAnalyticsResponse = zod.record(zod.string(), zod.unknown())
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const SaveResumeWorkPreferencesParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const SaveResumeWorkPreferencesBody = zod.object({
+  "revision": zod.number().int(),
+  "location": zod.string().optional(),
+  "schedule": zod.string().optional(),
+  "employment": zod.string().optional(),
+  "relocation": zod.boolean().optional(),
+  "startAvailability": zod.string().optional()
+})
+
+export const SaveResumeWorkPreferencesResponse = zod.record(zod.string(), zod.unknown())
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const SearchCandidateInvitationsQueryParams = zod.object({
+  "q": zod.coerce.string().optional(),
+  "status": zod.coerce.string().optional(),
+  "resumeId": zod.coerce.number().int().optional(),
+  "page": zod.coerce.number().int().optional(),
+  "pageSize": zod.coerce.number().int().optional(),
+  "sort": zod.coerce.string().optional()
+})
+
+export const SearchCandidateInvitationsResponse = zod.object({
+  "items": zod.array(zod.record(zod.string(), zod.unknown())),
+  "total": zod.number().int(),
+  "page": zod.number().int(),
+  "pageSize": zod.number().int(),
+  "pageCount": zod.number().int(),
+  "exportLimit": zod.number().int().optional()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const SearchCandidateApplicationsQueryParams = zod.object({
+  "q": zod.coerce.string().optional(),
+  "status": zod.coerce.string().optional(),
+  "resumeId": zod.coerce.number().int().optional(),
+  "page": zod.coerce.number().int().optional(),
+  "pageSize": zod.coerce.number().int().optional(),
+  "sort": zod.coerce.string().optional()
+})
+
+export const SearchCandidateApplicationsResponse = zod.object({
+  "items": zod.array(zod.record(zod.string(), zod.unknown())),
+  "total": zod.number().int(),
+  "page": zod.number().int(),
+  "pageSize": zod.number().int(),
+  "pageCount": zod.number().int(),
+  "exportLimit": zod.number().int().optional()
+})
+
+
+/**
+ * Filters the full accessible published pool before pagination. Skills is JSON array of {skill,level?}; legacy requirements have no implicit level.
+ */
+export const searchAccessibleJobsQuerySalaryPeriodDefault = `month`;
+export const searchAccessibleJobsQueryHideAppliedDefault = false;
+export const searchAccessibleJobsQueryHideBlockedDefault = false;
+
+export const SearchAccessibleJobsQueryParams = zod.object({
+  "q": zod.coerce.string().optional(),
+  "specialization": zod.coerce.string().optional(),
+  "grade": zod.coerce.string().optional(),
+  "skills": zod.coerce.string().optional(),
+  "salaryMin": zod.coerce.number().int().optional(),
+  "salaryMax": zod.coerce.number().int().optional(),
+  "workFormat": zod.coerce.string().optional(),
+  "location": zod.coerce.string().optional(),
+  "sort": zod.coerce.string().optional(),
+  "page": zod.coerce.number().int().optional(),
+  "pageSize": zod.coerce.number().int().optional(),
+  "resumeId": zod.coerce.number().int().optional(),
+  "salaryPeriod": zod.enum(['month', 'year']).default(searchAccessibleJobsQuerySalaryPeriodDefault),
+  "hideApplied": zod.coerce.boolean().default(searchAccessibleJobsQueryHideAppliedDefault).describe('For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.'),
+  "hideBlocked": zod.coerce.boolean().default(searchAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.')
+})
+
+export const SearchAccessibleJobsResponse = zod.object({
+  "items": zod.array(zod.record(zod.string(), zod.unknown())),
+  "total": zod.number().int(),
+  "page": zod.number().int(),
+  "pageSize": zod.number().int(),
+  "pageCount": zod.number().int(),
+  "exportLimit": zod.number().int().optional()
+})
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetResumeDocumentdocxParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetResumeDocumentdocxQueryParams = zod.object({
+  "fields": zod.coerce.string().optional().describe('Whitelist of optional file fields; empty selects no optional sections. ACL always applies.')
+})
+
+export const GetResumeDocumentdocxResponse = zod.unknown()
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetResumeDocumentpdfParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetResumeDocumentpdfQueryParams = zod.object({
+  "fields": zod.coerce.string().optional().describe('Whitelist of optional file fields; empty selects no optional sections. ACL always applies.')
+})
+
+export const GetResumeDocumentpdfResponse = zod.unknown()
+
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+
+
+
+export const GetResumePreviewpdfParams = zod.object({
+  "id": zod.coerce.number().int().min(1)
+})
+
+export const GetResumePreviewpdfResponse = zod.unknown()
+
+
+/**
+ * Exports every accessible filtered row in the same order. Explicit limit 10000; excess rejected without silent truncation. No private needs or personal contacts. CSV UTF8 BOM and spreadsheet formula neutralization.
+ */
+export const exportAccessibleJobsQuerySalaryPeriodDefault = `month`;
+export const exportAccessibleJobsQueryHideAppliedDefault = false;
+export const exportAccessibleJobsQueryHideBlockedDefault = false;
+
+export const ExportAccessibleJobsQueryParams = zod.object({
+  "format": zod.enum(['csv', 'xlsx']),
+  "q": zod.coerce.string().optional(),
+  "specialization": zod.coerce.string().optional(),
+  "grade": zod.coerce.string().optional(),
+  "skills": zod.coerce.string().optional(),
+  "salaryMin": zod.coerce.number().int().optional(),
+  "salaryMax": zod.coerce.number().int().optional(),
+  "workFormat": zod.coerce.string().optional(),
+  "location": zod.coerce.string().optional(),
+  "sort": zod.coerce.string().optional(),
+  "salaryPeriod": zod.enum(['month', 'year']).default(exportAccessibleJobsQuerySalaryPeriodDefault),
+  "resumeId": zod.coerce.number().int().optional(),
+  "hideApplied": zod.coerce.boolean().default(exportAccessibleJobsQueryHideAppliedDefault).describe('For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.'),
+  "hideBlocked": zod.coerce.boolean().default(exportAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.')
+})
+
+export const ExportAccessibleJobsResponse = zod.unknown()
+
+
+export const GetOwnedAccountResponse = zod.object({
+  "id": zod.number().int(),
+  "displayName": zod.string(),
+  "email": zod.string(),
+  "emailVerified": zod.boolean(),
+  "role": zod.enum(['candidate', 'employer']),
+  "demoMode": zod.boolean(),
+  "reviewMode": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "professionalAlias": zod.string().nullable()
+})
+
+
+export const updateOwnedAccountBodyDisplayNameMin = 2;
+export const updateOwnedAccountBodyDisplayNameMax = 120;
+
+export const updateOwnedAccountBodyProfessionalAliasMin = 2;
+export const updateOwnedAccountBodyProfessionalAliasMax = 120;
+
+
+
+export const UpdateOwnedAccountBody = zod.object({
+  "displayName": zod.string().min(updateOwnedAccountBodyDisplayNameMin).max(updateOwnedAccountBodyDisplayNameMax),
+  "expectedDisplayName": zod.string(),
+  "professionalAlias": zod.string().min(updateOwnedAccountBodyProfessionalAliasMin).max(updateOwnedAccountBodyProfessionalAliasMax).optional(),
+  "expectedProfessionalAlias": zod.string().optional()
+})
+
+export const UpdateOwnedAccountResponse = zod.object({
+  "id": zod.number().int(),
+  "displayName": zod.string(),
+  "email": zod.string(),
+  "emailVerified": zod.boolean(),
+  "role": zod.enum(['candidate', 'employer']),
+  "demoMode": zod.boolean(),
+  "reviewMode": zod.boolean(),
+  "createdAt": zod.coerce.date(),
+  "professionalAlias": zod.string().nullable()
+})
+
+
+/**
+ * Registry integration is not configured. This operation never imports a synthetic fixture, persists consent or confirms the ID. A saved ID is required before returning registry_not_configured.
+ * @summary Request an FSP import with separate explicit consent
+ */
+export const RequestFspImportBody = zod.object({
+  "consentImport": zod.literal(true)
+})
+
+export const RequestFspImportResponse = zod.void()
 
 

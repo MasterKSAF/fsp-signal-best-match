@@ -2,18 +2,19 @@ import { createHash, randomBytes } from "node:crypto";
 import type { SignalCase } from "@workspace/db";
 import { assembleAttempt, type AssessmentGrade, type AttemptOracle, type OracleBlueprint } from "./assessment-bank";
 import type { AssessmentContextId } from "./assessment-context";
+import { backendSemanticTask, frontendSemanticTask } from "./assessment-semantic-variants";
 
 export type ProgramId = "backend-python" | "frontend-typescript";
 export const assessmentPrograms = [
-  { id: "backend-python" as const, specialization: "Backend / Python", title: "Проверка навыков · Backend / Python", version: "signal-backend-python-v6", grades: ["Junior", "Middle", "Senior"], available: true, estimatedMinutes: 35, description: "Контракты API, SQL, диагностика и безопасная обработка событий. Шесть заданий с разными инженерными сценариями." },
-  { id: "frontend-typescript" as const, specialization: "Frontend / TypeScript", title: "Проверка навыков · Frontend / TypeScript", version: "signal-frontend-typescript-v2", grades: ["Junior", "Middle", "Senior"], available: true, estimatedMinutes: 35, description: "TypeScript, состояние интерфейса, доступность, производительность, архитектура и асинхронные обновления." },
+  { id: "backend-python" as const, specialization: "Backend / Python", title: "Проверка навыков · Backend / Python", version: "signal-backend-python-v7", grades: ["Junior", "Middle", "Senior"], available: false, issuancePolicy: "read_complete_only" as const, existingAttemptsAvailable: true, estimatedMinutes: 35, description: "Новые формы прежней программы не выдаются. Ранее выданные попытки доступны для чтения и завершения; новые проверки — в матрице навыков." },
+  { id: "frontend-typescript" as const, specialization: "Frontend / TypeScript", title: "Проверка навыков · Frontend / TypeScript", version: "signal-frontend-typescript-v3", grades: ["Junior", "Middle", "Senior"], available: false, issuancePolicy: "read_complete_only" as const, existingAttemptsAvailable: true, estimatedMinutes: 35, description: "Новые формы прежней программы не выдаются. Ранее выданные попытки доступны для чтения и завершения; новые проверки — в матрице навыков." },
 ];
 export function isProgramId(value: unknown): value is ProgramId { return value === "backend-python" || value === "frontend-typescript"; }
 export function programSpecialization(id: string) { return assessmentPrograms.find(program => program.id === id)?.specialization; }
 const backendFamilies = ["api-contracts", "sql-data", "incident-diagnosis", "idempotency", "architecture", "condition-change"] as const;
 const frontendFamilies = ["typescript", "frontend-state", "frontend-performance", "accessibility", "frontend-architecture", "async-ui"] as const;
-const backendScenarios = [["saved-response", "optimistic-write"], ["tenant-aggregate", "missing-relations"], ["database-runtime", "dependency-budget"], ["event-ledger", "sequence-window"], ["durable-delivery", "expand-contract"], ["late-replay", "cache-invalidation"]] as const;
-const frontendScenarios = [["union-narrowing", "runtime-boundary"], ["immutable-reducer", "derived-selection"], ["main-thread", "network-waterfall"], ["focus-navigation", "live-feedback"], ["state-ownership", "contract-evolution"], ["request-race", "optimistic-rollback"]] as const;
+const backendScenarios = [["saved-response", "optimistic-write", "lease-fencing"], ["tenant-aggregate", "missing-relations", "conditional-null-aggregate"], ["database-runtime", "dependency-budget", "lock-retention-diagnosis"], ["event-ledger", "sequence-window", "rollback-dedup"], ["durable-delivery", "expand-contract", "data-compatible-rollback"], ["late-replay", "cache-invalidation", "negative-cache-epoch"]] as const;
+const frontendScenarios = [["union-narrowing", "runtime-boundary", "zero-discriminant"], ["immutable-reducer", "derived-selection", "keyed-partial-state"], ["main-thread", "network-waterfall", "forced-layout"], ["focus-navigation", "live-feedback", "tab-fallback"], ["state-ownership", "contract-evolution", "offline-reconciliation"], ["request-race", "optimistic-rollback", "epoch-error-lifecycle"]] as const;
 const frontendLabels = ["TypeScript", "Состояние интерфейса", "Производительность интерфейса", "Доступность", "Архитектура интерфейса", "Асинхронный интерфейс"];
 const backendSkills = [["Python", "API contracts"], ["SQL"], ["Incident diagnosis"], ["Python", "Idempotency"], ["Architecture"], ["Replay safety"]];
 const frontendSkills = [["TypeScript"], ["Frontend state"], ["Frontend performance"], ["Accessibility"], ["Frontend architecture"], ["Async UI"]];
@@ -29,13 +30,21 @@ export const managedTemplates: ManagedTemplate[] = assessmentPrograms.flatMap(pr
 })))));
 
 export class ManagedBankUnavailableError extends Error { constructor(public competency: string) { super(`Для компетенции «${competency}» временно нет доступного задания. Попытка не создана. Повторите позже.`); } }
-export type BankSelection = { disabledTemplateIds?: string[]; previousTemplateIds?: string[]; contextId?: AssessmentContextId; forcedVariant?: 0 | 1 };
+export type BankSelection = { disabledTemplateIds?: string[]; previousTemplateIds?: string[]; contextId?: AssessmentContextId; forcedVariant?: 0 | 1 | 2; /** Server/test only, never parsed from client input. */ programVersion?: string };
+const historicalVersions: Record<ProgramId, readonly string[]> = { "backend-python": ["signal-backend-python-v5", "signal-backend-python-v6"], "frontend-typescript": ["signal-frontend-typescript-v1", "signal-frontend-typescript-v2"] };
+function registryForVersion(programId: ProgramId, version?: string): ManagedTemplate[] {
+  const current = assessmentPrograms.find(program => program.id === programId)!;
+  if (!version || version === current.version) return managedTemplates;
+  if (!historicalVersions[programId].includes(version)) throw new Error("Unsupported historical assessment program version");
+  const oldSenior = version === "signal-backend-python-v5" || version === "signal-frontend-typescript-v1";
+  return managedTemplates.filter(t => t.programId === programId && t.variant < 2).map(t => ({...t, programVersion: version, version: oldSenior ? 1 : t.version, critical: [0,1,3].includes(t.slot) || !oldSenior && t.grade === "Senior" && t.slot === 4}));
+}
 /** Pure registry selection. The caller supplies candidate exposure and durable availability overrides. */
 export function selectManagedTemplates(programId: ProgramId, grade: AssessmentGrade, seed: string, options: BankSelection = {}) {
   const counts = new Map<string, number>();
   for (const id of options.previousTemplateIds ?? []) counts.set(id, (counts.get(id) ?? 0) + 1);
   return Array.from({ length: 6 }, (_, slot) => {
-    const candidates = managedTemplates.filter(t => t.programId === programId && t.grade === grade && t.slot === slot && !options.disabledTemplateIds?.includes(t.id) && (options.forcedVariant === undefined || t.variant === options.forcedVariant));
+    const candidates = registryForVersion(programId, options.programVersion).filter(t => t.programId === programId && t.grade === grade && t.slot === slot && !options.disabledTemplateIds?.includes(t.id) && (options.forcedVariant === undefined || t.variant === options.forcedVariant));
     if (!candidates.length) throw new ManagedBankUnavailableError((programId === "backend-python" ? backendFamilies : frontendFamilies)[slot]!);
     const frontendPreferred = programId === "frontend-typescript" && (slot === 2 || slot === 4) && options.contextId
       ? options.contextId === "frontend-platform" ? 1 : options.contextId === "frontend-accessibility" && slot === 4 ? 1 : 0
@@ -136,12 +145,14 @@ export function assembleManagedAttempt(programId: ProgramId, grade: AssessmentGr
       const oracle = legacy.oracles[original.id]!;
       item = { ...original, id }; answer = oracle.answer; objective = oracle.blueprint.objective;
     } else {
-      const task = programId === "backend-python" ? backendAlternative(template.slot, grade, n) : frontendTask(template.slot, template.variant, grade, n);
+      const task = template.variant === 2 ? (programId === "backend-python" ? backendSemanticTask(template.slot, grade, n) : frontendSemanticTask(template.slot, grade, n)) : programId === "backend-python" ? backendAlternative(template.slot, grade, n) : frontendTask(template.slot, template.variant, grade, n);
       const options = task.distractors ? [...task.distractors, task.answer].map((value, index) => ({ value, key: createHash("sha256").update(`${seed}:${template.id}:${index}`).digest("hex") })).sort((a, b) => a.key.localeCompare(b.key)).map(x => x.value) : [];
       item = { id, family: legacy?.cases[template.slot]?.family ?? frontendLabels[template.slot]!, title: task.title, prompt: task.prompt, responseType: template.responseType === "choice" ? "choice" : "text", options };
       answer = task.answer; objective = task.objective;
     }
-    const blueprint: OracleBlueprint = { version: template.programVersion, grade, programId, family: template.competency as OracleBlueprint["family"], templateId: template.id, templateVersion: template.version, objective, responseType: template.responseType, partialCredit: template.responseType === "structured" ? "ordered_components" : "all_or_nothing", critical: template.critical, targetSeconds: template.targetSeconds, verifiedSkills: template.verifiedSkills };
+    const semanticInteger = ["signal-backend-python-v7", "signal-frontend-typescript-v3"].includes(template.programVersion) && template.responseType === "integer";
+    if (semanticInteger && template.variant !== 2) item = {...item, prompt: `${item.prompt}\n\nОтвет — одно целое число без единиц; допускаются ведущий + и ведущие нули.`};
+    const blueprint: OracleBlueprint = { version: template.programVersion, grade, programId, family: template.competency as OracleBlueprint["family"], templateId: template.id, templateVersion: template.version, objective, responseType: template.responseType, partialCredit: template.responseType === "structured" ? "ordered_components" : "all_or_nothing", critical: template.critical, targetSeconds: template.targetSeconds, verifiedSkills: template.verifiedSkills, ...(semanticInteger ? { answerComparison: "canonical_integer_v1" as const } : {}) };
     return { item, oracle: { answer, blueprint } };
   });
   return { cases: generated.map(x => x.item), oracles: Object.fromEntries(generated.map(x => [x.item.id, x.oracle])) };

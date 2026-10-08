@@ -71,6 +71,55 @@
       "when": 1791350000000,
       "tag": "0009_microtask_resume",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791417600010,
+      "tag": "0010_skill_modules",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791417600011,
+      "tag": "0011_resume_analytics",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791417600012,
+      "tag": "0012_job_discovery",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791417600013,
+      "tag": "0013_need_skill_levels",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1791417600014,
+      "tag": "0014_registration_challenge_snapshot",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1791417600015,
+      "tag": "0015_employer_selection_workspace",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1791417600016,
+      "tag": "0016_company_inn",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNotNull, isNull, ne } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, ilike, inArray, isNotNull, isNull, lte, ne, notExists, or } from "drizzle-orm";
 import { Router, type IRouter, type Response } from "express";
 import { z } from "zod";
 import { isDeepStrictEqual } from "node:util";
@@ -12,17 +12,22 @@ import {
   signalUsersTable as users,
   signalCandidateProfilesTable as profiles,
   signalCandidateResumesTable as resumes,
+  signalCompanyBlocksTable as blocks,
+  signalEmployerRestrictionsTable as restrictions,
 } from "@workspace/db";
 import { MICRO_LIMITS } from "../lib/opportunity-rules";
 import { opportunityActor, positiveId } from "../lib/opportunity-auth";
-import { signalPoolPredicate } from "../lib/signal-pool-scope";
+import { poolScopeForAccount, signalPoolPredicate } from "../lib/signal-pool-scope";
+import { decodeRecipientCursor, encodeRecipientCursor, microRecipientQuery, recipientCursorContext, recipientSearch } from "../lib/microtask-recipient-query";
 import { postgresIntIdParam, postgresIntIdSchema } from "../lib/postgres-id";
 import { type ContactTransaction } from "../lib/signal-contact-permissions";
 import { assertCompanyActionAllowed, type TrustAction } from "../lib/signal-trust";
 import { runMicrotaskScheduler } from "../lib/microtask-scheduler";
 import { captureMicroResume, microTemplateInput, MICRO_LEGACY_LIMITATION, MICRO_RESUME_UNAVAILABLE } from "../lib/microtask-resume-policy";
 import { microBindingAvailable, revokeMicrotasksForResume, lockMicrotaskOwner, type MicrotaskResumeWriter } from "../lib/microtask-resume";
-import { sameSignalPool } from "../lib/signal-pool-scope";
+import { companyOfferReadable, loadCompanyOfferAccess, loadCompanyOfferReadability } from "../lib/microtask-company-read";
+import { microAnswerSubmitted, microOfferQuery, microTemplateUpdateInput } from "../lib/microtask-workspace-policy";
+export { companyOfferReadable } from "../lib/microtask-company-read";
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
 async function guardCompany(tx: ContactTransaction, companyId: number, res: Response, action: TrustAction, candidateId?: number) {
@@ -39,31 +44,34 @@ async function guardOfferResume(tx: ContactTransaction, offer: MicroOffer, res: 
   res.status(409).json({ error: offer.resumeProvenance === "legacy_unbound" ? MICRO_LEGACY_LIMITATION : MICRO_RESUME_UNAVAILABLE, code: "practice_resume_unavailable" });
   return false;
 }
-async function companyOfferReadable(offer: MicroOffer, writer: MicrotaskResumeWriter = db) {
-  if (offer.consentRevokedAt) return false;
-  if (offer.resumeProvenance === "captured") return microBindingAvailable(writer, offer, offer.candidateUserId, offer.companyId);
-  // Recorded company/owner/review consent is real legacy provenance. It proves
-  // existing review access, never the identity or revision of an old resume.
-  if (!offer.acceptedAt && !offer.result) return false;
-  const [candidate] = await writer.select({ demoMode: users.demoMode, reviewScopeId: users.reviewScopeId,
-    visible: profiles.visibility, matching: profiles.consentMatching, enabled: preferences.enabled })
-    .from(users).innerJoin(profiles, eq(profiles.userId, users.id)).innerJoin(preferences, eq(preferences.candidateUserId, users.id))
-    .where(eq(users.id, offer.candidateUserId));
-  const [company] = await writer.select({ demoMode: users.demoMode, reviewScopeId: users.reviewScopeId }).from(companies)
-    .innerJoin(users, eq(users.id, companies.ownerUserId)).where(eq(companies.id, offer.companyId));
-  return !!candidate && !!company && candidate.enabled && candidate.matching && candidate.visible !== "private" && sameSignalPool(candidate, company);
-}
-
 router.get("/employer/microtasks", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
-  res.json(
-    await db
-      .select()
-      .from(templates)
-      .where(eq(templates.companyId, actor.company.id))
-      .orderBy(desc(templates.createdAt)),
-  );
+  const companyId = actor.company.id;
+  const [list, answerRows, recipients] = await Promise.all([
+    db.select().from(templates).where(eq(templates.companyId, companyId)).orderBy(desc(templates.createdAt), desc(templates.id)),
+    db.select({ offer: offers, templateId: subscriptions.templateId }).from(offers)
+      .innerJoin(subscriptions, eq(subscriptions.id, offers.subscriptionId))
+      .innerJoin(users, eq(users.id, offers.candidateUserId))
+      .where(and(eq(offers.companyId, companyId), signalPoolPredicate(users, actor),
+        inArray(offers.status, ["submitted", "evaluated"]), isNull(offers.consentRevokedAt))),
+    db.select({ templateId: subscriptions.templateId, total: count() }).from(subscriptions)
+      .innerJoin(templates, eq(templates.id, subscriptions.templateId)).innerJoin(users, eq(users.id, subscriptions.candidateUserId))
+      .where(and(eq(templates.companyId, companyId), signalPoolPredicate(users, actor))).groupBy(subscriptions.templateId),
+  ]);
+  const access = await loadCompanyOfferReadability(companyId, answerRows.map(row => row.offer));
+  const counters = new Map<number, { answerCount:number; newAnswerCount:number; evaluatedAnswerCount:number }>();
+  for (const {offer, templateId} of answerRows) {
+    if (!access.get(offer.id) || !microAnswerSubmitted(offer)) continue;
+    const value = counters.get(templateId) ?? {answerCount:0,newAnswerCount:0,evaluatedAnswerCount:0};
+    value.answerCount += 1;
+    if (offer.status === 'submitted') value.newAnswerCount += 1;
+    else value.evaluatedAnswerCount += 1;
+    counters.set(templateId, value);
+  }
+  const recipientCounts = new Map(recipients.map(row => [row.templateId,row.total]));
+  res.setHeader('Cache-Control','no-store, private');
+  res.json(list.map(template => ({...template, ...(counters.get(template.id) ?? {answerCount:0,newAnswerCount:0,evaluatedAnswerCount:0}), recipientCount:recipientCounts.get(template.id) ?? 0})));
 });
 router.post("/employer/microtasks", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -87,9 +95,9 @@ router.post("/employer/microtasks", async (req, res) => {
 router.put("/employer/microtasks/:id", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
-  const input = microTemplateInput.safeParse(req.body);
+  const input = microTemplateUpdateInput.safeParse(req.body);
   if (!input.success) {
-    res.status(400).json({ error: "Проверьте условия и рубрику." });
+    res.status(400).json({ error: "Проверьте условия, рубрику и редакцию задания." });
     return;
   }
   const row = await db.transaction(async (tx) => {
@@ -105,10 +113,12 @@ router.put("/employer/microtasks/:id", async (req, res) => {
       )
       .for("update");
     if (!old) return null;
+    if (old.version !== input.data.version) { res.status(409).json({code:"VERSION_CONFLICT",error:"Задание уже изменено. Загрузите актуальную редакцию перед сохранением."}); return null; }
+    const {version:expectedVersion,...changes} = input.data;
     const [updated] = await tx
       .update(templates)
-      .set({ ...input.data, version: old.version + 1 })
-      .where(eq(templates.id, old.id))
+      .set({ ...changes, version: old.version + 1 })
+      .where(and(eq(templates.id, old.id),eq(templates.version,expectedVersion)))
       .returning();
     return updated;
   });
@@ -142,15 +152,29 @@ router.post("/employer/microtasks/:id/availability", async (req, res) => {
 router.get("/employer/microtasks/eligible/candidates", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
+  const query = microRecipientQuery.safeParse(req.query);
+  res.set("Cache-Control", "no-store, private");
+  if (!query.success) { res.status(400).json({ error: "Проверьте параметры поиска резюме." }); return; }
+  const input = query.data;
+  const companyPermission = await assertCompanyActionAllowed(actor.company.id, undefined, db, "invitations");
+  if (!companyPermission.allowed) { res.status(403).json({ error: companyPermission.publicReason, code: companyPermission.code }); return; }
   let specialization: string | null = null;
-  if (req.query.templateId !== undefined) {
-    const templateId = postgresIntIdSchema.safeParse(Number(req.query.templateId));
-    if (!templateId.success || typeof req.query.templateId !== "string") { res.status(400).json({ error: "Выберите задание." }); return; }
-    const [template] = await db.select().from(templates).where(and(eq(templates.id, templateId.data), eq(templates.companyId, actor.company.id)));
+  if (input.templateId !== undefined) {
+    const [template] = await db.select().from(templates).where(and(eq(templates.id, input.templateId), eq(templates.companyId, actor.company.id), eq(templates.active, true)));
     if (!template) { res.status(404).json({ error: "Задание недоступно." }); return; }
-    if (!template.specialization) { res.json([]); return; }
+    if (!template.specialization) { res.json({ items: [], nextCursor: null }); return; }
     specialization = template.specialization;
   }
+  const search = recipientSearch(input.search);
+  const context = recipientCursorContext({ companyId: actor.company.id, scope: poolScopeForAccount(actor),
+    templateId: input.templateId, specialization, search, grade: input.grade });
+  let after: number | null;
+  try { after = decodeRecipientCursor(input.cursor, context); }
+  catch (error) { res.status(400).json({ error: (error as Error).message }); return; }
+  // Both individual blocks and company restrictions are filtered by the same
+  // bounded SQL query BEFORE its page limit; blocked prefixes cannot starve it.
+  const now = new Date();
+  const pattern = `%${search.replace(/[\\%_]/g, "\\$&")}%`;
   const rows = await db.select({ id: resumes.userId, resumeId: resumes.id, resumeRevision: resumes.revision,
     resumeTitle: resumes.title, alias: profiles.professionalAlias, specialization: resumes.specialization,
     verifiedGrade: resumes.verifiedGrade })
@@ -159,10 +183,16 @@ router.get("/employer/microtasks/eligible/candidates", async (req, res) => {
     .innerJoin(preferences, eq(preferences.candidateUserId, resumes.userId))
     .where(and(signalPoolPredicate(users, actor), eq(users.role, "candidate"), eq(preferences.enabled, true),
       isNull(resumes.deletedAt), isNotNull(resumes.verifiedGrade), eq(resumes.consentMatching, true), ne(resumes.visibility, "private"),
-      specialization ? eq(resumes.specialization, specialization) : inArray(resumes.specialization, ["Backend / Python", "Frontend / TypeScript"])))
-    .orderBy(asc(profiles.professionalAlias), resumes.userId, resumes.id).limit(100);
-  const permitted = await Promise.all(rows.map(async row => (await assertCompanyActionAllowed(actor.company!.id, row.id, db, "invitations")).allowed ? row : null));
-  res.json(permitted.filter(Boolean));
+      specialization ? eq(resumes.specialization, specialization) : inArray(resumes.specialization, ["Backend / Python", "Frontend / TypeScript"]),
+      input.grade ? eq(resumes.verifiedGrade, input.grade) : undefined,
+      search ? or(ilike(profiles.professionalAlias, pattern), ilike(resumes.title, pattern)) : undefined,
+      after ? gt(resumes.id, after) : undefined,
+      notExists(db.select({ id: blocks.id }).from(blocks).where(and(eq(blocks.companyId, actor.company.id), eq(blocks.candidateUserId, resumes.userId), eq(blocks.active, true)))),
+      notExists(db.select({ id: restrictions.id }).from(restrictions).where(and(eq(restrictions.companyId, actor.company.id), isNull(restrictions.liftedAt),
+        lte(restrictions.startsAt, now), gt(restrictions.expiresAt, now), inArray(restrictions.scope, ["invitations", "all"]))))))
+    .orderBy(asc(resumes.id)).limit(input.limit + 1);
+  const items = rows.slice(0, input.limit);
+  res.json({ items, nextCursor: rows.length > input.limit ? encodeRecipientCursor(items.at(-1)!.resumeId, context) : null });
 });
 router.post("/employer/microtasks/:id/subscriptions", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -454,39 +484,32 @@ router.post("/me/microtasks/:id/submit", async (req, res) => {
 router.get("/employer/microtasks/offers", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
-  const rows = await db
-    .select({ offer: offers, alias: profiles.professionalAlias })
-    .from(offers)
-    .innerJoin(users, eq(users.id, offers.candidateUserId))
-    .innerJoin(profiles, eq(profiles.userId, offers.candidateUserId))
-    .where(
-      and(
-        eq(offers.companyId, actor.company.id),
-        signalPoolPredicate(users, actor),
-      ),
-    )
-    .orderBy(desc(offers.createdAt));
-  res.json(await Promise.all(
-    rows.map(async ({ offer, alias }) => {
-      const denied = !await companyOfferReadable(offer) || !(await assertCompanyActionAllowed(actor.company!.id, offer.candidateUserId, db, "contacts")).allowed;
-      return ({
-      ...offer,
-      candidateUserId: undefined,
-      alias: denied ? "Доступ отозван" : offer.resumeContext?.professionalAlias ?? alias,
-      resumeId: denied ? null : offer.resumeId,
-      resumeRevision: denied ? null : offer.resumeRevision,
-      resumeContext: denied ? null : offer.resumeContext,
-      resumeAvailable: !denied,
-      resumeLimitation: denied ? MICRO_RESUME_UNAVAILABLE : offer.resumeProvenance === "legacy_unbound" ? MICRO_LEGACY_LIMITATION : null,
-      answer: denied ? null : offer.answer,
-      result: denied ? null : offer.result,
-      status:
-        ["offered", "accepted"].includes(offer.status) &&
-        offer.dueAt <= new Date()
-          ? "expired"
-          : offer.status,
-    }); }),
-  ));
+  const input = microOfferQuery.safeParse(req.query);
+  if (!input.success) {res.status(400).json({error:"Проверьте параметры списка ответов."}); return;}
+  const {templateId,submittedOnly} = input.data;
+  if (templateId) {
+    const [ownTemplate] = await db.select({id:templates.id}).from(templates).where(and(eq(templates.id,templateId),eq(templates.companyId,actor.company.id))).limit(1);
+    if (!ownTemplate) {res.status(404).json({error:"Задание не найдено."}); return;}
+  }
+  const rows = await db.select({offer:offers,alias:profiles.professionalAlias,templateId:subscriptions.templateId}).from(offers)
+    .innerJoin(subscriptions,eq(subscriptions.id,offers.subscriptionId)).innerJoin(templates,eq(templates.id,subscriptions.templateId))
+    .innerJoin(users,eq(users.id,offers.candidateUserId)).innerJoin(profiles,eq(profiles.userId,offers.candidateUserId))
+    .where(and(eq(offers.companyId,actor.company.id),eq(templates.companyId,actor.company.id),signalPoolPredicate(users,actor),
+      templateId ? eq(subscriptions.templateId,templateId) : undefined,
+      submittedOnly === '1' ? inArray(offers.status,['submitted','evaluated']) : undefined))
+    .orderBy(desc(offers.submittedAt),desc(offers.createdAt),desc(offers.id));
+  const access = await loadCompanyOfferAccess(actor.company.id,rows.map(row=>row.offer));
+  const visible = rows.filter(({offer})=>submittedOnly !== '1' || (access.get(offer.id)?.readable && microAnswerSubmitted(offer)));
+  res.setHeader('Cache-Control','no-store, private');
+  res.json(visible.map(({offer,alias,templateId})=>{
+    const allowed = access.get(offer.id);
+    const denied = !allowed?.readable;
+    return {...offer,templateId,candidateUserId:undefined,candidateIdentity:denied ? null : allowed?.candidateIdentity ?? null,alias:denied ? "Доступ отозван" : allowed?.candidateIdentity?.alias ?? alias,
+      resumeId:denied ? null : offer.resumeId,resumeRevision:denied ? null : offer.resumeRevision,resumeContext:denied ? null : offer.resumeContext,
+      resumeAvailable:!denied,resumeLimitation:denied ? MICRO_RESUME_UNAVAILABLE : offer.resumeProvenance === 'legacy_unbound' ? MICRO_LEGACY_LIMITATION : null,
+      answer:denied ? null : offer.answer,result:denied ? null : offer.result,
+      status:['offered','accepted'].includes(offer.status) && offer.dueAt <= new Date() ? 'expired' : offer.status};
+  }));
 });
 router.post("/employer/microtasks/offers/:id/evaluate", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");

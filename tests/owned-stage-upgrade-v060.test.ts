@@ -66,3 +66,10 @@ test("default0009 tool is no-access preparation; missing root release rejects be
   assert.equal(records.length, 1); assert.equal(records[0].checkOnly, true);
   for (const field of ["dockerCalled", "databaseAccess", "backupCreated", "migrated", "seeded", "restarted"]) assert.equal(records[0][field], false);
 });
+
+test('legacy0009 boundary cannot accidentally migrate later releases even with the old root release flag',async()=>{
+  const entries=Array.from({length:10},(_,idx)=>({idx,tag:idx===9?'0009_microtask_resume':`${String(idx).padStart(4,'0')}_fixture`}));
+  helper.assertFrozen0009Journal({entries});assert.throws(()=>helper.assertFrozen0009Journal({entries:[...entries,{idx:10,tag:'0010_skill_modules'}]}),/frozen-through-0009/);
+  const current=JSON.parse(readFileSync(new URL('../lib/db/migrations/meta/_journal.json',import.meta.url),'utf8'));
+  if(current.entries.at(-1).idx>9){const previous=process.env.SIGNAL_STAGE_0009_RELEASE;process.env.SIGNAL_STAGE_0009_RELEASE='1';try{await assert.rejects(helper.main(['--upgrade-owned-stage']),/frozen-through-0009/);}finally{if(previous===undefined)delete process.env.SIGNAL_STAGE_0009_RELEASE;else process.env.SIGNAL_STAGE_0009_RELEASE=previous;}}
+});

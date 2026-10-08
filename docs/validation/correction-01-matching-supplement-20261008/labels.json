@@ -1,0 +1,886 @@
+{
+  "version": "c03-business-supplement-v1",
+  "authoredWithoutEvaluatorImports": true,
+  "expectedGrades": {
+    "10010": "Middle",
+    "10020": "Middle",
+    "10030": "Middle",
+    "10040": "Senior",
+    "10050": null,
+    "10060": null,
+    "10061": "Middle",
+    "10070": "Middle",
+    "10080": null,
+    "10090": "Middle",
+    "10100": "Middle",
+    "10110": "Middle",
+    "10120": "Middle",
+    "10130": "Middle",
+    "10140": "Middle",
+    "10150": null,
+    "10160": null,
+    "10170": "Middle",
+    "10180": "Middle",
+    "10200": "Middle",
+    "10210": "Middle",
+    "10220": "Middle",
+    "10240": null,
+    "10300": "Middle"
+  },
+  "needLabels": [
+    {
+      "needId": "backend-demo-middle",
+      "pointwise": [
+        {
+          "userId": 1001,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10010
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1002,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10020
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1003,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10030
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1004,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10040
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1005,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1006,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10061
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1007,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10070
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1008,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1009,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1010,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1011,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1012,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1013,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1014,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1015,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1016,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1017,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10170
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1018,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10180
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1020,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10200
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1021,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10210
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1022,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10220
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1024,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1030,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        }
+      ]
+    },
+    {
+      "needId": "backend-demo-explicit-skill-minimum",
+      "pointwise": [
+        {
+          "userId": 1001,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10010
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1002,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10020
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1003,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10030
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1004,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10040
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1005,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1006,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10061
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1007,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1008,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1009,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1010,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1011,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1012,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1013,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1014,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1015,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1016,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1017,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10170
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1018,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10180
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1020,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1021,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1022,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1024,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1030,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        }
+      ]
+    },
+    {
+      "needId": "frontend-demo-middle",
+      "pointwise": [
+        {
+          "userId": 1001,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1002,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1003,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1004,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1005,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1006,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1007,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1008,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1009,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1010,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1011,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1012,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1013,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10130
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1014,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10140
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1015,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1016,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1017,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1018,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1020,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1021,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1022,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1024,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1030,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        }
+      ]
+    },
+    {
+      "needId": "backend-ordinary-middle",
+      "pointwise": [
+        {
+          "userId": 1001,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1002,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1003,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1004,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1005,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1006,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1007,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1008,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1009,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10090
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        },
+        {
+          "userId": 1010,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1011,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1012,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1013,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1014,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1015,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1016,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1017,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1018,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1020,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1021,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1022,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1024,
+          "eligible": false,
+          "relevance": 0,
+          "allowedSelectedResumeIds": [],
+          "rationale": "At least one category, owner/declaration, explicit skill level, specialization, visibility, consent or pool gate is not met."
+        },
+        {
+          "userId": 1030,
+          "eligible": true,
+          "relevance": 3,
+          "allowedSelectedResumeIds": [
+            10300
+          ],
+          "rationale": "One whole CV has the category and requested evidence; visible, consented and in the selected pool."
+        }
+      ]
+    }
+  ],
+  "ordering": [
+    {
+      "needId": "backend-demo-middle",
+      "before": 1003,
+      "after": 1002,
+      "reason": "Trusted synthetic Demo win changes an otherwise equal current Middle queue."
+    },
+    {
+      "needId": "frontend-demo-middle",
+      "before": 1014,
+      "after": 1013,
+      "reason": "Equal Frontend Middle module receipts: trusted Demo win gives a category-local preference."
+    },
+    {
+      "needId": "backend-demo-middle",
+      "before": 1020,
+      "after": 1021,
+      "reason": "Same program/version/rubric: full correct result is stronger than one noncritical error."
+    },
+    {
+      "needId": "backend-demo-middle",
+      "before": 1022,
+      "after": 1020,
+      "reason": "Different version queues use neutral identity for heads; the raw scores cannot be compared across scales."
+    },
+    {
+      "needId": "backend-demo-middle",
+      "before": 1021,
+      "after": 1007,
+      "reason": "Complete linked evidence precedes unknown historical strength at equal fit."
+    }
+  ],
+  "ablation": [
+    {
+      "needId": "backend-demo-middle",
+      "withFspBefore": 1003,
+      "withFspAfter": 1002,
+      "withoutFspBefore": 1002,
+      "withoutFspAfter": 1003,
+      "sameCategory": true
+    },
+    {
+      "needId": "frontend-demo-middle",
+      "withFspBefore": 1014,
+      "withFspAfter": 1013,
+      "withoutFspBefore": 1013,
+      "withoutFspAfter": 1014,
+      "sameCategory": true
+    }
+  ],
+  "comparison": {
+    "comparable": [
+      1020,
+      1021
+    ],
+    "incomparable": [
+      1020,
+      1022
+    ],
+    "modularUnknownOverall": [
+      1001,
+      1002,
+      1003
+    ],
+    "legacyUnknownOverall": [
+      1007
+    ]
+  },
+  "expectedBonus": {
+    "1003": 3,
+    "1004": 3,
+    "1009": 0,
+    "1014": 3,
+    "1017": 0,
+    "1018": 0
+  },
+  "categoryIsolation": {
+    "needId": "backend-demo-middle",
+    "userId": 1004,
+    "unchangedCategoryBlockWithAblation": true
+  },
+  "catalogLabels": [
+    {
+      "id": "backend-demo-qualified-middle",
+      "demoMode": true,
+      "filters": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "skills": [
+          "Python",
+          "SQL"
+        ],
+        "workFormat": "Удалённо"
+      },
+      "expectedPeople": [
+        1001,
+        1002,
+        1003,
+        1006,
+        1007,
+        1011,
+        1017,
+        1018,
+        1020,
+        1021,
+        1022
+      ],
+      "selectedResume": {
+        "1006": 10061
+      }
+    },
+    {
+      "id": "frontend-demo-qualified-middle",
+      "demoMode": true,
+      "filters": {
+        "specialization": "Frontend / TypeScript",
+        "grade": "Middle",
+        "skills": [
+          "TypeScript",
+          "React"
+        ]
+      },
+      "expectedPeople": [
+        1013,
+        1014
+      ],
+      "selectedResume": {}
+    },
+    {
+      "id": "backend-ordinary-qualified-middle",
+      "demoMode": false,
+      "filters": {
+        "specialization": "Backend / Python",
+        "grade": "Middle",
+        "skills": [
+          "Python",
+          "SQL"
+        ]
+      },
+      "expectedPeople": [
+        1009,
+        1030
+      ],
+      "selectedResume": {}
+    }
+  ]
+}

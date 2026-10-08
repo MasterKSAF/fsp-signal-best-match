@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-08T15:25:01.368Z",
+  "phase": "after",
+  "frozenInputs": {
+    "rubric": "0930fd1bb339ba304b28dee942ed7651593d5668cf4c35db3bf63fb5aab8d51e",
+    "dataset": "9af6b178f5a7c8e864c179092aba05403c17c38d093c644372ade0cb22a4bdf6",
+    "labels": "74c50c97e80442bf9aa38dc5ee8da1a672ec2e17d0bc9c61701afa83e2bc0b1a"
+  },
+  "sourceHashes": {
+    "signal-matching.ts": "abdcb493ff6ee4851c474cda8580b2c0a67b5fb979c63be9b2bd1588b992a4fb",
+    "signal-resume-catalog.ts": "c9508be727972532156db2183f2000725042677efc9a4a89496bfb9dee9a45f6",
+    "fsp-results.ts": "9c5378d4d0ab9bcb3183e92e42c379d0a739b3051ac6f883260e67e8fe29d474",
+    "skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+    "employer-required-skills.ts": "c2f4a52fe6e7103b2a413ffbefcfed6bfa04185b5560f82b097642195c2953bb"
+  },
+  "version": "signal-skills-2026-10-v6",
+  "noTuning": true
+}

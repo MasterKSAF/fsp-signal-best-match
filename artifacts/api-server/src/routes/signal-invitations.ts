@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, inArray, isNull, lte } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, ilike, inArray, isNull, lte, or, sql, type SQL } from "drizzle-orm";
 import { Router, type IRouter, type Request, type Response } from "express";
 import { z } from "zod";
 import {
@@ -26,6 +26,11 @@ import {
   signalInvitationRequestsTable,
 } from "@workspace/db";
 import { getSessionUser } from "../lib/signal-auth";
+import { escapeLike } from '../lib/job-discovery';
+import { loadNeedSkillLevels } from '../lib/need-skill-levels';
+import { loadOwnedSelectionContext } from '../lib/signal-employer-context';
+import { ContextCreateInvitationBody, InvitationIdempotencyKey, invitationContextSnapshot, pendingInvitationCompatible } from '../lib/invitation-context-input';
+import { invitationAllowsWorkFormat } from '../lib/invitation-work-format';
 import {
   poolScopeForAccount,
   signalPoolPredicate,
@@ -38,6 +43,7 @@ import {
   loadResumeCandidates,
   publicHistoricalSnapshot,
   resumeSnapshot,
+  withResumeSkillEvidence,
 } from "../lib/signal-resume-matching";
 import {
   invitationBodyHash,
@@ -62,17 +68,8 @@ import {
 
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
-const IdempotencyKey = z
-  .string()
-  .min(1)
-  .max(128)
-  .regex(/^[A-Za-z0-9._:-]+$/);
-const BoundedCreateInvitationBody = CreateInvitationBody.extend({
-  needId: postgresIntIdSchema,
-  candidateId: postgresIntIdSchema,
-  resumeId: postgresIntIdSchema,
-  idempotencyKey: IdempotencyKey.optional(),
-}).strict();
+const IdempotencyKey = InvitationIdempotencyKey;
+const BoundedCreateInvitationBody = ContextCreateInvitationBody;
 
 type EmployerContext = SignalPoolScope & { userId: number; companyId: number };
 type CandidateContext = SignalPoolScope & { userId: number };
@@ -123,11 +120,13 @@ async function candidateContext(
   return { userId: session.user.id, ...poolScopeForAccount(session.user) };
 }
 
-function needForMatch(need: typeof signalNeedsTable.$inferSelect): MatchNeed {
+async function needForMatch(need: typeof signalNeedsTable.$inferSelect): Promise<MatchNeed> {
+  const levels = await loadNeedSkillLevels([need.id]);
   return {
     specialization: need.specialization,
     grade: need.grade as SignalGrade,
     requiredSkills: need.requiredSkills,
+    requiredSkillLevels: levels.get(need.id) ?? {},
     desirableSkills: need.desirableSkills,
     workFormat: need.workFormat,
     salaryMin: need.salaryMin,
@@ -177,6 +176,10 @@ async function invitationPayload(
   return {
     id: invitation.id,
     needId: invitation.needId,
+    jobId:invitation.jobId,
+    context:{type:invitation.jobId!==null?'job':'need',id:invitation.jobId??invitation.needId,version:invitation.contextVersion},
+    contextVersion:invitation.contextVersion,
+    contextSnapshot:invitation.contextSnapshot,
     companyId: invitation.companyId,
     resumeId: invitation.resumeId,
     resumeSnapshot:
@@ -244,6 +247,55 @@ async function invitationInCandidatePool(
   return row?.invitation ?? null;
 }
 
+const invitationSearchInput = z.object({
+  q: z.string().trim().max(160).optional().default(''),
+  status: z.enum(['', 'pending', 'sent', 'viewed', 'accepted', 'declined', 'withdrawn', 'expired']).optional().default(''),
+  resumeId: postgresIntIdSchema.optional(),
+  workFormat: z.enum(['', 'Удалённо', 'Офис', 'Гибрид']).optional().default(''),
+  sort: z.enum(['newest', 'oldest']).optional().default('newest'),
+  page: z.coerce.number().int().min(1).max(1000000).optional().default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
+}).passthrough();
+router.get('/me/invitations/search', async (req, res) => {
+  const context = await candidateContext(req, res); if (!context) return;
+  const parsed = invitationSearchInput.safeParse({ ...req.query, ...(req.query.resumeId ? { resumeId: Number(req.query.resumeId) } : {}) });
+  if (!parsed.success) { res.status(400).json({ error: 'Проверьте фильтры приглашений.' }); return; }
+  const filters = parsed.data, conditions: SQL[] = [eq(signalInvitationsTable.candidateUserId, context.userId), signalPoolPredicate(signalUsersTable, context)];
+  if (filters.q) conditions.push(or(ilike(signalCompaniesTable.name, `%${escapeLike(filters.q)}%`), ilike(signalInvitationsTable.title, `%${escapeLike(filters.q)}%`))!);
+  if (filters.status==='pending') conditions.push(inArray(signalInvitationsTable.status, ['sent', 'viewed']));
+  else if (filters.status) conditions.push(eq(signalInvitationsTable.status, filters.status));
+  if (filters.resumeId) conditions.push(eq(signalInvitationsTable.resumeId, filters.resumeId));
+  if (filters.workFormat) {
+    // Classify the whole authorised, otherwise-filtered history before paging.
+    // The same captured IDs constrain both the count and the page query.
+    const formats = await db.select({ id: signalInvitationsTable.id, workFormat: signalInvitationsTable.workFormat })
+      .from(signalInvitationsTable)
+      .innerJoin(signalCompaniesTable, eq(signalInvitationsTable.companyId, signalCompaniesTable.id))
+      .innerJoin(signalUsersTable, eq(signalCompaniesTable.ownerUserId, signalUsersTable.id))
+      .where(and(...conditions));
+    const requested = filters.workFormat;
+    const ids = formats.filter(row => invitationAllowsWorkFormat(row.workFormat, requested)).map(row => row.id);
+    conditions.push(ids.length ? sql`${signalInvitationsTable.id} = any(${sql.param(ids)}::int[])` : sql`false`);
+  }
+  const condition = and(...conditions);
+  const join = () => db.select({ invitation: signalInvitationsTable }).from(signalInvitationsTable)
+    .innerJoin(signalCompaniesTable, eq(signalInvitationsTable.companyId, signalCompaniesTable.id))
+    .innerJoin(signalUsersTable, eq(signalCompaniesTable.ownerUserId, signalUsersTable.id));
+  const [totals] = await db.select({ total: count() }).from(signalInvitationsTable)
+    .innerJoin(signalCompaniesTable, eq(signalInvitationsTable.companyId, signalCompaniesTable.id))
+    .innerJoin(signalUsersTable, eq(signalCompaniesTable.ownerUserId, signalUsersTable.id)).where(condition);
+  const order = filters.sort==='oldest' ? [asc(signalInvitationsTable.createdAt), asc(signalInvitationsTable.id)] : [desc(signalInvitationsTable.createdAt), desc(signalInvitationsTable.id)];
+  const page = Math.min(filters.page,Math.max(1,Math.ceil(totals.total/filters.pageSize)));
+  const rows = await join().where(condition).orderBy(...order).limit(filters.pageSize).offset((page-1)*filters.pageSize);
+  res.setHeader('Cache-Control','no-store');
+  res.json({ items: await Promise.all(rows.map(({invitation})=>invitationPayload(invitation))), total: totals.total, page, pageSize: filters.pageSize, pageCount: Math.ceil(totals.total/filters.pageSize) });
+});
+router.get('/me/invitations/:id', async (req, res) => {
+  const context = await candidateContext(req, res); if (!context) return;
+  const row = await invitationInCandidatePool(Number(req.params.id), context);
+  if (!row) { res.status(404).json({ error: 'Приглашение не найдено.' }); return; }
+  res.setHeader('Cache-Control','no-store'); res.json(await invitationPayload(row));
+});
 router.get("/me/invitations", async (req, res): Promise<void> => {
   const context = await candidateContext(req, res);
   if (!context) return;
@@ -264,7 +316,7 @@ router.get("/me/invitations", async (req, res): Promise<void> => {
         signalPoolPredicate(signalUsersTable, context),
       ),
     )
-    .orderBy(desc(signalInvitationsTable.createdAt));
+    .orderBy(desc(signalInvitationsTable.createdAt), desc(signalInvitationsTable.id));
   res.setHeader("Cache-Control", "no-store");
   res.json(
     await Promise.all(
@@ -351,20 +403,7 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
       .json({ error: "Минимальная зарплата не может быть выше максимальной." });
     return;
   }
-  const [need] = await db
-    .select()
-    .from(signalNeedsTable)
-    .where(
-      and(
-        eq(signalNeedsTable.id, input.needId),
-        eq(signalNeedsTable.companyId, context.companyId),
-      ),
-    )
-    .limit(1);
-  if (!need) {
-    res.status(404).json({ error: "Кандидат или потребность не найдены." });
-    return;
-  }
+  const ref = input.jobId!==undefined ? {type:'job' as const,id:input.jobId} : {type:'need' as const,id:input.needId!};
   const hash = invitationBodyHash(input);
   const creation = await db.transaction(async (tx) => {
     // Company first: quota, idempotency and insert share one transaction/lock.
@@ -415,6 +454,9 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
             message: "Исходное приглашение недоступно.",
           };
     }
+    const selectedContext = await loadOwnedSelectionContext(context.companyId,ref,tx,{lock:true});
+    if(!selectedContext || !selectedContext.active)return {error:404,code:'CONTEXT_UNAVAILABLE',message:'Вакансия или запрос недоступны для нового приглашения.'};
+    if(input.contextVersion!==undefined&&input.contextVersion!==selectedContext.context.version)return {error:409,code:'VERSION_CONFLICT',message:'Условия изменились. Обновите подготовку приглашения.'};
     await tx
       .select({ userId: signalCandidateProfilesTable.userId })
       .from(signalCandidateProfilesTable)
@@ -429,23 +471,27 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
       },
       tx,
     );
-    const [candidate] = await withAssessmentRankingEvidence(raw, tx);
+    const [candidate] = await withAssessmentRankingEvidence(
+      await withResumeSkillEvidence(raw, tx),
+      tx,
+    );
     if (
       !candidate ||
-      !evaluateMatch(needForMatch(need), candidate, context.demoMode).eligible
+      !evaluateMatch(selectedContext.matchNeed, candidate, context.demoMode).eligible
     )
       return {
         error: 404,
         code: "CANDIDATE_UNAVAILABLE",
         message: "Кандидат или потребность не найдены.",
       };
+    if(input.resumeRevision!==undefined&&input.resumeRevision!==candidate.resumeRevision)return {error:409,code:'RESUME_VERSION_CONFLICT',message:'Резюме изменилось. Обновите подготовку приглашения.'};
     const [existing] = await tx
       .select()
       .from(signalInvitationsTable)
       .where(
         and(
           eq(signalInvitationsTable.companyId, context.companyId),
-          eq(signalInvitationsTable.needId, input.needId),
+          ref.type==='need'?eq(signalInvitationsTable.needId,ref.id):eq(signalInvitationsTable.jobId,ref.id),
           eq(signalInvitationsTable.candidateUserId, input.candidateId),
           inArray(signalInvitationsTable.status, [
             "sent",
@@ -457,6 +503,8 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
       .orderBy(desc(signalInvitationsTable.createdAt))
       .limit(1);
     if (existing) {
+      if (!pendingInvitationCompatible(existing,input,{contextVersion:selectedContext.context.version,resumeRevision:candidate.resumeRevision}))
+        return {error:409,code:'PENDING_INVITATION_CONFLICT',message:'Уже есть действующее приглашение с другим резюме или условиями. Откройте его, чтобы проверить отправленные данные.',existingInvitationId:existing.id};
       await tx.insert(signalInvitationRequestsTable).values({
         companyId: context.companyId,
         requestKey: key.data,
@@ -522,6 +570,10 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
       .insert(signalInvitationsTable)
       .values({
         ...input,
+        needId:ref.type==='need'?ref.id:null,
+        jobId:ref.type==='job'?ref.id:null,
+        contextVersion:selectedContext.context.version,
+        contextSnapshot:invitationContextSnapshot(selectedContext.context,{title:input.title,salaryMin:input.salaryMin,salaryMax:input.salaryMax,salaryPeriod:input.salaryPeriod,salaryType:input.salaryType,workFormat:input.workFormat}),
         companyId: context.companyId,
         candidateUserId: input.candidateId,
         resumeId: candidate.resumeId,
@@ -546,6 +598,7 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
       error: creation.message,
       code: creation.code,
       retryAt: creation.retryAt ?? null,
+      ...('existingInvitationId' in creation?{existingInvitationId:creation.existingInvitationId}:{}),
     });
     return;
   }

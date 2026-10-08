@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./company-inn": "./src/company-inn.ts"
   },
   "dependencies": {
     "zod": "catalog:"

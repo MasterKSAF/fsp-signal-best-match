@@ -6,6 +6,7 @@ import {
   type InputHTMLAttributes,
   type KeyboardEvent,
 } from "react";
+import { InlineInfo } from "./inline-info";
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronDown, Plus, X } from "lucide-react";
 import {
@@ -177,9 +178,6 @@ export function DictionaryCombobox({
           )}
         </div>
       )}
-      {custom && !open && (
-        <span className="dictionary-custom-note">Собственное значение</span>
-      )}
     </div>
   );
 }
@@ -252,8 +250,8 @@ export function DictionaryTags({
       {error && <p id={errorId} className="form-field__error" role="alert">{error}</p>}
       <div className="dictionary-tag-actions">
         <span>
-          {value.length}/{maxItems} · выберите вариант или добавьте свой
-        </span>
+          {value.length}/{maxItems}
+        </span><InlineInfo label="Добавление значений">Выберите подсказку или введите свой вариант. Несколько значений можно вставить через запятую.</InlineInfo>
         {text.trim() && (
           <button
             type="button"

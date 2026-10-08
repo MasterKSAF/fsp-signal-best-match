@@ -25,7 +25,7 @@ function resumeFont(weight = "Regular") {
 }
 
 function safeText(value: string) { return value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").replace(/\t/g, "  "); }
-function monthLabel(value: string) { const [year, month] = value.split("-"); return `${month}.${year}`; }
+function monthLabel(value: string) { const [year, month] = value.split("-"); return month ? `${month}.${year}` : year; }
 
 /** Generate a private, portable copy. Contact email/phone are not accepted by this renderer. */
 export function renderCandidateResumePdf(profile: ResumePdfProfile, resume: ResumeInput, generatedAt = new Date()): Promise<Buffer> {

@@ -1,0 +1,2487 @@
+{
+  "phase": "after",
+  "measuredAt": "2026-10-08T15:25:01.394Z",
+  "algorithm": "fsp-signal-match-v6",
+  "moduleEvidenceVersion": "signal-skills-2026-10-v6",
+  "sourceHashes": {
+    "signal-matching.ts": "abdcb493ff6ee4851c474cda8580b2c0a67b5fb979c63be9b2bd1588b992a4fb",
+    "signal-resume-catalog.ts": "c9508be727972532156db2183f2000725042677efc9a4a89496bfb9dee9a45f6",
+    "fsp-results.ts": "9c5378d4d0ab9bcb3183e92e42c379d0a739b3051ac6f883260e67e8fe29d474",
+    "skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+    "employer-required-skills.ts": "c2f4a52fe6e7103b2a413ffbefcfed6bfa04185b5560f82b097642195c2953bb"
+  },
+  "freeze": {
+    "frozenAt": "2026-10-08T14:51:50.508Z",
+    "beforeFirstRankInvocation": true,
+    "files": {
+      "rubric": "0930fd1bb339ba304b28dee942ed7651593d5668cf4c35db3bf63fb5aab8d51e",
+      "dataset": "9af6b178f5a7c8e864c179092aba05403c17c38d093c644372ade0cb22a4bdf6",
+      "labels": "74c50c97e80442bf9aa38dc5ee8da1a672ec2e17d0bc9c61701afa83e2bc0b1a"
+    },
+    "sources": {
+      "signal-matching.ts": "abdcb493ff6ee4851c474cda8580b2c0a67b5fb979c63be9b2bd1588b992a4fb",
+      "signal-resume-catalog.ts": "c9508be727972532156db2183f2000725042677efc9a4a89496bfb9dee9a45f6",
+      "fsp-results.ts": "9c5378d4d0ab9bcb3183e92e42c379d0a739b3051ac6f883260e67e8fe29d474",
+      "skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+      "employer-required-skills.ts": "c2f4a52fe6e7103b2a413ffbefcfed6bfa04185b5560f82b097642195c2953bb"
+    },
+    "people": 24,
+    "resumes": 32,
+    "needs": 12,
+    "labels": 144
+  },
+  "datasetCounts": {
+    "people": 24,
+    "resumes": 32,
+    "needs": 12,
+    "labels": 144
+  },
+  "aggregate": {
+    "nDCGAt3": 0.8993684083376104,
+    "nDCGAt5": 0.9504364091008215,
+    "precisionAt3": 0.7222222222222222,
+    "precisionAt5": 0.7000000000000001,
+    "falseAdmissions": 0,
+    "missingAdmissions": 0,
+    "selectionErrors": 0,
+    "permutationFailures": 0
+  },
+  "cases": [
+    {
+      "needId": "100-junior-one",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.8777221344374128,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 20.639213832155747,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          112
+        ],
+        "returned": [
+          101,
+          108,
+          112,
+          102,
+          103,
+          104,
+          106,
+          107
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 101,
+          "resumeId": 1010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 108,
+          "resumeId": 1080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 112,
+          "resumeId": 1122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 102,
+          "resumeId": 1020,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Junior\"]"
+        },
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        },
+        {
+          "personId": 104,
+          "resumeId": 1040,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 106,
+          "resumeId": 1060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 107,
+          "resumeId": 1070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          101,
+          108,
+          112,
+          102,
+          103,
+          104,
+          106,
+          107
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.8777221344374128,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 20.639213832155747,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "100-middle-core",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9488624617780657,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 19.09180260321758,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          101,
+          103,
+          104,
+          106,
+          107,
+          108,
+          112
+        ],
+        "returned": [
+          101,
+          108,
+          112,
+          103,
+          104,
+          106,
+          107
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 101,
+          "resumeId": 1010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 108,
+          "resumeId": 1080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 112,
+          "resumeId": 1122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        },
+        {
+          "personId": 104,
+          "resumeId": 1040,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 106,
+          "resumeId": 1060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 107,
+          "resumeId": 1070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          101,
+          108,
+          112,
+          103,
+          104,
+          106,
+          107
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9488624617780657,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 19.09180260321758,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 1120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "100-middle-per-skill",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9538828753732315,
+          "precision": 1,
+          "dcg": 16.56808358893175,
+          "idcg": 17.369096370924005,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          101,
+          103,
+          106,
+          107,
+          108,
+          112
+        ],
+        "returned": [
+          101,
+          108,
+          112,
+          103,
+          106,
+          107
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 101,
+          "resumeId": 1010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 108,
+          "resumeId": 1080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 112,
+          "resumeId": 1122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        },
+        {
+          "personId": 106,
+          "resumeId": 1060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 107,
+          "resumeId": 1070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          101,
+          108,
+          112,
+          103,
+          106,
+          107
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9538828753732315,
+          "precision": 1,
+          "dcg": 16.56808358893175,
+          "idcg": 17.369096370924005,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1020,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1040,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 1120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "100-senior-core",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "coverage": {
+        "expected": [
+          103
+        ],
+        "returned": [
+          103
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          103
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1010,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1040,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1060,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1070,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1080,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1120,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1122,
+          "reasons": [
+            "grade"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "100-tax-unknown-optional",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.9037794402528602,
+          "precision": 0.6666666666666666,
+          "dcg": 9.392789260714373,
+          "idcg": 10.392789260714373,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9221509830162191,
+          "precision": 0.8,
+          "dcg": 11.845377356638178,
+          "idcg": 12.845377356638178,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          101,
+          103,
+          104,
+          106,
+          107,
+          108,
+          112
+        ],
+        "returned": [
+          108,
+          101,
+          107,
+          112,
+          103,
+          104,
+          106
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 108,
+          "resumeId": 1080,
+          "relevance": 3,
+          "fit": 79.1666666667,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 101,
+          "resumeId": 1010,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 107,
+          "resumeId": 1070,
+          "relevance": 1,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 112,
+          "resumeId": 1122,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        },
+        {
+          "personId": 104,
+          "resumeId": 1040,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        },
+        {
+          "personId": 106,
+          "resumeId": 1060,
+          "relevance": 1,
+          "fit": 65.4761904762,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          108,
+          101,
+          107,
+          112,
+          103,
+          104,
+          106
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.9037794402528602,
+          "precision": 0.6666666666666666,
+          "dcg": 9.392789260714373,
+          "idcg": 10.392789260714373,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9221509830162191,
+          "precision": 0.8,
+          "dcg": 11.845377356638178,
+          "idcg": 12.845377356638178,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "100-senior-skill-gate",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "coverage": {
+        "expected": [
+          103
+        ],
+        "returned": [
+          103
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 103,
+          "resumeId": 1030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Backend / Python\",\"Senior\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          103
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 1010,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1020,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1040,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1060,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1070,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1080,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1090,
+          "reasons": [
+            "visibility",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1100,
+          "reasons": [
+            "consent",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1110,
+          "reasons": [
+            "pool",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1121,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 1122,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          101,
+          102,
+          103,
+          104,
+          106,
+          107,
+          108,
+          110,
+          112,
+          105
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-junior-one",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.8777221344374128,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 20.639213832155747,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          212
+        ],
+        "returned": [
+          201,
+          208,
+          212,
+          202,
+          203,
+          204,
+          206,
+          207
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 201,
+          "resumeId": 2010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 208,
+          "resumeId": 2080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 212,
+          "resumeId": 2122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 202,
+          "resumeId": 2020,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Junior\"]"
+        },
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        },
+        {
+          "personId": 204,
+          "resumeId": 2040,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 206,
+          "resumeId": 2060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 207,
+          "resumeId": 2070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          201,
+          208,
+          212,
+          202,
+          203,
+          204,
+          206,
+          207
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.8777221344374128,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 20.639213832155747,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-middle-core",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9488624617780657,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 19.09180260321758,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          201,
+          203,
+          204,
+          206,
+          207,
+          208,
+          212
+        ],
+        "returned": [
+          201,
+          208,
+          212,
+          203,
+          204,
+          206,
+          207
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 201,
+          "resumeId": 2010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 208,
+          "resumeId": 2080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 212,
+          "resumeId": 2122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        },
+        {
+          "personId": 204,
+          "resumeId": 2040,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 206,
+          "resumeId": 2060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 207,
+          "resumeId": 2070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          201,
+          208,
+          212,
+          203,
+          204,
+          206,
+          207
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9488624617780657,
+          "precision": 1,
+          "dcg": 18.115494817869916,
+          "idcg": 19.09180260321758,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 2120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-middle-per-skill",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9538828753732315,
+          "precision": 1,
+          "dcg": 16.56808358893175,
+          "idcg": 17.369096370924005,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          201,
+          203,
+          206,
+          207,
+          208,
+          212
+        ],
+        "returned": [
+          201,
+          208,
+          212,
+          203,
+          206,
+          207
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 201,
+          "resumeId": 2010,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 208,
+          "resumeId": 2080,
+          "relevance": 2,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 212,
+          "resumeId": 2122,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        },
+        {
+          "personId": 206,
+          "resumeId": 2060,
+          "relevance": 2,
+          "fit": 90.625,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 207,
+          "resumeId": 2070,
+          "relevance": 1,
+          "fit": 87.5,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          201,
+          208,
+          212,
+          203,
+          206,
+          207
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.8308103365909342,
+          "precision": 1,
+          "dcg": 12.392789260714373,
+          "idcg": 14.916508275000202,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9538828753732315,
+          "precision": 1,
+          "dcg": 16.56808358893175,
+          "idcg": 17.369096370924005,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2020,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2040,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 2120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-senior-core",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "coverage": {
+        "expected": [
+          203
+        ],
+        "returned": [
+          203
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          203
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2010,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2040,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2060,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2070,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2080,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool",
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2120,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2122,
+          "reasons": [
+            "grade"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-tax-unknown-optional",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 0.9037794402528602,
+          "precision": 0.6666666666666666,
+          "dcg": 9.392789260714373,
+          "idcg": 10.392789260714373,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9221509830162191,
+          "precision": 0.8,
+          "dcg": 11.845377356638178,
+          "idcg": 12.845377356638178,
+          "missingPlaces": 0
+        }
+      },
+      "coverage": {
+        "expected": [
+          201,
+          203,
+          204,
+          206,
+          207,
+          208,
+          212
+        ],
+        "returned": [
+          208,
+          201,
+          207,
+          212,
+          203,
+          204,
+          206
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 208,
+          "resumeId": 2080,
+          "relevance": 3,
+          "fit": 79.1666666667,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 201,
+          "resumeId": 2010,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 207,
+          "resumeId": 2070,
+          "relevance": 1,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 212,
+          "resumeId": 2122,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        },
+        {
+          "personId": 204,
+          "resumeId": 2040,
+          "relevance": 2,
+          "fit": 76.1904761905,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        },
+        {
+          "personId": 206,
+          "resumeId": 2060,
+          "relevance": 1,
+          "fit": 65.4761904762,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Middle\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          208,
+          201,
+          207,
+          212,
+          203,
+          204,
+          206
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 0.9037794402528602,
+          "precision": 0.6666666666666666,
+          "dcg": 9.392789260714373,
+          "idcg": 10.392789260714373,
+          "missingPlaces": 0
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 0.9221509830162191,
+          "precision": 0.8,
+          "dcg": 11.845377356638178,
+          "idcg": 12.845377356638178,
+          "missingPlaces": 0
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2020,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    },
+    {
+      "needId": "200-senior-skill-gate",
+      "metrics": {
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "coverage": {
+        "expected": [
+          203
+        ],
+        "returned": [
+          203
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": [],
+        "selectionErrors": [],
+        "duplicates": 0
+      },
+      "order": [
+        {
+          "personId": 203,
+          "resumeId": 2030,
+          "relevance": 3,
+          "fit": 100,
+          "fspBonus": 0,
+          "proof": "not_measured",
+          "category": "[\"Frontend / TypeScript\",\"Senior\"]"
+        }
+      ],
+      "permutationStable": true,
+      "fspAblation": {
+        "personIds": [
+          203
+        ],
+        "at3": {
+          "k": 3,
+          "nDCG": 1,
+          "precision": 0.3333333333333333,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 2
+        },
+        "at5": {
+          "k": 5,
+          "nDCG": 1,
+          "precision": 0.2,
+          "dcg": 7,
+          "idcg": 7,
+          "missingPlaces": 4
+        }
+      },
+      "allRejected": [
+        {
+          "resumeId": 2010,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2011,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2020,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2021,
+          "reasons": [
+            "specialization",
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2040,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2050,
+          "reasons": [
+            "grade",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2060,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2070,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2080,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2090,
+          "reasons": [
+            "visibility",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2100,
+          "reasons": [
+            "consent",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2110,
+          "reasons": [
+            "pool",
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2120,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2121,
+          "reasons": [
+            "required_skills"
+          ]
+        },
+        {
+          "resumeId": 2122,
+          "reasons": [
+            "required_skills"
+          ]
+        }
+      ],
+      "catalog": {
+        "people": [
+          201,
+          202,
+          203,
+          204,
+          206,
+          207,
+          208,
+          210,
+          212,
+          205
+        ],
+        "falseAdmissions": [],
+        "missingAdmissions": []
+      }
+    }
+  ],
+  "limitations": [
+    "No CV text/job semantic embedding is measured.",
+    "No human outcomes; small mirrored two-specialization corpus.",
+    "FSP is a category-local tie signal, never replaces missing skills/category.",
+    "Historical grade-only proof may be admitted, with less complete evidence.",
+    "Allowed selected IDs judge business context, not every formally eligible alternative."
+  ],
+  "productionWeightsAdjusted": false,
+  "synthetic": true,
+  "humanCalibration": false
+}

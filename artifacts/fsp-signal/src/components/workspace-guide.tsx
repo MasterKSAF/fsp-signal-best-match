@@ -4,10 +4,11 @@ import { Link } from 'wouter';
 import { useGetCurrentUser } from '@workspace/api-client-react';
 import { useSelectedCandidateProfile } from './multi-resume';
 import { Dialog } from './product-enhancements';
+import {getWorkspaceGuideContent} from '../lib/workspace-guidance';
+export {getWorkspaceGuideContent} from '../lib/workspace-guidance';
 import './workspace-guide.css';
 
 type Role = 'candidate' | 'employer';
-type GuideContent = { title: string; intro: string; tips: string[]; href: string; action: string };
 
 const backendPreparation = [
   { id: 'api', title: 'API и обработка ошибок', detail: 'Повторите HTTP, проверку входных данных и понятные ответы об ошибках.' },
@@ -78,55 +79,6 @@ function PreparationPlan({ onClose }: { onClose: () => void }) {
   </Dialog>;
 }
 
-export function getWorkspaceGuideContent(role: Role, location: string): GuideContent {
-  if (role === 'candidate') {
-    if (location.startsWith('/candidate/kalibr')) return {
-      title: 'Выберите следующую проверку', intro: 'Программа помогает подтвердить навыки для конкретных рабочих задач.',
-      tips: ['Заполните профессиональный опрос в паспорте, чтобы выбрать подходящий стартовый уровень.', 'Выберите контекст задач и уровень проверки. Условия будут показаны перед началом.', 'Во время попытки сохраните ответы и завершите проверку до истечения времени. Результат появится в паспорте.'],
-      href: '/candidate/passport', action: 'К профессиональному опросу',
-    };
-    if (location.startsWith('/candidate/passport')) return {
-      title: 'Профиль, который помогает знакомиться', intro: 'Покажите свой опыт и настройте, кому доступен профиль.',
-      tips: ['Укажите технологии, с которыми действительно работали, и желаемый формат работы.', 'Проверьте ожидания по оплате: период и сумма до или после вычета налогов важны для подбора.', 'Выберите видимость профиля. Контакты откроются компании после вашего согласия на приглашение.'],
-      href: '/candidate/kalibr', action: 'Подтвердить навыки',
-    };
-    if (location.startsWith('/candidate/invitations')) return {
-      title: 'Выберите подходящее предложение', intro: 'Решение о знакомстве с компанией остаётся за вами.',
-      tips: ['Сравните задачи, формат работы и оплату с вашими ожиданиями.', 'Принимайте приглашение, когда готовы к общению: это откроет компании ваши контактные данные.', 'Если ваши планы изменились, обновите предпочтения в профиле.'],
-      href: '/candidate/passport', action: 'Обновить предпочтения',
-    };
-    return {
-      title: 'Ваш следующий шаг', intro: 'Соберите профиль, подтвердите навыки и выбирайте предложения компаний.',
-      tips: ['Добавьте опыт, технологии и предпочтения в профиль.', 'Квалификационный экзамен Signal поможет подтвердить уровень в вашей специализации.', 'Просматривайте приглашения и делитесь контактами, когда готовы к знакомству.'],
-      href: '/candidate/passport', action: 'Перейти к профилю',
-    };
-  }
-  if (location.startsWith('/employer/candidates')) return {
-    title: 'Найдите нужные навыки', intro: 'В банке собраны открытые для подбора профили с подтверждённым уровнем.',
-    tips: ['Отфильтруйте профили по специализации, уровню и навыкам.', 'Технологии, указанные кандидатом, и подтверждённые навыки отображаются отдельно.', 'Для сопоставления с конкретной вакансией откройте подбор: он покажет совпадения и пробелы по её требованиям.'],
-    href: '/employer/matches', action: 'К подбору по вакансии',
-  };
-  if (location.startsWith('/employer/matches')) return {
-    title: 'На что смотреть при подборе', intro: 'Сопоставляйте требования с опытом и подтверждёнными навыками.',
-    tips: ['Откройте кандидата, чтобы увидеть, какие требования подтверждены, а что ещё стоит обсудить.', 'Выберите два профиля для сравнения по одинаковым требованиям.', 'Учитывайте пробелы и условия кандидата. Балл соответствия помогает сориентироваться, но не предсказывает результат найма.'],
-    href: '/employer', action: 'К моим вакансиям',
-  };
-  if (location.startsWith('/employer/invitations') || location.startsWith('/employer/contacts')) return {
-    title: 'От приглашения к знакомству', intro: 'Понятное предложение помогает кандидату принять решение.',
-    tips: ['Укажите задачи, оплату и формат работы до отправки приглашения.', 'Следите за статусом: после согласия кандидата появятся контакты.', 'Представьте компанию в её профиле, чтобы кандидат понимал, с кем будет общаться.'],
-    href: '/employer/company', action: 'Открыть профиль компании',
-  };
-  if (location.startsWith('/employer/company')) return {
-    title: 'Расскажите о вашей компании', intro: 'Эти сведения помогают кандидату оценить приглашение.',
-    tips: ['Кратко опишите продукт и задачи команды.', 'Проверьте название, отрасль и контакт для связи.', 'Выберите удобный способ общения с кандидатами.'],
-    href: '/employer', action: 'Перейти к вакансиям',
-  };
-  return {
-    title: 'Начните с задач команды', intro: 'Точные требования делают подбор полезнее.',
-    tips: ['Опишите роль и укажите навыки, необходимые для рабочих задач.', 'Добавьте уровень, формат работы и диапазон оплаты.', 'Откройте подбор, изучите подтверждения и пригласите подходящих кандидатов.'],
-    href: '/employer/matches', action: 'Открыть подбор',
-  };
-}
 
 export function WorkspaceGuide({ role, location, onOpen }: { role: Role; location: string; onOpen?: () => void }) {
   const [view, setView] = useState<'guide' | 'plan' | null>(null);
@@ -154,7 +106,7 @@ export function CandidateActions() {
   const hidden = profile && (profile.visibility === 'private' || !profile.consentMatching);
   return <section className="candidate-actions" aria-label="Полезные действия">
     <article className="candidate-action-card preparation-action"><span className="guide-symbol"><Sparkles size={22} /></span><div><span className="guide-kicker">ДЛЯ ВАШЕГО РОСТА</span><h2>Навыки в тонусе</h2><p>{preparationIntro} Подготовьтесь к следующей проверке в своём темпе.</p><button className="guide-text-action" onClick={() => setPlanOpen(true)} data-testid="button-preparation-plan">{plan.checked.length ? `Продолжить план · ${plan.checked.length}/${plan.topics.length}` : 'Открыть план подготовки'} <ArrowRight size={16} /></button></div></article>
-    <article className="candidate-action-card"><span className="guide-symbol neutral"><UserRound size={22} /></span><div><span className="guide-kicker">ВАШИ ПРЕДПОЧТЕНИЯ</span><h2>{hidden ? 'Откройтесь возможностям' : 'Расскажите о себе точнее'}</h2><p>{hidden ? 'Профиль пока закрыт для подбора. Настройте видимость, если готовы рассматривать предложения.' : 'Укажите актуальные технологии, формат работы и ожидания по оплате, чтобы получать подходящие предложения.'}</p><Link className="guide-text-action" href="/candidate/passport">{hidden ? 'Настроить видимость' : 'Обновить профиль'} <ArrowRight size={16} /></Link></div></article>
+    <article className="candidate-action-card"><span className="guide-symbol neutral"><UserRound size={22} /></span><div><span className="guide-kicker">ВАШИ ПРЕДПОЧТЕНИЯ</span><h2>{hidden ? 'Откройтесь возможностям' : 'Расскажите о себе точнее'}</h2><p>{hidden ? 'Профиль пока закрыт для подбора. Настройте видимость, если готовы рассматривать предложения.' : 'Укажите актуальные технологии, формат работы и ожидания по оплате, чтобы получать подходящие предложения.'}</p><Link className="guide-text-action" href="/candidate/resumes">{hidden ? 'Настроить видимость' : 'Обновить профиль'} <ArrowRight size={16} /></Link></div></article>
     {planOpen && <PreparationPlan onClose={() => setPlanOpen(false)} />}
   </section>;
 }

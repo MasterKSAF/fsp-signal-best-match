@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "file": "Signal-Source.zip",
+  "bytes": 4466659,
+  "sha256": "469d5d2cb7c57e3e7c4a0d519be2242b4e81a0772ccc06f1df884ea0c57131da",
+  "root": "Signal/",
+  "memberCount": 1512,
+  "productFileCount": 1511,
+  "productBytes": 23925429,
+  "crcVerified": true,
+  "memberHashesVerified": true,
+  "sourceTaskcopyHashesVerified": true
+}

@@ -1,0 +1,10 @@
+.trust-center-panels {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.trust-center-panels > .panel {
+  min-width: 0;
+  margin: 0;
+}

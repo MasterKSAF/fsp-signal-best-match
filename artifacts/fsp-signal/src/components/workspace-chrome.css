@@ -1,0 +1,53 @@
+.app-shell {
+  --workspace-sidebar-width:242px;
+}
+
+.dark .app-shell > .topbar,
+.dark .app-shell > .workspace > .sidebar {
+  background:hsl(var(--workspace-chrome));
+}
+
+/* The brand and divider use the same columns as the desktop workspace. */
+@media(min-width:761px) {
+  .app-shell > .workspace {
+    grid-template-columns:var(--workspace-sidebar-width) minmax(0,1fr);
+  }
+
+  .app-shell > .topbar {
+    display:grid;
+    grid-template-columns:calc(var(--workspace-sidebar-width) - var(--structure-width, 2px)) var(--structure-width, 2px) minmax(0,1fr) auto;
+    column-gap:0;
+    padding-left:0;
+  }
+
+  .app-shell > .topbar > .header-brand-group {
+    grid-column:1;
+    justify-content:center;
+    min-width:0;
+  }
+
+  .app-shell > .topbar > .topbar-divider {
+    grid-column:2;
+    width:var(--structure-width, 2px);
+    justify-self:stretch;
+  }
+
+  .app-shell > .topbar > .topbar-context {
+    grid-column:3;
+    margin-left:24px;
+    justify-self:start;
+    white-space:nowrap;
+  }
+
+  .app-shell > .topbar > .topbar-right {
+    grid-column:4;
+    min-width:0;
+    margin-left:24px;
+  }
+}
+
+@media(min-width:761px) and (max-width:1050px) {
+  .app-shell {
+    --workspace-sidebar-width:218px;
+  }
+}

@@ -28,6 +28,8 @@ export type OracleBlueprint = {
   partialCredit: "all_or_nothing" | "ordered_components";
   targetSeconds: number;
   critical: boolean;
+  /** Persisted rubric discriminator. Omitted historical snapshots keep exact text scoring. */
+  answerComparison?: "canonical_integer_v1";
 };
 
 /** Persisted in the server database only. It is never part of SignalCase. */
@@ -761,6 +763,8 @@ export function isCurrentKalibrAttempt(cases: unknown, oracles: unknown): boolea
     "signal-frontend-typescript-v1": { programId: "frontend-typescript", seniorArchitectureRequired: false },
     "signal-backend-python-v6": { programId: "backend-python", seniorArchitectureRequired: true },
     "signal-frontend-typescript-v2": { programId: "frontend-typescript", seniorArchitectureRequired: true },
+    "signal-backend-python-v7": { programId: "backend-python", seniorArchitectureRequired: true },
+    "signal-frontend-typescript-v3": { programId: "frontend-typescript", seniorArchitectureRequired: true },
   };
   const managedVersion = managedVersions[firstOracle?.blueprint?.version ?? ""];
   if (managedVersion) {
@@ -773,6 +777,8 @@ export function isCurrentKalibrAttempt(cases: unknown, oracles: unknown): boolea
       if (!blueprint || seen.has(item.id)) return false;
       seen.add(item.id);
       const seniorArchitecture = managedVersion.seniorArchitectureRequired && blueprint.grade === "Senior" && index === 4;
+      const semanticIntegerVersion = blueprint.version === "signal-backend-python-v7" || blueprint.version === "signal-frontend-typescript-v3";
+      if (semanticIntegerVersion ? blueprint.answerComparison !== (index === 1 ? "canonical_integer_v1" : undefined) : blueprint.answerComparison !== undefined) return false;
       return typeof oracle.answer === "string" && blueprint.version === firstOracle.blueprint.version && blueprint.programId === programId && blueprint.family === families[index] && blueprint.grade === firstOracle.blueprint.grade && isGrade(blueprint.grade) && typeof blueprint.templateId === "string" && blueprint.templateVersion === (seniorArchitecture ? 2 : 1) && blueprint.critical === ([0, 1, 3].includes(index) || seniorArchitecture) && blueprint.responseType === (index === 2 || index === 4 ? "choice" : index === 1 ? "integer" : "structured") && item.responseType === (blueprint.responseType === "choice" ? "choice" : "text") && blueprint.partialCredit === (blueprint.responseType === "structured" ? "ordered_components" : "all_or_nothing");
     });
   }
@@ -809,6 +815,13 @@ function answerScore(submitted: string, oracle: AttemptOracle[string] | undefine
   const normalizedSubmitted = normalizeAnswer(submitted);
   const normalizedExpected = normalizeAnswer(oracle.answer);
   if (!normalizedSubmitted) return 0;
+  if (oracle.blueprint?.answerComparison === "canonical_integer_v1") {
+    // BigInt preserves exact equality beyond Number's safe integer range. The
+    // contract admits decimal integer notation only, not exponent/fraction,
+    // units, thousands separators, Unicode lookalikes or embedded whitespace.
+    if (oracle.blueprint.responseType !== "integer" || !/^[+-]?\d+$/.test(normalizedSubmitted) || !/^[+-]?\d+$/.test(normalizedExpected)) return 0;
+    return BigInt(normalizedSubmitted) === BigInt(normalizedExpected) ? 100 : 0;
+  }
   if (oracle.blueprint?.partialCredit === "ordered_components") {
     const expectedParts = normalizedExpected.split("|");
     const submittedParts = normalizedSubmitted.split("|");

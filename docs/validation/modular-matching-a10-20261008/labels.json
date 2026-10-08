@@ -1,0 +1,1190 @@
+[
+  {
+    "needId": "100-junior-one",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 102,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1020
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 104,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1040
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 107,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          1070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 108,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "100-middle-core",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 102,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 104,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1040
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 107,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          1070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 108,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "100-middle-per-skill",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 102,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 104,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 107,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          1070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 108,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "100-senior-core",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 102,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 104,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 107,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 108,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      }
+    ]
+  },
+  {
+    "needId": "100-tax-unknown-optional",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1010
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 102,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 104,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1040
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          1060
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 107,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          1070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 108,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1080
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          1122
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      }
+    ]
+  },
+  {
+    "needId": "100-senior-skill-gate",
+    "pointwise": [
+      {
+        "personId": 101,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 102,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 103,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          1030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 104,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 105,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 106,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 107,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 108,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 109,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 110,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 111,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 112,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      }
+    ]
+  },
+  {
+    "needId": "200-junior-one",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 202,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2020
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 204,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2040
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 207,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          2070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 208,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "200-middle-core",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 202,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 204,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2040
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 207,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          2070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 208,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "200-middle-per-skill",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2010
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 202,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 204,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2060
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 207,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          2070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 208,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2080
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2122
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      }
+    ]
+  },
+  {
+    "needId": "200-senior-core",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 202,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 204,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 207,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 208,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      }
+    ]
+  },
+  {
+    "needId": "200-tax-unknown-optional",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2010
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 202,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 204,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2040
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          2060
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 207,
+        "eligible": true,
+        "relevance": 1,
+        "allowedSelectedResumeIds": [
+          2070
+        ],
+        "rationale": "Существенное несовпадение условий при формальной допустимости"
+      },
+      {
+        "personId": 208,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2080
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": true,
+        "relevance": 2,
+        "allowedSelectedResumeIds": [
+          2122
+        ],
+        "rationale": "Навыки подходят, формат или налоговая база требуют согласования"
+      }
+    ]
+  },
+  {
+    "needId": "200-senior-skill-gate",
+    "pointwise": [
+      {
+        "personId": 201,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 202,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 203,
+        "eligible": true,
+        "relevance": 3,
+        "allowedSelectedResumeIds": [
+          2030
+        ],
+        "rationale": "Подтверждённая категория, нужные навыки и согласуемые условия"
+      },
+      {
+        "personId": 204,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 205,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Есть отдельный навык, нет категории"
+      },
+      {
+        "personId": 206,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 207,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 208,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      },
+      {
+        "personId": 209,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Приватное резюме"
+      },
+      {
+        "personId": 210,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Нет согласия на подбор"
+      },
+      {
+        "personId": 211,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Другой Demo-пул"
+      },
+      {
+        "personId": 212,
+        "eligible": false,
+        "relevance": 0,
+        "allowedSelectedResumeIds": [],
+        "rationale": "Недостаточная категория или нет отдельного подтверждения минимального уровня"
+      }
+    ]
+  }
+]

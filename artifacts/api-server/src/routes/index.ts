@@ -15,6 +15,10 @@ import signalMicrotasksRouter from "./signal-microtasks";
 import signalResearchRouter from "./signal-research";
 import signalCandidateEvidenceRouter from "./signal-candidate-evidence";
 import signalDictionariesRouter from "./signal-dictionaries";
+import signalSkillModulesRouter from "./signal-skill-modules";
+import signalEmployerShortlistRouter from './signal-employer-shortlist';
+import signalEmployerSelectionRouter from './signal-employer-selection';
+import signalEmployerApplicationsRouter from './signal-employer-applications';
 
 const router: IRouter = Router();
 
@@ -29,10 +33,14 @@ router.use(signalTrustRouter);
 router.use(signalFspRouter);
 router.use(signalAssessmentContextRouter);
 router.use(signalCandidateBankRouter);
+router.use(signalEmployerShortlistRouter);
+router.use(signalEmployerSelectionRouter);
+router.use(signalEmployerApplicationsRouter);
 router.use(signalJobsRouter);
 router.use(signalMicrotasksRouter);
 router.use(signalResearchRouter);
 router.use(signalCandidateEvidenceRouter);
 router.use(signalDictionariesRouter);
+router.use(signalSkillModulesRouter);
 
 export default router;

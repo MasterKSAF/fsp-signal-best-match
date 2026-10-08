@@ -1,5 +1,8 @@
+import { withCurrentSkillModuleEvidence } from './signal-skill-matching';
+import { skillModulesEnabled } from './skill-module-service';
 import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { SelectedFields } from "drizzle-orm/pg-core";
+import type { Response } from 'express';
 import {
   db,
   signalCandidateProfilesTable as profiles,
@@ -19,17 +22,14 @@ import {compactFspSignal} from './fsp-results';
 import { isDemoModeEnabled } from './signal-runtime';
 import {
   FreshRankingCache,
-  freshRankingKey,
 } from "./signal-fresh-ranking-cache";
 import { preparePoolAdmission } from "./matching-pool-admission";
 import { withAssessmentRankingEvidence } from "./assessment-ranking-evidence";
 import { rankingInputFingerprint } from "./assessment-ranking-evidence";
 import {
-  getResumeQualification,
   loadCandidateQualificationInputs,
 } from "./signal-resume";
-import { canonicalSkillKey } from "./skill-catalog";
-import type { SafeSkillEvidence } from "./signal-matching";
+import {projectLegacyResumeSkillEvidence} from './signal-resume-skill-projection';
 import {
   poolScopeForAccount,
   signalPoolPredicate,
@@ -45,6 +45,7 @@ export function resumeMatchColumns() {
     resumeRevision: resumes.revision,
     title: resumes.title,
     specialization: resumes.specialization,
+    assumedGrade: resumes.assumedGrade,
     verifiedGrade: resumes.verifiedGrade,
     verifiedScore: resumes.verifiedScore,
     verifiedSkills: resumes.verifiedSkills,
@@ -114,6 +115,7 @@ const loadedPoolFingerprints = new WeakMap<object, string>();
 const freshRanking = new FreshRankingCache();
 const admittedSnapshots=new WeakMap<object,{key:string;rows:CatalogResume[]}>();
 export function serializeRankedResumeMatches(entries:object,build:()=>string) { return freshRanking.serialize(entries,build); }
+export function respondRankedResumeMatches(entries:object,build:()=>string,response:Pick<Response,'setHeader'|'send'>) { freshRanking.respondJson(entries,build,response); }
 
 /** One professional row per résumé. No account contacts, answers or questionnaire are selected. */
 export async function loadResumeCandidates(
@@ -200,22 +202,29 @@ export async function loadResumeCandidates(
 export async function withResumeSkillEvidence<T extends CatalogResume>(
   rows: T[],
   reader: ResumeReader = db,
+  options: {includePhotos?:boolean} = {},
 ): Promise<T[]> {
   if (!rows.length) return [];
   const inputs = await loadCandidateQualificationInputs(
     [...new Set(rows.map((row) => row.userId))],
     reader,
   );
-  const attemptsByUser = new Map<number, typeof inputs.attempts>();
-  for (const attempt of inputs.attempts) {
-    const existing = attemptsByUser.get(attempt.userId);
-    if (existing) existing.push(attempt);
-    else attemptsByUser.set(attempt.userId, [attempt]);
-  }
+  const photos = options.includePhotos===false ? [] : await loadResumePhotos(rows,reader);
+  const photoByResume=new Map(photos.map(photo=>[photo.resumeId,photo.data]));
+  // This projection creates fresh local objects; modular enrichment can fill
+  // them without another whole-row copy. Raw pool/cache rows remain untouched.
+  const projected=projectLegacyResumeSkillEvidence(rows,inputs,photoByResume);
+  return withCurrentSkillModuleEvidence(projected,reader,{mutateLocalProjection:true});
+}
+
+/** Photo presence is already an input to the fresh pool/filter computation.
+ * Only the displayed page needs current image bytes. No qualification or
+ * permissions are cached/reloaded here; public visibility is checked in SQL. */
+async function loadResumePhotos<T extends CatalogResume>(rows:T[],reader:ResumeReader) {
   const photoIds = rows
     .filter((row) => row.visibility === "public" && row.hasAccessiblePhoto)
     .map((row) => row.resumeId);
-  const photos = photoIds.length
+  return photoIds.length
     ? await reader
         .select({ resumeId: resumes.id, data: profiles.avatarDataUrl })
         .from(resumes)
@@ -228,50 +237,10 @@ export async function withResumeSkillEvidence<T extends CatalogResume>(
           ),
         )
     : [];
-  const photoByResume = new Map(
-    photos.map((photo) => [photo.resumeId, photo.data]),
-  );
-  return rows.map((row) => {
-    const qualification = getResumeQualification(
-      row,
-      attemptsByUser.get(row.userId) ?? [],
-      inputs.correctedIds,
-    );
-    const proven = new Set(
-      qualification.evidence.map((proof) => canonicalSkillKey(proof.skill)),
-    );
-    const legacy: SafeSkillEvidence[] = qualification.verifiedSkills
-      .filter((skill) => !proven.has(canonicalSkillKey(skill)))
-      .map((skill) => ({
-        skill,
-        candidateId: row.userId,
-        attemptId: null,
-        programId: null,
-        programVersion: null,
-        templateId: null,
-        templateVersion: null,
-        criterionId: null,
-        criterion: null,
-        result: null,
-        date: qualification.latestAssessmentAt?.toISOString() ?? null,
-        sourceType: row.demoMode ? "demo_example" : "legacy_record",
-        limitation:
-          qualification.limitation ??
-          "Историческое подтверждение без подробного протокола.",
-      }));
-    return {
-      ...row,
-      avatarDataUrl:
-        row.visibility === "public"
-          ? (photoByResume.get(row.resumeId) ?? null)
-          : null,
-      verifiedGrade: qualification.verifiedGrade,
-      verifiedScore: qualification.verifiedScore,
-      verifiedSkills: qualification.verifiedSkills,
-      latestAssessmentAt: qualification.latestAssessmentAt,
-      skillEvidence: [...qualification.evidence, ...legacy],
-    };
-  });
+}
+export async function withResumePhotos<T extends CatalogResume>(rows:T[],reader:ResumeReader=db):Promise<T[]> {
+  const photos=await loadResumePhotos(rows,reader),byResume=new Map(photos.map(photo=>[photo.resumeId,photo.data]));
+  return rows.map(row=>({...row,avatarDataUrl:row.visibility==='public'?(byResume.get(row.resumeId)??null):null}));
 }
 
 export async function rankedResumePool(
@@ -279,6 +248,8 @@ export async function rankedResumePool(
   accountScope: SignalPoolScope | boolean,
   overrides: ReadonlyMap<number, number> = new Map(),
   reader: ResumeReader = db,
+  /** Internal addressed explanation only; fixed whole-pool ordinal retained. */
+  onlyDefault?: { userId:number; resumeId:number },
 ) {
   const scope = poolScopeForAccount(accountScope);
   const rows = await loadResumeCandidates(
@@ -287,16 +258,17 @@ export async function rankedResumePool(
     reader,
   );
   const admissionKey=JSON.stringify([need,scope]),savedAdmission=admittedSnapshots.get(rows);
-  const admitted=savedAdmission?.key===admissionKey?savedAdmission.rows:rows.filter(preparePoolAdmission(need,scope.demoMode));
+  const admitted=skillModulesEnabled() ? rows : savedAdmission?.key===admissionKey?savedAdmission.rows:rows.filter(preparePoolAdmission(need,scope.demoMode));
   if(Object.isFrozen(rows)&&savedAdmission?.key!==admissionKey) {
     Object.freeze(admitted);admittedSnapshots.set(rows,{key:admissionKey,rows:admitted});
   }
-  const candidates = await withAssessmentRankingEvidence(
+  const rankedCandidates = await withAssessmentRankingEvidence(
     admitted,
     reader,
     undefined,
     { mutateLocalProjection: true },
   );
+  const candidates = skillModulesEnabled() ? await withResumeSkillEvidence(rankedCandidates, reader,{includePhotos:false}) : rankedCandidates;
   const at = new Date();
   const compute = () => {
     const entries = evaluateResumeCandidates(
@@ -325,16 +297,21 @@ export async function rankedResumePool(
       );
     return rankMatches(selected);
   };
+  if (skillModulesEnabled()) return compute();
   const rawFingerprint = loadedPoolFingerprints.get(rows),
     evidenceFingerprint = rankingInputFingerprint(candidates);
   if(reader===db&&rawFingerprint&&evidenceFingerprint&&overrides.size) {
-    const defaultKey=freshRankingKey(need,scope,new Map(),rawFingerprint,evidenceFingerprint,candidates,at);
+    const defaultKey=freshRanking.key(need,scope,new Map(),rawFingerprint,evidenceFingerprint,candidates,at);
+    if(onlyDefault&&overrides.size===1&&overrides.get(onlyDefault.userId)===onlyDefault.resumeId){
+      const addressed=freshRanking.readDefaultEntry(defaultKey,candidates,onlyDefault.userId,onlyDefault.resumeId);
+      if(addressed)return [addressed];
+    }
     const equivalent=freshRanking.readEquivalentDefault(defaultKey,candidates,overrides);
     if(equivalent)return equivalent;
   }
   return reader === db && rawFingerprint && evidenceFingerprint
     ? freshRanking.read(
-        freshRankingKey(
+        freshRanking.key(
           need,
           scope,
           overrides,

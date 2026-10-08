@@ -118,6 +118,7 @@ export function assessmentRubricKey(
   const blueprints = Object.values(oracles).map(
     (item) => (item as { blueprint?: Record<string, unknown> })?.blueprint,
   );
+  const canonicalIntegerVersion = version === "signal-backend-python-v7" || version === "signal-frontend-typescript-v3";
   if (
     !expected.length ||
     blueprints.length !== 6 ||
@@ -131,6 +132,11 @@ export function assessmentRubricKey(
         !Number.isInteger(b.templateVersion) ||
         typeof b.critical !== "boolean" ||
         !["choice", "integer", "structured"].includes(String(b.responseType)) ||
+        (canonicalIntegerVersion
+          ? b.family === expected[1]
+            ? b.responseType !== "integer" || b.answerComparison !== "canonical_integer_v1"
+            : b.answerComparison != null
+          : b.answerComparison != null) ||
         !["ordered_components", "all_or_nothing"].includes(
           String(b.partialCredit),
         ),
@@ -143,6 +149,7 @@ export function assessmentRubricKey(
       templateVersion: b!.templateVersion,
       responseType: b!.responseType,
       partialCredit: b!.partialCredit,
+      ...(b!.answerComparison != null ? { answerComparison: b!.answerComparison } : {}),
       critical: b!.critical,
       maximum: 100,
       weight: 1 / 6,
@@ -194,7 +201,8 @@ export async function withAssessmentRankingEvidence<T extends MatchCandidate>(
           'templateVersion', entry.value -> 'blueprint' -> 'templateVersion',
           'critical', entry.value -> 'blueprint' -> 'critical',
           'responseType', entry.value -> 'blueprint' -> 'responseType',
-          'partialCredit', entry.value -> 'blueprint' -> 'partialCredit'
+          'partialCredit', entry.value -> 'blueprint' -> 'partialCredit',
+          'answerComparison', entry.value -> 'blueprint' -> 'answerComparison'
         ) else entry.value -> 'blueprint' end)), '{}'::jsonb)
       from jsonb_each(${attempts.oracles}) as entry
     ) else ${attempts.oracles} end`;
@@ -334,6 +342,9 @@ export async function withAssessmentRankingEvidence<T extends MatchCandidate>(
       };
       proofByAttempt.set(row!.id, Object.freeze(assessmentEvidence!));
     }
+    // A current modular certificate has several evidence IDs and no comparable
+    // overall score. Do not reattach an older single-exam score to that category.
+    if ('categoryEvidence' in candidate && candidate.categoryEvidence) assessmentEvidence = null;
     // Only the two pool callers opt in: their top-level rows are fresh local
     // projections copied from frozen encoded SQL snapshots. Other callers keep
     // the original non-mutating contract, including injected-reader regressions.

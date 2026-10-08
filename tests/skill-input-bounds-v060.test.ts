@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {SaveCandidateProfileBody,CreateEmployerNeedBody,GetSkillCoverageQueryParams} from '../lib/api-zod/src/generated/api';
 import {SkillCoverageQuerySchema,SKILL_COVERAGE_TEXT_LIMIT} from '../artifacts/api-server/src/lib/skill-coverage-input';
 const tags=(count:number,length=100)=>Array.from({length:count},(_,i)=>String(i).padStart(2,'0')+'x'.repeat(length-2));
-const profile={displayName:'Synthetic bounded profile',professionalAlias:'Synthetic bounded alias',specialization:'Backend / Python',assumedGrade:'Middle',stack:tags(30),skills:tags(40),yearsExperience:0,workFormat:'Удалённо',salaryPeriod:'month',salaryType:'gross',visibility:'pseudonymous',consentMatching:false};
+const profile={displayName:'Synthetic bounded profile',professionalAlias:'Synthetic bounded alias',identityRevision:'a'.repeat(64),revision:1,resumeId:71,specialization:'Backend / Python',assumedGrade:'Middle',stack:tags(30),skills:tags(40),yearsExperience:0,workFormat:'Удалённо',salaryPeriod:'month',salaryType:'gross',visibility:'pseudonymous',consentMatching:false};
 const need={title:'Synthetic bounded need',specialization:'Backend / Python',grade:'Middle',requiredSkills:tags(40),desirableSkills:tags(40),description:'Synthetic contract boundary only',workFormat:'Удалённо',salaryMin:1,salaryMax:2,salaryPeriod:'month',salaryType:'gross'};
 test('actual generated profile API body accepts30/40 tags of100 and rejects31/41 or101 without altering accepted values',()=>{
   const accepted=SaveCandidateProfileBody.safeParse(profile);assert.ok(accepted.success);assert.deepEqual(accepted.data.stack,profile.stack);assert.deepEqual(accepted.data.skills,profile.skills);

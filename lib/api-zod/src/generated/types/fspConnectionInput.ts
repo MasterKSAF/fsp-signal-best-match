@@ -3,16 +3,15 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 
 export interface FspConnectionInput {
   /**
-     * Opaque user-entered ID; this format is a local input restriction, not an official FSP format.
+     * User-entered ID; saving it grants no verified status or ranking bonus.
      * @minLength 1
      * @maxLength 100
      * @pattern ^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$
      */
   fspId: string;
-  consentImport: true;
 }

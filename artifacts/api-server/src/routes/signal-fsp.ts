@@ -4,7 +4,7 @@ import { db, signalCandidateProfilesTable } from "@workspace/db";
 import { signalFspConnectionsTable } from "../../../../lib/db/src/schema/signal-fsp";
 import { ensureCandidateProfile, getSessionUser } from "../lib/signal-auth";
 import { isDemoModeEnabled } from "../lib/signal-runtime";
-import { canUseFspExample, fspConsentVersion, fspDemoFixtureId, fspStatusMessage, fspSignalFromConnection, hasTrustedFspHistory, resolveFspSafely, validFspLinkInput, type FspProviderContext } from "../lib/fsp-provider";
+import { canUseFspExample, fspStatusMessage, fspSignalFromConnection, savedFspIdentityValues, validFspSaveInput, type FspProviderContext } from "../lib/fsp-provider";
 
 const router: IRouter = Router();
 type Connection = typeof signalFspConnectionsTable.$inferSelect;
@@ -14,6 +14,7 @@ async function candidate(req: Request, res: Response) {
   if (!session) { res.status(401).json({ error: "Войдите в аккаунт кандидата." }); return null; }
   if (session.user.role !== "candidate") { res.status(403).json({ error: "Связь с ФСП доступна в профиле кандидата." }); return null; }
   await ensureCandidateProfile(session.user);
+  res.setHeader("Cache-Control", "no-store, private");
   return session.user;
 }
 
@@ -24,7 +25,7 @@ function payload(row: Connection | undefined, context: FspProviderContext) {
   const trusted = fspSignal.historyStatus === 'trusted_results' || fspSignal.historyStatus === 'unresolved_results';
   return {
     status, fspId: row?.fspId ?? null,
-    demoAvailable: canUseFspExample(context), demoFixtureId: canUseFspExample(context) ? fspDemoFixtureId : null,
+    demoAvailable: false, demoFixtureId: null, importAvailable: false,
     hasHistory: Boolean(trusted && row?.achievements.length), achievements: trusted ? row!.achievements : [],
     fspSignal,
     requestedAt: row?.requestedAt?.toISOString() ?? null,
@@ -45,37 +46,29 @@ router.get("/me/fsp-connection", async (req, res): Promise<void> => {
 
 router.put("/me/fsp-connection", async (req, res): Promise<void> => {
   const user = await candidate(req, res); if (!user) return;
-  const input = validFspLinkInput(req.body);
-  if (!input) { res.status(400).json({ error: "Укажите ФСП ID длиной до 100 символов (латинские буквы, цифры, точка, двоеточие, дефис или подчёркивание) и согласитесь на импорт сведений." }); return; }
+  const input = validFspSaveInput(req.body);
+  if (!input) { res.status(400).json({ error: "Укажите ФСП ID длиной до 100 символов: латинские буквы, цифры, точка, двоеточие, дефис или подчёркивание." }); return; }
   const context = { accountIsDemo: user.demoMode, demoEnabled: isDemoModeEnabled() };
-  if (input.fspId === fspDemoFixtureId && !canUseFspExample(context)) {
-    res.status(400).json({ error: "Этот ID доступен только в аккаунте с примерами. Введите собственный ФСП ID." }); return;
-  }
-  const resolved = await resolveFspSafely(input.fspId, context);
-  const row = await db.transaction(async (tx) => {
-    // One lock per candidate serializes link, replacement and revoke, including
-    // the first request before a connection row exists.
+  const row = await db.transaction(async tx => {
     await tx.select({ id: signalCandidateProfilesTable.userId }).from(signalCandidateProfilesTable).where(eq(signalCandidateProfilesTable.userId, user.id)).for("update");
-    const [existing] = await tx.select().from(signalFspConnectionsTable).where(eq(signalFspConnectionsTable.userId, user.id));
-    if (existing?.fspId === input.fspId && existing.status === resolved.status && existing.providerVersion === resolved.providerVersion && existing.consentVersion === fspConsentVersion && !!existing.consentedAt && !existing.revokedAt
-      && existing.provenance === resolved.provenance && Boolean(existing.verifiedAt) === resolved.verified && existing.lastErrorCode === resolved.errorCode && JSON.stringify(existing.achievements) === JSON.stringify(resolved.achievements)) {
-      const trustedHistory = hasTrustedFspHistory(resolved, context);
-      await tx.update(signalCandidateProfilesTable).set({ hasFspHistory: trustedHistory }).where(and(eq(signalCandidateProfilesTable.userId, user.id), eq(signalCandidateProfilesTable.hasFspHistory, !trustedHistory)));
-      return existing;
-    }
-    const now = new Date();
-    const values = {
-      fspId: input.fspId, status: resolved.status, consentVersion: fspConsentVersion,
-      consentedAt: now, requestedAt: now, revokedAt: null,
-      verifiedAt: resolved.verified ? now : null, importedAt: resolved.verified ? now : null,
-      provenance: resolved.provenance, providerVersion: resolved.providerVersion,
-      achievements: resolved.achievements, lastErrorCode: resolved.errorCode, updatedAt: now,
-    };
+    // In particular, even an entered synthetic fixture ID remains an unverified opaque ID.
+    const values = savedFspIdentityValues(input.fspId, new Date());
     const [saved] = await tx.insert(signalFspConnectionsTable).values({ userId: user.id, ...values }).onConflictDoUpdate({ target: signalFspConnectionsTable.userId, set: values }).returning();
-    await tx.update(signalCandidateProfilesTable).set({ hasFspHistory: hasTrustedFspHistory(resolved, context), updatedAt: now }).where(eq(signalCandidateProfilesTable.userId, user.id));
+    await tx.update(signalCandidateProfilesTable).set({ hasFspHistory: false, updatedAt: values.updatedAt }).where(eq(signalCandidateProfilesTable.userId, user.id));
     return saved;
   });
   res.json(payload(row, context));
+});
+
+router.post("/me/fsp-connection/import", async (req, res): Promise<void> => {
+  const user = await candidate(req, res); if (!user) return;
+  if (!req.body || Object.keys(req.body).some(key => key !== 'consentImport') || req.body.consentImport !== true) {
+    res.status(400).json({ error: 'Для импорта нужно отдельное согласие на получение сведений ФСП.', code: 'fsp_import_consent_required' }); return;
+  }
+  const [row] = await db.select().from(signalFspConnectionsTable).where(eq(signalFspConnectionsTable.userId, user.id));
+  if (!row?.fspId) { res.status(409).json({ error: 'Сначала сохраните ФСП ID.', code: 'fsp_id_required' }); return; }
+  // No configured verified registry/ownership flow exists. Never turn consent into a fixture import.
+  res.status(503).json({ error: 'Реестр ФСП ещё не подключён. ID сохранён без подтверждения и импорта.', code: 'registry_not_configured' });
 });
 
 router.delete("/me/fsp-connection", async (req, res): Promise<void> => {

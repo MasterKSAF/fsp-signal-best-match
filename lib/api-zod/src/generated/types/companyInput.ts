@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { CompanyInputContactMethod } from './companyInputContactMethod';
 
@@ -20,6 +20,12 @@ export interface CompanyInput {
      * @maxLength 160
      */
   industry: string;
+  /**
+     * Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.
+     * @maxLength 12
+     * @pattern ^(?:[0-9]{10}|[0-9]{12})?$
+     */
+  inn?: string;
   contactEmail: string;
   /**
      * @maxLength 80

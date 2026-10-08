@@ -3,11 +3,13 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 
 export interface RegistrationResult {
   email: string;
+  /** Opaque browser registration intent. Keep it with this form and submit it with the mailbox code; it is never included in the email. */
+  registrationId: string;
   verificationRequired: boolean;
   /** @nullable */
   demoVerificationCode?: string | null;

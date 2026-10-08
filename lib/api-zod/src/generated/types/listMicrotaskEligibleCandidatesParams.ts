@@ -3,8 +3,9 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
+import type { ListMicrotaskEligibleCandidatesGrade } from './listMicrotaskEligibleCandidatesGrade';
 
 export type ListMicrotaskEligibleCandidatesParams = {
 /**
@@ -13,4 +14,21 @@ export type ListMicrotaskEligibleCandidatesParams = {
  * @maximum 2147483647
  */
 templateId?: number;
+/**
+ * Search permitted aliases and resume titles; never reveals excluded people.
+ * @maxLength 100
+ */
+search?: string;
+grade?: ListMicrotaskEligibleCandidatesGrade;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
+/**
+ * Opaque continuation bound to company, scope, template and filters; restart after changing filters.
+ * @minLength 1
+ * @maxLength 512
+ */
+cursor?: string;
 };

@@ -3,8 +3,29 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
+export type OwnedAccountRole = typeof OwnedAccountRole[keyof typeof OwnedAccountRole];
+
+
+export const OwnedAccountRole = {
+  candidate: 'candidate',
+  employer: 'employer',
+} as const;
+
+export interface OwnedAccount {
+  id: number;
+  displayName: string;
+  email: string;
+  emailVerified: boolean;
+  role: OwnedAccountRole;
+  demoMode: boolean;
+  reviewMode: boolean;
+  createdAt: string;
+  /** @nullable */
+  professionalAlias: string | null;
+}
+
 export type CompanyInputContactMethod = typeof CompanyInputContactMethod[keyof typeof CompanyInputContactMethod];
 
 
@@ -27,6 +48,12 @@ export interface CompanyInput {
      * @maxLength 160
      */
   industry: string;
+  /**
+     * Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.
+     * @maxLength 12
+     * @pattern ^(?:[0-9]{10}|[0-9]{12})?$
+     */
+  inn?: string;
   contactEmail: string;
   /**
      * @maxLength 80
@@ -38,6 +65,8 @@ export interface CompanyInput {
 
 export type CompanyResultCompany = CompanyInput & {
   id: number;
+  /** Current company INN or an empty string when it has not been provided. */
+  inn: string;
 };
 
 export interface CompanyResult {
@@ -405,6 +434,8 @@ export interface RegistrationInput {
 
 export interface RegistrationResult {
   email: string;
+  /** Opaque browser registration intent. Keep it with this form and submit it with the mailbox code; it is never included in the email. */
+  registrationId: string;
   verificationRequired: boolean;
   /** @nullable */
   demoVerificationCode?: string | null;
@@ -418,6 +449,8 @@ export interface EmailVerificationInput {
      * @maxLength 6
      */
   code: string;
+  /** The exact opaque intent returned to this browser by its registration request. Email and code alone cannot activate an account. */
+  registrationId: string;
 }
 
 export interface LoginInput {
@@ -492,6 +525,13 @@ export interface CandidateProfile {
   userId: number;
   displayName: string;
   professionalAlias: string;
+  /**
+     * Opaque revision of the current shared displayName, professionalAlias, phone and contactEmail. Identical across this account's CVs; not an authorization credential.
+     * @minLength 64
+     * @maxLength 64
+     * @pattern ^[a-f0-9]{64}$
+     */
+  readonly identityRevision: string;
   specialization: string;
   assumedGrade: CandidateProfileAssumedGrade;
   /** @nullable */
@@ -520,7 +560,7 @@ export interface CandidateProfile {
      * @minimum 1
      * @maximum 2147483647
      */
-  resumeId?: number;
+  resumeId: number;
   /**
      * @minLength 2
      * @maxLength 120
@@ -530,7 +570,7 @@ export interface CandidateProfile {
      * @minimum 1
      * @maximum 2147483647
      */
-  revision?: number;
+  revision: number;
   consentCatalog?: boolean;
   readyForOffers?: boolean;
 }
@@ -580,6 +620,13 @@ export interface CandidateProfileInput {
      * @maxLength 120
      */
   professionalAlias: string;
+  /**
+     * The unmodified shared identity revision from the form's owner GET. Required even when only the CV title or professional fields change.
+     * @minLength 64
+     * @maxLength 64
+     * @pattern ^[a-f0-9]{64}$
+     */
+  identityRevision: string;
   specialization: string;
   assumedGrade: CandidateProfileInputAssumedGrade;
   /**
@@ -620,7 +667,7 @@ export interface CandidateProfileInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  resumeId?: number;
+  resumeId: number;
   /**
      * @minLength 2
      * @maxLength 120
@@ -630,10 +677,30 @@ export interface CandidateProfileInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  revision?: number;
+  revision: number;
   consentCatalog?: boolean;
   readyForOffers?: boolean;
 }
+
+export type CandidateProfileRevisionConflictCode = typeof CandidateProfileRevisionConflictCode[keyof typeof CandidateProfileRevisionConflictCode];
+
+
+export const CandidateProfileRevisionConflictCode = {
+  RESUME_REVISION_CONFLICT: 'RESUME_REVISION_CONFLICT',
+  CANDIDATE_IDENTITY_REVISION_CONFLICT: 'CANDIDATE_IDENTITY_REVISION_CONFLICT',
+} as const;
+
+export interface CandidateProfileRevisionConflict {
+  error: string;
+  code: CandidateProfileRevisionConflictCode;
+}
+
+export type AssessmentProgramIssuancePolicy = typeof AssessmentProgramIssuancePolicy[keyof typeof AssessmentProgramIssuancePolicy];
+
+
+export const AssessmentProgramIssuancePolicy = {
+  read_complete_only: 'read_complete_only',
+} as const;
 
 export interface AssessmentProgram {
   id: string;
@@ -641,6 +708,8 @@ export interface AssessmentProgram {
   title: string;
   grades: string[];
   available: boolean;
+  issuancePolicy?: AssessmentProgramIssuancePolicy;
+  existingAttemptsAvailable?: boolean;
   estimatedMinutes: number;
   description: string;
   version?: string;
@@ -847,6 +916,11 @@ export const EmployerNeedGrade = {
   Senior: 'Senior',
 } as const;
 
+/**
+ * Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.
+ */
+export type EmployerNeedRequiredSkillLevels = {[key: string]: 'Junior' | 'Middle' | 'Senior'};
+
 export type EmployerNeedSalaryPeriod = typeof EmployerNeedSalaryPeriod[keyof typeof EmployerNeedSalaryPeriod];
 
 
@@ -869,6 +943,8 @@ export interface EmployerNeed {
   specialization: string;
   grade: EmployerNeedGrade;
   requiredSkills: string[];
+  /** Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum. */
+  requiredSkillLevels?: EmployerNeedRequiredSkillLevels;
   desirableSkills: string[];
   description: string;
   workFormat: string;
@@ -887,6 +963,11 @@ export const EmployerNeedInputGrade = {
   Middle: 'Middle',
   Senior: 'Senior',
 } as const;
+
+/**
+ * Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.
+ */
+export type EmployerNeedInputRequiredSkillLevels = {[key: string]: 'Junior' | 'Middle' | 'Senior'};
 
 export type EmployerNeedInputSalaryPeriod = typeof EmployerNeedInputSalaryPeriod[keyof typeof EmployerNeedInputSalaryPeriod];
 
@@ -913,11 +994,16 @@ export interface EmployerNeedInput {
   specialization: string;
   grade: EmployerNeedInputGrade;
   /**
+     * Every item must remain nonempty after NFKC and whitespace normalization. Known aliases are canonicalized before saving; unknown nonempty requirements are retained.
      * @minItems 1
      * @maxItems 40
+     * @items.minLength 1
      * @items.maxLength 100
+     * @items.pattern \S
      */
   requiredSkills: string[];
+  /** Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum. */
+  requiredSkillLevels?: EmployerNeedInputRequiredSkillLevels;
   /**
      * @maxItems 40
      * @items.maxLength 100
@@ -937,12 +1023,92 @@ export interface EmployerNeedInput {
   salaryType: EmployerNeedInputSalaryType;
 }
 
+export type MatchCandidateQualificationSource = typeof MatchCandidateQualificationSource[keyof typeof MatchCandidateQualificationSource];
+
+
+export const MatchCandidateQualificationSource = {
+  skill_matrix: 'skill_matrix',
+  assessment: 'assessment',
+  legacy: 'legacy',
+} as const;
+
+export type MatchCandidateSkillProofsItemSourceType = typeof MatchCandidateSkillProofsItemSourceType[keyof typeof MatchCandidateSkillProofsItemSourceType];
+
+
+export const MatchCandidateSkillProofsItemSourceType = {
+  signal_skill_module: 'signal_skill_module',
+} as const;
+
+export type MatchCandidateSkillProofsItemLevel = typeof MatchCandidateSkillProofsItemLevel[keyof typeof MatchCandidateSkillProofsItemLevel];
+
+
+export const MatchCandidateSkillProofsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type MatchCandidateSkillProofsItem = {
+  skill: string;
+  sourceType: MatchCandidateSkillProofsItemSourceType;
+  level: MatchCandidateSkillProofsItemLevel;
+  programVersion: string;
+};
+
 export type MatchCandidateScoreScope = typeof MatchCandidateScoreScope[keyof typeof MatchCandidateScoreScope];
 
 
 export const MatchCandidateScoreScope = {
   shared_need_fit: 'shared_need_fit',
 } as const;
+
+export type SkillCategoryCertificateGrade = typeof SkillCategoryCertificateGrade[keyof typeof SkillCategoryCertificateGrade];
+
+
+export const SkillCategoryCertificateGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillCategoryCertificateTargetGrade = typeof SkillCategoryCertificateTargetGrade[keyof typeof SkillCategoryCertificateTargetGrade];
+
+
+export const SkillCategoryCertificateTargetGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillCategoryCertificateRequirementsItemLevel = typeof SkillCategoryCertificateRequirementsItemLevel[keyof typeof SkillCategoryCertificateRequirementsItemLevel];
+
+
+export const SkillCategoryCertificateRequirementsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillCategoryCertificateRequirementsItem = {
+  id: string;
+  skillId: string;
+  level: SkillCategoryCertificateRequirementsItemLevel;
+  evidenceId: number;
+  attemptId: number;
+  programVersion: string;
+  verifiedAt: string;
+};
+
+/**
+ * @nullable
+ */
+export type SkillCategoryCertificate = {
+  matrixVersion: string;
+  specialization: string;
+  grade: SkillCategoryCertificateGrade;
+  targetGrade: SkillCategoryCertificateTargetGrade;
+  requirements: SkillCategoryCertificateRequirementsItem[];
+} | null;
 
 export type FspRankingSignalPolicyVersion = typeof FspRankingSignalPolicyVersion[keyof typeof FspRankingSignalPolicyVersion];
 
@@ -1111,6 +1277,9 @@ export interface ResumeAlternative {
 }
 
 export interface MatchCandidate {
+  qualificationSource?: MatchCandidateQualificationSource;
+  skillProofs?: MatchCandidateSkillProofsItem[];
+  categoryEvidence?: SkillCategoryCertificate | null;
   candidateId: number;
   alias: string;
   specialization: string;
@@ -1176,10 +1345,20 @@ export type SafeSkillProofSourceType = typeof SafeSkillProofSourceType[keyof typ
 
 export const SafeSkillProofSourceType = {
   signal_assessment: 'signal_assessment',
+  signal_skill_module: 'signal_skill_module',
   demo_example: 'demo_example',
   legacy_record: 'legacy_record',
   company_task: 'company_task',
   fsp: 'fsp',
+} as const;
+
+export type SafeSkillProofLevel = typeof SafeSkillProofLevel[keyof typeof SafeSkillProofLevel];
+
+
+export const SafeSkillProofLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
 } as const;
 
 export interface SafeSkillProof {
@@ -1204,6 +1383,8 @@ export interface SafeSkillProof {
   /** @nullable */
   date: string | null;
   sourceType: SafeSkillProofSourceType;
+  level?: SafeSkillProofLevel;
+  evidenceId?: number;
   /** @nullable */
   limitation: string | null;
 }
@@ -1786,13 +1967,12 @@ export interface CandidateResume {
 
 export interface FspConnectionInput {
   /**
-     * Opaque user-entered ID; this format is a local input restriction, not an official FSP format.
+     * User-entered ID; saving it grants no verified status or ranking bonus.
      * @minLength 1
      * @maxLength 100
      * @pattern ^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$
      */
   fspId: string;
-  consentImport: true;
 }
 
 export type FspAchievementKind = typeof FspAchievementKind[keyof typeof FspAchievementKind];
@@ -1852,6 +2032,7 @@ export interface FspConnection {
   /** @nullable */
   fspId: string | null;
   demoAvailable: boolean;
+  importAvailable: boolean;
   /** @nullable */
   demoFixtureId: string | null;
   /** True only for trusted, consented imported history; never inferred from an entered ID. */
@@ -1977,6 +2158,7 @@ export const CandidateBankProfileVerifiedGrade = {
 } as const;
 
 export interface CandidateBankProfile {
+  categoryEvidence?: SkillCategoryCertificate | null;
   candidateId: number;
   alias: string;
   specialization: string;
@@ -2668,6 +2850,13 @@ export interface MicrotaskEligibleResume {
   verifiedGrade: MicrotaskEligibleResumeVerifiedGrade;
 }
 
+export interface MicrotaskEligibleResumePage {
+  /** @maxItems 50 */
+  items: MicrotaskEligibleResume[];
+  /** @maxLength 512 */
+  nextCursor: string | null;
+}
+
 export type MicroResumeContextSpecialization = typeof MicroResumeContextSpecialization[keyof typeof MicroResumeContextSpecialization];
 
 
@@ -3315,6 +3504,75 @@ export const OwnedResumeSpecialization = {
 
 export type OwnedResumeQualification = { [key: string]: unknown };
 
+export type OwnedResumeCompletionSectionsItem = {
+  id: string;
+  label: string;
+  completed: boolean;
+};
+
+export type OwnedResumeCompletion = {
+  completed?: number;
+  total?: number;
+  sections?: OwnedResumeCompletionSectionsItem[];
+};
+
+export type OwnedResumeSkillProgressItemsItem = { [key: string]: unknown };
+
+export type OwnedResumeSkillProgress = {
+  confirmed?: number;
+  total?: number;
+  supported?: number;
+  unsupported?: number;
+  items?: OwnedResumeSkillProgressItemsItem[];
+};
+
+export type OwnedResumeAnalytics = {
+  views?: number;
+  downloads?: number;
+  periodDays?: number;
+  since?: string;
+  policy?: string;
+};
+
+export type OwnedResumeLegacyQualificationInfo = { [key: string]: unknown };
+
+export type OwnedResumeRoleRecommendationsItemLevel = typeof OwnedResumeRoleRecommendationsItemLevel[keyof typeof OwnedResumeRoleRecommendationsItemLevel];
+
+
+export const OwnedResumeRoleRecommendationsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+/**
+ * @nullable
+ */
+export type OwnedResumeRoleRecommendationsItemVerifiedLevel = typeof OwnedResumeRoleRecommendationsItemVerifiedLevel[keyof typeof OwnedResumeRoleRecommendationsItemVerifiedLevel] | null;
+
+
+export const OwnedResumeRoleRecommendationsItemVerifiedLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type OwnedResumeRoleRecommendationsItem = {
+  skillId: string;
+  label: string;
+  level: OwnedResumeRoleRecommendationsItemLevel;
+  /** @nullable */
+  verifiedLevel: OwnedResumeRoleRecommendationsItemVerifiedLevel;
+};
+
+export interface ResumeWorkPreferences {
+  location: string;
+  schedule: string;
+  employment: string;
+  relocation: boolean;
+  startAvailability: string;
+}
+
 export type OwnedResume = CandidateResume & ResumeMetadata & ({
   /**
      * @minimum 1
@@ -3330,6 +3588,12 @@ export type OwnedResume = CandidateResume & ResumeMetadata & ({
   specialization: OwnedResumeSpecialization;
   verifiedGrade?: string | null;
   qualification?: OwnedResumeQualification;
+  completion?: OwnedResumeCompletion;
+  skillProgress?: OwnedResumeSkillProgress;
+  analytics?: OwnedResumeAnalytics;
+  workPreferences?: ResumeWorkPreferences;
+  legacyQualificationInfo?: OwnedResumeLegacyQualificationInfo;
+  roleRecommendations?: OwnedResumeRoleRecommendationsItem[];
 }) & Required<Pick<CandidateResume & ResumeMetadata & ({
   /**
      * @minimum 1
@@ -3345,6 +3609,12 @@ export type OwnedResume = CandidateResume & ResumeMetadata & ({
   specialization: OwnedResumeSpecialization;
   verifiedGrade?: string | null;
   qualification?: OwnedResumeQualification;
+  completion?: OwnedResumeCompletion;
+  skillProgress?: OwnedResumeSkillProgress;
+  analytics?: OwnedResumeAnalytics;
+  workPreferences?: ResumeWorkPreferences;
+  legacyQualificationInfo?: OwnedResumeLegacyQualificationInfo;
+  roleRecommendations?: OwnedResumeRoleRecommendationsItem[];
 }), 'revision'>>;
 
 export type CreateOwnedResumeSpecialization = typeof CreateOwnedResumeSpecialization[keyof typeof CreateOwnedResumeSpecialization];
@@ -3851,6 +4121,394 @@ export interface SharedCompanyTaskResult {
   qualificationEffect?: SharedCompanyTaskResultQualificationEffect;
 }
 
+export type SkillModuleEvidenceRecordLevel = typeof SkillModuleEvidenceRecordLevel[keyof typeof SkillModuleEvidenceRecordLevel];
+
+
+export const SkillModuleEvidenceRecordLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export interface SkillModuleEvidenceRecord {
+  skillId: string;
+  label: string;
+  level: SkillModuleEvidenceRecordLevel;
+  evidenceId: number;
+  attemptId: number;
+  programVersion: string;
+  verifiedAt: string;
+}
+
+/**
+ * @nullable
+ */
+export type SkillModuleQualificationVerifiedGrade = typeof SkillModuleQualificationVerifiedGrade[keyof typeof SkillModuleQualificationVerifiedGrade] | null;
+
+
+export const SkillModuleQualificationVerifiedGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleQualificationCoverageItemLevel = typeof SkillModuleQualificationCoverageItemLevel[keyof typeof SkillModuleQualificationCoverageItemLevel];
+
+
+export const SkillModuleQualificationCoverageItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleQualificationCoverageItem = {
+  id?: string;
+  label?: string;
+  /** @nullable */
+  skillId?: string | null;
+  level?: SkillModuleQualificationCoverageItemLevel;
+  covered?: boolean;
+  /** @nullable */
+  evidenceId?: number | null;
+  reason?: string;
+};
+
+export interface SkillModuleQualification {
+  /** @nullable */
+  verifiedGrade: SkillModuleQualificationVerifiedGrade;
+  /** @nullable */
+  verifiedScore: null;
+  verifiedSkills?: string[];
+  skills: SkillModuleEvidenceRecord[];
+  coverage: SkillModuleQualificationCoverageItem[];
+  missing: string[];
+  category: SkillCategoryCertificate | null;
+  source?: string;
+  /** @nullable */
+  limitation?: string | null;
+  /** @nullable */
+  latestAssessmentAt?: string | null;
+}
+
+export type SkillModuleCaseOptionsItem = {
+  id: string;
+  text: string;
+};
+
+export interface SkillModuleCase {
+  id: string;
+  templateId: string;
+  competencyId: string;
+  title: string;
+  prompt: string;
+  options?: SkillModuleCaseOptionsItem[];
+  responseType: string;
+  critical: boolean;
+  /** @minimum 1 */
+  templateVersion: number;
+  seniorOutcome?: string;
+}
+
+export type SkillModuleAttemptLevel = typeof SkillModuleAttemptLevel[keyof typeof SkillModuleAttemptLevel];
+
+
+export const SkillModuleAttemptLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleAttemptStatus = typeof SkillModuleAttemptStatus[keyof typeof SkillModuleAttemptStatus];
+
+
+export const SkillModuleAttemptStatus = {
+  active: 'active',
+  submitted: 'submitted',
+  expired: 'expired',
+} as const;
+
+export type SkillModuleAttemptAnswers = {[key: string]: string};
+
+export type SkillModuleAttemptPolicy = {
+  durationMinutes?: number;
+  retryHours?: number;
+  maxDailyIssues?: number;
+  maxModuleDailyIssues?: number;
+  threshold?: number;
+  rubricVersion?: string;
+};
+
+/**
+ * @nullable
+ */
+export type SkillModuleAttemptDecision = { [key: string]: unknown } | null;
+
+export type SkillModuleAttemptFeedbackItem = {
+  competencyId?: string;
+  title?: string;
+  explanation?: string;
+  passed?: boolean;
+};
+
+/**
+ * @nullable
+ */
+export type SkillModuleAttemptRevocation = {
+  reason: string;
+  date: string;
+} | null;
+
+export interface SkillModuleAttempt {
+  id: number;
+  /** @nullable */
+  resumeId?: number | null;
+  skillId: string;
+  level: SkillModuleAttemptLevel;
+  programVersion: string;
+  status: SkillModuleAttemptStatus;
+  cases: SkillModuleCase[];
+  answers: SkillModuleAttemptAnswers;
+  revision: number;
+  policy?: SkillModuleAttemptPolicy;
+  startedAt: string;
+  expiresAt: string;
+  /** @nullable */
+  submittedAt?: string | null;
+  /** @nullable */
+  decision?: SkillModuleAttemptDecision;
+  feedback?: SkillModuleAttemptFeedbackItem[];
+  /** @nullable */
+  revocation?: SkillModuleAttemptRevocation;
+}
+
+export type SkillModuleStartInputLevel = typeof SkillModuleStartInputLevel[keyof typeof SkillModuleStartInputLevel];
+
+
+export const SkillModuleStartInputLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export interface SkillModuleStartInput {
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeId: number;
+  skillId: string;
+  level: SkillModuleStartInputLevel;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  programVersion?: string;
+}
+
+export type SkillModuleAnswersInputAnswers = {[key: string]: string};
+
+export interface SkillModuleAnswersInput {
+  revision: number;
+  answers: SkillModuleAnswersInputAnswers;
+}
+
+export type SkillModuleMatrixPolicy = { [key: string]: unknown };
+
+export type SkillModuleMatrixResumeTargetGrade = typeof SkillModuleMatrixResumeTargetGrade[keyof typeof SkillModuleMatrixResumeTargetGrade];
+
+
+export const SkillModuleMatrixResumeTargetGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+/**
+ * @nullable
+ */
+export type SkillModuleMatrixResume = {
+  id?: number;
+  title?: string;
+  specialization?: string;
+  targetGrade?: SkillModuleMatrixResumeTargetGrade;
+  statedSkills?: string[];
+  /** @minimum 1 */
+  revision?: number;
+} | null;
+
+export type SkillModuleMatrixModulesItemLevelsItemLevel = typeof SkillModuleMatrixModulesItemLevelsItemLevel[keyof typeof SkillModuleMatrixModulesItemLevelsItemLevel];
+
+
+export const SkillModuleMatrixModulesItemLevelsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+/**
+ * @nullable
+ */
+export type SkillModuleMatrixModulesItemLevelsItemAvailabilityCode = typeof SkillModuleMatrixModulesItemLevelsItemAvailabilityCode[keyof typeof SkillModuleMatrixModulesItemLevelsItemAvailabilityCode] | null;
+
+
+export const SkillModuleMatrixModulesItemLevelsItemAvailabilityCode = {
+  unsupported_skill_level: 'unsupported_skill_level',
+  skill_bank_unavailable: 'skill_bank_unavailable',
+} as const;
+
+export type SkillModuleMatrixModulesItemLevelsItem = {
+  level: SkillModuleMatrixModulesItemLevelsItemLevel;
+  available: boolean;
+  /** @nullable */
+  reason: string | null;
+  /** @nullable */
+  availabilityCode: SkillModuleMatrixModulesItemLevelsItemAvailabilityCode;
+  /** @nullable */
+  activeAttemptId: number | null;
+  [key: string]: unknown;
+ };
+
+export type SkillModuleMatrixModulesItem = {
+  levels?: SkillModuleMatrixModulesItemLevelsItem[];
+  [key: string]: unknown;
+ };
+
+export type SkillModuleMatrixHistoryItem = { [key: string]: unknown };
+
+/**
+ * @nullable
+ */
+export type SkillModuleMatrixHistoricalQualification = { [key: string]: unknown } | null;
+
+export type SkillModuleMatrixHistoricalAttemptsItem = { [key: string]: unknown };
+
+export type SkillModuleMatrixSkillContextsItem = { [key: string]: unknown };
+
+export type SkillModuleMatrixAccountSkillsItemState = typeof SkillModuleMatrixAccountSkillsItemState[keyof typeof SkillModuleMatrixAccountSkillsItemState];
+
+
+export const SkillModuleMatrixAccountSkillsItemState = {
+  declared: 'declared',
+  recommended: 'recommended',
+} as const;
+
+export type SkillModuleMatrixAccountSkillsItemContextsItemState = typeof SkillModuleMatrixAccountSkillsItemContextsItemState[keyof typeof SkillModuleMatrixAccountSkillsItemContextsItemState];
+
+
+export const SkillModuleMatrixAccountSkillsItemContextsItemState = {
+  declared: 'declared',
+  recommended: 'recommended',
+} as const;
+
+export type SkillModuleMatrixAccountSkillsItemContextsItemTargetLevel = typeof SkillModuleMatrixAccountSkillsItemContextsItemTargetLevel[keyof typeof SkillModuleMatrixAccountSkillsItemContextsItemTargetLevel] | null;
+
+
+export const SkillModuleMatrixAccountSkillsItemContextsItemTargetLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleMatrixAccountSkillsItemContextsItem = {
+  resumeId: number;
+  state: SkillModuleMatrixAccountSkillsItemContextsItemState;
+  targetLevel: SkillModuleMatrixAccountSkillsItemContextsItemTargetLevel;
+  /** @nullable */
+  reason: string | null;
+};
+
+export type SkillModuleMatrixAccountSkillsItemTargetLevel = typeof SkillModuleMatrixAccountSkillsItemTargetLevel[keyof typeof SkillModuleMatrixAccountSkillsItemTargetLevel] | null;
+
+
+export const SkillModuleMatrixAccountSkillsItemTargetLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleMatrixAccountSkillsItemVerifiedLevel = typeof SkillModuleMatrixAccountSkillsItemVerifiedLevel[keyof typeof SkillModuleMatrixAccountSkillsItemVerifiedLevel] | null;
+
+
+export const SkillModuleMatrixAccountSkillsItemVerifiedLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SkillModuleMatrixAccountSkillsItem = {
+  /** @nullable */
+  skillId: string | null;
+  label: string;
+  state: SkillModuleMatrixAccountSkillsItemState;
+  resumeIds: number[];
+  contexts: SkillModuleMatrixAccountSkillsItemContextsItem[];
+  targetLevel: SkillModuleMatrixAccountSkillsItemTargetLevel;
+  verifiedLevel: SkillModuleMatrixAccountSkillsItemVerifiedLevel;
+};
+
+export interface SkillModuleMatrix {
+  bankVersion: string;
+  policy?: SkillModuleMatrixPolicy;
+  /** @nullable */
+  resume: SkillModuleMatrixResume;
+  modules: SkillModuleMatrixModulesItem[];
+  qualification: SkillModuleQualification | null;
+  accountEvidence: SkillModuleEvidenceRecord[];
+  history?: SkillModuleMatrixHistoryItem[];
+  /** @nullable */
+  historicalQualification?: SkillModuleMatrixHistoricalQualification;
+  historicalAttempts?: SkillModuleMatrixHistoricalAttemptsItem[];
+  skillContexts?: SkillModuleMatrixSkillContextsItem[];
+  accountSkills?: SkillModuleMatrixAccountSkillsItem[];
+}
+
+export type WorkspaceSearchPageItemsItem = { [key: string]: unknown };
+
+export interface WorkspaceSearchPage {
+  items: WorkspaceSearchPageItemsItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  exportLimit?: number;
+}
+
+export type ResumeDocumentPreviewAudience = typeof ResumeDocumentPreviewAudience[keyof typeof ResumeDocumentPreviewAudience];
+
+
+export const ResumeDocumentPreviewAudience = {
+  owner: 'owner',
+  employer: 'employer',
+} as const;
+
+export type ResumeDocumentPreviewSectionsItemParagraphsItem = {
+  text: string;
+  link?: string;
+};
+
+export type ResumeDocumentPreviewSectionsItem = {
+  title: string;
+  paragraphs: ResumeDocumentPreviewSectionsItemParagraphsItem[];
+};
+
+export interface ResumeDocumentPreview {
+  resumeId: number;
+  revision?: number;
+  name: string;
+  title: string;
+  specialization?: string;
+  audience: ResumeDocumentPreviewAudience;
+  contactsAllowed: boolean;
+  sections: ResumeDocumentPreviewSectionsItem[];
+  composition?: string[];
+  contactsPermitted?: boolean;
+  /**
+     * Stable opaque fingerprint of the effective authorised document, including identity, qualification and included skill evidence. No volatile generation time.
+     * @pattern ^signal-document-v1:[a-f0-9]{64}$
+     */
+  projectionVersion: string;
+}
+
 /**
  * Request could not be completed
  */
@@ -4123,6 +4781,7 @@ export const GetNeedMatchingStatus200Status = {
   available: 'available',
   unsupported_requirements: 'unsupported_requirements',
   no_verified_candidates: 'no_verified_candidates',
+  invalid_requirements: 'invalid_requirements',
 } as const;
 
 export type GetNeedMatchingStatus200MinimumGrade = typeof GetNeedMatchingStatus200MinimumGrade[keyof typeof GetNeedMatchingStatus200MinimumGrade];
@@ -4171,7 +4830,33 @@ export type ListMicrotaskEligibleCandidatesParams = {
  * @maximum 2147483647
  */
 templateId?: number;
+/**
+ * Search permitted aliases and resume titles; never reveals excluded people.
+ * @maxLength 100
+ */
+search?: string;
+grade?: ListMicrotaskEligibleCandidatesGrade;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+limit?: number;
+/**
+ * Opaque continuation bound to company, scope, template and filters; restart after changing filters.
+ * @minLength 1
+ * @maxLength 512
+ */
+cursor?: string;
 };
+
+export type ListMicrotaskEligibleCandidatesGrade = typeof ListMicrotaskEligibleCandidatesGrade[keyof typeof ListMicrotaskEligibleCandidatesGrade];
+
+
+export const ListMicrotaskEligibleCandidatesGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
 
 export type ListMyMicrotasks200 = {
   enabled: boolean;
@@ -4265,6 +4950,8 @@ export type GetResearchStudy200ParticipantsItem = { [key: string]: unknown };
 export type GetResearchStudy200 = {
   study: ResearchStudy;
   operator: boolean;
+  /** False under the current read_complete_only legacy policy; already open attempts may continue. */
+  newFormsAvailable?: boolean;
   consentText: string;
   consentVersion: string;
   enrollment: ResearchEnrollment | null;
@@ -4494,5 +5181,194 @@ leftResumeId: number;
  * @maximum 2147483647
  */
 rightResumeId: number;
+};
+
+export type GetSkillModuleMatrixParams = {
+resumeId?: number;
+};
+
+export type GetSkillModuleQualificationParams = {
+resumeId: number;
+};
+
+export type SetSkillModuleTargetBodyGrade = typeof SetSkillModuleTargetBodyGrade[keyof typeof SetSkillModuleTargetBodyGrade];
+
+
+export const SetSkillModuleTargetBodyGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SetSkillModuleTargetBody = {
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  revision: number;
+  grade: SetSkillModuleTargetBodyGrade;
+};
+
+export type SetSkillModuleTarget200 = {
+  saved: boolean;
+};
+
+export type StartSkillModuleAttempt200 = {
+  attempt: SkillModuleAttempt;
+  resumed: boolean;
+};
+
+export type StartSkillModuleAttempt201 = {
+  attempt: SkillModuleAttempt;
+  resumed: boolean;
+};
+
+export type SaveSkillModuleAnswers200 = {
+  attempt: SkillModuleAttempt;
+};
+
+export type SubmitSkillModuleAttempt200 = {
+  attempt: SkillModuleAttempt;
+};
+
+export type GetResumeDocumentPreviewParams = {
+/**
+ * Whitelist of optional file fields; empty selects no optional sections. ACL always applies.
+ */
+fields?: string;
+};
+
+export type GetResumeAnalytics200 = { [key: string]: unknown };
+
+export type SaveResumeWorkPreferencesBody = {
+  revision: number;
+  location?: string;
+  schedule?: string;
+  employment?: string;
+  relocation?: boolean;
+  startAvailability?: string;
+};
+
+export type SaveResumeWorkPreferences200 = { [key: string]: unknown };
+
+export type SearchCandidateInvitationsParams = {
+q?: string;
+status?: string;
+resumeId?: number;
+page?: number;
+pageSize?: number;
+sort?: string;
+};
+
+export type SearchCandidateApplicationsParams = {
+q?: string;
+status?: string;
+resumeId?: number;
+page?: number;
+pageSize?: number;
+sort?: string;
+};
+
+export type SearchAccessibleJobsParams = {
+q?: string;
+specialization?: string;
+grade?: string;
+skills?: string;
+salaryMin?: number;
+salaryMax?: number;
+workFormat?: string;
+location?: string;
+sort?: string;
+page?: number;
+pageSize?: number;
+resumeId?: number;
+salaryPeriod?: SearchAccessibleJobsSalaryPeriod;
+/**
+ * For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.
+ */
+hideApplied?: boolean;
+/**
+ * For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.
+ */
+hideBlocked?: boolean;
+};
+
+export type SearchAccessibleJobsSalaryPeriod = typeof SearchAccessibleJobsSalaryPeriod[keyof typeof SearchAccessibleJobsSalaryPeriod];
+
+
+export const SearchAccessibleJobsSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type GetResumeDocumentdocxParams = {
+/**
+ * Whitelist of optional file fields; empty selects no optional sections. ACL always applies.
+ */
+fields?: string;
+};
+
+export type GetResumeDocumentpdfParams = {
+/**
+ * Whitelist of optional file fields; empty selects no optional sections. ACL always applies.
+ */
+fields?: string;
+};
+
+export type ExportAccessibleJobsParams = {
+format: ExportAccessibleJobsFormat;
+q?: string;
+specialization?: string;
+grade?: string;
+skills?: string;
+salaryMin?: number;
+salaryMax?: number;
+workFormat?: string;
+location?: string;
+sort?: string;
+salaryPeriod?: ExportAccessibleJobsSalaryPeriod;
+resumeId?: number;
+/**
+ * For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.
+ */
+hideApplied?: boolean;
+/**
+ * For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.
+ */
+hideBlocked?: boolean;
+};
+
+export type ExportAccessibleJobsFormat = typeof ExportAccessibleJobsFormat[keyof typeof ExportAccessibleJobsFormat];
+
+
+export const ExportAccessibleJobsFormat = {
+  csv: 'csv',
+  xlsx: 'xlsx',
+} as const;
+
+export type ExportAccessibleJobsSalaryPeriod = typeof ExportAccessibleJobsSalaryPeriod[keyof typeof ExportAccessibleJobsSalaryPeriod];
+
+
+export const ExportAccessibleJobsSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type UpdateOwnedAccountBody = {
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  displayName: string;
+  expectedDisplayName: string;
+  /**
+     * @minLength 2
+     * @maxLength 120
+     */
+  professionalAlias?: string;
+  expectedProfessionalAlias?: string;
+};
+
+export type RequestFspImportBody = {
+  consentImport: true;
 };
 

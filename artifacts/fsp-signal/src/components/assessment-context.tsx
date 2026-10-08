@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Blocks, Database, Gauge, ListChecks, ShieldCheck } from 'lucide-react';
 import { api } from './product-enhancements';
 import { FormField } from './form-field';
+import { InlineInfo } from './inline-info';
 import './assessment-context.css';
 
 export type AssessmentContextId = 'api-platform' | 'data-services' | 'reliability' | 'frontend-product' | 'frontend-platform' | 'frontend-accessibility';
@@ -13,8 +14,8 @@ type Snapshot = { source: 'profile' | 'invitation'; context: Profile; targetGrad
 type ContextsResponse = { profiles: Profile[]; invitations: { id: number; title: string; snapshot: Snapshot }[] };
 const contextIcons = { 'api-platform': Blocks, 'data-services': Database, reliability: ShieldCheck, 'frontend-product': Blocks, 'frontend-platform': Gauge, 'frontend-accessibility': ShieldCheck };
 
-function CoverageDetails({ coverage, unsupported = [] }: { coverage: Coverage[]; unsupported?: string[] }) {
-  return <details className="assessment-coverage"><summary><ListChecks size={16} /> Какие требования проверяем</summary><ul>{coverage.map(item => <li key={item.requirement}><strong>{item.requirement}</strong><span>{item.families.join(' · ')}</span><p>{item.evidence}</p></li>)}</ul>{unsupported.length > 0 && <p className="assessment-context-note">Отдельной проверки пока нет: {unsupported.join(', ')}. Эти навыки не считаются подтверждёнными этим тестом.</p>}</details>;
+function CoverageDetails({ coverage, unsupported = [], label = 'Какие требования проверяем' }: { coverage: Coverage[]; unsupported?: string[]; label?: string }) {
+  return <details className="assessment-coverage"><summary><ListChecks size={16} /> {label}</summary><ul>{coverage.map(item => <li key={item.requirement}><strong>{item.requirement}</strong><span>{item.families.join(' · ')}</span><p>{item.evidence}</p></li>)}</ul>{unsupported.length > 0 && <p className="assessment-context-note">Отдельной проверки пока нет: {unsupported.join(', ')}. Эти навыки не считаются подтверждёнными этим тестом.</p>}</details>;
 }
 
 export function AssessmentContextSelector({ value, onChange, disabled = false, programId = 'backend-python' }: {
@@ -58,5 +59,8 @@ export function EmployerAssessmentContext({ needId }: { needId: number }) {
   if (!needId || query.isPending) return null;
   if (query.isError) return <p className="assessment-context-note">Не удалось загрузить программу проверки для этой роли.</p>;
   const result = query.data;
-  return <section className="panel assessment-context-summary"><div className="assessment-context-heading"><Gauge size={21} /><div><strong>Контекст квалификационного экзамена Signal</strong><p>{result.supported ? `${result.context.title} · уровень вакансии ${result.targetGrade}` : 'Проверка для этой специализации готовится'}</p></div></div><p className="assessment-context-note">Кандидат самостоятельно выбирает уровень экзамена. Задания сохраняют общую программу и пороги Signal. Дополнительная практика вашей компании оценивается отдельно и не меняет грейд.</p><p className="assessment-context-note">{result.reason}</p>{result.supported && <CoverageDetails coverage={result.context.coverage} unsupported={result.unsupportedRequirements} />}</section>;
+  return <section className="panel employer-assessment-context" aria-label="Подтверждение требований запроса">
+    {result.supported ? <CoverageDetails coverage={result.context.coverage} unsupported={result.unsupportedRequirements} label={`Требования запроса · ${result.targetGrade}`} /> : <span>Проверка для этой специализации готовится</span>}
+    <InlineInfo label="Как подтверждаются требования запроса">Навыки подтверждаются отдельными проверками. Общий грейд резюме определяется обязательными навыками выбранной специализации. Кандидат самостоятельно выбирает уровень проверки; практика компании оценивается отдельно и не меняет грейд. {result.reason}</InlineInfo>
+  </section>;
 }

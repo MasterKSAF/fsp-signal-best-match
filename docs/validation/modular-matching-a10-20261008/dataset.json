@@ -1,0 +1,1359 @@
+{
+  "specs": [
+    {
+      "id": 100,
+      "name": "Backend / Python",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "ids": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ]
+    },
+    {
+      "id": 200,
+      "name": "Frontend / TypeScript",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "ids": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ]
+    }
+  ],
+  "resumes": [
+    {
+      "personId": 101,
+      "resumeId": 1010,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 101,
+      "resumeId": 1011,
+      "specialization": "Frontend / TypeScript",
+      "title": "Другой профиль того же человека",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [],
+      "coreIds": [],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 102,
+      "resumeId": 1020,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Junior",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Junior",
+        "sql": "Junior",
+        "backend-engineering": "Junior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 102,
+      "resumeId": 1021,
+      "specialization": "Frontend / TypeScript",
+      "title": "Другой профиль того же человека",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [],
+      "coreIds": [],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 103,
+      "resumeId": 1030,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Senior",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Senior",
+        "sql": "Senior",
+        "backend-engineering": "Senior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "trusted-synthetic-win",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 104,
+      "resumeId": 1040,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 105,
+      "resumeId": 1050,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [
+        "Python"
+      ],
+      "coreIds": [
+        "python"
+      ],
+      "levels": {
+        "python": "Senior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "yearsExperience": 10
+    },
+    {
+      "personId": 106,
+      "resumeId": 1060,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Офис",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 107,
+      "resumeId": 1070,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 400000,
+      "salaryMax": 500000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "unverified-id",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 108,
+      "resumeId": 1080,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "net",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "legacy-boolean",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 109,
+      "resumeId": 1090,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "private",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 110,
+      "resumeId": 1100,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": false,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 111,
+      "resumeId": 1110,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": true,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 112,
+      "resumeId": 1120,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "Python"
+      ],
+      "coreIds": [
+        "python"
+      ],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 112,
+      "resumeId": 1121,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "SQL"
+      ],
+      "coreIds": [
+        "sql"
+      ],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 112,
+      "resumeId": 1122,
+      "specialization": "Backend / Python",
+      "title": "Backend / Python",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "coreIds": [
+        "python",
+        "sql",
+        "backend-engineering"
+      ],
+      "levels": {
+        "python": "Middle",
+        "sql": "Middle",
+        "backend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 201,
+      "resumeId": 2010,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 201,
+      "resumeId": 2011,
+      "specialization": "Backend / Python",
+      "title": "Другой профиль того же человека",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [],
+      "coreIds": [],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 202,
+      "resumeId": 2020,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Junior",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Junior",
+        "react": "Junior",
+        "frontend-engineering": "Junior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 202,
+      "resumeId": 2021,
+      "specialization": "Backend / Python",
+      "title": "Другой профиль того же человека",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [],
+      "coreIds": [],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 203,
+      "resumeId": 2030,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Senior",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Senior",
+        "react": "Senior",
+        "frontend-engineering": "Senior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "trusted-synthetic-win",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 204,
+      "resumeId": 2040,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 205,
+      "resumeId": 2050,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": null,
+      "proof": "partial-modular",
+      "core": [
+        "TypeScript"
+      ],
+      "coreIds": [
+        "typescript"
+      ],
+      "levels": {
+        "typescript": "Senior"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "yearsExperience": 10
+    },
+    {
+      "personId": 206,
+      "resumeId": 2060,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Офис",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 207,
+      "resumeId": 2070,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 400000,
+      "salaryMax": 500000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "unverified-id",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 208,
+      "resumeId": 2080,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "net",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "legacy-boolean",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 209,
+      "resumeId": 2090,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "private",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 210,
+      "resumeId": 2100,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": false,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 211,
+      "resumeId": 2110,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": true,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 212,
+      "resumeId": 2120,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "TypeScript"
+      ],
+      "coreIds": [
+        "typescript"
+      ],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 212,
+      "resumeId": 2121,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "legacy",
+      "core": [
+        "React"
+      ],
+      "coreIds": [
+        "react"
+      ],
+      "levels": {},
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    },
+    {
+      "personId": 212,
+      "resumeId": 2122,
+      "specialization": "Frontend / TypeScript",
+      "title": "Frontend / TypeScript",
+      "grade": "Middle",
+      "proof": "modular",
+      "core": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "coreIds": [
+        "typescript",
+        "react",
+        "frontend-engineering"
+      ],
+      "levels": {
+        "typescript": "Middle",
+        "react": "Middle",
+        "frontend-engineering": "Middle"
+      },
+      "format": "Удалённо",
+      "salaryMin": 120000,
+      "salaryMax": 180000,
+      "period": "month",
+      "tax": "gross",
+      "visibility": "pseudonymous",
+      "matching": true,
+      "catalog": true,
+      "demo": false,
+      "fsp": "none",
+      "claimedSkills": [
+        "Docker"
+      ],
+      "yearsExperience": 3
+    }
+  ],
+  "needs": [
+    {
+      "needId": "100-junior-one",
+      "specialization": "Backend / Python",
+      "grade": "Junior",
+      "requiredSkills": [
+        "Python"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "100-middle-core",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "100-middle-per-skill",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python"
+      ],
+      "requiredSkillLevels": {
+        "python": "Middle"
+      },
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "100-senior-core",
+      "specialization": "Backend / Python",
+      "grade": "Senior",
+      "requiredSkills": [
+        "Python",
+        "SQL",
+        "Backend Engineering"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "100-tax-unknown-optional",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "Python"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [
+        "SQL",
+        "Docker"
+      ],
+      "workFormat": "Удалённо",
+      "salaryMin": 1440000,
+      "salaryMax": 2160000,
+      "salaryPeriod": "year",
+      "salaryType": "net",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "100-senior-skill-gate",
+      "specialization": "Backend / Python",
+      "grade": "Middle",
+      "requiredSkills": [
+        "SQL"
+      ],
+      "requiredSkillLevels": {
+        "sql": "Senior"
+      },
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-junior-one",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Junior",
+      "requiredSkills": [
+        "TypeScript"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-middle-core",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-middle-per-skill",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Middle",
+      "requiredSkills": [
+        "TypeScript"
+      ],
+      "requiredSkillLevels": {
+        "typescript": "Middle"
+      },
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-senior-core",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Senior",
+      "requiredSkills": [
+        "TypeScript",
+        "React",
+        "Frontend Engineering"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-tax-unknown-optional",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Middle",
+      "requiredSkills": [
+        "TypeScript"
+      ],
+      "requiredSkillLevels": {},
+      "desirableSkills": [
+        "React",
+        "Docker"
+      ],
+      "workFormat": "Удалённо",
+      "salaryMin": 1440000,
+      "salaryMax": 2160000,
+      "salaryPeriod": "year",
+      "salaryType": "net",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    },
+    {
+      "needId": "200-senior-skill-gate",
+      "specialization": "Frontend / TypeScript",
+      "grade": "Middle",
+      "requiredSkills": [
+        "React"
+      ],
+      "requiredSkillLevels": {
+        "react": "Senior"
+      },
+      "desirableSkills": [],
+      "workFormat": "Удалённо",
+      "salaryMin": 100000,
+      "salaryMax": 200000,
+      "salaryPeriod": "month",
+      "salaryType": "gross",
+      "poolDemoMode": false,
+      "businessTask": "Ищем специалиста подтверждённой категории с нужными навыками и совместимыми условиями. Самозаявление не заменяет проверку; разные резюме не объединяются."
+    }
+  ],
+  "now": "2026-10-08T12:00:00Z"
+}

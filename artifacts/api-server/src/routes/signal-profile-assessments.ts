@@ -45,6 +45,8 @@ import { postgresIntIdSchema, postgresIntIdTextSchema } from "../lib/postgres-id
 import { QualificationStartBody, QualificationSaveBody, QualificationSubmitBody, qualificationBasis } from "../lib/assessment-purpose";
 import { isOverviewDemo } from "../lib/signal-pool-scope";
 import { revokeMicrotasksForResume } from "../lib/microtask-resume";
+import { applyCandidateProfileRevisionGuard } from "../lib/signal-candidate-identity";
+import { legacyQualificationIssuancePolicy } from "../lib/skill-bank-operator-policy";
 
 const router: IRouter = Router();
 // This router also has string program IDs: constrain integer attempt contracts
@@ -66,6 +68,7 @@ async function correctionFor(attemptId: number, reader: Pick<typeof db, "select"
 async function candidateUser(
   req: Request,
   res: Response,
+  ensureProfile = true,
 ): Promise<{ id: number; email: string; displayName: string; demoMode: boolean; overviewDemo: boolean } | null> {
   const session = await getSessionUser(req);
   if (!session) {
@@ -76,7 +79,7 @@ async function candidateUser(
     res.status(403).json({ error: "Этот раздел доступен кандидату." });
     return null;
   }
-  await ensureCandidateProfile(session.user);
+  if (ensureProfile) await ensureCandidateProfile(session.user);
   return {
     id: session.user.id,
     email: session.user.email,
@@ -114,17 +117,17 @@ function staleAttemptError(res: Response): void {
 
 function profilePayload(
   profile: NonNullable<Awaited<ReturnType<typeof profileRow>>>,
-  displayName: string,
 ) {
   return {
     resumeId: profile.resumeId,
     title: profile.title,
     revision: profile.resumeRevision,
+    identityRevision: profile.identityRevision,
     consentCatalog: profile.consentCatalog,
     readyForOffers: profile.readyForOffers,
     avatarDataUrl: profile.avatarDataUrl,
     userId: profile.userId,
-    displayName,
+    displayName: profile.displayName,
     professionalAlias: profile.professionalAlias,
     specialization: profile.specialization,
     assumedGrade: profile.assumedGrade,
@@ -158,12 +161,15 @@ router.get("/me/candidate-profile", async (req, res): Promise<void> => {
     return;
   }
   res.setHeader("Cache-Control", "no-store, private");
-  res.json(profilePayload(profile, user.displayName));
+  res.json(profilePayload(profile));
 });
 
 router.put("/me/candidate-profile", async (req, res): Promise<void> => {
-  const user = await candidateUser(req, res); if (!user) return;
+  const user = await candidateUser(req, res, false); if (!user) return;
   const resumeId = requestedResumeId(req, res); if (resumeId === null) return;
+  // A stale primary-form must never be retargeted by a later primary switch.
+  // GET keeps its primary fallback, but writes must address a body CV ID.
+  if (req.body?.resumeId === undefined) { res.status(400).json({ error: "Выберите резюме для сохранения." }); return; }
   const parsed = SaveCandidateProfileBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Проверьте обязательные поля профиля." }); return; }
   const input = parsed.data;
@@ -174,40 +180,47 @@ router.put("/me/candidate-profile", async (req, res): Promise<void> => {
   for (const key of ["consentCatalog", "readyForOffers"]) {
     if (req.body[key] !== undefined && typeof req.body[key] !== "boolean") { res.status(400).json({ error: "Проверьте настройки доступа." }); return; }
   }
-  await ensureCandidateResume(user.id);
   const saved = await db.transaction(async tx => {
     await tx.execute(sql`SELECT pg_advisory_xact_lock(${user.id})`);
     await tx.execute(sql`SELECT pg_advisory_xact_lock(3306,${user.id})`);
     const target = await resolveCandidateResume(user.id, resumeId, tx);
-    if (!target) return null;
-    if (req.body.revision !== undefined && req.body.revision !== target.revision) return "conflict" as const;
-    const now = new Date();
-    await tx.update(signalCandidateResumesTable).set({
-      ...(req.body.title === undefined ? {} : { title: req.body.title.trim() }),
-      specialization: input.specialization, assumedGrade: input.assumedGrade,
-      ...(input.specialization === target.specialization ? {} : { questionnaire: emptyResume(input.specialization).questionnaire }),
-      stack: input.stack, skills: input.skills, yearsExperience: input.yearsExperience,
-      workFormat: input.workFormat, salaryMin: input.salaryMin ?? null, salaryMax: input.salaryMax ?? null,
-      salaryPeriod: input.salaryPeriod, salaryType: input.salaryType, visibility: input.visibility,
-      consentMatching: input.consentMatching,
-      ...(req.body.consentCatalog === undefined ? {} : { consentCatalog: req.body.consentCatalog }),
-      ...(req.body.readyForOffers === undefined ? {} : { readyForOffers: req.body.readyForOffers }),
-      revision: target.revision + 1, updatedAt: now,
-    }).where(and(eq(signalCandidateResumesTable.id, target.id), eq(signalCandidateResumesTable.userId, user.id)));
-    if (input.specialization !== target.specialization || input.visibility === "private" || !input.consentMatching) {
-      await revokeMicrotasksForResume(tx, user.id, target.id, now);
-    }
-    await tx.update(signalCandidateProfilesTable).set({ professionalAlias: input.professionalAlias,
-      phone: input.phone ?? null, contactEmail: input.contactEmail ?? user.email, updatedAt: now,
-    }).where(eq(signalCandidateProfilesTable.userId, user.id));
-    await tx.update(signalUsersTable).set({ displayName: input.displayName.trim() }).where(eq(signalUsersTable.id, user.id));
-    await recomputeCandidateResumes(user.id, tx);
-    return getResumeProfile(user.id, target.id, tx);
+    if (!target) return { kind: "missing" as const };
+    const current = await getResumeProfile(user.id, target.id, tx);
+    if (!current) return { kind: "missing" as const };
+    return applyCandidateProfileRevisionGuard(input, { revision: target.revision, identityRevision: current.identityRevision }, async () => {
+      const now = new Date();
+      await tx.update(signalCandidateResumesTable).set({
+        ...(req.body.title === undefined ? {} : { title: req.body.title.trim() }),
+        specialization: input.specialization, assumedGrade: input.assumedGrade,
+        ...(input.specialization === target.specialization ? {} : { questionnaire: emptyResume(input.specialization).questionnaire }),
+        stack: input.stack, skills: input.skills, yearsExperience: input.yearsExperience,
+        workFormat: input.workFormat, salaryMin: input.salaryMin ?? null, salaryMax: input.salaryMax ?? null,
+        salaryPeriod: input.salaryPeriod, salaryType: input.salaryType, visibility: input.visibility,
+        consentMatching: input.consentMatching,
+        ...(req.body.consentCatalog === undefined ? {} : { consentCatalog: req.body.consentCatalog }),
+        ...(req.body.readyForOffers === undefined ? {} : { readyForOffers: req.body.readyForOffers }),
+        revision: target.revision + 1, updatedAt: now,
+      }).where(and(eq(signalCandidateResumesTable.id, target.id), eq(signalCandidateResumesTable.userId, user.id)));
+      if (input.specialization !== target.specialization || input.visibility === "private" || !input.consentMatching) {
+        await revokeMicrotasksForResume(tx, user.id, target.id, now);
+      }
+      await tx.update(signalCandidateProfilesTable).set({ professionalAlias: input.professionalAlias,
+        phone: input.phone ?? null, contactEmail: input.contactEmail ?? user.email, updatedAt: now,
+      }).where(eq(signalCandidateProfilesTable.userId, user.id));
+      await tx.update(signalUsersTable).set({ displayName: input.displayName.trim() }).where(eq(signalUsersTable.id, user.id));
+      await recomputeCandidateResumes(user.id, tx);
+      return getResumeProfile(user.id, target.id, tx);
+    });
   });
-  if (saved === "conflict") { res.status(409).json({ error: "Резюме изменилось в другой вкладке. Обновите данные перед сохранением." }); return; }
-  if (!saved) { res.status(404).json({ error: "Резюме не найдено." }); return; }
+  if (saved.kind === "invalid") { res.status(400).json({ error: "Обновите профиль: для сохранения необходимы обе версии данных." }); return; }
+  if (saved.kind === "conflict") {
+    res.status(409).json({ code: saved.code, error: saved.code === "CANDIDATE_IDENTITY_REVISION_CONFLICT"
+      ? "Общие данные профиля изменились в другой вкладке. Обновите данные перед сохранением."
+      : "Резюме изменилось в другой вкладке. Обновите данные перед сохранением." }); return;
+  }
+  if (saved.kind === "missing" || !saved.value) { res.status(404).json({ error: "Резюме не найдено." }); return; }
   res.setHeader("Cache-Control", "no-store, private");
-  res.json(profilePayload(saved, input.displayName.trim()));
+  res.json(profilePayload(saved.value));
 });
 
 router.get("/assessments/programs", async (_req, res): Promise<void> => {
@@ -356,6 +369,18 @@ router.post("/assessments/attempts", async (req, res): Promise<void> => {
       return { kind: "error" as const, status: 409 as const, error: "Уже идёт проверка. Продолжите её из истории в паспорте навыков или дождитесь завершения её времени." };
     }
 
+    // Legacy is explicitly read/complete-only in every environment. Existing
+    // frozen active snapshots were restored above; an env toggle cannot reissue
+    // the retired bank with known measurement defects.
+    if (legacyQualificationIssuancePolicy === 'read_complete_only') {
+      return {
+        kind: "error" as const,
+        status: 409 as const,
+        code: "SKILL_MODULE_QUALIFICATION_REQUIRED",
+        error: "Новая выдача прежних квалификационных форм закрыта. Ранее выданные попытки можно продолжить из истории; новые проверки доступны в матрице навыков, когда модульный режим включён.",
+      };
+    }
+
     const priorAttempts = await tx
       .select()
       .from(signalAssessmentAttemptsTable)
@@ -425,7 +450,7 @@ router.post("/assessments/attempts", async (req, res): Promise<void> => {
     return { kind: "attempt" as const, attempt, created: true };
   });
   if (decision.kind === "error") {
-    res.status(decision.status).json({ error: decision.error });
+    res.status(decision.status).json({ error: decision.error, ...("code" in decision ? { code: decision.code } : {}) });
     return;
   }
   res

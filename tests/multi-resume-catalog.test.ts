@@ -511,8 +511,8 @@ test('UTF16 conservative string accounting covers ASCII, Cyrillic and surrogate 
     assert.equal(estimateRankingStringBytes(value),Buffer.byteLength(value,'utf16le')+64);
   }
   const rows=[resume(1,1)],compute=()=>rankMatches(selectMatchingResumes(evaluateResumeCandidates(need,rows,false,now)));
-  const entries=compute(),compact=entries.map(row=>({resumeId:row.candidate.resumeId,evaluation:row.evaluation,alternatives:row.alternatives.map(candidate=>candidate.resumeId)}));
-  const compactBytes=estimateRankingStringBytes(JSON.stringify(compact))+entries.length*256;
+  const measured=new FreshRankingCache();measured.read('accounted-compact',rows,compute);
+  const compactBytes=measured.diagnostics().retainedEstimatedBytes;
   const json=JSON.stringify({label:'Профессиональный профиль ⚡ 😀'.repeat(100)}),budget=compactBytes*2+estimateRankingStringBytes(json);
   const cache=new FreshRankingCache(2,budget),a=cache.read('A',rows,compute);
   assert.equal(cache.serialize(a,()=>json),json);

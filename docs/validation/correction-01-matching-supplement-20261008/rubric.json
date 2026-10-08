@@ -1,0 +1,27 @@
+{
+  "version": "c03-supplement-rubric-v1",
+  "synthetic": true,
+  "exposure": "Author read the audit and production contracts. Preregistered synthetic scenario validation; not a blind human holdout.",
+  "purpose": "Cover actual evidence-to-CV category projection, scope, whole-CV selection, structural proof comparability and a nonzero trusted Demo-FSP ablation.",
+  "proofConstruction": "Synthetic fixtures only. Current module receipts and saved full exams are built with authoritative wire answers and scored; business admission/order labels above are fixed before importing those functions.",
+  "noManualFinalGrade": true,
+  "productionWeightOrThresholdTuning": false,
+  "metrics": {
+    "k": [
+      3,
+      5
+    ],
+    "relevance": "3 for admissible compatible fit; 0 otherwise",
+    "positiveThreshold": 2,
+    "gain": "2^relevance-1",
+    "discount": "1/log2(rank+1)"
+  },
+  "limits": [
+    "No real people, hiring outcomes, human difficulty calibration, semantic job understanding or external FSP registry are measured.",
+    "All category/profile/evidence sources are synthetic and stateless; demo FSP is explicitly fictional.",
+    "Module scores are not a comparable overall category score; qualification strength is compared only for linked full exams of the same program/version/rubric.",
+    "Historical full-exam construction validates read compatibility; it does not authorize production issuance of retired programs.",
+    "Pointwise relevance is intentionally uniform for admitted compatible profiles, so nDCG does not independently validate fine ordering; preregistered pair and ablation assertions do.",
+    "Injected fixture reads exercise production projection and metadata linkage, not PostgreSQL execution, HTTP latency or real ACL races."
+  ]
+}

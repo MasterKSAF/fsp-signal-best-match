@@ -42,6 +42,9 @@ function sameFacts(left: MatchCandidate, right: MatchCandidate): boolean {
     (left.assessmentEvidence === right.assessmentEvidence ||
       JSON.stringify(left.assessmentEvidence ?? null) ===
         JSON.stringify(right.assessmentEvidence ?? null)) &&
+    (left.categoryEvidence === right.categoryEvidence ||
+      JSON.stringify(left.categoryEvidence ?? null) ===
+        JSON.stringify(right.categoryEvidence ?? null)) &&
     (left.skillEvidence === right.skillEvidence ||
       JSON.stringify(left.skillEvidence ?? null) ===
         JSON.stringify(right.skillEvidence ?? null))

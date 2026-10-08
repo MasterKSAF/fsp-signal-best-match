@@ -3,9 +3,10 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { EmployerNeedGrade } from './employerNeedGrade';
+import type { EmployerNeedRequiredSkillLevels } from './employerNeedRequiredSkillLevels';
 import type { EmployerNeedSalaryPeriod } from './employerNeedSalaryPeriod';
 import type { EmployerNeedSalaryType } from './employerNeedSalaryType';
 
@@ -15,6 +16,8 @@ export interface EmployerNeed {
   specialization: string;
   grade: EmployerNeedGrade;
   requiredSkills: string[];
+  /** Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum. */
+  requiredSkillLevels?: EmployerNeedRequiredSkillLevels;
   desirableSkills: string[];
   description: string;
   workFormat: string;

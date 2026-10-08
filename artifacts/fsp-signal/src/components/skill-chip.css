@@ -1,0 +1,16 @@
+.signal-skill-chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.signal-skill-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:5px 8px;border:1px solid var(--skill-chip-border);border-radius:8px;background:var(--skill-chip-bg);color:var(--skill-chip-text);font-size:12px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.signal-skill-chip--verified{--skill-chip-bg:#d7ecdc;--skill-chip-border:#76ac87;--skill-chip-text:#1e5b33}
+.signal-skill-chip--declared{--skill-chip-bg:#e7e5e2;--skill-chip-border:#bebbb7;--skill-chip-text:#56534f}
+.signal-skill-chip--recommended{--skill-chip-bg:#e6daf5;--skill-chip-border:#ac8ccf;--skill-chip-text:#673b96}
+.dark .signal-skill-chip--verified{--skill-chip-bg:#243c2e;--skill-chip-border:#507c5c;--skill-chip-text:#b8dfc0}
+.dark .signal-skill-chip--declared{--skill-chip-bg:#363a40;--skill-chip-border:#646971;--skill-chip-text:#d6d8dc}
+.dark .signal-skill-chip--recommended{--skill-chip-bg:#393048;--skill-chip-border:#80689e;--skill-chip-text:#d6c2ef}
+.signal-skill-chip__level{font-size:12px;font-weight:750;white-space:nowrap}
+.signal-skill-chip svg{flex:none}
+.signal-skill-chips__more{display:inline-flex;align-items:center;gap:2px;border:1px solid hsl(var(--border));border-radius:8px;background:hsl(var(--muted));padding:5px 8px;font-size:12px;color:hsl(var(--foreground));cursor:pointer}
+.signal-skill-chips__more:focus-visible{outline:2px solid hsl(var(--primary));outline-offset:2px}
+
+.signal-skill-legend{display:flex;align-items:center;gap:5px 8px;flex-wrap:wrap;font-size:12px;margin:0 0 9px;min-width:0}
+.signal-skill-legend__sample{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border-radius:6px;border:1px solid var(--skill-chip-border);background:var(--skill-chip-bg);color:var(--skill-chip-text);line-height:1.35}
+.signal-skill-legend__sample svg{flex:none}

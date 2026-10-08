@@ -41,6 +41,22 @@ export function validFspLinkInput(input: unknown): { fspId: string; consentImpor
   return fspId && body.consentImport === true ? { fspId, consentImport: true } : null;
 }
 
+/** Storing an opaque identifier is not import consent, registry verification, or an achievement. */
+export function validFspSaveInput(input: unknown): { fspId: string } | null {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
+  const body = input as Record<string, unknown>;
+  if (Object.keys(body).some(key => key !== 'fspId')) return null;
+  const fspId = normalizeFspId(body.fspId);
+  return fspId ? { fspId } : null;
+}
+
+export function savedFspIdentityValues(fspId: string, now: Date) {
+  return { fspId, status: 'pending' as const, consentVersion: null, consentedAt: null,
+    requestedAt: now, revokedAt: null, verifiedAt: null, importedAt: null,
+    provenance: 'user_supplied' as const, providerVersion: null, achievements: [],
+    lastErrorCode: 'registry_not_configured', updatedAt: now };
+}
+
 export const fspRegistryProvider: FspRegistryProvider = {
   async resolve(fspId, context) {
     if (fspId === fspDemoFixtureId && canUseFspExample(context)) {

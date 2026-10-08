@@ -1,0 +1,23 @@
+# Frontend state-model — адресное исправление 8 октября 2026
+
+Прежние девять замечаний correction02 независимо закрыты в `../../outputs/signal-workspace-control-2026-10-08/recheck-cycle-02.md`. Единственный дополнительный P2 — «скрыли id3» не определяло изменение active, хотя ключ исключал строку. Исправлена только эта смысловая причина и необходимая совместимость версий. **Окончательная независимая техническая приёмка — ACCEPTED**, все10 найденных дефектов закрыты. [Вердикт](../../outputs/signal-workspace-control-2026-10-08/independent-acceptance.md), [адресная внешняя проверка](../../outputs/signal-workspace-control-2026-10-08/final-recheck-skills.md).
+
+Новая часть A явно говорит: **«Затем у строки id=3 установили active=false. Сумма p только для строк с active=true?»**. После удаления id1 результат0; после активации id2 — n+2. Обе ветви, условие, ключ и объяснение согласованы. Часть B сохранена и остаётся обязательной, state-model остаётся критической.
+
+Новые выдачи: банк **signal-skills-2026-10-v3**, target `frontend-engineering:Middle:state-model:s1` templateVersion3; остальные templateVersion2. Рубрика `six-competencies-critical-5of6-middle-outcomes-v3` и requirement IDs не менялись. Семья **skill-content-v1:frontend-engineering:state-model:s1** общая для v1/v2/v3 и Junior/Middle. Junior prompt/answer/explanation сохранены точно, включая исходные пробелы. Исторический helper также оставляет старое неоднозначное условие.
+
+При применении подтверждений Middle coverage обязательно для v2 и v3; прежнее исключение v1 сохраняется. Matching projection описывает обе версии с Middle outcomes одинаково. Сохранённые row.cases/oracles/policy и решения не регенерируются. Спорные старые оценки не переоцениваются молча: для реальной коррекции нужна существующая явная процедура с основанием.
+
+Изменённый production scope: `skill-module-bank.ts`, `skill-module-qualification.ts`, `skill-module-service.ts`. Ещё три unit-файла: новые state-v3 проверки и необходимые обновления прежних version/integer fixtures. Frontend, схема, миграции и остальные предметные задачи не менялись.
+
+Proofdir: `outputs/verification/candidate-workspace-skill-matrix-20261008/correction-03/`.
+
+- `focused-tests.log`: **20/20 PASS** — actual rows, обязательность B, critical rules, межверсионная ротация, v2/v3 coverage и историческая совместимость. Первоначальный run18/20 отдельно сохранён: тест поймал лишнее удаление пробела Junior и зависимость integer fixture от сменившегося seed tie-break; оба исправлены до сборки.
+- `independent-actual-rows.mts`, `independent-actual-rows-receipt.json`, `independent-review.md`: независимый parser фактически возвращённых rows и действия splice/set active/filter/reduce. **20 комбинаций** n5..9 × обе ветви × уровни, **10 Middle forms** полного диапазона. Oracle не использован для вычисления суммы. Junior совпал с prechange baseline целиком; обе части, critical gates и family exposures v1/v2/v3 проверены.
+- `baseline-v2-literals.json`: старый полный deterministic v2 form и исходное внешнее воспроизведение. Старый literal4;1 сохранил прежний результат83/critical-fail; frozen JSON не менялся. Это pure snapshot, не заявление о выдаче нового подтверждения в БД.
+- `preservation-before.json`/`preservation-after.json`: реальные read-only checksums до/после перезапуска. Исходные7 попыток MD5 **8fe3a1ca84bf5f25bb357bee68ca0630**, actor997/profile/CV504/505/лимиты и все модульные snapshots/свидетельства/показы/категории/коррекции неизменны. Новых акторов и попыток не создавалось, БД не изменялась.
+- API typecheck и normal production build — **PASS**, diff-check — **PASS**. API4367 PID**23456**, bundle `outputs/local-backup/v070-correction-03/dist/index.mjs`, SHA256 **d218f726009fdd4d2735be25d0f5d81d7c8264a142d596560793e1f71ee4860c**. UI4368 PID32280; защищённые4313/4314 PID6212/11880 сохранены. Frontend build files совпадают с принятыми побитово.
+
+Обновлённые `runtime-final.json` и `source-fingerprints.json`:774 файла,28 artifacts, manifest SHA256 **22fa2a8a49581330daadeb0d5e111f8c3a261e073dc84f57fbdadb66f03b937b**. Предыдущие771 production/build input files дополнены тремя адресными unit sources; проверены ровно шесть изменённых/добавленных source paths. Старые runtime/manifests сохранены как `*-before-correction-03.json`.
+
+Широкие HTTP/UI проверки и392 unit относятся к принятому correction02 SHA8ebd...; им не присвоен новый hash, повтор без причины не выполнялся. Внешний контроллер дополнительно подтвердил mobile PDF360 в обеих темах; это его доказательство в recheck-cycle-02, а не новый браузерный прогон здесь. Эта правка не подтверждает человеческую калибровку сложности либо точность найма. Commit/push, публикация, презентация, видео, архив и подача не выполнялись.

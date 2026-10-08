@@ -1,0 +1,9 @@
+.resume-pdf-viewer{border:1px solid hsl(var(--border));border-radius:12px;overflow:hidden;background:hsl(var(--card));min-width:0}
+.resume-pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 12px;border-bottom:1px solid hsl(var(--border));background:hsl(var(--card))}
+.resume-pdf-page-count{font-size:12px;color:hsl(var(--muted-foreground));font-variant-numeric:tabular-nums}
+.resume-pdf-navigation{display:flex;gap:3px}.resume-pdf-navigation .button{padding:7px;min-height:32px}
+.resume-pdf-surface{position:relative;min-height:280px;max-height:65vh;overflow:auto;scrollbar-gutter:stable;overscroll-behavior:contain;background:hsl(var(--muted)/.55)}
+@supports not (scrollbar-gutter:stable){.resume-pdf-surface{overflow-y:scroll}}
+.resume-pdf-canvas-stage{display:flex;justify-content:center;min-width:0;padding:16px}.resume-pdf-canvas-stage[hidden]{display:none}.resume-pdf-canvas-stage canvas{display:block;flex:none;background:#fff;box-shadow:0 3px 18px #0002}
+.resume-pdf-message{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:260px;padding:24px;text-align:center;color:hsl(var(--muted-foreground))}.resume-pdf-message p{max-width:400px;margin:0;font-size:13px;line-height:1.6}
+.resume-pdf-spinner{animation:resume-pdf-spin 1s linear infinite}@keyframes resume-pdf-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.resume-pdf-spinner{animation:none}}

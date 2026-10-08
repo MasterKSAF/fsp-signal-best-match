@@ -1,93 +1,438 @@
-# Merge paths and components.schemas into lib/api-spec/openapi.yaml (OpenAPI 3.1).
-paths:
-  /me/fsp-connection:
-    get:
-      tags: [profile]
-      operationId: getFspConnection
-      summary: Get the authenticated candidate's FSP connection
-      description: Requires a verified candidate session. An entered identifier is not proof of ownership. No FSP network API is called.
-      responses:
-        '200':
-          description: Connection, consent and imported achievements; empty history is a normal state.
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/FspConnection' }
-        '401':
-          description: Sign-in required
-        '403':
-          description: Candidate role required
-    put:
-      tags: [profile]
-      operationId: saveFspConnection
-      summary: Save an FSP ID with explicit import consent
-      description: Repeated identical requests preserve timestamps. A user-entered ID remains pending and gives no ranking bonus. Only FSP-DEMO-2026 in a demo account with DEMO_MODE=true imports synthetic achievements. Identifiers are not globally reserved until identity verification exists.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/FspConnectionInput' }
-      responses:
-        '200':
-          description: Saved connection; unavailable upstream produces an explicit unavailable state without achievements.
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/FspConnection' }
-        '400':
-          description: Invalid ID, missing consent or unauthorized fixture
-        '401':
-          description: Sign-in required
-        '403':
-          description: Candidate role or trusted browser origin required
-    delete:
-      tags: [profile]
-      operationId: unlinkFspConnection
-      summary: Revoke FSP import consent and unlink the ID
-      description: Idempotent. Removes stored external identifier, achievements and provenance and atomically removes the FSP ranking flag. Keeps the minimal consent/revocation timestamps. Assessment results and the rest of the profile are preserved.
-      responses:
-        '200':
-          description: Unlinked connection
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/FspConnection' }
-        '401':
-          description: Sign-in required
-        '403':
-          description: Candidate role or trusted browser origin required
-components:
-  schemas:
-    FspConnectionInput:
-      type: object
-      additionalProperties: false
-      required: [fspId, consentImport]
-      properties:
-        fspId: { type: string, minLength: 1, maxLength: 100, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$', description: 'Opaque user-entered ID; this format is a local input restriction, not an official FSP format.' }
-        consentImport: { type: boolean, const: true }
-    FspAchievement:
-      type: object
-      required: [id, title, event, occurredAt, kind]
-      properties:
-        id: { type: string }
-        title: { type: string }
-        event: { type: string }
-        occurredAt: { type: string, format: date }
-        kind: { type: string, enum: [participation, placement, rank] }
-    FspConnection:
-      type: object
-      required: [status, fspId, demoAvailable, demoFixtureId, hasHistory, achievements, requestedAt, consentedAt, verifiedAt, importedAt, revokedAt, provenance, providerVersion, message]
-      properties:
-        status: { type: string, enum: [unlinked, pending, connected_demo, unavailable] }
-        fspId: { type: [string, 'null'] }
-        demoAvailable: { type: boolean }
-        demoFixtureId: { type: [string, 'null'] }
-        hasHistory: { type: boolean, description: 'True only for trusted, consented imported history; never inferred from an entered ID.' }
-        achievements:
-          type: array
-          items: { $ref: '#/components/schemas/FspAchievement' }
-        requestedAt: { type: [string, 'null'], format: date-time }
-        consentedAt: { type: [string, 'null'], format: date-time }
-        verifiedAt: { type: [string, 'null'], format: date-time, description: 'Fixture validation timestamp, not verification of a real person.' }
-        importedAt: { type: [string, 'null'], format: date-time }
-        revokedAt: { type: [string, 'null'], format: date-time }
-        provenance: { type: [string, 'null'], enum: [user_supplied, synthetic_fixture, null] }
-        providerVersion: { type: [string, 'null'] }
-        message: { type: string }
+{
+  "paths": {
+    "/me/fsp-connection": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "operationId": "getFspConnection",
+        "summary": "Get the authenticated candidate's FSP connection",
+        "description": "Requires a verified candidate session. An entered identifier is not proof of ownership. No FSP network API is called.",
+        "responses": {
+          "200": {
+            "description": "Connection, consent and imported achievements; empty history is a normal state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspConnection"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Candidate role required"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "profile"
+        ],
+        "operationId": "saveFspConnection",
+        "summary": "Save an opaque FSP ID without importing results",
+        "description": "Accepts only fspId. Each save records a fresh requestedAt and clears previous external proof and consent. Every entered ID, including FSP-DEMO-2026, remains pending with no achievements or ranking bonus. Saving does not call a registry, verify identity, grant import consent or reserve the ID globally.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FspConnectionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pending connection with empty achievements, null consent and verification timestamps, and importAvailable=false.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspConnection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID or extra fields, including consentImport"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Candidate role or trusted browser origin required"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "profile"
+        ],
+        "operationId": "unlinkFspConnection",
+        "summary": "Revoke FSP import consent and unlink the ID",
+        "description": "Idempotent. Removes stored external identifier, achievements and provenance and atomically removes the FSP ranking flag. Keeps the minimal consent/revocation timestamps. Assessment results and the rest of the profile are preserved.",
+        "responses": {
+          "200": {
+            "description": "Unlinked connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspConnection"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Candidate role or trusted browser origin required"
+          }
+        }
+      }
+    },
+    "/me/fsp-connection/import": {
+      "post": {
+        "operationId": "requestFspImport",
+        "tags": [
+          "profile"
+        ],
+        "summary": "Request an FSP import with separate explicit consent",
+        "description": "Registry integration is not configured. This operation never imports a synthetic fixture, persists consent or confirms the ID. A saved ID is required before returning registry_not_configured.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "consentImport"
+                ],
+                "properties": {
+                  "consentImport": {
+                    "type": "boolean",
+                    "const": true
+                  }
+                }
+              },
+              "example": {
+                "consentImport": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Missing explicit consent or extra request fields; code fsp_import_consent_required"
+          },
+          "401": {
+            "description": "Sign-in required"
+          },
+          "403": {
+            "description": "Candidate role or trusted browser origin required"
+          },
+          "409": {
+            "description": "No saved ID; code fsp_id_required"
+          },
+          "503": {
+            "description": "Registry not configured; code registry_not_configured. Stored proof, grades and contacts are unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "code": "registry_not_configured",
+                  "error": "Реестр ФСП ещё не подключён. ID сохранён без подтверждения и импорта."
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/UnifiedErrorResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FspConnectionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fspId"
+        ],
+        "properties": {
+          "fspId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$",
+            "description": "User-entered ID; saving it grants no verified status or ranking bonus."
+          }
+        }
+      },
+      "FspAchievement": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "event",
+          "occurredAt",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "participation",
+              "placement",
+              "rank"
+            ]
+          },
+          "result": {
+            "description": "Explicit event outcome. Omitted in legacy records; placement or rank alone does not imply prize or win.",
+            "type": "string",
+            "enum": [
+              "participation",
+              "prize",
+              "win"
+            ]
+          }
+        }
+      },
+      "FspRankingSignal": {
+        "description": "Current server-trusted FSP facts. MAX explicit participation=1, prize=2, win=3; no accumulation, no effect on grade or common need-fit, no movement between specialization and verified-grade categories. Synthetic history is a Demo fixture, not a real registry result.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "policyVersion",
+          "historyStatus",
+          "bestResult",
+          "bonus",
+          "source",
+          "synthetic",
+          "note"
+        ],
+        "properties": {
+          "policyVersion": {
+            "type": "string",
+            "enum": [
+              "fsp-category-results-v1"
+            ]
+          },
+          "historyStatus": {
+            "type": "string",
+            "enum": [
+              "trusted_results",
+              "unresolved_results",
+              "unverified",
+              "none"
+            ]
+          },
+          "bestResult": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "participation",
+              "prize",
+              "win",
+              null
+            ]
+          },
+          "bonus": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "synthetic_fixture",
+              null
+            ]
+          },
+          "synthetic": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "FspConnection": {
+        "type": "object",
+        "required": [
+          "status",
+          "fspId",
+          "demoAvailable",
+          "demoFixtureId",
+          "hasHistory",
+          "fspSignal",
+          "achievements",
+          "requestedAt",
+          "consentedAt",
+          "verifiedAt",
+          "importedAt",
+          "revokedAt",
+          "provenance",
+          "providerVersion",
+          "message",
+          "importAvailable"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "unlinked",
+              "pending",
+              "connected_demo",
+              "unavailable"
+            ]
+          },
+          "fspId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "demoAvailable": {
+            "type": "boolean"
+          },
+          "importAvailable": {
+            "type": "boolean"
+          },
+          "demoFixtureId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasHistory": {
+            "type": "boolean",
+            "description": "True only for trusted, consented imported history; never inferred from an entered ID."
+          },
+          "fspSignal": {
+            "$ref": "#/components/schemas/FspRankingSignal"
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FspAchievement"
+            }
+          },
+          "requestedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "consentedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "verifiedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Fixture validation timestamp, not verification of a real person."
+          },
+          "importedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "revokedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "provenance": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "user_supplied",
+              "synthetic_fixture",
+              null
+            ]
+          },
+          "providerVersion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "retryAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    },
+    "responses": {
+      "UnifiedErrorResponse": {
+        "description": "Error envelope from authentication, role, context or request checks; HTTP status is defined by the operation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      }
+    }
+  }
+}

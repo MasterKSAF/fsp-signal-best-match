@@ -1,0 +1,55 @@
+{
+  "purpose": "pre-edit source/fixture provenance, not a new execution",
+  "files": [
+    {
+      "path": "artifacts/api-server/src/lib/assessment-bank.ts",
+      "sha256": "287f5b7acec0b372ce004554d2d6c6856dbf1cff32f9c113f2f11cbc8abd91ed",
+      "bytes": 51675
+    },
+    {
+      "path": "artifacts/api-server/src/lib/assessment-managed.ts",
+      "sha256": "6da5f0412e4a7efbf45e0f1bdeb45f9d5da3b359c2a604d4edea5221e767191c",
+      "bytes": 38727
+    },
+    {
+      "path": "artifacts/api-server/src/lib/signal-evidence-compatibility.ts",
+      "sha256": "72fcb2f9c60414b4ef36eb32927040fd1ffe03aee1d2cf64befc22dd20f93137",
+      "bytes": 6432
+    },
+    {
+      "path": "scripts/validate-grades.ts",
+      "sha256": "f99735d766d90ab0d993c3a4414b5203fbfad529c2ce907b5c77297fa32aa14f",
+      "bytes": 18007
+    },
+    {
+      "path": "scripts/lib/grade-transfer-model.ts",
+      "sha256": "8fb73421de22a16a38ac7befad4a62a585fa7d80af7e156dd3c0770ee0c97836",
+      "bytes": 13981
+    },
+    {
+      "path": "outputs/quality/assessment-validation-after.json",
+      "sha256": "a0e5db069c71867ac9dc4eb71945ee002a33aace67d199b21e745d6d223a20e0",
+      "bytes": 1354158
+    },
+    {
+      "path": "docs/validation/frozen-manifest-v1.json",
+      "sha256": "06d96024b79ba49c27547a8051ee85570fcb8b16149ce0aaab3a6417d52398bf",
+      "bytes": 929
+    },
+    {
+      "path": "docs/validation/reference-answers-v1.json",
+      "sha256": "25baacd01c8b59d49345b6e804d5eefe1eb2d02a3f8bc2f1a416af9c4cf543dc",
+      "bytes": 106255
+    },
+    {
+      "path": "docs/validation/visible-forms-v1.json",
+      "sha256": "ba83f00b21168c3b0b2efaeaf825fe7de39ad7d9f66f4bfc227a27ec6ff75cc1",
+      "bytes": 233497
+    },
+    {
+      "path": "docs/validation/work-profiles-v1.json",
+      "sha256": "6ed2e0e04de649351b14cfe73dd35d5b009c101967c1c107e9d0349a46cb606d",
+      "bytes": 3850
+    }
+  ]
+}

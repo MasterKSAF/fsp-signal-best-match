@@ -1,0 +1,25 @@
+/** Addressed save/reload/clear validation on a new own synthetic company only. */
+import assert from 'node:assert/strict';import {readFile,writeFile,mkdir} from 'node:fs/promises';import {createHash,randomBytes,randomUUID,scryptSync} from 'node:crypto';
+import pg from '../lib/db/node_modules/pg/lib/index.js';
+const runtimePath=process.argv[2];assert.ok(runtimePath?.replaceAll('\\','/').startsWith('C:/Users/Misha/Documents/ChatGPT/LCT/signal-ui-refinement-workspace-20261008/outputs/verification/'),'Pass the current task runtime bundle');
+const runtimeSha256=createHash('sha256').update(await readFile(runtimePath)).digest('hex');
+const env=Object.fromEntries((await readFile('C:/Users/Misha/.codex/private/signal-employer-e-20261008.env','utf8')).split(/\r?\n/).filter(x=>x&&!x.startsWith('#')).map(line=>{const i=line.indexOf('=');return[line.slice(0,i),line.slice(i+1).replace(/^"|"$/g,'')];}));const db=new URL(env.DATABASE_URL);assert.equal(db.hostname,'127.0.0.1');assert.equal(db.port,'55435');assert.equal(db.pathname,'/signal_employer_e_20261008');
+const pool=new pg.Pool({connectionString:env.DATABASE_URL}),runId=randomUUID(),receipts=[],checks=[];let actor,passed=false,failure;
+const privateLedger=`C:/Users/Misha/.codex/private/signal-company-inn-20261009-${runId}.json`,output='outputs/verification/company-inn-20261009';
+async function request(path,method='GET',body,status=200){const r=await fetch('http://localhost:4413/api'+path,{method,headers:{Cookie:actor.cookie,Origin:'http://signal-employer.localhost:4414',...(body===undefined?{}:{'Content-Type':'application/json'})},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(10000)});const result=await r.json();receipts.push({path,method,status:r.status});assert.equal(r.status,status,result.error);return result;}
+try{
+  await mkdir(output,{recursive:true});assert.equal(Number((await pool.query('SELECT count(*) FROM drizzle.__drizzle_migrations')).rows[0].count),17);
+  const password=randomBytes(24).toString('base64url'),salt=randomBytes(16).toString('hex'),token=randomBytes(32).toString('base64url'),email=`company-inn-${runId}@signal-example.test`;
+  const user=(await pool.query("INSERT INTO signal_users(email,password_hash,role,display_name,email_verified,demo_mode) VALUES($1,$2,'employer','Проверка ИНН',true,false) RETURNING id",[email,`scrypt:${salt}:${scryptSync(password,salt,64).toString('hex')}`])).rows[0];
+  await pool.query("INSERT INTO signal_sessions(token_hash,user_id,expires_at,demo_mode) VALUES($1,$2,now()+interval '7 days',false)",[createHash('sha256').update(token).digest('hex'),user.id]);
+  const company=(await pool.query('INSERT INTO signal_companies(owner_user_id,name,contact_email) VALUES($1,$2,$3) RETURNING id',[user.id,'Проверка ИНН',email])).rows[0];actor={id:user.id,companyId:company.id,email,password,cookie:`fsp_signal_session=${token}`};await writeFile(privateLedger,JSON.stringify({synthetic:true,actor},null,2));
+  const base=(await request('/employer/company')).company;assert.equal(base.inn,'');checks.push('empty legacy/default company loads');const {id:_id,...body}=base;
+  for(const inn of ['0012345673','001234567887']){assert.equal((await request('/employer/company','PUT',{...body,inn})).company.inn,inn);assert.equal((await request('/employer/company')).company.inn,inn);assert.equal((await pool.query('SELECT inn FROM signal_companies WHERE id=$1 AND owner_user_id=$2',[company.id,user.id])).rows[0].inn,inn);}
+  checks.push('10/12-digit checksum-valid leading-zero strings save and reload exactly');
+  await request('/employer/company','PUT',{...body,inn:undefined});assert.equal((await request('/employer/company')).company.inn,'001234567887');checks.push('omitted INN preserves stored value');
+  for(const inn of ['0012345674','001234567877','001234567886','0000000000','123',1234567890]){const r=await request('/employer/company','PUT',{...body,inn},400);assert.equal(r.code,'INVALID_INN');assert.equal((await request('/employer/company')).company.inn,'001234567887');}
+  checks.push('both check digits, all-zero, malformed and numeric inputs fail400 without changing data');
+  assert.equal((await request('/employer/company','PUT',{...body,inn:''})).company.inn,'');assert.equal((await request('/employer/company')).company.inn,'');assert.equal((await pool.query('SELECT inn FROM signal_companies WHERE id=$1',[company.id])).rows[0].inn,null);checks.push('explicit empty clears to null and reload returns empty string');passed=true;
+}catch(error){failure={name:error.name,message:error.message};}
+finally{await pool.end();const report=`${output}/http-${runId}.json`;await writeFile(report,JSON.stringify({passed,failure,checks,receipts,syntheticNewCompanyOnly:true,actorId:actor?.id,companyId:actor?.companyId,runtimePath,runtimeSha256,port:4413,database:'signal_employer_e_20261008',verifiedAt:new Date().toISOString()},null,2));console.log(JSON.stringify({passed,failure,checks:checks.length,report,privateLedger}));}
+if(!passed)process.exitCode=1;

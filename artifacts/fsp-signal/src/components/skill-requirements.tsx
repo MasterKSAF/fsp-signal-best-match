@@ -1,0 +1,5 @@
+export type MinimumSkillLevels = Record<string, 'Junior' | 'Middle' | 'Senior'>;
+export function SkillLevelRequirements({ skills, value, onChange }: { skills: string[]; value: MinimumSkillLevels; onChange: (value: MinimumSkillLevels) => void }) {
+  if (!skills.length) return null;
+  return <details className="skill-minimum-levels"><summary>Минимальные уровни навыков{Object.keys(value).length ? ` · ${Object.keys(value).length}` : ''}</summary><p className="muted">Уровень навыка — отдельное требование. Общий грейд специализации задаётся выше.</p><div className="skill-minimum-levels-grid">{skills.map(skill => <label key={skill}><span>{skill}</span><select className="input" aria-label={`Минимальный уровень: ${skill}`} value={value[skill] ?? ''} onChange={event => { const next = { ...value }; if (event.target.value) next[skill] = event.target.value as MinimumSkillLevels[string]; else delete next[skill]; onChange(next); }}><option value="">Без заданного уровня</option><option>Junior</option><option>Middle</option><option>Senior</option></select></label>)}</div></details>;
+}

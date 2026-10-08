@@ -1,0 +1,42 @@
+{
+  "version": "business-modular-a10-v1",
+  "synthetic": true,
+  "authoredAt": "2026-10-08T14:51:50.498Z",
+  "exposure": "Author has read previous business audit and four modular ranking tests. This is preregistered synthetic scenario validation, not a blind human holdout or a calibrated hiring study.",
+  "eligibility": "Own demo pool; visible, matching consent, exact specialization, confirmed category at least requested grade, all verified requirements. Explicit per-skill minimum requires modular proof. All gates refer to one whole CV.",
+  "relevance": {
+    "0": "inadmissible",
+    "1": "admissible with substantial format/salary conflict",
+    "2": "admissible with unresolved tax basis or format compromise",
+    "3": "strong fit with compatible conditions"
+  },
+  "limits": [
+    "No CV text/job semantic embedding is measured.",
+    "No human outcomes; small mirrored two-specialization corpus.",
+    "FSP is a category-local tie signal, never replaces missing skills/category.",
+    "Historical grade-only proof may be admitted, with less complete evidence.",
+    "Allowed selected IDs judge business context, not every formally eligible alternative."
+  ],
+  "metrics": {
+    "k": [
+      3,
+      5
+    ],
+    "positiveThreshold": 2,
+    "gain": "2^relevance-1",
+    "discount": "1/log2(rank+1)",
+    "precision": "positives in top k divided by k including missing places",
+    "nDCG": "DCG / ideal DCG over all labeled people; null if ideal=0",
+    "coverage": "all false/missing admissions and selected CV errors, no excluded failed cases"
+  },
+  "variants": [
+    "source-before-a01-a11",
+    "source-after-a01-a11"
+  ],
+  "tuningAllowed": false,
+  "permutations": [
+    "original",
+    "reverse"
+  ],
+  "fspAblation": true
+}

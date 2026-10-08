@@ -1,0 +1,420 @@
+{
+  "provenance": {
+    "source": "Independent Signal UI refinement controller, 2026-10-08; old v4 overlap source captured before correction",
+    "sourceFileName": "audit-senior-cycle01-checks.json",
+    "sourceSha256": "528c7d831600b1ce03f564b064db884f6bd03ab7627da65194332cbda3fbddc3",
+    "projection": "Only anonymous skill-family overlap cases; no runtime credentials or actor data"
+  },
+  "overlaps": [
+    {
+      "skill": "sql",
+      "competency": "transactions",
+      "middleRequirement": "sql:middle-outcome-v2:4",
+      "middleFamilies": [
+        "skill-content-v1:sql:transactions:s1",
+        "skill-content-v1:sql:transactions:s2",
+        "skill-content-v1:sql:transactions:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:sql:transactions:s1",
+      "middleLine": 20,
+      "seniorLine": 49,
+      "middle": {
+        "requirementId": "sql:middle-outcome-v2:4",
+        "outcome": "Предотвратить write skew для инварианта нескольких строк",
+        "prompt": "Два дежурных active=true. Две транзакции читают один snapshot, каждая видит другого active и отключает только свою строку. Контракт: хотя бы один дежурный обязан оставаться active. CAS только на собственной строке успешен у обеих. Что требуется?",
+        "choices": [
+          "Общая блокировка/guard-строка для инварианта либо SERIALIZABLE с обработкой serialization failure и повторным чтением условия.",
+          "Две разные row revision гарантируют межстрочный инвариант без общей проверки.",
+          "Всегда COMMIT обеих: разные строки не могут нарушить общее правило.",
+          "Скрыть второй UPDATE из журнала, оставив обе транзакции успешными."
+        ],
+        "expected": "1",
+        "explanation": "Потерянное обновление одной строки и write skew — разные аномалии. Инвариант множества строк требует общей синхронизации или сериализации.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Доказывать конкурентные инварианты и пределы изоляции",
+        "outcome": "Доказывать конкурентные инварианты и пределы изоляции",
+        "requirementId": "sql:senior-outcome-v1:4",
+        "parts": [
+          {
+            "prompt": "Инвариант: минимум один дежурный. A/B сначала on=true. В snapshot isolation T1/T2 читают обе строки; каждая видит второго on и ставит свою false. Записи разных строк, конфликт write/write отсутствует, обе commit разрешены по условию. Введите число оставшихся on.",
+            "expected": "0",
+            "explanation": "Snapshot isolation допускает заданный write skew на разных строках.",
+            "responseType": "integer"
+          },
+          {
+            "prompt": "Как защитить этот инвариант?",
+            "choices": [
+              "Общий guard/набор сериализуется либо serializable с retry всей проверки; независимый CAS rows не доказывает multi-row predicate.",
+              "Поставить CAS каждой собственной строки, но общий predicate не сериализовать; два разных rows считать независимыми от правила минимум одного on.",
+              "Перейти на READ COMMITTED и выполнять тот же SELECT двух rows до UPDATE без locks; обещать защиту write skew только названием isolation.",
+              "При serialization failure повторять только последний UPDATE без повторного чтения predicate, оставляя исходное решение выключиться."
+            ],
+            "expected": "1",
+            "explanation": "Предикат над множеством должен быть защищён общей сериализацией.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "sql",
+      "competency": "constraints",
+      "middleRequirement": "sql:middle-outcome-v2:6",
+      "middleFamilies": [
+        "skill-content-v1:sql:constraints:s1",
+        "skill-content-v1:sql:constraints:s2",
+        "skill-content-v1:sql:constraints:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:sql:constraints:s3",
+      "middleLine": 22,
+      "seniorLine": 57,
+      "middle": {
+        "requirementId": "sql:middle-outcome-v2:6",
+        "outcome": "Различить повтор события и конфликт payload при атомарной записи результата",
+        "prompt": "Много tenants; event_id локален внутри tenant. Сохранённое событие имеет payload_hash=P,result=R. Повтор с тем же идентификатором и P должен вернуть R; тот же идентификатор с Q!=P обязан получить conflict без изменения данных. Crash до COMMIT оставляет возможность повторить обработку. Какой протокол покрывает ВСЕ эти требования?",
+        "choices": [
+          "Использовать UNIQUE(tenant_id,event_id), сохранить неизменяемый hash вместе с claim/бизнес-данными/result в одной транзакции; conflict сравнивает hash: P возвращает committed R, Q получает отказ, rollback отменяет claim.",
+          "Использовать правильный UNIQUE(tenant_id,event_id) и транзакцию, но любой duplicate возвращает R без сравнения payload_hash.",
+          "Сначала COMMIT claim, затем отдельно записать данные/result; crash всё равно считается успехом.",
+          "SELECT без UNIQUE достаточен; при другом hash перезаписать предыдущий result."
+        ],
+        "expected": "1",
+        "explanation": "Дополнительный Middle инвариант — не только однократная запись, но различение эквивалентного повтора и несовместимого payload по сохранённому hash. Он проверяется вместе с областью ключа, атомарностью и crash/retry.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Проектировать SQL-целостность и совместимые переходы схемы",
+        "outcome": "Проектировать SQL-целостность и совместимые переходы схемы",
+        "requirementId": "sql:senior-outcome-v1:6",
+        "parts": [
+          {
+            "prompt": "Уникальность бизнес-события по (tenant,event). Вход (A,1),(B,1),(A,1), у всех payload_hash=P. В одной транзакции receipt хранит payload_hash/result; duplicate same hash возвращает прежний result. Введите созданных receipts|бизнес-эффектов.",
+            "expected": "2|2",
+            "explanation": "Scope unique и атомарный receipt связывают раздельных tenants и повторы.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "На тот же (A,1) пришёл иной payload_hash. Какой контракт сохраняет целостность?",
+            "choices": [
+              "Конфликт по другому payload_hash без нового effect или замены receipt; тот же scope/key не доказывает semantic equivalence payload.",
+              "При ON CONFLICT вернуть старый result без проверки hash; несовместимый payload станет эквивалентным повтором.",
+              "При новом hash перезаписать receipt и выполнить новый effect в том же scope, не сообщая semantic conflict. Проверить runtime форму входа, foreign-key references и права writer; хранить schema version и audit-id каждого commit.",
+              "Дедуплицировать только event без tenant; независимое событие B считается повтором A и получает прежний receipt."
+            ],
+            "expected": "1",
+            "explanation": "UNIQUE должен дополняться проверяемым semantic binding, а не только подавлением insert.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "typescript",
+      "competency": "generics",
+      "middleRequirement": "typescript:middle-outcome-v2:3",
+      "middleFamilies": [
+        "skill-content-v1:typescript:generics:s1",
+        "skill-content-v1:typescript:generics:s2",
+        "skill-content-v1:typescript:generics:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:typescript:generics:s1",
+      "middleLine": 27,
+      "seniorLine": 67,
+      "middle": {
+        "requirementId": "typescript:middle-outcome-v2:3",
+        "outcome": "Проверить безопасную границу callback для более широкого входа",
+        "prompt": "strictFunctionTypes=true. Consumer может вызвать callback с {id:string}, включая объект без admin. Передан (x:{id:string;admin:boolean})=>x.admin. Какой контракт безопасен?",
+        "choices": [
+          "Отклонить callback с более узким параметром; принимать {id:string} и валидировать дополнительное поле внутри либо сузить контракт самого Consumer.",
+          "Приведение as делает свойство admin существующим у всех объектов.",
+          "Generics гарантируют runtime-добавление admin=false.",
+          "Сделать callback any и считать проверку исчерпывающей."
+        ],
+        "expected": "1",
+        "explanation": "Consumer вправе передать более широкий допустимый вход; обработчик не может требовать обязательное поле, не обещанное контрактом.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Сохранять soundness generic и variance контрактов",
+        "outcome": "Сохранять soundness generic и variance контрактов",
+        "requirementId": "typescript:senior-outcome-v1:3",
+        "parts": [
+          {
+            "prompt": "strictFunctionTypes:true. Вариант A: property cb:(x:{id:string})=>void; предложен обработчик (x:{id:string;admin:boolean})=>void. Введите assignable yes/no. Речь о function property, не method syntax.",
+            "expected": "no",
+            "explanation": "Контравариантная function property не может требовать более узкий вход.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "API вызывается с любым {id}. Какой callback sound?",
+            "choices": [
+              "Callback принимает широкий {id} и проверяет дополнительные поля, либо producer реально обещает обязательный admin; method bivariance этого не доказывает.",
+              "Переписать callback property как method syntax для обхода variance check, сохранив producer широкий input и заявляя обязательный admin. Добавить compile-time fixtures accepted/rejected calls и записать expected API usage; unknown JSON не логировать публично.",
+              "Сделать generic callback<T> с приведением узкого параметра и считать, что inference добавит runtime admin каждому producer объекту. Добавить compile-time fixtures accepted/rejected calls и записать expected API usage; unknown JSON не логировать публично.",
+              "Проверить admin один раз у первого вызова callback, а все следующие более широкие inputs считать доказанно такими же. Добавить compile-time fixtures accepted/rejected calls и записать expected API usage; unknown JSON не логировать публично."
+            ],
+            "expected": "1",
+            "explanation": "Методная бивариантность не доказывает наличие поля на runtime.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "react",
+      "competency": "closures",
+      "middleRequirement": "react:middle-outcome-v2:2",
+      "middleFamilies": [
+        "skill-content-v1:react:closures:s1",
+        "skill-content-v1:react:closures:s2",
+        "skill-content-v1:react:closures:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:react:closures:s1",
+      "middleLine": 34,
+      "seniorLine": 85,
+      "middle": {
+        "requirementId": "react:middle-outcome-v2:2",
+        "outcome": "Согласовать closure и identity асинхронного действия при переключении сущности",
+        "prompt": "submit создан для resume A, затем выбран B, A success пришёл позже. Draft B уже изменён. Callback memoized с [resumeId]. Как обновлять UI?",
+        "choices": [
+          "Проверить captured entity/operation identity и revision перед применением; A response не сбрасывает draft B, даже если функция была корректно создана.",
+          "Любой success сбрасывает текущий draft B, потому что useCallback гарантирует актуальную сущность.",
+          "Изменить dependencies на [] для автоматического переноса всех ответов к B.",
+          "Сделать ключ запроса постоянным для всех resume."
+        ],
+        "expected": "1",
+        "explanation": "Свежая функция при старте не делает поздний ответ актуальным для другого документа. Согласуются closure, сущность, операция и ревизия.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Отделять event-замыкания от актуальной сущности и версии",
+        "outcome": "Отделять event-замыкания от актуальной сущности и версии",
+        "requirementId": "react:senior-outcome-v1:2",
+        "parts": [
+          {
+            "prompt": "RenderR1 selected A, revision5; handler captures A/5. Потом R2 selected B, revision6. Старый handler выполняет submit(A,5), response arrives. Reducer accept iff current selected/captured identity+revision match. Введите applied yes/no.",
+            "expected": "no",
+            "explanation": "Замыкание является снимком render; свежий экран не переписывает старую closure.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "Нужно сохранить A, не теряя B draft. Какой flow?",
+            "choices": [
+              "Команда target A/baseline явна; response обновляет cache A, активный draft только при matching entity/revision/operation.",
+              "Проверять response op-id, но сбрасывать current draft независимо от entity-id; сохранение A затронет B.",
+              "Обновлять callback dependencies и считать, что это перепишет target уже отправленного запроса A.",
+              "Кэшировать response по одному editor key, не включая entity/revision; новый B получает старое server baseline A."
+            ],
+            "expected": "1",
+            "explanation": "Entity scope и current view — разные владельцы состояния.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "react",
+      "competency": "forms",
+      "middleRequirement": "react:middle-outcome-v2:5",
+      "middleFamilies": [
+        "skill-content-v1:react:forms:s1",
+        "skill-content-v1:react:forms:s2",
+        "skill-content-v1:react:forms:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:react:forms:s1",
+      "middleLine": 37,
+      "seniorLine": 94,
+      "middle": {
+        "requirementId": "react:middle-outcome-v2:5",
+        "outcome": "Согласовать асинхронное сохранение формы с более поздним локальным изменением",
+        "prompt": "Submit отправил snapshot draft revision=5; пока запрос шёл, пользователь отредактировал поле. Ответ200 относится к отправленному snapshot, сервер вернул revision=6. Что делать?",
+        "choices": [
+          "Обновить server baseline/revision отправленного snapshot, сохранить более новый локальный draft и показать несохранённые изменения; не сбрасывать их по success.",
+          "На любом200 заменить текущий draft отправленным snapshot и назвать все изменения сохранёнными.",
+          "Применить новое значение server revision к старому запросу повторно без версии.",
+          "Считать новое локальное поле автоматически отправленным предыдущим запросом."
+        ],
+        "expected": "1",
+        "explanation": "Успешно сохранён отправленный снимок, а не изменения после submit. Для следующих записей нужен обновлённый baseline и сохранённый локальный delta.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Согласовывать оптимистическую форму с конкурентным сохранением",
+        "outcome": "Согласовывать оптимистическую форму с конкурентным сохранением",
+        "requirementId": "react:senior-outcome-v1:5",
+        "parts": [
+          {
+            "prompt": "Форма baseline rev5, name='old'. Submit S1 отправил 'first'; локально стало 'second'. S1 success rev6; UI хранит server baseline отправленного snapshot и сохраняет новый local draft. Введите baseline.name|draft.name|dirty yes/no.",
+            "expected": "first|second|yes",
+            "explanation": "Success относится к отправленному snapshot, не будущим edits.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "Следующий submit должен содержать какой baseline?",
+            "choices": [
+              "Следующий submit использует подтверждённый server revision и current draft; conflict обрабатывается явно, новые локальные edits не стираются success.",
+              "Обновить server revision, но заменить current draft отправленным snapshot; более поздний local edit потеряется.",
+              "Сохранить local draft, но следующий submit отправить со старым baseline revision без конфликтной обработки. Показывать server revision и pending/error status, сохранить raw input для сравнения с отправленным snapshot.",
+              "После success обозначить форму clean, хотя local draft отличается от реально сохранённого server snapshot. Показывать server revision и pending/error status, сохранить raw input для сравнения с отправленным snapshot."
+            ],
+            "expected": "1",
+            "explanation": "Revision и dirty state обязаны отражать разные снимки.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "backend-engineering",
+      "competency": "diagnostics",
+      "middleRequirement": "backend-engineering:middle-outcome-v2:4",
+      "middleFamilies": [
+        "skill-content-v1:backend-engineering:diagnostics:s1",
+        "skill-content-v1:backend-engineering:diagnostics:s2",
+        "skill-content-v1:backend-engineering:diagnostics:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:backend-engineering:diagnostics:s2",
+      "middleLine": 44,
+      "seniorLine": 113,
+      "middle": {
+        "requirementId": "backend-engineering:middle-outcome-v2:4",
+        "outcome": "Проверить причинную гипотезу по границам trace, а не корреляции одного графика",
+        "prompt": "p95 вырос; trace показывает DB span20мс, очередь перед DB900мс, pool saturated. CPU сервиса низок. Какую проверяемую гипотезу исследовать первой?",
+        "choices": [
+          "Ожидание pool/конкурентные запросы: измерить active/waiters, границы очереди и лимиты прежде чем менять SQL.",
+          "План/объём данных запроса: измерить rows/plan и повторить профиль, не увеличивая pool вслепую.",
+          "Низкий CPU доказывает, что задержки нет.",
+          "Скрыть очередь из trace и назвать p95 нормальным."
+        ],
+        "expected": "1",
+        "explanation": "Нужно разделить время ожидания и выполнения; одно и то же итоговое p95 может иметь разные причины.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Сопоставлять SLO, наблюдаемость и причинные гипотезы",
+        "outcome": "Сопоставлять SLO, наблюдаемость и причинные гипотезы",
+        "requirementId": "backend-engineering:senior-outcome-v1:4",
+        "parts": [
+          {
+            "prompt": "Trace end-to-end500ms; queue460ms, DB20ms, network20ms. Введите долю execution без queue в ms|первую гипотезу queue/db.",
+            "expected": "40|queue",
+            "explanation": "Большая часть elapsed — ожидание, не SQL execution.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "Как проверить причинную гипотезу queue saturation?",
+            "choices": [
+              "Arrival/service rate, active/waiters и concurrency budgets; bounded intervention с ожидаемыми метриками проверяет гипотезу до blind pool/SQL изменений.",
+              "Увеличить DB pool по общему p95 без проверки downstream capacity; queue reduction предположить причинно доказанной. Показать оконные counts, deployment version и correlation ids; проводить bounded canary и сравнивать наблюдаемые outcomes.",
+              "Переписать SQL по end-to-end latency, не отделив pool wait от query execution; время ожидания считается SQL временем. Показать оконные counts, deployment version и correlation ids; проводить bounded canary и сравнивать наблюдаемые outcomes.",
+              "Добавить workers, но не admission budget и не измерять arrivals/service rate; saturation допускается перенести вниз незаметно. Показать оконные counts, deployment version и correlation ids; проводить bounded canary и сравнивать наблюдаемые outcomes."
+            ],
+            "expected": "1",
+            "explanation": "Наблюдаемая корреляция требует проверяемой причинной гипотезы.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "frontend-engineering",
+      "competency": "state-model",
+      "middleRequirement": "frontend-engineering:middle-outcome-v2:1",
+      "middleFamilies": [
+        "skill-content-v1:frontend-engineering:state-model:s1",
+        "skill-content-v1:frontend-engineering:state-model:s2",
+        "skill-content-v1:frontend-engineering:state-model:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:frontend-engineering:state-model:s1",
+      "middleLine": 49,
+      "seniorLine": 124,
+      "middle": {
+        "requirementId": "frontend-engineering:middle-outcome-v2:1",
+        "outcome": "Согласовать серверную ревизию, более новый draft и identity ответа",
+        "prompt": "Save A отправлен для CV1 revision=5; затем выбран CV2 и изменён draft. Пришёл A200 с revision=6. Как обработать?",
+        "choices": [
+          "Сохранить результат/baseline только в CV1, не подменять CV2; текущий draft и feedback относятся к выбранному context/operation.",
+          "Глобально заменить текущий draft CV2 содержимым A и показать сохранено.",
+          "Считать server revision одинаковой для всех CV аккаунта.",
+          "Очистить все локальные черновики при любом200."
+        ],
+        "expected": "1",
+        "explanation": "Server state, локальный draft и выбранный context имеют собственные identity. Поздний success не должен стирать другой рабочий документ.",
+        "responseType": "integer"
+      },
+      "senior": {
+        "title": "Senior · Строить согласованную модель клиентских операций и ревизий",
+        "outcome": "Строить согласованную модель клиентских операций и ревизий",
+        "requirementId": "frontend-engineering:senior-outcome-v1:1",
+        "parts": [
+          {
+            "prompt": "Editor CVA baseline rev5, draft x; send op1 x. User switches CVB and changes y. op1 success A rev6. Reducer namespaces entity/draft/operation. Введите A server revision|B draft|B dirty yes/no.",
+            "expected": "6|y|yes",
+            "explanation": "Успех A обновляет baseline A, не current draft B.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "Как хранить сущности и derived view без противоречивых копий?",
+            "choices": [
+              "Entity store плюс per-entity draft/baseline/revision/op identity; counters derived из актуального snapshot, без второй вручную обновляемой истины.",
+              "Namespace server cache по entity, но держать один global draft; success A сбрасывает draft активного B. Сохранить baseline/op audit-id, отдельно показать pending/dirty и добавить видимый error action без удаления введённого текста.",
+              "Сохранять per-entity draft, но derived counters обновлять вручную из каждого response без версии authoritative snapshot. Сохранить baseline/op audit-id, отдельно показать pending/dirty и добавить видимый error action без удаления введённого текста.",
+              "После op success обновить current baseline независимо от captured entity/revision и считать самый поздний arrival актуальным."
+            ],
+            "expected": "1",
+            "explanation": "Модель должна разделять authoritative baseline, локальные изменения и представление.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    },
+    {
+      "skill": "frontend-engineering",
+      "competency": "accessibility",
+      "middleRequirement": "frontend-engineering:middle-outcome-v2:2",
+      "middleFamilies": [
+        "skill-content-v1:frontend-engineering:accessibility:s1",
+        "skill-content-v1:frontend-engineering:accessibility:s2",
+        "skill-content-v1:frontend-engineering:accessibility:s3"
+      ],
+      "seniorFamily": "skill-senior-content-v1:frontend-engineering:accessibility:s1",
+      "middleLine": 50,
+      "seniorLine": 127,
+      "middle": {
+        "requirementId": "frontend-engineering:middle-outcome-v2:2",
+        "outcome": "Проследить вложенные диалоги и возврат фокуса после удаления opener",
+        "prompt": "Фокус=openA; открыть диалог A→aFirst; из A открыть B→bFirst; закрыть B→opener в A удалён, fallback aHeading; закрыть A→openA. Введите три focus после openB,closeB,closeA.",
+        "expected": "bFirst|aHeading|openA",
+        "explanation": "Верхний диалог управляет trap. При закрытии восстанавливается допустимый фокус нижнего слоя; удалённый opener требует объявленного fallback.",
+        "responseType": "text"
+      },
+      "senior": {
+        "title": "Senior · Сохранять доступность в динамических составных интерфейсах",
+        "outcome": "Сохранять доступность в динамических составных интерфейсах",
+        "requirementId": "frontend-engineering:senior-outcome-v1:2",
+        "parts": [
+          {
+            "prompt": "Dialog открыт buttonB; nested popover из C rendered в portal. Во время открытия C удалён, доступный fallback popover — D внутри dialog. B остался mounted/enabled. Контракт Escape закрывает только верхний слой за одно нажатие и возвращает focus к живому trigger либо его fallback. Два Escape подряд. Введите focus после первого|после второго|оставшихся overlays.",
+            "expected": "D|B|0",
+            "explanation": "Первый Escape закрывает popover, оставляя dialog и его focus scope; второй восстанавливает page focus. Удалённый trigger не является допустимой focus-целью.",
+            "responseType": "text"
+          },
+          {
+            "prompt": "Dialog содержит background form и nested popover. Как обеспечить keyboard/touch semantics?",
+            "choices": [
+              "Dialog: имя, inert background, focus trap/return к живому trigger/fallback; Escape только верхний portal, outside по ownership.",
+              "Dialog имеет accessible name и focus trap, но Escape одновременно закрывает nested popover и dialog, а focus остаётся на удалённом node.",
+              "Задать aria-modal=true без inert/focus management background; semantic flag считается блокировкой всех keyboard interactions. Дополнительно измерять contrast полей и кнопок в обеих темах; проверить порядок доступных keyboard shortcuts и скорость появления popover.",
+              "Outside-click слушать только DOM containment dialog, не учитывая portal child; действие inside portal считается внешним до выполнения. Дополнительно измерять contrast полей и кнопок в обеих темах; проверить порядок доступных keyboard shortcuts и скорость появления popover."
+            ],
+            "expected": "1",
+            "explanation": "Portal ownership, event propagation и focus lifecycle должны быть согласованы.",
+            "responseType": "integer"
+          }
+        ]
+      }
+    }
+  ]
+}

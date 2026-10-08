@@ -4,6 +4,8 @@ Version: `resume-catalog-v2-confirmed-first`, 2026-10-07, Signal 0.6.0. This doc
 
 ## Ownership and explicit selection
 
+The [17 written FSP answers, 2026-10-07](official-written-qa-20261007.md) clarify requirements without changing this API: a category can be specialization plus verified grade (B12), multiple categories are optional (B6), and experience or a self-declared grade does not certify qualification (B5/B13). B8 permits real names and employment history; it does not require publishing private résumés or removing candidate visibility choices. Account contact fields still require the existing addressed consent. B1 keeps FSP influence within a confirmed category, with equal standing for sporting disciplines; the team's ranking weights and current source trust checks are not prescribed by that answer.
+
 Candidate account identity and contacts remain account-level. Professional fields come from exactly one undeleted `signal_candidate_resumes.id`; `resumeRevision` identifies its content revision. All employer reads require an employer session and the exact server-owned demo/ordinary and reviewer scope. Common demo accounts have a null reviewer scope and cannot see individual reviewer cohorts; a reviewer sees only their paired cohort. Ordinary accounts keep the ordinary null scope. No request parameter or header can select another scope. Integer IDs have PostgreSQL signed 32-bit bounds. Catalogue publication uses the new `consentCatalog`, initially false; legacy `consentMatching` continues to admit the first migrated résumé to need-based matching. Neither consent exposes contacts.
 
 - `GET /api/me/evidence?resumeId=ID`: candidate owner only, safe applicable evidence for that résumé, 400 without an explicit ID, 404 for a foreign/deleted ID.

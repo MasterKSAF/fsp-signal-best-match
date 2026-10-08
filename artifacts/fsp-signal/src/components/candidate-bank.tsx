@@ -1,3 +1,8 @@
+import { evidenceNoteForDisplay } from '../lib/qualification-presentation';
+import { SkillChips, employerSkillChips } from './skill-chip';
+import { qualificationGradeLabel } from '../lib/qualification-presentation';
+import { InlineInfo } from './inline-info';
+import { ResumeDocumentButton } from './my-resumes';
 import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
@@ -17,6 +22,8 @@ import {WORK_FORMAT_OPTIONS} from '@/lib/professional-dictionaries';
 import "./candidate-bank.css";
 
 type SkillProof = {
+  level?: string;
+  sourceType?: string;
   skill: string;
   date: string | null;
   criterion: string | null;
@@ -62,6 +69,8 @@ type BankCandidate = ResumeSummary & {
   >[];
   badges: { id: string; label: string; skills: SkillProof[]; note: string }[];
   skillEvidence: SkillProof[];
+  categoryEvidence?:{grade:string}|null;
+  qualificationBasis?:unknown;
   whySuitable?: string[];
 };
 type BankResponse = {
@@ -157,14 +166,15 @@ function SpecialistCard({ initial }: { initial: BankCandidate }) {
         )
       ) : (
         <>
+          <ResumeDocumentButton resumeId={candidate.resumeId} label="Резюме и документы"/>
           <div className="bank-category">
             {candidate.confirmationStatus==='confirmed'?<BadgeCheck size={17}/>:<CircleHelp size={17}/>}
             <strong>
               {candidate.specialization} ·{" "}
-              {candidate.verifiedGrade ?? "Без подтверждённого грейда"}
+              {qualificationGradeLabel({verifiedGrade:candidate.verifiedGrade,source:candidate.categoryEvidence?.grade===candidate.verifiedGrade?'skill_matrix':candidate.qualificationBasis?'assessment':'legacy'})}
             </strong>
           </div>
-          {candidate.confirmationStatus==='unconfirmed'&&<div className="bank-qualification-nextstep"><CircleHelp size={17}/><p>Резюме доступно в каталоге. Для подбора и обычного приглашения кандидату нужно пройти квалификационный экзамен Signal по направлению «{candidate.qualificationNextStep?.specialization??candidate.specialization}».</p></div>}
+          {candidate.confirmationStatus==='unconfirmed'&&<div className="bank-qualification-nextstep"><CircleHelp size={17}/><span>Для подбора нужно подтверждение грейда.</span><InlineInfo label="Доступность подбора">Кандидату нужно подтвердить грейд в Signal по направлению «{candidate.qualificationNextStep?.specialization??candidate.specialization}». Резюме уже доступно в каталоге.</InlineInfo></div>}
           <div className="bank-achievements">
             {candidate.badges.map((badge) => (
               <details
@@ -203,22 +213,7 @@ function SpecialistCard({ initial }: { initial: BankCandidate }) {
               </details>
             ))}
           </div>
-          <div className="bank-skill-list" aria-label="Подтверждённые навыки">
-            {candidate.verifiedSkills.length ? (
-              candidate.verifiedSkills.map((skill) => (
-                <span className="badge badge-verified" key={skill}>
-                  <BadgeCheck size={12} />
-                  {skill}
-                </span>
-              ))
-            ) : (
-              <small>Подтверждённых навыков пока нет</small>
-            )}
-          </div>
-          <p className="bank-stack">
-            <span>Указано кандидатом</span>
-            {candidate.stack.join(" · ") || "Стек не указан"}
-          </p>
+          <div className="bank-skill-list" aria-label="Навыки"><SkillChips items={employerSkillChips(candidate.stack,candidate.skillEvidence)} limit={8}/></div>
           <dl className="bank-facts">
             <dt>Опыт со слов кандидата</dt>
             <dd>{candidate.yearsExperience} лет</dd>
@@ -263,7 +258,7 @@ function SpecialistCard({ initial }: { initial: BankCandidate }) {
                     <strong>{proof.skill}</strong> · {fmt(proof.date)}
                     <p>
                       {proof.criterion ?? "Сохранённое подтверждение"}
-                      {proof.limitation && ` · ${proof.limitation}`}
+                      {evidenceNoteForDisplay(proof.limitation) && ` · ${evidenceNoteForDisplay(proof.limitation)}`}
                     </p>
                   </li>
                 ))}
@@ -350,11 +345,10 @@ export function CandidateBankPage() {
       <div className="page-title">
         <div>
           <div className="eyebrow">ПОИСК СПЕЦИАЛИСТОВ</div>
-          <h1>Каталог специалистов</h1>
-          <p>
+          <h1>Каталог специалистов<InlineInfo label="О каталоге специалистов">
             Один человек — одна карточка. Навыки и условия относятся к
             выбранному резюме. Сначала — кандидаты с подтверждённым грейдом.
-          </p>
+          </InlineInfo></h1>
         </div>
         <Link className="button secondary" href="/employer/matches">
           Подбор под потребность <ArrowRight size={16} />
@@ -468,11 +462,11 @@ export function CandidateBankPage() {
               ? `Найдено людей: ${query.data.total}`
               : ""}
         </span>
+        {query.data && <InlineInfo label="Порядок специалистов в каталоге">{query.data.orderNote}</InlineInfo>}
         <span>
-          <ShieldCheck size={15} /> Контакты доступны по отдельному согласию
+          <ShieldCheck size={15} /><InlineInfo label="Доступ к контактам">Контакты доступны по отдельному согласию кандидата.</InlineInfo>
         </span>
       </div>
-      {query.data && <p className="bank-order-note">{query.data.orderNote}</p>}
       {query.data&&<div className="bank-confirmation-summary" aria-label="Подтверждения после фильтров"><span className="badge badge-verified"><BadgeCheck size={13}/> С грейдом: {query.data.confirmedTotal}</span><span className="badge badge-neutral"><CircleHelp size={13}/> Без грейда: {query.data.unconfirmedTotal}</span></div>}
       {query.isError ? (
         <div className="state-panel error-panel" role="alert">

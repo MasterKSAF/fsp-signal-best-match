@@ -25,6 +25,8 @@ services:
       PORT: 4310
       HOST: 0.0.0.0
       DEMO_MODE: "true"
+      SIGNAL_WORKSPACE_ENABLED: "true"
+      SIGNAL_SKILL_MODULES_ENABLED: "true"
       MAILPIT_URL: http://mail:8025
       PUBLIC_URL: http://localhost:${SIGNAL_HTTP_PORT:-4310}
       VERIFICATION_TOKEN_SECRET: ${VERIFICATION_TOKEN_SECRET:?Run node scripts/setup-env.mjs first}

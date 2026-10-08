@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import {
   useMutation,
@@ -21,6 +21,7 @@ import type {
 
 import type {
   AddressedContact,
+  ApiError,
   ApiErrorResponse,
   AppealEmployerRestriction200,
   AppealEmployerRestrictionBody,
@@ -35,6 +36,7 @@ import type {
   CandidateEvidenceRegistry,
   CandidateProfile,
   CandidateProfileInput,
+  CandidateProfileRevisionConflict,
   CandidateResume,
   CandidateResumeInput,
   CatalogCandidate,
@@ -60,6 +62,7 @@ import type {
   EnrollResearchStudyInput,
   ErrorResponse,
   EvaluateMicrotaskInput,
+  ExportAccessibleJobsParams,
   ExportResearchMeasurements200,
   ExportResearchPrivateResponses200,
   FreezeResearchIndependentGroup200,
@@ -86,7 +89,13 @@ import type {
   GetResearchBlindReviewPacket200,
   GetResearchOriginalReviews200,
   GetResearchStudy200,
+  GetResumeAnalytics200,
+  GetResumeDocumentPreviewParams,
+  GetResumeDocumentdocxParams,
+  GetResumeDocumentpdfParams,
   GetSkillCoverageParams,
+  GetSkillModuleMatrixParams,
+  GetSkillModuleQualificationParams,
   GetTrustStatus200,
   HealthStatus,
   ImportResearchIndependentReview201,
@@ -112,7 +121,7 @@ import type {
   MatchCandidate,
   MatchExplanation,
   Message,
-  MicrotaskEligibleResume,
+  MicrotaskEligibleResumePage,
   MicrotaskInput,
   MicrotaskOffer,
   MicrotaskSubscription,
@@ -120,15 +129,18 @@ import type {
   ModerationDecisionInput,
   OpportunityError,
   OpportunityMessage,
+  OwnedAccount,
   OwnedResume,
   OwnedResumeList,
   QualityReport,
   RegistrationInput,
   RegistrationResult,
+  RequestFspImportBody,
   ResearchError,
   ResearchReport,
   ResearchReviewInput,
   ResearchStudyInput,
+  ResumeDocumentPreview,
   ResumeMetadata,
   ResumePairComparison,
   RevokeResearchStudy200,
@@ -136,6 +148,12 @@ import type {
   SaveOwnedResumeBody,
   SaveResearchAnswers200,
   SaveResearchAnswersInput,
+  SaveResumeWorkPreferences200,
+  SaveResumeWorkPreferencesBody,
+  SaveSkillModuleAnswers200,
+  SearchAccessibleJobsParams,
+  SearchCandidateApplicationsParams,
+  SearchCandidateInvitationsParams,
   SetApplicationStatus200,
   SetApplicationStatusInput,
   SetCompanyBlock200,
@@ -145,18 +163,30 @@ import type {
   SetMicrotaskPreference200,
   SetMicrotaskPreferenceInput,
   SetMyMicrotaskSubscriptionInput,
+  SetSkillModuleTarget200,
+  SetSkillModuleTargetBody,
   ShareMicrotaskResultInput,
   SkillCoverageResult,
   SkillDictionary,
+  SkillModuleAnswersInput,
+  SkillModuleAttempt,
+  SkillModuleMatrix,
+  SkillModuleQualification,
+  SkillModuleStartInput,
   StartResearchAttempt200,
+  StartSkillModuleAttempt200,
+  StartSkillModuleAttempt201,
   SubmitAssessmentAttemptParams,
   SubmitComplaint201,
   SubmitMicrotaskInput,
   SubmitResearchAttempt200,
+  SubmitSkillModuleAttempt200,
   SubscribeCandidateMicrotaskInput,
   UnifiedErrorResponseResponse,
+  UpdateOwnedAccountBody,
   UploadCandidateAvatar200,
-  UploadCandidateAvatarBody
+  UploadCandidateAvatarBody,
+  WorkspaceSearchPage
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -1181,6 +1211,9 @@ export const getSaveCandidateProfileUrl = () => {
   return `/api/me/candidate-profile`
 }
 
+/**
+ * Save one explicitly addressed owned CV and shared identity atomically. Body resumeId and both current CV revision and identityRevision from an owner GET are mandatory; query resumeId alone never selects a CV for writes. A stale version returns409 before any field changes.
+ */
 export const saveCandidateProfile = async (candidateProfileInput: CandidateProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<CandidateProfile> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
@@ -1212,7 +1245,7 @@ return customFetch<CandidateProfile>(getSaveCandidateProfileUrl(),
 
 export const getSaveCandidateProfileMutationKey = () => ['saveCandidateProfile'] as const;
 
-export const getSaveCandidateProfileMutationOptions = <TError = ErrorType<ApiErrorResponse>,
+export const getSaveCandidateProfileMutationOptions = <TError = ErrorType<ApiErrorResponse | CandidateProfileRevisionConflict>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveCandidateProfile>>, TError,SaveCandidateProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof saveCandidateProfile>>, TError,SaveCandidateProfileMutationVariables, TContext> => {
 
@@ -1241,10 +1274,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SaveCandidateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof saveCandidateProfile>>>
     export type SaveCandidateProfileMutationBody = BodyType<CandidateProfileInput>
-    export type SaveCandidateProfileMutationError = ErrorType<ApiErrorResponse>
+    export type SaveCandidateProfileMutationError = ErrorType<ApiErrorResponse | CandidateProfileRevisionConflict>
     export type SaveCandidateProfileMutationVariables = {data: BodyType<CandidateProfileInput>}
 
-    export const useSaveCandidateProfile = <TError = ErrorType<ApiErrorResponse>,
+    export const useSaveCandidateProfile = <TError = ErrorType<ApiErrorResponse | CandidateProfileRevisionConflict>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveCandidateProfile>>, TError,SaveCandidateProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof saveCandidateProfile>>,
@@ -1556,6 +1589,9 @@ export const getStartAssessmentAttemptUrl = () => {
   return `/api/assessments/attempts`
 }
 
+/**
+ * New legacy issuance is closed under read_complete_only regardless of feature flags. An already open owned attempt may be resumed; use skill-attempts for new modular checks.
+ */
 export const startAssessmentAttempt = async (assessmentStartInput: AssessmentStartInput, options?: Parameters<typeof customFetch>[1]): Promise<AssessmentAttempt> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
@@ -2936,8 +2972,8 @@ export const getSaveFspConnectionUrl = () => {
 }
 
 /**
- * Repeated identical requests preserve timestamps. A user-entered ID remains pending and gives no ranking bonus. Only FSP-DEMO-2026 in a demo account with DEMO_MODE=true imports synthetic achievements. Identifiers are not globally reserved until identity verification exists.
- * @summary Save an FSP ID with explicit import consent
+ * Accepts only fspId. Each save records a fresh requestedAt and clears previous external proof and consent. Every entered ID, including FSP-DEMO-2026, remains pending with no achievements or ranking bonus. Saving does not call a registry, verify identity, grant import consent or reserve the ID globally.
+ * @summary Save an opaque FSP ID without importing results
  */
 export const saveFspConnection = async (fspConnectionInput: FspConnectionInput, options?: Parameters<typeof customFetch>[1]): Promise<FspConnection> => {
 
@@ -3003,7 +3039,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type SaveFspConnectionMutationVariables = {data: BodyType<FspConnectionInput>}
 
     /**
- * @summary Save an FSP ID with explicit import consent
+ * @summary Save an opaque FSP ID without importing results
  */
 export const useSaveFspConnection = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveFspConnection>>, TError,SaveFspConnectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -5406,9 +5442,9 @@ export const getListMicrotaskEligibleCandidatesUrl = (params?: ListMicrotaskElig
 /**
  * @summary Visible consenting qualified resumes with voluntary person-level practice opt-in
  */
-export const listMicrotaskEligibleCandidates = async (params?: ListMicrotaskEligibleCandidatesParams, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskEligibleResume[]> => {
+export const listMicrotaskEligibleCandidates = async (params?: ListMicrotaskEligibleCandidatesParams, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskEligibleResumePage> => {
 
-  return customFetch<MicrotaskEligibleResume[]>(getListMicrotaskEligibleCandidatesUrl(params),
+  return customFetch<MicrotaskEligibleResumePage>(getListMicrotaskEligibleCandidatesUrl(params),
   {
     ...options,
     method: 'GET'
@@ -6574,7 +6610,8 @@ export const getCreateResearchStudyUrl = () => {
 }
 
 /**
- * @summary Operator creates study and freezes A/B forms, versions and rubric
+ * Current read_complete_only policy returns 409 for new studies. Existing results and already open attempts remain accessible to their authorized users.
+ * @summary Historical study creation endpoint; new legacy forms are closed
  */
 export const createResearchStudy = async (researchStudyInput: ResearchStudyInput, options?: Parameters<typeof customFetch>[1]): Promise<CreateResearchStudy201> => {
 
@@ -6640,7 +6677,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type CreateResearchStudyMutationVariables = {data: BodyType<ResearchStudyInput>}
 
     /**
- * @summary Operator creates study and freezes A/B forms, versions and rubric
+ * @summary Historical study creation endpoint; new legacy forms are closed
  */
 export const useCreateResearchStudy = <TError = ErrorType<ResearchError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createResearchStudy>>, TError,CreateResearchStudyMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -9884,4 +9921,1711 @@ export function useCompareResumePair<TData = Awaited<ReturnType<typeof compareRe
 
 
 
+
+export const getGetSkillModuleMatrixUrl = (params?: GetSkillModuleMatrixParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/skill-matrix?${stringifiedParams}` : `/api/me/skill-matrix`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getSkillModuleMatrix = async (params?: GetSkillModuleMatrixParams, options?: Parameters<typeof customFetch>[1]): Promise<SkillModuleMatrix> => {
+
+  return customFetch<SkillModuleMatrix>(getGetSkillModuleMatrixUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSkillModuleMatrixQueryKey = (params?: GetSkillModuleMatrixParams,) => {
+    return [
+    `/api/me/skill-matrix`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSkillModuleMatrixQueryOptions = <TData = Awaited<ReturnType<typeof getSkillModuleMatrix>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params?: GetSkillModuleMatrixParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleMatrix>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSkillModuleMatrixQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSkillModuleMatrix>>> = ({ signal }) => getSkillModuleMatrix(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleMatrix>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSkillModuleMatrixQueryResult = NonNullable<Awaited<ReturnType<typeof getSkillModuleMatrix>>>
+export type GetSkillModuleMatrixQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetSkillModuleMatrix<TData = Awaited<ReturnType<typeof getSkillModuleMatrix>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params?: GetSkillModuleMatrixParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleMatrix>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSkillModuleMatrixQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetSkillModuleQualificationUrl = (params: GetSkillModuleQualificationParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/skill-qualification?${stringifiedParams}` : `/api/me/skill-qualification`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getSkillModuleQualification = async (params: GetSkillModuleQualificationParams, options?: Parameters<typeof customFetch>[1]): Promise<SkillModuleQualification> => {
+
+  return customFetch<SkillModuleQualification>(getGetSkillModuleQualificationUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSkillModuleQualificationQueryKey = (params?: GetSkillModuleQualificationParams,) => {
+    return [
+    `/api/me/skill-qualification`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetSkillModuleQualificationQueryOptions = <TData = Awaited<ReturnType<typeof getSkillModuleQualification>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params: GetSkillModuleQualificationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleQualification>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSkillModuleQualificationQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSkillModuleQualification>>> = ({ signal }) => getSkillModuleQualification(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleQualification>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSkillModuleQualificationQueryResult = NonNullable<Awaited<ReturnType<typeof getSkillModuleQualification>>>
+export type GetSkillModuleQualificationQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetSkillModuleQualification<TData = Awaited<ReturnType<typeof getSkillModuleQualification>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params: GetSkillModuleQualificationParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleQualification>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSkillModuleQualificationQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSetSkillModuleTargetUrl = () => {
+
+
+
+
+  return `/api/me/skill-target`
+}
+
+/**
+ * Change one owned resume declared target with revision conflict protection; it grants no qualification.
+ */
+export const setSkillModuleTarget = async (setSkillModuleTargetBody: SetSkillModuleTargetBody, options?: Parameters<typeof customFetch>[1]): Promise<SetSkillModuleTarget200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SetSkillModuleTarget200>(getSetSkillModuleTargetUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(setSkillModuleTargetBody)
+  }
+);}
+
+
+
+
+
+export const getSetSkillModuleTargetMutationKey = () => ['setSkillModuleTarget'] as const;
+
+export const getSetSkillModuleTargetMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setSkillModuleTarget>>, TError,SetSkillModuleTargetMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setSkillModuleTarget>>, TError,SetSkillModuleTargetMutationVariables, TContext> => {
+
+const mutationKey = getSetSkillModuleTargetMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setSkillModuleTarget>>, SetSkillModuleTargetMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  setSkillModuleTarget(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetSkillModuleTargetMutationResult = NonNullable<Awaited<ReturnType<typeof setSkillModuleTarget>>>
+    export type SetSkillModuleTargetMutationBody = BodyType<SetSkillModuleTargetBody>
+    export type SetSkillModuleTargetMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type SetSkillModuleTargetMutationVariables = {data: BodyType<SetSkillModuleTargetBody>}
+
+    export const useSetSkillModuleTarget = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setSkillModuleTarget>>, TError,SetSkillModuleTargetMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setSkillModuleTarget>>,
+        TError,
+        SetSkillModuleTargetMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSetSkillModuleTargetMutationOptions(options));
+    }
+
+export const getStartSkillModuleAttemptUrl = () => {
+
+
+
+
+  return `/api/me/skill-attempts`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const startSkillModuleAttempt = async (skillModuleStartInput: SkillModuleStartInput, options?: Parameters<typeof customFetch>[1]): Promise<StartSkillModuleAttempt200 | StartSkillModuleAttempt201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<StartSkillModuleAttempt200 | StartSkillModuleAttempt201>(getStartSkillModuleAttemptUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(skillModuleStartInput)
+  }
+);}
+
+
+
+
+
+export const getStartSkillModuleAttemptMutationKey = () => ['startSkillModuleAttempt'] as const;
+
+export const getStartSkillModuleAttemptMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startSkillModuleAttempt>>, TError,StartSkillModuleAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startSkillModuleAttempt>>, TError,StartSkillModuleAttemptMutationVariables, TContext> => {
+
+const mutationKey = getStartSkillModuleAttemptMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startSkillModuleAttempt>>, StartSkillModuleAttemptMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  startSkillModuleAttempt(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartSkillModuleAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof startSkillModuleAttempt>>>
+    export type StartSkillModuleAttemptMutationBody = BodyType<SkillModuleStartInput>
+    export type StartSkillModuleAttemptMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type StartSkillModuleAttemptMutationVariables = {data: BodyType<SkillModuleStartInput>}
+
+    export const useStartSkillModuleAttempt = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startSkillModuleAttempt>>, TError,StartSkillModuleAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startSkillModuleAttempt>>,
+        TError,
+        StartSkillModuleAttemptMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartSkillModuleAttemptMutationOptions(options));
+    }
+
+export const getGetSkillModuleAttemptUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/skill-attempts/${id}`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getSkillModuleAttempt = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<SkillModuleAttempt> => {
+
+  return customFetch<SkillModuleAttempt>(getGetSkillModuleAttemptUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetSkillModuleAttemptQueryKey = (id: number,) => {
+    return [
+    `/api/me/skill-attempts/${id}`
+    ] as const;
+    }
+
+
+export const getGetSkillModuleAttemptQueryOptions = <TData = Awaited<ReturnType<typeof getSkillModuleAttempt>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleAttempt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSkillModuleAttemptQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSkillModuleAttempt>>> = ({ signal }) => getSkillModuleAttempt(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleAttempt>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSkillModuleAttemptQueryResult = NonNullable<Awaited<ReturnType<typeof getSkillModuleAttempt>>>
+export type GetSkillModuleAttemptQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetSkillModuleAttempt<TData = Awaited<ReturnType<typeof getSkillModuleAttempt>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSkillModuleAttempt>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSkillModuleAttemptQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveSkillModuleAnswersUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/skill-attempts/${id}/answers`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const saveSkillModuleAnswers = async (id: number,
+    skillModuleAnswersInput: SkillModuleAnswersInput, options?: Parameters<typeof customFetch>[1]): Promise<SaveSkillModuleAnswers200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveSkillModuleAnswers200>(getSaveSkillModuleAnswersUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(skillModuleAnswersInput)
+  }
+);}
+
+
+
+
+
+export const getSaveSkillModuleAnswersMutationKey = () => ['saveSkillModuleAnswers'] as const;
+
+export const getSaveSkillModuleAnswersMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveSkillModuleAnswers>>, TError,SaveSkillModuleAnswersMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveSkillModuleAnswers>>, TError,SaveSkillModuleAnswersMutationVariables, TContext> => {
+
+const mutationKey = getSaveSkillModuleAnswersMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveSkillModuleAnswers>>, SaveSkillModuleAnswersMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  saveSkillModuleAnswers(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveSkillModuleAnswersMutationResult = NonNullable<Awaited<ReturnType<typeof saveSkillModuleAnswers>>>
+    export type SaveSkillModuleAnswersMutationBody = BodyType<SkillModuleAnswersInput>
+    export type SaveSkillModuleAnswersMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type SaveSkillModuleAnswersMutationVariables = {id: number;data: BodyType<SkillModuleAnswersInput>}
+
+    export const useSaveSkillModuleAnswers = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveSkillModuleAnswers>>, TError,SaveSkillModuleAnswersMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveSkillModuleAnswers>>,
+        TError,
+        SaveSkillModuleAnswersMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveSkillModuleAnswersMutationOptions(options));
+    }
+
+export const getSubmitSkillModuleAttemptUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/skill-attempts/${id}/submit`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const submitSkillModuleAttempt = async (id: number,
+    skillModuleAnswersInput: SkillModuleAnswersInput, options?: Parameters<typeof customFetch>[1]): Promise<SubmitSkillModuleAttempt200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SubmitSkillModuleAttempt200>(getSubmitSkillModuleAttemptUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(skillModuleAnswersInput)
+  }
+);}
+
+
+
+
+
+export const getSubmitSkillModuleAttemptMutationKey = () => ['submitSkillModuleAttempt'] as const;
+
+export const getSubmitSkillModuleAttemptMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitSkillModuleAttempt>>, TError,SubmitSkillModuleAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitSkillModuleAttempt>>, TError,SubmitSkillModuleAttemptMutationVariables, TContext> => {
+
+const mutationKey = getSubmitSkillModuleAttemptMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitSkillModuleAttempt>>, SubmitSkillModuleAttemptMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  submitSkillModuleAttempt(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitSkillModuleAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof submitSkillModuleAttempt>>>
+    export type SubmitSkillModuleAttemptMutationBody = BodyType<SkillModuleAnswersInput>
+    export type SubmitSkillModuleAttemptMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type SubmitSkillModuleAttemptMutationVariables = {id: number;data: BodyType<SkillModuleAnswersInput>}
+
+    export const useSubmitSkillModuleAttempt = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitSkillModuleAttempt>>, TError,SubmitSkillModuleAttemptMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitSkillModuleAttempt>>,
+        TError,
+        SubmitSkillModuleAttemptMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSubmitSkillModuleAttemptMutationOptions(options));
+    }
+
+export const getGetResumeDocumentPreviewUrl = (id: number,
+    params?: GetResumeDocumentPreviewParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/resumes/${id}/document-preview?${stringifiedParams}` : `/api/resumes/${id}/document-preview`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getResumeDocumentPreview = async (id: number,
+    params?: GetResumeDocumentPreviewParams, options?: Parameters<typeof customFetch>[1]): Promise<ResumeDocumentPreview> => {
+
+  return customFetch<ResumeDocumentPreview>(getGetResumeDocumentPreviewUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetResumeDocumentPreviewQueryKey = (id: number,
+    params?: GetResumeDocumentPreviewParams,) => {
+    return [
+    `/api/resumes/${id}/document-preview`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetResumeDocumentPreviewQueryOptions = <TData = Awaited<ReturnType<typeof getResumeDocumentPreview>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number,
+    params?: GetResumeDocumentPreviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetResumeDocumentPreviewQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getResumeDocumentPreview>>> = ({ signal }) => getResumeDocumentPreview(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentPreview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetResumeDocumentPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof getResumeDocumentPreview>>>
+export type GetResumeDocumentPreviewQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetResumeDocumentPreview<TData = Awaited<ReturnType<typeof getResumeDocumentPreview>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number,
+    params?: GetResumeDocumentPreviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetResumeDocumentPreviewQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRecordAuthorizedResumeViewUrl = (id: number,) => {
+
+
+
+
+  return `/api/resumes/${id}/view`
+}
+
+/**
+ * Explicit user-triggered employer view. Owners and prefetch never count; UTC daily deduplication.
+ */
+export const recordAuthorizedResumeView = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getRecordAuthorizedResumeViewUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRecordAuthorizedResumeViewMutationKey = () => ['recordAuthorizedResumeView'] as const;
+
+export const getRecordAuthorizedResumeViewMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordAuthorizedResumeView>>, TError,RecordAuthorizedResumeViewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof recordAuthorizedResumeView>>, TError,RecordAuthorizedResumeViewMutationVariables, TContext> => {
+
+const mutationKey = getRecordAuthorizedResumeViewMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recordAuthorizedResumeView>>, RecordAuthorizedResumeViewMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  recordAuthorizedResumeView(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RecordAuthorizedResumeViewMutationResult = NonNullable<Awaited<ReturnType<typeof recordAuthorizedResumeView>>>
+
+    export type RecordAuthorizedResumeViewMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type RecordAuthorizedResumeViewMutationVariables = {id: number}
+
+    export const useRecordAuthorizedResumeView = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recordAuthorizedResumeView>>, TError,RecordAuthorizedResumeViewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof recordAuthorizedResumeView>>,
+        TError,
+        RecordAuthorizedResumeViewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRecordAuthorizedResumeViewMutationOptions(options));
+    }
+
+export const getGetResumeAnalyticsUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/resumes/${id}/analytics`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getResumeAnalytics = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<GetResumeAnalytics200> => {
+
+  return customFetch<GetResumeAnalytics200>(getGetResumeAnalyticsUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetResumeAnalyticsQueryKey = (id: number,) => {
+    return [
+    `/api/me/resumes/${id}/analytics`
+    ] as const;
+    }
+
+
+export const getGetResumeAnalyticsQueryOptions = <TData = Awaited<ReturnType<typeof getResumeAnalytics>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetResumeAnalyticsQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getResumeAnalytics>>> = ({ signal }) => getResumeAnalytics(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getResumeAnalytics>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetResumeAnalyticsQueryResult = NonNullable<Awaited<ReturnType<typeof getResumeAnalytics>>>
+export type GetResumeAnalyticsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetResumeAnalytics<TData = Awaited<ReturnType<typeof getResumeAnalytics>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetResumeAnalyticsQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveResumeWorkPreferencesUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/resumes/${id}/work-preferences`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const saveResumeWorkPreferences = async (id: number,
+    saveResumeWorkPreferencesBody: SaveResumeWorkPreferencesBody, options?: Parameters<typeof customFetch>[1]): Promise<SaveResumeWorkPreferences200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveResumeWorkPreferences200>(getSaveResumeWorkPreferencesUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(saveResumeWorkPreferencesBody)
+  }
+);}
+
+
+
+
+
+export const getSaveResumeWorkPreferencesMutationKey = () => ['saveResumeWorkPreferences'] as const;
+
+export const getSaveResumeWorkPreferencesMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveResumeWorkPreferences>>, TError,SaveResumeWorkPreferencesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveResumeWorkPreferences>>, TError,SaveResumeWorkPreferencesMutationVariables, TContext> => {
+
+const mutationKey = getSaveResumeWorkPreferencesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveResumeWorkPreferences>>, SaveResumeWorkPreferencesMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  saveResumeWorkPreferences(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveResumeWorkPreferencesMutationResult = NonNullable<Awaited<ReturnType<typeof saveResumeWorkPreferences>>>
+    export type SaveResumeWorkPreferencesMutationBody = BodyType<SaveResumeWorkPreferencesBody>
+    export type SaveResumeWorkPreferencesMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type SaveResumeWorkPreferencesMutationVariables = {id: number;data: BodyType<SaveResumeWorkPreferencesBody>}
+
+    export const useSaveResumeWorkPreferences = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveResumeWorkPreferences>>, TError,SaveResumeWorkPreferencesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveResumeWorkPreferences>>,
+        TError,
+        SaveResumeWorkPreferencesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveResumeWorkPreferencesMutationOptions(options));
+    }
+
+export const getSearchCandidateInvitationsUrl = (params?: SearchCandidateInvitationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/invitations/search?${stringifiedParams}` : `/api/me/invitations/search`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const searchCandidateInvitations = async (params?: SearchCandidateInvitationsParams, options?: Parameters<typeof customFetch>[1]): Promise<WorkspaceSearchPage> => {
+
+  return customFetch<WorkspaceSearchPage>(getSearchCandidateInvitationsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchCandidateInvitationsQueryKey = (params?: SearchCandidateInvitationsParams,) => {
+    return [
+    `/api/me/invitations/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchCandidateInvitationsQueryOptions = <TData = Awaited<ReturnType<typeof searchCandidateInvitations>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params?: SearchCandidateInvitationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchCandidateInvitations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchCandidateInvitationsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchCandidateInvitations>>> = ({ signal }) => searchCandidateInvitations(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchCandidateInvitations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SearchCandidateInvitationsQueryResult = NonNullable<Awaited<ReturnType<typeof searchCandidateInvitations>>>
+export type SearchCandidateInvitationsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useSearchCandidateInvitations<TData = Awaited<ReturnType<typeof searchCandidateInvitations>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params?: SearchCandidateInvitationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchCandidateInvitations>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSearchCandidateInvitationsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSearchCandidateApplicationsUrl = (params?: SearchCandidateApplicationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/applications/search?${stringifiedParams}` : `/api/me/applications/search`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const searchCandidateApplications = async (params?: SearchCandidateApplicationsParams, options?: Parameters<typeof customFetch>[1]): Promise<WorkspaceSearchPage> => {
+
+  return customFetch<WorkspaceSearchPage>(getSearchCandidateApplicationsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchCandidateApplicationsQueryKey = (params?: SearchCandidateApplicationsParams,) => {
+    return [
+    `/api/me/applications/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchCandidateApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof searchCandidateApplications>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params?: SearchCandidateApplicationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchCandidateApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchCandidateApplicationsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchCandidateApplications>>> = ({ signal }) => searchCandidateApplications(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchCandidateApplications>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SearchCandidateApplicationsQueryResult = NonNullable<Awaited<ReturnType<typeof searchCandidateApplications>>>
+export type SearchCandidateApplicationsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useSearchCandidateApplications<TData = Awaited<ReturnType<typeof searchCandidateApplications>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params?: SearchCandidateApplicationsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchCandidateApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSearchCandidateApplicationsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSearchAccessibleJobsUrl = (params?: SearchAccessibleJobsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/public/jobs/search?${stringifiedParams}` : `/api/public/jobs/search`
+}
+
+/**
+ * Filters the full accessible published pool before pagination. Skills is JSON array of {skill,level?}; legacy requirements have no implicit level.
+ */
+export const searchAccessibleJobs = async (params?: SearchAccessibleJobsParams, options?: Parameters<typeof customFetch>[1]): Promise<WorkspaceSearchPage> => {
+
+  return customFetch<WorkspaceSearchPage>(getSearchAccessibleJobsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchAccessibleJobsQueryKey = (params?: SearchAccessibleJobsParams,) => {
+    return [
+    `/api/public/jobs/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchAccessibleJobsQueryOptions = <TData = Awaited<ReturnType<typeof searchAccessibleJobs>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params?: SearchAccessibleJobsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchAccessibleJobs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchAccessibleJobsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchAccessibleJobs>>> = ({ signal }) => searchAccessibleJobs(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchAccessibleJobs>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SearchAccessibleJobsQueryResult = NonNullable<Awaited<ReturnType<typeof searchAccessibleJobs>>>
+export type SearchAccessibleJobsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useSearchAccessibleJobs<TData = Awaited<ReturnType<typeof searchAccessibleJobs>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params?: SearchAccessibleJobsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchAccessibleJobs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSearchAccessibleJobsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetResumeDocumentdocxUrl = (id: number,
+    params?: GetResumeDocumentdocxParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/resumes/${id}/document.docx?${stringifiedParams}` : `/api/resumes/${id}/document.docx`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getResumeDocumentdocx = async (id: number,
+    params?: GetResumeDocumentdocxParams, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetResumeDocumentdocxUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetResumeDocumentdocxQueryKey = (id: number,
+    params?: GetResumeDocumentdocxParams,) => {
+    return [
+    `/api/resumes/${id}/document.docx`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetResumeDocumentdocxQueryOptions = <TData = Awaited<ReturnType<typeof getResumeDocumentdocx>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number,
+    params?: GetResumeDocumentdocxParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentdocx>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetResumeDocumentdocxQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getResumeDocumentdocx>>> = ({ signal }) => getResumeDocumentdocx(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentdocx>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetResumeDocumentdocxQueryResult = NonNullable<Awaited<ReturnType<typeof getResumeDocumentdocx>>>
+export type GetResumeDocumentdocxQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetResumeDocumentdocx<TData = Awaited<ReturnType<typeof getResumeDocumentdocx>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number,
+    params?: GetResumeDocumentdocxParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentdocx>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetResumeDocumentdocxQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetResumeDocumentpdfUrl = (id: number,
+    params?: GetResumeDocumentpdfParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/resumes/${id}/document.pdf?${stringifiedParams}` : `/api/resumes/${id}/document.pdf`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getResumeDocumentpdf = async (id: number,
+    params?: GetResumeDocumentpdfParams, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetResumeDocumentpdfUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetResumeDocumentpdfQueryKey = (id: number,
+    params?: GetResumeDocumentpdfParams,) => {
+    return [
+    `/api/resumes/${id}/document.pdf`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetResumeDocumentpdfQueryOptions = <TData = Awaited<ReturnType<typeof getResumeDocumentpdf>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number,
+    params?: GetResumeDocumentpdfParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentpdf>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetResumeDocumentpdfQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getResumeDocumentpdf>>> = ({ signal }) => getResumeDocumentpdf(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentpdf>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetResumeDocumentpdfQueryResult = NonNullable<Awaited<ReturnType<typeof getResumeDocumentpdf>>>
+export type GetResumeDocumentpdfQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetResumeDocumentpdf<TData = Awaited<ReturnType<typeof getResumeDocumentpdf>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number,
+    params?: GetResumeDocumentpdfParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumeDocumentpdf>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetResumeDocumentpdfQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetResumePreviewpdfUrl = (id: number,) => {
+
+
+
+
+  return `/api/resumes/${id}/preview.pdf`
+}
+
+/**
+ * Requires authenticated ownership and current per-resume permissions.
+ */
+export const getResumePreviewpdf = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetResumePreviewpdfUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetResumePreviewpdfQueryKey = (id: number,) => {
+    return [
+    `/api/resumes/${id}/preview.pdf`
+    ] as const;
+    }
+
+
+export const getGetResumePreviewpdfQueryOptions = <TData = Awaited<ReturnType<typeof getResumePreviewpdf>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumePreviewpdf>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetResumePreviewpdfQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getResumePreviewpdf>>> = ({ signal }) => getResumePreviewpdf(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getResumePreviewpdf>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetResumePreviewpdfQueryResult = NonNullable<Awaited<ReturnType<typeof getResumePreviewpdf>>>
+export type GetResumePreviewpdfQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetResumePreviewpdf<TData = Awaited<ReturnType<typeof getResumePreviewpdf>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getResumePreviewpdf>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetResumePreviewpdfQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getExportAccessibleJobsUrl = (params: ExportAccessibleJobsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/public/jobs/export?${stringifiedParams}` : `/api/public/jobs/export`
+}
+
+/**
+ * Exports every accessible filtered row in the same order. Explicit limit 10000; excess rejected without silent truncation. No private needs or personal contacts. CSV UTF8 BOM and spreadsheet formula neutralization.
+ */
+export const exportAccessibleJobs = async (params: ExportAccessibleJobsParams, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getExportAccessibleJobsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getExportAccessibleJobsQueryKey = (params?: ExportAccessibleJobsParams,) => {
+    return [
+    `/api/public/jobs/export`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getExportAccessibleJobsQueryOptions = <TData = Awaited<ReturnType<typeof exportAccessibleJobs>>, TError = ErrorType<UnifiedErrorResponseResponse>>(params: ExportAccessibleJobsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof exportAccessibleJobs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getExportAccessibleJobsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof exportAccessibleJobs>>> = ({ signal }) => exportAccessibleJobs(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof exportAccessibleJobs>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ExportAccessibleJobsQueryResult = NonNullable<Awaited<ReturnType<typeof exportAccessibleJobs>>>
+export type ExportAccessibleJobsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useExportAccessibleJobs<TData = Awaited<ReturnType<typeof exportAccessibleJobs>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ params: ExportAccessibleJobsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof exportAccessibleJobs>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getExportAccessibleJobsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetOwnedAccountUrl = () => {
+
+
+
+
+  return `/api/me/account`
+}
+
+export const getOwnedAccount = async ( options?: Parameters<typeof customFetch>[1]): Promise<OwnedAccount> => {
+
+  return customFetch<OwnedAccount>(getGetOwnedAccountUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetOwnedAccountQueryKey = () => {
+    return [
+    `/api/me/account`
+    ] as const;
+    }
+
+
+export const getGetOwnedAccountQueryOptions = <TData = Awaited<ReturnType<typeof getOwnedAccount>>, TError = ErrorType<UnifiedErrorResponseResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getOwnedAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetOwnedAccountQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getOwnedAccount>>> = ({ signal }) => getOwnedAccount({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getOwnedAccount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetOwnedAccountQueryResult = NonNullable<Awaited<ReturnType<typeof getOwnedAccount>>>
+export type GetOwnedAccountQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetOwnedAccount<TData = Awaited<ReturnType<typeof getOwnedAccount>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getOwnedAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetOwnedAccountQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateOwnedAccountUrl = () => {
+
+
+
+
+  return `/api/me/account`
+}
+
+export const updateOwnedAccount = async (updateOwnedAccountBody: UpdateOwnedAccountBody, options?: Parameters<typeof customFetch>[1]): Promise<OwnedAccount> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OwnedAccount>(getUpdateOwnedAccountUrl(),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateOwnedAccountBody)
+  }
+);}
+
+
+
+
+
+export const getUpdateOwnedAccountMutationKey = () => ['updateOwnedAccount'] as const;
+
+export const getUpdateOwnedAccountMutationOptions = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOwnedAccount>>, TError,UpdateOwnedAccountMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateOwnedAccount>>, TError,UpdateOwnedAccountMutationVariables, TContext> => {
+
+const mutationKey = getUpdateOwnedAccountMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateOwnedAccount>>, UpdateOwnedAccountMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateOwnedAccount(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateOwnedAccountMutationResult = NonNullable<Awaited<ReturnType<typeof updateOwnedAccount>>>
+    export type UpdateOwnedAccountMutationBody = BodyType<UpdateOwnedAccountBody>
+    export type UpdateOwnedAccountMutationError = ErrorType<UnifiedErrorResponseResponse>
+    export type UpdateOwnedAccountMutationVariables = {data: BodyType<UpdateOwnedAccountBody>}
+
+    export const useUpdateOwnedAccount = <TError = ErrorType<UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOwnedAccount>>, TError,UpdateOwnedAccountMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateOwnedAccount>>,
+        TError,
+        UpdateOwnedAccountMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateOwnedAccountMutationOptions(options));
+    }
+
+export const getRequestFspImportUrl = () => {
+
+
+
+
+  return `/api/me/fsp-connection/import`
+}
+
+/**
+ * Registry integration is not configured. This operation never imports a synthetic fixture, persists consent or confirms the ID. A saved ID is required before returning registry_not_configured.
+ * @summary Request an FSP import with separate explicit consent
+ */
+export const requestFspImport = async (requestFspImportBody: RequestFspImportBody, options?: Parameters<typeof customFetch>[1]): Promise<UnifiedErrorResponseResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<UnifiedErrorResponseResponse>(getRequestFspImportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(requestFspImportBody)
+  }
+);}
+
+
+
+
+
+export const getRequestFspImportMutationKey = () => ['requestFspImport'] as const;
+
+export const getRequestFspImportMutationOptions = <TError = ErrorType<void | ApiError | UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestFspImport>>, TError,RequestFspImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestFspImport>>, TError,RequestFspImportMutationVariables, TContext> => {
+
+const mutationKey = getRequestFspImportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestFspImport>>, RequestFspImportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestFspImport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestFspImportMutationResult = NonNullable<Awaited<ReturnType<typeof requestFspImport>>>
+    export type RequestFspImportMutationBody = BodyType<RequestFspImportBody>
+    export type RequestFspImportMutationError = ErrorType<void | ApiError | UnifiedErrorResponseResponse>
+    export type RequestFspImportMutationVariables = {data: BodyType<RequestFspImportBody>}
+
+    /**
+ * @summary Request an FSP import with separate explicit consent
+ */
+export const useRequestFspImport = <TError = ErrorType<void | ApiError | UnifiedErrorResponseResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestFspImport>>, TError,RequestFspImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestFspImport>>,
+        TError,
+        RequestFspImportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestFspImportMutationOptions(options));
+    }
 

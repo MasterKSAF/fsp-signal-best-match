@@ -1,12 +1,9 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { ArrowRight, MessageCircle, Send, Sparkles, X } from 'lucide-react';
 import { Link, useSearch } from 'wouter';
-import { getWorkspaceGuideContent } from './workspace-guide';
+import {topicReply,replyTo,consultantAttemptActive,type Role,type Topic,type Reply} from '../lib/signal-consultant-content';
 import './signal-consultant.css';
 
-type Role = 'candidate' | 'employer';
-type Topic = 'purpose' | 'how' | 'entry' | 'section';
-type Reply = { text: string; action?: { label: string; href?: string; auth?: true } };
 type Message = Reply & { id: number; from: 'user' | 'assistant' };
 
 const publicTopics: { id: Topic; label: string }[] = [
@@ -15,70 +12,14 @@ const publicTopics: { id: Topic; label: string }[] = [
   { id: 'entry', label: 'Как начать?' },
 ];
 
-function topicReply(topic: Topic, role?: Role, location = '/'): Reply {
-  if (topic === 'purpose') return {
-    text: 'Signal помогает специалистам и командам находить лучшее совпадение. Кандидат показывает, что умеет на практике, а работодатель видит, какие навыки подходят для его задач. Опыт, подтверждённые навыки и условия работы рассматриваются вместе.',
-  };
-  if (topic === 'how') return {
-    text: 'Кандидат заполняет профиль, указывает ожидания и подтверждает навыки квалификационным экзаменом Signal. Работодатель описывает задачи и требования. Signal сопоставляет их и объясняет совпадения и пробелы. Дальше — приглашение и знакомство по взаимному согласию.',
-  };
-  if (topic === 'section' && role) {
-    const guide = getWorkspaceGuideContent(role, location);
-    return { text: `${guide.intro}\n\n${guide.tips.join('\n\n')}`, action: { label: guide.action, href: guide.href } };
-  }
-  if (role === 'candidate') return {
-    text: 'Начните с паспорта: добавьте опыт и пожелания к работе, заполните профессиональный опрос. Затем выберите программу проверки навыков. Подтверждённый уровень появится в профиле и поможет компаниям оценить соответствие задачам.',
-    action: { label: 'Открыть паспорт', href: '/candidate/passport' },
-  };
-  if (role === 'employer') return {
-    text: 'Опишите компанию и создайте вакансию: задачи, нужные навыки, уровень и условия работы. После этого можно открыть подбор, сравнить подтверждения и отправить приглашения.',
-    action: { label: 'К моим вакансиям', href: '/employer' },
-  };
-  return {
-    text: 'Нажмите «Вход» вверху страницы и выберите роль: кандидат или работодатель. Если аккаунта ещё нет, перейдите к регистрации. Хотите сначала осмотреться? Включите Demo, выберите роль и нажмите «Войти». Данные готового профиля подставятся автоматически.',
-    action: { label: 'Открыть вход', auth: true },
-  };
-}
-
-function replyTo(question: string, role?: Role, location = '/'): Reply {
-  const text = question.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').trim();
-  if (/парол|войти|вход|регист|аккаунт|демо|demo|начать/.test(text)) return topicReply('entry', role, location);
-  if (/как.*работ|механик|процесс|устроен|этап/.test(text)) return topicReply('how', role, location);
-  if (/контакт|телефон|приват|конфиден|видимост|персональн|соглас/.test(text)) return {
-    text: 'Кандидат управляет видимостью профиля и согласием на подбор. В подборе работодатель видит профессиональный профиль без контактов. Контакты открываются после принятия приглашения или явного согласия при отклике на вакансию. Доступ компании можно отозвать.',
-    ...(role === 'candidate' ? { action: { label: 'Настройки профиля', href: '/candidate/passport' } } : {}),
-  };
-  if (/балл|процент|совпад|рейтинг|подбор|матч|алгоритм/.test(text)) return {
-    text: 'Подбор сопоставляет требования вакансии с подтверждёнными навыками, результатами проверки и условиями кандидата. В карточке можно посмотреть объяснение: что подтверждено, что указано самим кандидатом и чего пока не хватает. Балл соответствия помогает сравнивать профили, но не гарантирует успешный найм.',
-    ...(role === 'employer' ? { action: { label: 'Открыть подбор', href: '/employer/matches' } } : {}),
-  };
-  if (/навык|провер|тест|уровен|уровн|опрос|оценк|python|backend/.test(text)) return {
-    text: 'Доступны программы квалификационного экзамена Signal Backend / Python и Frontend / TypeScript. Профессиональный опрос помогает выбрать стартовый уровень, а экзамен проверяет применение навыков. Практика компании оценивается отдельно и не присваивает грейд Signal. В паспорте отдельно видны ваш опыт и навыки с подтверждением. История проверок сохраняется.',
-    ...(role === 'candidate' ? { action: { label: 'К проверке навыков', href: '/candidate/kalibr' } } : {}),
-  };
-  if (/резюме|паспорт|pdf|опыт|портфолио/.test(text)) return {
-    text: 'В паспорте можно собрать резюме: опыт, проекты, образование и ссылки на работы. Там же находятся профессиональный опрос, подтверждённые навыки и история результатов. Резюме можно скачать в PDF.',
-    ...(role === 'candidate' ? { action: { label: 'Открыть паспорт', href: '/candidate/passport' } } : {}),
-  };
-  if (/работодат|команд|компан|ваканси|специалист/.test(text)) return {
-    text: 'Для работодателя Signal — способ увидеть навыки за резюме. Опишите задачи команды, откройте подбор и сравните подтверждения по единым требованиям. Можно также изучить банк кандидатов и отправить приглашение с понятными условиями.',
-    ...(role === 'employer' ? { action: { label: 'Банк кандидатов', href: '/employer/candidates' } } : {}),
-  };
-  if (/кандидат|работ[ауые]|карьер|предложени/.test(text)) return {
-    text: 'Для кандидата Signal — возможность показать сильные стороны делом. Соберите профиль, подтвердите навыки и укажите ожидания от работы. Компании смогут оценить ваши подтверждения, а вы — выбрать подходящее приглашение.',
-    ...(role === 'candidate' ? { action: { label: 'Мои приглашения', href: '/candidate/invitations' } } : {}),
-  };
-  if (/зачем|для чего|что.*signal|что.*сигнал|что.*сайт|о сервис|возможност|умеешь|помощ/.test(text)) return topicReply('purpose', role, location);
-  if (/здесь|страниц|раздел|дальше|следующ/.test(text) && role) return topicReply('section', role, location);
-  if (/^(привет|здравствуй|добрый|хай|hello)/.test(text)) return { text: 'Здравствуйте! Помогу познакомиться с Signal и найти следующий шаг. Что интересно: возможности сервиса, подбор по навыкам или вход в кабинет?' };
-  return { text: 'По этому вопросу у меня пока нет точного ответа. Могу рассказать, для чего нужен Signal, как устроен подбор и как начать работу. Выберите тему ниже или задайте вопрос об этих возможностях.' };
-}
 
 /** Local product guidance; messages never leave this page or persist across sessions. */
 export function SignalConsultant({ role, location, hidden = false, onOpenAuth }: { role?: Role; location: string; hidden?: boolean; onOpenAuth?: () => void }) {
   const search = useSearch();
   const [open, setOpen] = useState(false);
   const [modalPresent, setModalPresent] = useState(false);
+  const [controlFocused,setControlFocused]=useState(false);
+  const [actionCollision,setActionCollision]=useState(false);
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const sequence = useRef(0);
@@ -87,8 +28,8 @@ export function SignalConsultant({ role, location, hidden = false, onOpenAuth }:
   const log = useRef<HTMLDivElement>(null);
   const panelId = useId();
   const titleId = useId();
-  const assessmentAttempt = location.startsWith('/candidate/kalibr') && Number(new URLSearchParams(search).get('attempt')) > 0;
-  const unavailable = hidden || modalPresent || assessmentAttempt;
+  const assessmentAttempt = consultantAttemptActive(location,search);
+  const unavailable = hidden || modalPresent || assessmentAttempt || controlFocused || actionCollision;
   const topics = role ? [{ id: 'section' as const, label: 'Что сделать в этом разделе?' }, publicTopics[1], { id: 'entry' as const, label: 'С чего начать?' }] : publicTopics;
 
   useEffect(() => {
@@ -99,6 +40,25 @@ export function SignalConsultant({ role, location, hidden = false, onOpenAuth }:
     return () => observer.disconnect();
   }, []);
   useEffect(() => { setOpen(false); setDraft(''); }, [location, search]);
+  useEffect(()=>{
+    let frame=0;
+    const measure=()=>{
+      frame=0;
+      const active=document.activeElement;
+      setControlFocused(active instanceof HTMLElement&&active.matches('input,textarea,select,[contenteditable="true"]')&&!active.closest('.signal-consultant'));
+      if(open){setActionCollision(false);return;}
+      const mobile=window.innerWidth<=700;const right=mobile?14:22;const bottom=mobile?14:18;
+      const rect={left:window.innerWidth-right-46,right:window.innerWidth-right,top:window.innerHeight-bottom-46,bottom:window.innerHeight-bottom};
+      setActionCollision(Array.from(document.querySelectorAll<HTMLElement>('.main-area button,.main-area a')).some(element=>{
+        if(!element.getClientRects().length)return false;const box=element.getBoundingClientRect();
+        return box.left<rect.right+6&&box.right>rect.left-6&&box.top<rect.bottom+6&&box.bottom>rect.top-6;
+      }));
+    };
+    const schedule=()=>{if(!frame)frame=requestAnimationFrame(measure);};
+    schedule();window.addEventListener('scroll',schedule,true);window.addEventListener('resize',schedule);document.addEventListener('focusin',schedule);document.addEventListener('focusout',schedule);
+    const observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','open']});
+    return()=>{cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);document.removeEventListener('focusin',schedule);document.removeEventListener('focusout',schedule);};
+  },[open,location,search]);
   useEffect(() => { setMessages([]); }, [role]);
   useEffect(() => { if (unavailable) setOpen(false); }, [unavailable]);
   useEffect(() => {

@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 
 export type SafeSkillProofSourceType = typeof SafeSkillProofSourceType[keyof typeof SafeSkillProofSourceType];
@@ -11,6 +11,7 @@ export type SafeSkillProofSourceType = typeof SafeSkillProofSourceType[keyof typ
 
 export const SafeSkillProofSourceType = {
   signal_assessment: 'signal_assessment',
+  signal_skill_module: 'signal_skill_module',
   demo_example: 'demo_example',
   legacy_record: 'legacy_record',
   company_task: 'company_task',

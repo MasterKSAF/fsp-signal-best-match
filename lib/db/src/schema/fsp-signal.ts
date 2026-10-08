@@ -6,12 +6,13 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
   uniqueIndex,
   index,
   check,
 } from "drizzle-orm/pg-core";
 import { sql } from 'drizzle-orm';
-import { signalApplicationsTable } from './signal-opportunities';
+import { signalApplicationsTable, signalJobsTable } from './signal-opportunities';
 import type { SignalLegacyQualification, SignalResumeSnapshot } from './signal-resume';
 
 export type SignalCase = {
@@ -60,6 +61,11 @@ export const signalVerificationTokensTable = pgTable("signal_verification_tokens
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   consumedAt: timestamp("consumed_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  registrationId: uuid("registration_id"),
+  pendingPasswordHash: text("pending_password_hash"),
+  pendingRole: text("pending_role", { enum: ["candidate", "employer"] }),
+  pendingDisplayName: text("pending_display_name"),
+  pendingConsentVersion: text("pending_consent_version"),
 });
 
 export const signalConsentsTable = pgTable("signal_consents", {
@@ -107,12 +113,14 @@ export const signalCompaniesTable = pgTable(
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
     industry: text("industry").notNull().default("Информационные технологии"),
+    inn: text("inn"),
     contactEmail: text("contact_email").notNull(),
     contactPhone: text("contact_phone"),
     contactMethod: text("contact_method").notNull().default("Электронная почта"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [uniqueIndex("signal_companies_owner_unique").on(table.ownerUserId)],
+  (table) => [uniqueIndex("signal_companies_owner_unique").on(table.ownerUserId),
+    check("signal_companies_inn_format_check", sql`${table.inn} IS NULL OR ${table.inn} ~ '^(?:[0-9]{10}|[0-9]{12})$'`)],
 );
 
 export const signalNeedsTable = pgTable("signal_needs", {
@@ -130,6 +138,10 @@ export const signalNeedsTable = pgTable("signal_needs", {
   salaryPeriod: text("salary_period", { enum: ["month", "year"] }).notNull().default("month"),
   salaryType: text("salary_type", { enum: ["gross", "net"] }).notNull().default("gross"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  revision: integer("revision").notNull().default(1),
+  status: text("status", { enum: ["active", "archived"] }).notNull().default("active"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const signalAssessmentAttemptsTable = pgTable("signal_assessment_attempts", {
@@ -158,7 +170,10 @@ export const signalAssessmentAttemptsTable = pgTable("signal_assessment_attempts
 
 export const signalInvitationsTable = pgTable("signal_invitations", {
   id: serial("id").primaryKey(),
-  needId: integer("need_id").notNull().references(() => signalNeedsTable.id, { onDelete: "cascade" }),
+  needId: integer("need_id").references(() => signalNeedsTable.id, { onDelete: "restrict" }),
+  jobId: integer("job_id").references(() => signalJobsTable.id, { onDelete: "restrict" }),
+  contextVersion: integer("context_version").notNull().default(1),
+  contextSnapshot: jsonb("context_snapshot").$type<Record<string, unknown>>().notNull().default({}),
   companyId: integer("company_id").notNull().references(() => signalCompaniesTable.id, { onDelete: "cascade" }),
   candidateUserId: integer("candidate_user_id").notNull().references(() => signalUsersTable.id, { onDelete: "cascade" }),
   resumeId: integer("resume_id"),
@@ -174,7 +189,7 @@ export const signalInvitationsTable = pgTable("signal_invitations", {
   status: text("status", { enum: ["sent", "viewed", "accepted", "declined", "withdrawn", "expired"] }).notNull().default("sent"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+}, t => [check('signal_invitations_context_check', sql`(${t.needId} IS NOT NULL) <> (${t.jobId} IS NOT NULL)`)]);
 
 export const signalContactGrantsTable = pgTable("signal_contact_grants", {
   id: serial('id').primaryKey(),

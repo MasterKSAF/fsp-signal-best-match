@@ -1,0 +1,8 @@
+.inline-info{display:inline-flex;vertical-align:middle;flex:none;margin-inline-start:6px}
+.inline-info__button{display:grid;place-items:center;width:21px;height:21px;border:1px solid hsl(var(--border));border-radius:50%;padding:0;background:hsl(var(--muted)/.5);color:hsl(var(--muted-foreground));font:700 12px/1 var(--app-font-sans);cursor:help}
+.inline-info__button:hover,.inline-info__button[aria-expanded=true]{border-color:hsl(var(--primary)/.6);color:hsl(var(--primary))}
+.inline-info__button:focus-visible{outline:2px solid hsl(var(--primary));outline-offset:3px}
+.inline-info__tip{position:fixed;z-index:150;display:block;width:280px;max-width:calc(100vw - 24px);padding:11px 13px;border:1px solid hsl(var(--popover-border));border-radius:12px;background:hsl(var(--popover));color:hsl(var(--foreground));box-shadow:var(--overlay-shadow);font-size:12px;font-weight:400;line-height:1.55;overflow-wrap:anywhere}
+.inline-info__tip p,.inline-info__tip small{margin:0;font:inherit}
+.inline-info__tip{font-size:13px;font-weight:500;max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain}
+@media(pointer:coarse){.inline-info__button{width:28px;height:28px}}

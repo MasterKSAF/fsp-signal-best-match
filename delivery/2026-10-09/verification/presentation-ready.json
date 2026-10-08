@@ -1,0 +1,190 @@
+{
+  "status": "ready",
+  "slideCount": 14,
+  "pptx": {
+    "path": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\deliverables\\Signal-Presentation.pptx",
+    "sha256": "b1acb1fe7fe2754faac3c736618dc269f983b285193fc4c86fe2cc8ee1119b35",
+    "byteCount": 12597203,
+    "editableText": true
+  },
+  "pdf": {
+    "pdfPath": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\deliverables\\Signal-Presentation.pdf",
+    "pdfSha256": "59e8d45473180f9e5d2d3d10745f5db93745ff51e027897b40f6e6dfe12ac28d",
+    "byteCount": 19721267,
+    "pageCount": 14,
+    "format": "Raster preview generated from exact Artifact Tool final slide PNG renders",
+    "editable": false,
+    "searchable": false,
+    "reason": "Native Artifact Tool PDF export unavailable: bundled standard-fonts module alias absent.",
+    "pages": [
+      {
+        "page": 1,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 2,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 3,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 4,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 5,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 6,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 7,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 8,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 9,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 10,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 11,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 12,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 13,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      },
+      {
+        "page": 14,
+        "embeddedImagePixelsIdentical": true,
+        "sourceResolution": [
+          2560,
+          1440
+        ]
+      }
+    ]
+  },
+  "pptxValidationReceipt": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\build\\presentation\\presentation-validation.json",
+  "templateNormalizationReceipt": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\build\\presentation\\template-normalization.json",
+  "lineageRepairReceipt": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\build\\presentation\\candidate-lineage.json",
+  "all14LineageRenderEquivalenceReceipt": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\build\\presentation\\candidate-lineage-render-equivalence.json",
+  "visualReview": {
+    "finalPptxIndividualSlidesReviewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "finalPptxResolution": [
+      2560,
+      1440
+    ],
+    "finalPdfIndividualPagesReviewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "mandatoryReferenceSlides": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "clippingOrUnintendedOverlapFound": false,
+    "contactsReviewed": true,
+    "nativePowerPointOpened": false
+  },
+  "templateAdaptations": "Mandatory official layouts 7–11 fill the first five slides. Slide9 team card layout adapts five placeholders to two actual participants, without invented photos.",
+  "acceptedLayoutWarning": "Cover source graphic extends past slide boundary as in official template. Visual comparison confirms intentional original composition.",
+  "font": "Montserrat from official template. Registered font used in all final artifact renders. PDF preserves exact rendered pixels.",
+  "contactSheet": "C:\\Users\\Misha\\Documents\\ChatGPT\\LCT\\outputs\\signal-delivery-20261009\\build\\presentation\\final-render\\montage.webp"
+}

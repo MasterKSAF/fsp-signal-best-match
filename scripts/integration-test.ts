@@ -1,5 +1,8 @@
 /**
- * Local integration regression suite. Runs against the real HTTP API, PostgreSQL
+ * Historical legacy-qualification integration regression suite, not acceptance
+ * evidence for the current 18 skill-module programmes. New legacy issuance is
+ * closed in the current product; use the current full-audit core/module checks.
+ * Runs against the real HTTP API, PostgreSQL
  * and Mailpit. Oracle access is confined to this test process, never an API route.
  * Every mutable row belongs to captured, freshly registered test user IDs.
  */
@@ -73,6 +76,10 @@ class Client {
     assert.ok(statuses.includes(result.status), `${method} ${path} must reject, got ${result.status}.`);
     return result;
   }
+  async saveProfile(input: Record<string, unknown>) {
+    const current = await this.ok('/me/candidate-profile');
+    return this.ok('/me/candidate-profile', 'PUT', { ...input, resumeId: current.resumeId, revision: current.revision, identityRevision: current.identityRevision });
+  }
 }
 
 async function mailCode(email: string) {
@@ -101,6 +108,8 @@ async function register(role: 'candidate' | 'employer', suffix: string) {
   const [row] = await db.select().from(users).where(eq(users.email, email));
   if (row) capturedUserIds.add(row.id);
   assert.equal(result.status, 201, `Registration failed: ${result.data?.error || result.status}`);
+  const registrationId = result.data.registrationId;
+  assert.match(registrationId, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i, 'Registration must return its exact confirmation intent');
   assert.ok(row, 'Registration must persist its own user');
   assert.equal(result.data.demoVerificationCode, undefined, 'A verification secret must not be returned by HTTP registration');
   assert.equal(row.demoMode, false, 'Real registration must not join the demo pool');
@@ -108,11 +117,11 @@ async function register(role: 'candidate' | 'employer', suffix: string) {
   assert.notEqual(row.passwordHash, password);
   await client.denied('/auth/login', 'POST', { email, password }, [403]);
   const code = await mailCode(email);
-  const verified = await client.ok('/auth/verify-email', 'POST', { email, code });
+  const verified = await client.ok('/auth/verify-email', 'POST', { email, code, registrationId });
   assert.equal(verified.user.id, row.id);
   assert.equal(verified.user.demoMode, false);
   assert.ok(client.cookies.get('fsp_signal_session'), 'Verification should establish a cookie session');
-  await client.denied('/auth/verify-email', 'POST', { email, code }, [400]);
+  await client.denied('/auth/verify-email', 'POST', { email, code, registrationId }, [400]);
   passed(`register + Mailpit + single-use email verification (${role})`);
   const owned = role === 'candidate' ? await client.ok('/me/resumes') : null;
   const resumeId: number | undefined = owned?.resumes.find((item: any) => item.isPrimary)?.id;
@@ -180,7 +189,7 @@ try {
   }
   await candidate.client.denied('/employer/company', 'PUT', {}, [403]);
   await employerA.client.denied('/me/candidate-profile', 'PUT', profile(candidate.email), [403]);
-  await candidate.client.ok('/me/candidate-profile', 'PUT', profile(candidate.email));
+  await candidate.client.saveProfile(profile(candidate.email));
   const before = await candidate.client.ok('/me/candidate-profile');
   assert.equal(before.verifiedGrade, null, 'Self-declared Senior must not grant a verified category');
   const needA = await employerA.client.ok('/employer/needs', 'POST', needInput, [201]);
@@ -338,20 +347,20 @@ try {
   assert.equal(emptyBankPage.page, 10000);
   assert.equal(emptyBankPage.candidates.length, 0);
   assert.equal(emptyBankPage.total, bank.total);
-  await candidate.client.ok('/me/candidate-profile', 'PUT', { ...profile(candidate.email), consentMatching: false });
+  await candidate.client.saveProfile({ ...profile(candidate.email), consentMatching: false });
   assert.ok(!(await employerA.client.ok(`/matches?needId=${needA.id}`)).some((item: any) => item.candidateId === candidate.id), 'Withdrawal of matching consent immediately removes matching');
   assert.ok(hasCandidate(await employerA.client.ok(bankQuery), candidate.id), 'Independent catalog consent remains independent from matching consent');
-  await candidate.client.ok('/me/candidate-profile', 'PUT', { ...profile(candidate.email), consentMatching: false, consentCatalog: false });
+  await candidate.client.saveProfile({ ...profile(candidate.email), consentMatching: false, consentCatalog: false });
   assert.ok(!hasCandidate(await employerA.client.ok(bankQuery), candidate.id), 'Withdrawal of catalog consent must immediately remove the catalog card');
-  await candidate.client.ok('/me/candidate-profile', 'PUT', profile(candidate.email));
+  await candidate.client.saveProfile(profile(candidate.email));
   passed('candidate bank filters, pagination metadata, hidden contact fields and matching-consent enforcement');
 
-  await candidate.client.ok('/me/candidate-profile', 'PUT', profile(candidate.email, 'private'));
+  await candidate.client.saveProfile(profile(candidate.email, 'private'));
   const hidden = await employerA.client.ok(`/matches?needId=${needA.id}`);
   assert.ok(!hidden.some((item: any) => item.candidateId === candidate.id));
   assert.ok(!hasCandidate(await employerA.client.ok(bankQuery), candidate.id), 'Private profiles must disappear from the independent candidate bank as well');
   await employerA.client.denied(`/matches/explanation?needId=${needA.id}&candidateId=${candidate.id}&resumeId=${candidate.resumeId}`, 'GET', undefined, [404]);
-  await candidate.client.ok('/me/candidate-profile', 'PUT', profile(candidate.email));
+  await candidate.client.saveProfile(profile(candidate.email));
   const impossibleNeed = await employerA.client.ok('/employer/needs', 'POST', { ...needInput, requiredSkills: ['UnverifiedSkillForTest'] }, [201]);
   const unavailable = await employerA.client.ok(`/matches?needId=${impossibleNeed.id}`);
   assert.ok(!unavailable.some((item: any) => item.candidateId === candidate.id));
@@ -458,16 +467,16 @@ try {
   assert.deepEqual(proofAfterFailure.verifiedSkills, proofBeforeFailure.verifiedSkills);
   passed('a failed lower-level attempt preserves category and evidence date');
 
-  await candidate.client.ok('/me/candidate-profile', 'PUT', {...profile(candidate.email),specialization:'Frontend'});
+  await candidate.client.saveProfile({...profile(candidate.email),specialization:'Frontend'});
   const changedSpecialization = await candidate.client.ok('/me/candidate-profile');
   assert.equal(changedSpecialization.verifiedGrade, null);
   assert.deepEqual(changedSpecialization.verifiedSkills, []);
   await candidate.client.denied('/assessments/attempts','POST',{ purpose: 'signal_qualification', gradeConfirmed: true, resumeId: candidate.resumeId,programId:'backend-python',grade:'Senior'},[409]);
-  await candidate.client.ok('/me/candidate-profile', 'PUT', profile(candidate.email));
+  await candidate.client.saveProfile(profile(candidate.email));
   await candidate.client.denied('/assessments/attempts','POST',{ purpose: 'signal_qualification', gradeConfirmed: true, resumeId: candidate.resumeId,programId:'backend-python',grade:'Senior'},[409]);
   passed('specialization changes clear unrelated proof and cannot bypass promotion cooldown');
 
-  await exploit.client.ok('/me/candidate-profile', 'PUT', profile(exploit.email));
+  await exploit.client.saveProfile(profile(exploit.email));
   const exploitAttempt = await exploit.client.ok('/assessments/attempts', 'POST', { purpose: 'signal_qualification', gradeConfirmed: true, resumeId: exploit.resumeId, programId: 'backend-python', grade: 'Senior' }, [200, 201]);
   const shortcutAnswers = exploitAttempt.cases.map((item: any) => ({ caseId: item.id, answer: item.responseType === 'choice' ? item.options[1] : 'идемпотентность транзакция индекс retry SQL архитектура' }));
   await exploit.client.ok(`/assessments/attempts/${exploitAttempt.id}/answers`, 'PUT', { answers: shortcutAnswers });
@@ -494,7 +503,7 @@ try {
   const interrupted = await exploit.client.ok('/assessments/attempts', 'POST', { purpose: 'signal_qualification', gradeConfirmed: true, resumeId: exploit.resumeId,programId:'backend-python',grade:'Junior'}, [200,201]);
   const interruptedDb = await readOwnedAttempt(interrupted.id, exploit.id);
   await exploit.client.ok(`/assessments/attempts/${interrupted.id}/answers`, 'PUT', {answers:interruptedDb.cases.map(item=>({caseId:item.id,answer:interruptedDb.oracles[item.id].answer}))});
-  await exploit.client.ok('/me/candidate-profile','PUT',{...profile(exploit.email),specialization:'Frontend'});
+  await exploit.client.saveProfile({...profile(exploit.email),specialization:'Frontend'});
   const finishedOriginal = await exploit.client.ok(`/assessments/attempts/${interrupted.id}/submit`,'POST');
   assert.equal(finishedOriginal.verified, true); assert.equal(finishedOriginal.score, 100);
   assert.equal(finishedOriginal.programId, 'backend-python'); assert.equal(finishedOriginal.resumeId, exploit.resumeId);

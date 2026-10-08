@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>Signal — подбор IT-специалистов</title>
     <meta name="description" content="Подбор IT-специалистов по навыкам, опыту и условиям работы. Профиль кандидата, проверка навыков и приглашения от компаний." />
     <meta name="robots" content="index, follow" />
@@ -13,16 +14,28 @@
     <meta name="twitter:title" content="Signal — подбор IT-специалистов" />
     <meta name="twitter:description" content="Подбор по навыкам, опыту и условиям работы." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      html { background:#ECEEF2;color-scheme:light; }
+      html[data-theme="cashmere"] {background:#F1ECE7;}
+      html[data-theme="graphite"] {background:#111318;color-scheme:dark;}
+      html[data-theme="midnight"] {background:#0C1320;color-scheme:dark;}
+      body { margin: 0; background: inherit; }
+    </style>
     <script>
+      let preference = 'system';
       try {
         const stored = localStorage.getItem('fsp-theme');
-        const preference = ['light', 'dark', 'system'].includes(stored) ? stored : 'system';
+        preference = stored === 'light' ? 'pearl' : stored === 'dark' ? 'graphite' : ['pearl','cashmere','graphite','midnight'].includes(stored) ? stored : 'system';
+        localStorage.setItem('fsp-theme',preference);
         const motion = localStorage.getItem('fsp-motion');
         document.documentElement.dataset.motion = ['reduced', 'off'].includes(motion) ? motion : 'system';
-        const dark = preference === 'dark' || (preference === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
-        document.documentElement.classList.toggle('dark', dark);
-        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
       } catch {}
+      const palette = preference === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'graphite' : 'pearl') : preference;
+      const dark = palette === 'graphite' || palette === 'midnight';
+      document.documentElement.dataset.theme = palette;
+      document.documentElement.dataset.themePreference = preference;
+      document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
     </script>
   </head>
   <body>

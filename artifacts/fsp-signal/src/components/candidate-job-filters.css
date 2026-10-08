@@ -1,0 +1,5 @@
+.discovery-personal-filters { display:flex; align-items:center; gap:8px 20px; flex-wrap:wrap; }
+.discovery-personal-filters label { display:inline-flex; align-items:center; gap:8px; min-height:30px; font-size:12px; line-height:1.4; color:hsl(var(--muted-foreground)); cursor:pointer; }
+.discovery-personal-filters input { width:15px; height:15px; margin:0; accent-color:hsl(var(--primary)); cursor:inherit; }
+.discovery-personal-filters label:has(input:checked) { color:hsl(var(--foreground)); }
+.discovery-personal-filters label:has(input:disabled) { opacity:.55; cursor:default; }

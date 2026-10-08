@@ -6,7 +6,7 @@ import { evaluateMatch, rankMatches, type AssessmentRankingEvidence, type MatchC
 const at = new Date('2026-10-06T00:00:00Z');
 const grades: SignalGrade[] = ['Junior', 'Middle', 'Senior'];
 const programs = ['Backend / Python', 'Frontend / TypeScript'] as const;
-function need(specialization: string = programs[0], grade: SignalGrade = 'Junior', requiredSkills: readonly string[] = []): MatchNeed {
+function need(specialization: string = programs[0], grade: SignalGrade = 'Junior', requiredSkills: readonly string[] = [specialization === programs[0] ? 'Python' : 'TypeScript']): MatchNeed {
   return { specialization, grade, requiredSkills, desirableSkills: [], workFormat: 'Удалённо', salaryMin: 100000, salaryMax: 200000, salaryType: 'gross', salaryPeriod: 'month' };
 }
 function candidate(specialization: string = programs[0], grade: SignalGrade | null = 'Middle', userId = 101): MatchCandidate {
@@ -64,8 +64,8 @@ test('required skill coverage retains controlled aliases, Unicode and unknown ex
     [['Q-Store'], ['QStore'], false],
     [['API contracts'], ['API\u200bcontracts'], false],
     [[' e\u0301ngine  X '], ['ÉNGINE\tX'], true],
-    [[], [], true],
-    [['', '\t', '\u3000'], [], true],
+    [[], [], false],
+    [['', '\t', '\u3000'], [], false],
     [['Python', 'SQL'], ['py', 'SQL', 'extra'], true],
     [['Python', 'SQL'], ['py', 'extra'], false],
   ];
@@ -74,6 +74,36 @@ test('required skill coverage retains controlled aliases, Unicode and unknown ex
     assertEquivalent(definition, person);
     assert.equal(preparePoolAdmission(definition, false)(person), expected);
   }
+});
+
+test('invalid original requirements reject raw and enriched profiles before deduplication, with exact bounds', () => {
+  const cases: ReadonlyArray<readonly [readonly string[], readonly string[], boolean]> = [
+    [[], ['Python'], false],
+    [['Python', ''], ['Python'], false],
+    [['py', '\u00a0'], ['Python'], false],
+    [['Python', '\ufeff'], ['Python'], false],
+    [['Python', '\u202f'], ['Python'], false],
+    [Array(41).fill('Python'), ['Python'], false],
+    [['x'.repeat(101)], ['x'.repeat(101)], false],
+    [['ﬃ'.repeat(40)], ['ffi'.repeat(40)], false], // NFKC expands 40 codepoints to 120.
+    [Array(40).fill('py'), ['Python'], true],
+    [['x'.repeat(100)], ['x'.repeat(100)], true],
+    [[' Q-Store ', 'py'], ['Q-Store', 'Python'], true],
+    [['Python', 'QStore'], ['Python', 'Q-Store'], false],
+  ];
+  for (const specialization of programs) for (const [required, verified, expected] of cases) {
+    const definition = need(specialization, 'Junior', Object.freeze([...required]));
+    const raw = { ...candidate(specialization), verifiedSkills: Object.freeze([...verified]) };
+    const compiled = preparePoolAdmission(definition, false);
+    const profiles: MatchCandidate[] = [raw, { ...raw, assessmentEvidence: proof(raw) }, { ...raw, assessmentEvidence: proof(raw, 'revoked') }];
+    for (const person of profiles) {
+      assertEquivalent(definition, person);
+      assert.equal(compiled(person), expected && person.assessmentEvidence?.state !== 'revoked');
+    }
+  }
+  const brokenNeed = Object.freeze(need(programs[0], 'Junior', Object.freeze(['Python', ' '])));
+  const unusedCandidate = new Proxy(candidate(), { get() { throw new Error('Invalid requirements must not evaluate a candidate or its proof'); } });
+  assert.equal(preparePoolAdmission(brokenNeed, false)(unusedCandidate), false);
 });
 
 test('minimum grade and demo pool remain exact independent gates in both pool modes', () => {
@@ -107,10 +137,10 @@ test('context, legacy timestamps and unsupported program names do not invent new
     { ...candidate(), stack: ['Python', 'SQL'], statedSkills: ['Docker'], verifiedSkills: [], hasFspHistory: true },
   ];
   for (const person of variants) {
-    // Empty requirements keep malformed historical timestamps outside date formatting.
-    const effectiveNeed = Number.isNaN(person.latestAssessmentAt?.getTime()) ? need() : definition;
+    const effectiveNeed = definition;
     assertEquivalent(effectiveNeed, person);
-    assert.equal(preparePoolAdmission(effectiveNeed, false)(person), true);
+    assert.equal(preparePoolAdmission(effectiveNeed, false)(person), person.verifiedSkills.includes('Python'));
+    if (Number.isNaN(person.latestAssessmentAt?.getTime())) assert.equal(evaluateMatch(effectiveNeed, person, false, at).evidence[0]!.date, null, 'A malformed historical date stays unknown, not a rejection or invented ISO timestamp');
   }
   const unknown = candidate('Unsupported / Legacy');
   assertEquivalent(need('Unsupported / Legacy'), unknown);
@@ -154,7 +184,7 @@ test('invalid or mismatched revoked provenance remains unknown instead of becomi
     assert.equal(evaluateMatch(need(), person, false, at).ranking.qualityStatus, 'not_measured');
   }
   for (const person of [{ ...raw, latestAssessmentAt: null, assessmentEvidence: valid }, { ...raw, specialization: 'Unsupported / Legacy', assessmentEvidence: valid }]) {
-    const definition = need(person.specialization);
+    const definition = need(person.specialization, 'Junior', person.verifiedSkills);
     assertEquivalent(definition, person);
     assert.equal(preparePoolAdmission(definition, false)(person), true);
     assert.equal(evaluateMatch(definition, person, false, at).ranking.qualityStatus, 'not_measured');

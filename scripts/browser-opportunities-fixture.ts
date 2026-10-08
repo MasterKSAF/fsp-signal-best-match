@@ -47,6 +47,8 @@ try {
   if (!fixture.employer) {
     const email = `${fixture.fixtureId}-employer@example.test`, password = `Signal-${randomUUID()}`;
     const result = await employer.api("/auth/register", "POST", { email, password, displayName: "Анна Волкова", role: "employer", consentTerms: true, consentPrivacy: true });
+    const registrationId = result.registrationId;
+    assert.match(registrationId, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i, "Registration must return its exact confirmation intent");
     const [user] = await db.select().from(users).where(and(eq(users.email, email), eq(users.demoMode, false)));
     assert.ok(user);
     fixture.employer = { id: user.id, email, password, displayName: "Анна Волкова", companyName: "Линия", provenance: "Synthetic employer registered via ordinary HTTP and local Mailpit for UI QA; not a real company or human participant." };
@@ -63,7 +65,7 @@ try {
       if (code) break;
     }
     assert.ok(code, "Local verification message must arrive");
-    const verified = await employer.api("/auth/verify-email", "POST", { email, code });
+    const verified = await employer.api("/auth/verify-email", "POST", { email, code, registrationId });
     assert.equal(verified.user.id, user.id);
   } else {
     assert.equal(fixture.employer.email, `${fixture.fixtureId}-employer@example.test`);

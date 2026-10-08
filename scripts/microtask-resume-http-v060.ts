@@ -7,9 +7,11 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 const origin = process.env.API_ORIGIN ?? "", databaseUrl = new URL(process.env.DATABASE_URL ?? "");
 const compiledTarget = process.env.SIGNAL_V060_COMPILED_ACCEPTANCE === "1";
-assert.equal(origin, compiledTarget ? "http://127.0.0.1:4365" : "http://127.0.0.1:4363");
+const independentAuditTarget = process.env.SIGNAL_INDEPENDENT_MICRO_ACCEPTANCE === "owned-isolated";
+assert.ok(!(compiledTarget && independentAuditTarget));
+assert.equal(origin, independentAuditTarget ? "http://127.0.0.1:4367" : compiledTarget ? "http://127.0.0.1:4365" : "http://127.0.0.1:4363");
 assert.equal(databaseUrl.hostname, "127.0.0.1"); assert.equal(databaseUrl.port, "55435");
-assert.equal(databaseUrl.pathname, compiledTarget ? "/signal_resume_v060_compiled_check" : "/signal_resume_v060_check");
+assert.equal(databaseUrl.pathname, independentAuditTarget ? "/signal_independent_fixes_20261007" : compiledTarget ? "/signal_resume_v060_compiled_check" : "/signal_resume_v060_check");
 assert.equal(process.env.SIGNAL_MICROTASK_RESUME_HTTP_PROBE, "true");
 const { db, pool, signalUsersTable: users, signalSessionsTable: sessions, signalCandidateProfilesTable: profiles,
   signalCandidateResumesTable: resumes, signalCompaniesTable: companies, signalMicroTemplatesTable: templates,
@@ -22,6 +24,7 @@ let activeCheck = "fixture setup";
 const report: any = { schemaVersion: 1, status: "FAIL", passed: false, startedAt: new Date().toISOString(),
   apiOrigin: origin, database: databaseUrl.pathname.slice(1), synthetic: true, fixturePrefix: prefix,
   runtimeKind: compiledTarget ? "compiled-target-requires-artifact-association" : "source-tsx-targeted-only",
+  independentAuditTarget,
   checks, cleanup: false, credentialsExported: false, sourceHashes: {},
   scope: "Controlled legacy-qualified fixtures test selected-resume company practice; no exam answers, auto grading, official grade validity or human pilot claim." };
 async function check(name: string, action: () => Promise<void>) { activeCheck = name; await action(); checks.push({ name, passed: true }); }
@@ -75,7 +78,7 @@ try {
     await foreignEmployer.client.call(`/employer/microtasks/${templateId}`, "PUT", body, [404]);
   });
   await check("qualified secondary is selectable with private unqualified primary; scope and category filter are exact", async () => {
-    const rows = (await employer.client.call(`/employer/microtasks/eligible/candidates?templateId=${templateId}`)).data;
+    const rows = (await employer.client.call(`/employer/microtasks/eligible/candidates?templateId=${templateId}`)).data.items;
     assert.ok(rows.some((r: any) => r.id === candidate.user.id && r.resumeId === secondary.id));
     for (const id of [primary.id, front.id, fifth.id, foreignResume.id]) assert.equal(rows.some((r: any) => r.resumeId === id), false);
     assert.equal(rows.some((r: any) => r.resumeId === otherResume.id), true);
@@ -217,9 +220,10 @@ try {
     assert.equal((await db.select({ id: users.id }).from(users).where(inArray(users.id, owned.map(r => r.id)))).length, 0);
     report.cleanup = true; report.createdUsers = owned.length; report.remainingOwnedUsers = 0;
   } catch (error) { report.cleanup = false; report.cleanupErrorKind = error instanceof Error ? error.name : "Unknown"; report.status = "FAIL"; report.passed = false; process.exitCode = 1; }
-  for (const file of ["artifacts/api-server/src/routes/signal-microtasks.ts", "artifacts/api-server/src/lib/microtask-scheduler.ts", "artifacts/api-server/src/lib/microtask-resume.ts", "artifacts/api-server/src/lib/microtask-resume-policy.ts", "lib/db/migrations/0009_microtask_resume.sql", "artifacts/api-server/src/routes/signal-resume.ts"]) report.sourceHashes[file] = createHash("sha256").update(await readFile(file)).digest("hex");
+  for (const file of ["artifacts/api-server/src/routes/signal-microtasks.ts", "artifacts/api-server/src/lib/microtask-recipient-query.ts", "artifacts/api-server/src/lib/microtask-scheduler.ts", "artifacts/api-server/src/lib/microtask-resume.ts", "artifacts/api-server/src/lib/microtask-resume-policy.ts", "lib/db/migrations/0009_microtask_resume.sql", "artifacts/api-server/src/routes/signal-resume.ts"]) report.sourceHashes[file] = createHash("sha256").update(await readFile(file)).digest("hex");
   report.completedAt = new Date().toISOString();
-  const path = `outputs/verification/release-0.6.0/microtask-resume-http-${runId}.json`;
-  await mkdir("outputs/verification/release-0.6.0", { recursive: true }); await writeFile(path, JSON.stringify(report, null, 2));
+  const outputDirectory = independentAuditTarget ? "outputs/verification/independent-fixes-20261007" : "outputs/verification/release-0.6.0";
+  const path = `${outputDirectory}/microtask-resume-http-${runId}.json`;
+  await mkdir(outputDirectory, { recursive: true }); await writeFile(path, JSON.stringify(report, null, 2));
   await pool.end(); console.log(JSON.stringify({ passed: report.passed, checks: checks.length, cleanup: report.cleanup, report: path, failedCheck: report.failedCheck }));
 }

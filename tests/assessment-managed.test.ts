@@ -11,16 +11,16 @@ const grades: AssessmentGrade[] = ["Junior", "Middle", "Senior"];
 const programs: ProgramId[] = ["backend-python", "frontend-typescript"];
 const solved = (form: ReturnType<typeof assembleManagedAttempt>) => form.cases.map(item => ({ caseId: item.id, answer: form.oracles[item.id]!.answer }));
 
-test("managed bank: 72 registered templates, two semantic scenarios per competency/grade; 600 valid forms", () => {
-  assert.equal(managedTemplates.length, 72);
-  assert.equal(new Set(managedTemplates.map(item => item.id)).size, 72);
+test("managed bank: 108 registered templates, three semantic scenarios per competency/grade; 600 valid forms", () => {
+  assert.equal(managedTemplates.length, 108);
+  assert.equal(new Set(managedTemplates.map(item => item.id)).size, 108);
   for (const program of programs) for (const grade of grades) {
     const available = managedTemplates.filter(item => item.programId === program && item.grade === grade);
-    for (let slot = 0; slot < 6; slot++) assert.equal(new Set(available.filter(item => item.slot === slot).map(item => item.scenario)).size, 2);
+    for (let slot = 0; slot < 6; slot++) assert.equal(new Set(available.filter(item => item.slot === slot).map(item => item.scenario)).size, 3);
     for (let index = 0; index < 100; index++) {
       const form = assembleManagedAttempt(program, grade, `managed-${index}`);
       assert.equal(isCurrentKalibrAttempt(form.cases, form.oracles), true);
-      assert.equal(assessmentBankVersion(form.cases, form.oracles), program === "backend-python" ? "signal-backend-python-v6" : "signal-frontend-typescript-v2");
+      assert.equal(assessmentBankVersion(form.cases, form.oracles), program === "backend-python" ? "signal-backend-python-v7" : "signal-frontend-typescript-v3");
       assert.equal(scoreAttempt(form.cases, form.oracles, solved(form)).score, 100);
       assert.equal(scoreAttempt(form.cases, form.oracles, solved(form)).criticalComplete, true);
       assert.deepEqual(form.cases.map(item => item.responseType), ["text", "text", "choice", "text", "choice", "text"]);
@@ -88,7 +88,7 @@ test("v4 saved forms retain original rubric; new managed versions never rewrite 
 
 test("v5/v1 saved Senior snapshots retain their original decision; v6/v2 require architecture without changing thresholds", () => {
   for (const program of programs) {
-    const form = assembleManagedAttempt(program, "Senior", "historical-v5-v1");
+    const form = assembleManagedAttempt(program, "Senior", "historical-v5-v1", {programVersion:program === "backend-python" ? "signal-backend-python-v6" : "signal-frontend-typescript-v2"});
     const current = JSON.parse(JSON.stringify(form)) as typeof form;
     const oldVersion = program === "backend-python" ? "signal-backend-python-v5" : "signal-frontend-typescript-v1";
     // A fixed synthetic historical snapshot has the actual old public identifiers

@@ -1,0 +1,6 @@
+{
+  "recordedAt": "2026-10-08T15:08:52.026826+00:00",
+  "frozenBusinessDataAndLabelsUnchanged": true,
+  "beforeSourceSha256": "ab7c47ecb6508abdf90c4cf426d21dc52bcb92e5e433d6fc2c3bf8ff213c7aa7",
+  "afterAdapterClarification": "Current certificates use matrix-v2 and language/data-or-framework/engineering requirement IDs. The before adapter used historical v1 IDs. All candidate facts, grade/skill levels, whole CV eligibility and relevance labels remain frozen. No weights or labels were changed after scores. Existing before results are retained. Both adapters are synthetic DTO mappings, not fabricated DB evidence."
+}

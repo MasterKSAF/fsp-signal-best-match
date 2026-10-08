@@ -4,11 +4,13 @@ import type { SignalResumeQuestionnaireHistory } from "@workspace/db";
 import { postgresIntIdSchema } from "./postgres-id";
 
 const month = z.string().regex(/^(19|20|21)\d{2}-(0[1-9]|1[0-2])$/, "Укажите месяц и год.");
+// Historical education records sometimes know only the year. Preserve that precision rather than inventing January.
+const educationDate = z.string().regex(/^(19|20|21)\d{2}(?:-(0[1-9]|1[0-2]))?$/, "Укажите год или месяц и год.");
 const requiredText = (max: number) => z.string().trim().min(1, "Заполните поле.").max(max, `Не более ${max} символов.`);
 const safeUrl = z.string().trim().max(600).url("Введите полный адрес сайта.").refine((value) => {
   try { const parsed = new URL(value); return ["https:", "http:"].includes(parsed.protocol) && !parsed.username && !parsed.password; } catch { return false; }
 }, "Допустимы ссылки http:// или https:// без логина и пароля.");
-const dateRange = <T extends { start: string; end: string | null }>(value: T) => value.end === null || value.end >= value.start;
+const dateRange = <T extends { start: string; end: string | null }>(value: T) => value.end === null || ((value.start.length === 4 || value.end.length === 4) ? value.end.slice(0,4) >= value.start.slice(0,4) : value.end >= value.start);
 
 export const resumeQuestions = [
   { key: "python", title: "Python", question: "Как вы работаете с Python: коллекциями, исключениями, типизацией и асинхронным кодом?" },
@@ -50,7 +52,7 @@ export const SaveResumeSchema = z.object({
   softSkills: z.array(requiredText(100)).max(20),
   experience: z.array(z.object({ company: requiredText(160), role: requiredText(160), start: month, end: month.nullable(), description: z.string().trim().max(2400) }).strict().refine(dateRange, { message: "Дата окончания не может быть раньше начала.", path: ["end"] })).max(10),
   projects: z.array(z.object({ title: requiredText(160), role: z.string().trim().max(160), description: z.string().trim().max(2400), url: safeUrl.nullable() }).strict()).max(10),
-  education: z.array(z.object({ institution: requiredText(200), qualification: requiredText(200), start: month, end: month.nullable() }).strict().refine(dateRange, { message: "Дата окончания не может быть раньше начала.", path: ["end"] })).max(5),
+  education: z.array(z.object({ institution: requiredText(200), qualification: requiredText(200), start: educationDate, end: educationDate.nullable() }).strict().refine(dateRange, { message: "Дата окончания не может быть раньше начала.", path: ["end"] })).max(5),
   portfolio: z.array(z.object({ title: requiredText(100), url: safeUrl }).strict()).max(8),
   questionnaire: ResumeQuestionnaireSchema,
 }).strict();
@@ -77,7 +79,7 @@ export function recommendResumeGrade(questionnaire: ResumeInput["questionnaire"]
   const values = Object.values(questionnaire.answers);
   const completedCount = values.filter((value) => value !== null).length;
   const base = { completedCount, totalQuestions: resumeQuestions.length };
-  if (completedCount !== resumeQuestions.length) return { ...base, grade: null, explanation: "Ответьте на все вопросы, чтобы выбрать уровень первой проверки." };
+  if (completedCount !== resumeQuestions.length) return { ...base, grade: null, explanation: "Опрос поможет рекомендовать стартовый уровень. Проверку и уровень можно выбрать самостоятельно." };
   const numbers = values as number[];
   const score = numbers.reduce((sum, value) => sum + value, 0);
   const language = "python" in questionnaire.answers ? questionnaire.answers.python : questionnaire.answers.typescript;

@@ -81,12 +81,19 @@ function inspectContainer() {
 function sourceHashes() {
   const hashes = Object.fromEntries(SOURCE_PATHS.map(relative => [relative, sha(fs.readFileSync(path.join(ROOT, relative)))]));
   const journal = JSON.parse(fs.readFileSync(path.join(ROOT, 'lib/db/migrations/meta/_journal.json'), 'utf8'));
-  assert.equal(journal.entries?.at(-1)?.idx, 9); assert.equal(journal.entries.at(-1).tag, '0009_microtask_resume', 'Only the frozen-through-0009 migration set is allowed');
-  for (const entry of journal.entries) {
+  // Read-only preparation remains useful after later releases. It does not authorize the generic migrator to apply those releases to this frozen stage.
+  assert.ok(Array.isArray(journal.entries) && journal.entries.length >= 10, 'Frozen-through-0009 prefix is required');
+  assert.equal(journal.entries[9].idx, 9); assert.equal(journal.entries[9].tag, '0009_microtask_resume');
+  for (const [index,entry] of journal.entries.entries()) {
+    assert.equal(entry.idx,index,'Migration journal must be contiguous and ordered');
     assert.match(entry.tag, /^\d{4}_[a-z0-9_]+$/);
     const relative = 'lib/db/migrations/' + entry.tag + '.sql'; hashes[relative] = sha(fs.readFileSync(path.join(ROOT, relative)));
   }
   return hashes;
+}
+function assertFrozen0009Journal(journal) {
+  assert.equal(journal.entries?.at(-1)?.idx,9,'Only the frozen-through-0009 migration set is allowed for this legacy upgrade; newer releases require their own owned upgrade');
+  assert.equal(journal.entries.at(-1).tag,'0009_microtask_resume');
 }
 async function databaseIdentity(client) {
   const result = await client.query('SELECT current_database() AS name, (SELECT oid::bigint::text FROM pg_database WHERE datname=current_database()) AS oid');
@@ -148,11 +155,15 @@ async function main(args = process.argv.slice(2)) {
   const mode = args[0] ?? '--check-only';
   assert.ok(['--check-only', '--capture-owned-stage-identity', '--upgrade-owned-stage'].includes(mode), 'Unknown stage helper mode');
   const sources = sourceHashes();
+  const journal=JSON.parse(fs.readFileSync(path.join(ROOT,'lib/db/migrations/meta/_journal.json'),'utf8'));
   if (mode === '--check-only') {
     const manifestPresent = fs.existsSync(MANIFEST); if (manifestPresent) validateManifest(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')));
-    console.log(JSON.stringify({ checkOnly: true, prepared: true, target: TARGET, identityManifestPresent: manifestPresent, sourceHashes: sources, dockerCalled: false, databaseAccess: false, backupCreated: false, migrated: false, seeded: false, restarted: false })); return;
+    const frozenReady=journal.entries.at(-1).idx===9;
+    console.log(JSON.stringify({ checkOnly: true, prepared: frozenReady, migrationCeiling:9,currentMigrationIndex:journal.entries.at(-1).idx,blockedReason:frozenReady?null:'Legacy0009 upgrade is frozen; later releases require a separate owned upgrade.', target: TARGET, identityManifestPresent: manifestPresent, sourceHashes: sources, dockerCalled: false, databaseAccess: false, backupCreated: false, migrated: false, seeded: false, restarted: false })); return;
   }
   if (mode === '--upgrade-owned-stage') assert.equal(process.env.SIGNAL_STAGE_0009_RELEASE, '1', 'Root release flag required before any upgrade access');
+  // This boundary is checked before Docker/SQL even when the explicit old release flag is present.
+  assertFrozen0009Journal(journal);
   const info = inspectContainer(), credential = assertContainer(info);
   const { Client } = createRequire(path.join(ROOT, 'lib/db/package.json'))('pg');
   const client = new Client({ host: TARGET.host, port: TARGET.port, database: TARGET.database, user: credential.user, password: credential.password, application_name: 'signal-owned-stage-upgrade-v060', connectionTimeoutMillis: 5000, statement_timeout: 120000 });
@@ -211,5 +222,5 @@ async function main(args = process.argv.slice(2)) {
   }
 }
 
-module.exports = { TARGET, assertContainer, validateManifest, assertIdentity, quoteIdentifier, publicTableHashSql, commitTable, businessState, assertBusinessUnchanged, EXCLUDED_COLUMNS, assertPre0009, assertLegacy0009, main };
+module.exports = { TARGET, assertContainer, validateManifest, assertIdentity, quoteIdentifier, publicTableHashSql, commitTable, businessState, assertBusinessUnchanged, EXCLUDED_COLUMNS, assertPre0009, assertLegacy0009, assertFrozen0009Journal, main };
 if (require.main === module) main().catch(() => { console.error(JSON.stringify({ passed: false, failure: 'Fixed-stage helper guard failed; private details withheld', completionState: 'not-confirmed' })); process.exitCode = 1; });

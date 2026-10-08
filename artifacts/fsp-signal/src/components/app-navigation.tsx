@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLocation, useSearch } from 'wouter';
 import './app-navigation.css';
 
 type Trail = { entries: string[]; index: number };
-type NavigationContext = { canGoBack: boolean; goBack: (fallback?: string) => void };
+type NavigationContext = { canGoBack: boolean; canGoForward: boolean; goBack: (fallback?: string) => void; goForward: () => void };
 const AppNavigationContext = createContext<NavigationContext | null>(null);
 
 /** A local route trail never sends a visitor back to another website. */
@@ -65,7 +65,19 @@ export function AppNavigationProvider({ children }: { children: ReactNode }) {
     navigate(target, { replace: true });
   }, [navigate, route, trail]);
 
-  return <AppNavigationContext.Provider value={{ canGoBack: trail.index > 0, goBack }}>{children}</AppNavigationContext.Provider>;
+  const goForward = useCallback(() => {
+    const target = trail.entries[trail.index + 1];
+    if (!target || !target.startsWith('/') || target.startsWith('//')) return;
+    setTrail(current => ({ ...current, index: Math.min(current.entries.length - 1, current.index + 1) }));
+    navigate(target, { replace: true });
+  }, [navigate, trail]);
+
+  return <AppNavigationContext.Provider value={{ canGoBack: trail.index > 0, canGoForward: trail.index < trail.entries.length - 1, goBack, goForward }}>{children}</AppNavigationContext.Provider>;
+}
+
+export function AppHistoryButtons({ fallback }: { fallback?: string }) {
+  const navigation = useContext(AppNavigationContext);
+  return <nav className="workspace-history" aria-label="История переходов"><AppBackButton fallback={fallback}/><button className="app-back-button" type="button" aria-label="Вперёд" title="Вперёд" disabled={!navigation?.canGoForward} onClick={() => navigation?.goForward()} data-testid="button-app-forward"><ArrowRight size={19} aria-hidden="true"/></button></nav>;
 }
 
 export function AppBackButton({ fallback }: { fallback?: string }) {

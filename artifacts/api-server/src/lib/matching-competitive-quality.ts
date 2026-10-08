@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { rankMatches, evaluateMatch, MATCH_ALGORITHM_VERSION, type MatchCandidate, type MatchEvaluation, type MatchNeed } from './signal-matching';
-import { evaluateMatch as evaluateV3 } from './matching-v3-frozen';
+import { evaluateMatch as evaluateV3, type MatchCandidate as FrozenCandidate } from './matching-v3-frozen';
 import { evaluateMatch as evaluateV4, compareRankedMatches as compareV4 } from './matching-v4-frozen';
 import { canonicalSkillKey, SKILL_CATALOG_VERSION } from './skill-catalog';
 import { competitiveCandidates, competitiveDataset, COMPETITIVE_FROZEN_SHA256, type CompetitiveQuery } from './matching-competitive-fixtures';
@@ -44,6 +44,10 @@ function withoutResult(evaluation: MatchEvaluation): MatchEvaluation {
 function aliasId(a: MatchCandidate,b: MatchCandidate) {
   return a.alias.localeCompare(b.alias,'ru') || a.userId-b.userId;
 }
+function frozenCandidate(candidate: MatchCandidate): FrozenCandidate {
+  type OldEvidence = NonNullable<FrozenCandidate['skillEvidence']>[number];
+  return { ...candidate, skillEvidence: candidate.skillEvidence?.filter((proof): proof is typeof proof & OldEvidence => proof.sourceType !== 'signal_skill_module') };
+}
 function rankMethod(method: CompetitiveMethod, query: CompetitiveQuery, entries: Entry[], at: Date): number[] {
   let sorted = [...entries];
   if (method === 'signal' || method === 'reverse') {
@@ -52,9 +56,9 @@ function rankMethod(method: CompetitiveMethod, query: CompetitiveQuery, entries:
   } else if (method === 'without-test-result') {
     sorted = rankMatches(sorted.map(entry => ({ ...entry, evaluation: withoutResult(entry.evaluation) })));
   } else if (method === 'old-v4') {
-    return sorted.map(entry => ({ candidate: entry.candidate, evaluation: evaluateV4(query.need,entry.candidate,true,at) })).sort(compareV4).map(entry => entry.candidate.userId);
+    return sorted.map(entry => ({ candidate: frozenCandidate(entry.candidate), evaluation: evaluateV4(query.need,frozenCandidate(entry.candidate),true,at) })).sort(compareV4).map(entry => entry.candidate.userId);
   } else if (method === 'old-v3') {
-    const old = new Map(sorted.map(x=>[x.candidate.userId,evaluateV3(query.need,x.candidate,true,at).rankingScore]));
+    const old = new Map(sorted.map(x=>[x.candidate.userId,evaluateV3(query.need,frozenCandidate(x.candidate),true,at).rankingScore]));
     sorted.sort((a,b)=>old.get(b.candidate.userId)!-old.get(a.candidate.userId)! || aliasId(a.candidate,b.candidate));
   } else if (method === 'keyword-baseline') {
     const requirements = [...query.need.requiredSkills,...query.need.desirableSkills].map(canonicalSkillKey);

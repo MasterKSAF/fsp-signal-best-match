@@ -1,0 +1,34 @@
+{
+  "frozenAt": "2026-10-08T17:46:10.605Z",
+  "beforeFirstEvaluatorInvocation": true,
+  "files": {
+    "dataset": "f49d43a0302b6a5d4b6d2ded312670be11cc2d180f78c904c71c3d4ff4ec6749",
+    "labels": "5494c474687ae55ccf6fb4e3c95f39488708889c080deaba7ab3afe3bb92127f",
+    "rubric": "4a73146e2c90f6b06ce24ab4587da2b667c9612157cc5c74b5ad063786b54b7a"
+  },
+  "preservation": {
+    "docs/validation/modular-matching-a10-20261008/adapter-clarification.json": "2e622498e4283748b8cc0d88350caf6184f60c7926642b5df3dac9e1925225ab",
+    "docs/validation/modular-matching-a10-20261008/before-sources/employer-required-skills.ts": "c2f4a52fe6e7103b2a413ffbefcfed6bfa04185b5560f82b097642195c2953bb",
+    "docs/validation/modular-matching-a10-20261008/before-sources/fsp-results.ts": "9c5378d4d0ab9bcb3183e92e42c379d0a739b3051ac6f883260e67e8fe29d474",
+    "docs/validation/modular-matching-a10-20261008/before-sources/signal-matching.ts": "abdcb493ff6ee4851c474cda8580b2c0a67b5fb979c63be9b2bd1588b992a4fb",
+    "docs/validation/modular-matching-a10-20261008/before-sources/signal-resume-catalog.ts": "c9508be727972532156db2183f2000725042677efc9a4a89496bfb9dee9a45f6",
+    "docs/validation/modular-matching-a10-20261008/before-sources/skill-catalog.ts": "3ef0c5ba605a0c7852fff4614c43c2d3aa2e79cb43e70dbd75f29ac3485a138f",
+    "docs/validation/modular-matching-a10-20261008/dataset.json": "9af6b178f5a7c8e864c179092aba05403c17c38d093c644372ade0cb22a4bdf6",
+    "docs/validation/modular-matching-a10-20261008/freeze.json": "12a6053558f53335934d987d49e5b77f68c01c30887fdcfc72389d1289cfccb4",
+    "docs/validation/modular-matching-a10-20261008/labels.json": "74c50c97e80442bf9aa38dc5ee8da1a672ec2e17d0bc9c61701afa83e2bc0b1a",
+    "docs/validation/modular-matching-a10-20261008/rubric.json": "0930fd1bb339ba304b28dee942ed7651593d5668cf4c35db3bf63fb5aab8d51e",
+    "outputs/verification/full-audit-a01-a11-20261008/matching/after/first-use.json": "38d07cc3529c4fc1c46fadb9897ab3a05338d89607c045af3fe74e4d3f0bc056",
+    "outputs/verification/full-audit-a01-a11-20261008/matching/after/report.json": "0d0dcba0b26661947ae36ebb3471f9f1a1fda6636438b31baab4b61a69b28285",
+    "outputs/verification/full-audit-a01-a11-20261008/matching/before/evaluator-source.ts": "ab7c47ecb6508abdf90c4cf426d21dc52bcb92e5e433d6fc2c3bf8ff213c7aa7",
+    "outputs/verification/full-audit-a01-a11-20261008/matching/before/first-use.json": "740e3383dc7ebbfa9c86c3ec2a8a6f774db80384a7e70692a79d78c5c25bcef3",
+    "outputs/verification/full-audit-a01-a11-20261008/matching/before/report.json": "73e28451007e4094ad4744e61605bca4ad6e56f22d7d9d4ffcc28c7006ef0510"
+  },
+  "counts": {
+    "people": 23,
+    "resumes": 24,
+    "moduleProofs": 66,
+    "assessmentProofs": 4,
+    "needs": 4,
+    "labels": 92
+  }
+}

@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 
 export interface EmailVerificationInput {
@@ -13,4 +13,6 @@ export interface EmailVerificationInput {
      * @maxLength 6
      */
   code: string;
+  /** The exact opaque intent returned to this browser by its registration request. Email and code alone cannot activate an account. */
+  registrationId: string;
 }

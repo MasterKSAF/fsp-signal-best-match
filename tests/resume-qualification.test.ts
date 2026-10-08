@@ -7,7 +7,7 @@ import { CreateResumeSchema, ResumeMetadataSchema } from "../artifacts/api-serve
 
 const target = (specialization = "Backend / Python"): ResumeQualificationTarget => ({ userId: 17, specialization, legacyQualification: null });
 function attempt(id: number, programId: "backend-python" | "frontend-typescript", grade: "Junior" | "Middle" | "Senior", pass = true): ResumeQualificationAttempt {
-  const form = assembleManagedAttempt(programId, grade, `resume-proof-${id}`);
+  const form = assembleManagedAttempt(programId, grade, `resume-proof-${id}`, {programVersion:programId === "backend-python" ? "signal-backend-python-v6" : "signal-frontend-typescript-v2"});
   return { id, userId: 17, resumeId: 99, resumeRevision: 1,
     purpose: "signal_qualification", purposeOrigin: "candidate_confirmed", gradeConfirmedAt: new Date("2026-10-01T09:00:00Z"),
     resumeSpecialization: programId === "backend-python" ? "Backend / Python" : "Frontend / TypeScript",

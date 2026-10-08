@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-09",
+  "ui": "http://signal-employer.localhost:4414",
+  "checks": [
+    {
+      "name": "Cards: primary match action and right-side ellipsis menu",
+      "result": "PASS"
+    },
+    {
+      "name": "Jobs Python/title_asc and needs SQL/title_desc retained independently across tabs",
+      "result": "PASS"
+    },
+    {
+      "name": "Selected jobs/needs tab visibly filled and aria-selected",
+      "result": "PASS"
+    },
+    {
+      "name": "Task 7/offer 8: author, collapsed task and answer, exact-CV profile link",
+      "result": "PASS"
+    },
+    {
+      "name": "Synthetic company INN checksum-valid 0012345673 saved via UI and retained after reload",
+      "result": "PASS"
+    },
+    {
+      "name": "Light/dark appearance controls apply and close menu",
+      "result": "PASS"
+    },
+    {
+      "name": "390 px mobile jobs view, no horizontal page overflow after transition",
+      "result": "PASS"
+    }
+  ],
+  "data": "Own synthetic actors only; accepted synthetic invitation during recording. No real participant data or external registry action.",
+  "apiBuildSha256": "7b4783a918163def814ebf843162510031ca259949489dc603cbb94d3da122d6",
+  "automatedTests": 582,
+  "sourceCopyTests": 582,
+  "typecheck": "PASS",
+  "apiBuild": "PASS",
+  "uiBuild": "PASS",
+  "historicalPerformance": "Previous load latency threshold remains failed; no new load run."
+}

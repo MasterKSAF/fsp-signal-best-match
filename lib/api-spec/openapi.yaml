@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Api
-  version: 0.6.0
+  version: 0.7.0
   description: FSP SIGNAL candidate assessment, explainable matching, and invitations API
 servers:
   - url: /api
@@ -258,6 +258,7 @@ paths:
       operationId: saveCandidateProfile
       tags:
         - profile
+      description: Save one explicitly addressed owned CV and shared identity atomically. Body resumeId and both current CV revision and identityRevision from an owner GET are mandatory; query resumeId alone never selects a CV for writes. A stale version returns409 before any field changes.
       requestBody:
         required: true
         content:
@@ -271,6 +272,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CandidateProfile"
+        "400":
+          $ref: "#/components/responses/ApiError"
+        "409":
+          description: The selected CV or shared account identity has changed. Refresh deliberately and preserve the unsaved draft; never automatically replay it.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CandidateProfileRevisionConflict"
         "401":
           $ref: "#/components/responses/ApiError"
   /me/invitations:
@@ -353,6 +362,7 @@ paths:
       operationId: startAssessmentAttempt
       tags:
         - assessment
+      description: New legacy issuance is closed under read_complete_only regardless of feature flags. An already open owned attempt may be resumed; use skill-attempts for new modular checks.
       requestBody:
         required: true
         content:
@@ -361,7 +371,7 @@ paths:
               $ref: "#/components/schemas/AssessmentStartInput"
       responses:
         "201":
-          description: Resumed or newly created attempt with answer-free cases
+          description: Historical creation response shape; current legacy policy only restores existing attempts and rejects new issuance.
           content:
             application/json:
               schema:
@@ -750,10 +760,10 @@ paths:
       tags:
         - profile
       operationId: saveFspConnection
-      summary: Save an FSP ID with explicit import consent
-      description: Repeated identical requests preserve timestamps. A user-entered ID remains pending and gives no ranking bonus. Only
-        FSP-DEMO-2026 in a demo account with DEMO_MODE=true imports synthetic achievements. Identifiers are not globally reserved until
-        identity verification exists.
+      summary: Save an opaque FSP ID without importing results
+      description: Accepts only fspId. Each save records a fresh requestedAt and clears previous external proof and consent.
+        Every entered ID, including FSP-DEMO-2026, remains pending with no achievements or ranking bonus.
+        Saving does not call a registry, verify identity, grant import consent or reserve the ID globally.
       requestBody:
         required: true
         content:
@@ -762,13 +772,13 @@ paths:
               $ref: "#/components/schemas/FspConnectionInput"
       responses:
         "200":
-          description: Saved connection; unavailable upstream produces an explicit unavailable state without achievements.
+          description: Pending connection with empty achievements, null consent and verification timestamps, and importAvailable=false.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/FspConnection"
         "400":
-          description: Invalid ID, missing consent or unauthorized fixture
+          description: Invalid ID or extra fields, including consentImport
         "401":
           description: Sign-in required
         "403":
@@ -1187,6 +1197,7 @@ paths:
                           - available
                           - unsupported_requirements
                           - no_verified_candidates
+                          - invalid_requirements
                       minimumGrade:
                         type: string
                         enum:
@@ -2238,15 +2249,38 @@ paths:
             type: integer
             minimum: 1
             maximum: 2147483647
+        - name: search
+          in: query
+          description: Search permitted aliases and resume titles; never reveals excluded people.
+          schema:
+            type: string
+            maxLength: 100
+        - name: grade
+          in: query
+          schema:
+            type: string
+            enum: [Junior, Middle, Senior]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 25
+        - name: cursor
+          in: query
+          description: Opaque continuation bound to company, scope, template and filters; restart after changing filters.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 512
       responses:
         "200":
           description: Success
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MicrotaskEligibleResume"
+                $ref: "#/components/schemas/MicrotaskEligibleResumePage"
         "400":
           description: Invalid input
           content:
@@ -3030,7 +3064,8 @@ paths:
       operationId: createResearchStudy
       tags:
         - research
-      summary: Operator creates study and freezes A/B forms, versions and rubric
+      summary: Historical study creation endpoint; new legacy forms are closed
+      description: Current read_complete_only policy returns 409 for new studies. Existing results and already open attempts remain accessible to their authorized users.
       responses:
         "201":
           description: Successful response; private endpoints use no-store
@@ -3097,6 +3132,9 @@ paths:
                     $ref: "#/components/schemas/ResearchStudy"
                   operator:
                     type: boolean
+                  newFormsAvailable:
+                    type: boolean
+                    description: False under the current read_complete_only legacy policy; already open attempts may continue.
                   consentText:
                     type: string
                   consentVersion:
@@ -4900,6 +4938,59 @@ paths:
           in: query
           required: true
           schema: *a27
+  /me/skill-matrix: {"get": {"operationId": "getSkillModuleMatrix", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleMatrix"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/skill-qualification: {"get": {"operationId": "getSkillModuleQualification", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "resumeId", "in": "query", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleQualification"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/skill-target: {"post": {"operationId": "setSkillModuleTarget", "tags": ["profile"], "description": "Change one owned resume declared target with revision conflict protection; it grants no qualification.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "properties": {"resumeId": {"type": "integer", "minimum": 1}, "revision": {"type": "integer", "minimum": 1}, "grade": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}}, "required": ["resumeId", "revision", "grade"]}}}}, "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "properties": {"saved": {"type": "boolean"}}, "required": ["saved"]}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/skill-attempts: {"post": {"operationId": "startSkillModuleAttempt", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "properties": {"attempt": {"$ref": "#/components/schemas/SkillModuleAttempt"}, "resumed": {"type": "boolean"}}, "required": ["attempt", "resumed"]}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}, "201": {"description": "New immutable attempt issued", "content": {"application/json": {"schema": {"type": "object", "properties": {"attempt": {"$ref": "#/components/schemas/SkillModuleAttempt"}, "resumed": {"type": "boolean"}}, "required": ["attempt", "resumed"]}}}}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleStartInput"}}}}}}
+  /me/skill-attempts/{id}: {"get": {"operationId": "getSkillModuleAttempt", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleAttempt"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/skill-attempts/{id}/answers: {"put": {"operationId": "saveSkillModuleAnswers", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "properties": {"attempt": {"$ref": "#/components/schemas/SkillModuleAttempt"}}, "required": ["attempt"]}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleAnswersInput"}}}}}}
+  /me/skill-attempts/{id}/submit: {"post": {"operationId": "submitSkillModuleAttempt", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "properties": {"attempt": {"$ref": "#/components/schemas/SkillModuleAttempt"}}, "required": ["attempt"]}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SkillModuleAnswersInput"}}}}}}
+  /resumes/{id}/document-preview: {"get": {"operationId": "getResumeDocumentPreview", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}, {"name": "fields", "in": "query", "required": false, "schema": {"type": "string"}, "description": "Whitelist of optional file fields; empty selects no optional sections. ACL always applies."}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ResumeDocumentPreview"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /resumes/{id}/view: {"post": {"operationId": "recordAuthorizedResumeView", "tags": ["profile"], "description": "Explicit user-triggered employer view. Owners and prefetch never count; UTC daily deduplication.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"default": {"$ref": "#/components/responses/UnifiedErrorResponse"}, "204": {"description": "Authorized event processed; daily duplicate or owner view creates no additional event"}}}}
+  /me/resumes/{id}/analytics: {"get": {"operationId": "getResumeAnalytics", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/resumes/{id}/work-preferences: {"patch": {"operationId": "saveResumeWorkPreferences", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"revision": {"type": "integer"}, "location": {"type": "string"}, "schedule": {"type": "string"}, "employment": {"type": "string"}, "relocation": {"type": "boolean"}, "startAvailability": {"type": "string"}}, "required": ["revision"]}}}}}}
+  /me/invitations/search: {"get": {"operationId": "searchCandidateInvitations", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/applications/search: {"get": {"operationId": "searchCandidateApplications", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /public/jobs/search: {"get": {"operationId": "searchAccessibleJobs", "tags": ["profile"], "description": "Filters the full accessible published pool before pagination. Skills is JSON array of {skill,level?}; legacy requirements have no implicit level.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "specialization", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "grade", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "skills", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryMin", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryMax", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "workFormat", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "location", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryPeriod", "in": "query", "required": false, "schema": {"type": "string", "enum": ["month", "year"], "default": "month"}}, {"name": "hideApplied", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.", "schema": {"type": "boolean", "default": false}}, {"name": "hideBlocked", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.", "schema": {"type": "boolean", "default": false}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /resumes/{id}/document.docx: {"get": {"operationId": "getResumeDocumentdocx", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}, {"name": "fields", "in": "query", "required": false, "schema": {"type": "string"}, "description": "Whitelist of optional file fields; empty selects no optional sections. ACL always applies."}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/vnd.openxmlformats-officedocument.wordprocessingml.document": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /resumes/{id}/document.pdf: {"get": {"operationId": "getResumeDocumentpdf", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}, {"name": "fields", "in": "query", "required": false, "schema": {"type": "string"}, "description": "Whitelist of optional file fields; empty selects no optional sections. ACL always applies."}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/pdf": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /resumes/{id}/preview.pdf: {"get": {"operationId": "getResumePreviewpdf", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/pdf": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /public/jobs/export: {"get": {"operationId": "exportAccessibleJobs", "tags": ["profile"], "description": "Exports every accessible filtered row in the same order. Explicit limit 10000; excess rejected without silent truncation. No private needs or personal contacts. CSV UTF8 BOM and spreadsheet formula neutralization.", "parameters": [{"name": "format", "in": "query", "required": true, "schema": {"type": "string", "enum": ["csv", "xlsx"]}}, {"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "specialization", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "grade", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "skills", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryMin", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryMax", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "workFormat", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "location", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryPeriod", "in": "query", "required": false, "schema": {"type": "string", "enum": ["month", "year"], "default": "month"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "hideApplied", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.", "schema": {"type": "boolean", "default": false}}, {"name": "hideBlocked", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.", "schema": {"type": "boolean", "default": false}}], "responses": {"200": {"description": "Successful authorized result", "content": {"text/csv": {"schema": {"type": "string", "format": "binary"}}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /me/account: {"get": {"operationId": "getOwnedAccount", "tags": ["auth"], "responses": {"200": {"description": "Owner account", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/OwnedAccount"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}, "patch": {"operationId": "updateOwnedAccount", "tags": ["auth"], "responses": {"200": {"description": "Owner account", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/OwnedAccount"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "properties": {"displayName": {"type": "string", "minLength": 2, "maxLength": 120}, "expectedDisplayName": {"type": "string"}, "professionalAlias": {"type": "string", "minLength": 2, "maxLength": 120}, "expectedProfessionalAlias": {"type": "string"}}, "required": ["displayName", "expectedDisplayName"]}}}}}}
+  /me/fsp-connection/import:
+    post:
+      operationId: requestFspImport
+      tags: [profile]
+      summary: Request an FSP import with separate explicit consent
+      description: Registry integration is not configured. This operation never imports a synthetic fixture, persists consent or confirms the ID. A saved ID is required before returning registry_not_configured.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [consentImport]
+              properties:
+                consentImport: {type: boolean, const: true}
+            example: {consentImport: true}
+      responses:
+        '400':
+          description: Missing explicit consent or extra request fields; code fsp_import_consent_required
+        '401':
+          description: Sign-in required
+        '403':
+          description: Candidate role or trusted browser origin required
+        '409':
+          description: No saved ID; code fsp_id_required
+        '503':
+          description: Registry not configured; code registry_not_configured. Stored proof, grades and contacts are unchanged.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ApiError'}
+              example: {code: registry_not_configured, error: 'Реестр ФСП ещё не подключён. ID сохранён без подтверждения и импорта.'}
+        default:
+          $ref: '#/components/responses/UnifiedErrorResponse'
 components:
   parameters:
     Id:
@@ -4925,6 +5016,7 @@ components:
           schema:
             $ref: "#/components/schemas/ApiError"
   schemas:
+    OwnedAccount: {"type": "object", "properties": {"id": {"type": "integer"}, "displayName": {"type": "string"}, "email": {"type": "string"}, "emailVerified": {"type": "boolean"}, "role": {"type": "string", "enum": ["candidate", "employer"]}, "demoMode": {"type": "boolean"}, "reviewMode": {"type": "boolean"}, "createdAt": {"type": "string", "format": "date-time"}, "professionalAlias": {"type": ["string", "null"]}}, "required": ["id", "displayName", "email", "emailVerified", "role", "demoMode", "reviewMode", "createdAt", "professionalAlias"]}
     CompanyInput:
       type: object
       properties:
@@ -4939,6 +5031,11 @@ components:
           type: string
           minLength: 2
           maxLength: 160
+        inn:
+          type: string
+          maxLength: 12
+          pattern: '^(?:[0-9]{10}|[0-9]{12})?$'
+          description: Optional company INN, stored as text to preserve leading zeros. Empty clears it; omission preserves the current value. The server validates check digits locally without a registry lookup.
         contactEmail:
           type: string
           format: email
@@ -4969,8 +5066,12 @@ components:
               properties:
                 id:
                   type: integer
+                inn:
+                  type: string
+                  description: Current company INN or an empty string when it has not been provided.
               required:
                 - id
+                - inn
       required:
         - company
     AssessmentHistoryItem:
@@ -5171,6 +5272,10 @@ components:
       properties:
         email:
           type: string
+        registrationId:
+          type: string
+          format: uuid
+          description: Opaque browser registration intent. Keep it with this form and submit it with the mailbox code; it is never included in the email.
         verificationRequired:
           type: boolean
         demoVerificationCode:
@@ -5183,6 +5288,7 @@ components:
         - email
         - verificationRequired
         - notice
+        - registrationId
     EmailVerificationInput:
       type: object
       properties:
@@ -5193,9 +5299,14 @@ components:
           type: string
           minLength: 6
           maxLength: 6
+        registrationId:
+          type: string
+          format: uuid
+          description: The exact opaque intent returned to this browser by its registration request. Email and code alone cannot activate an account.
       required:
         - email
         - code
+        - registrationId
     LoginInput:
       type: object
       properties:
@@ -5237,6 +5348,13 @@ components:
           type: string
         professionalAlias:
           type: string
+        identityRevision:
+          type: string
+          readOnly: true
+          pattern: "^[a-f0-9]{64}$"
+          minLength: 64
+          maxLength: 64
+          description: Opaque revision of the current shared displayName, professionalAlias, phone and contactEmail. Identical across this account's CVs; not an authorization credential.
         specialization:
           type: string
         assumedGrade:
@@ -5332,6 +5450,9 @@ components:
         - userId
         - displayName
         - professionalAlias
+        - identityRevision
+        - revision
+        - resumeId
         - specialization
         - assumedGrade
         - verifiedSkills
@@ -5355,6 +5476,12 @@ components:
           type: string
           minLength: 2
           maxLength: 120
+        identityRevision:
+          type: string
+          pattern: "^[a-f0-9]{64}$"
+          minLength: 64
+          maxLength: 64
+          description: The unmodified shared identity revision from the form's owner GET. Required even when only the CV title or professional fields change.
         specialization:
           type: string
         assumedGrade:
@@ -5437,6 +5564,9 @@ components:
       required:
         - displayName
         - professionalAlias
+        - identityRevision
+        - revision
+        - resumeId
         - specialization
         - assumedGrade
         - stack
@@ -5447,6 +5577,15 @@ components:
         - salaryType
         - visibility
         - consentMatching
+    CandidateProfileRevisionConflict:
+      type: object
+      required: [error, code]
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+          enum: [RESUME_REVISION_CONFLICT, CANDIDATE_IDENTITY_REVISION_CONFLICT]
     AssessmentProgram:
       type: object
       properties:
@@ -5461,6 +5600,12 @@ components:
           items:
             type: string
         available:
+          type: boolean
+        issuancePolicy:
+          type: string
+          enum:
+            - read_complete_only
+        existingAttemptsAvailable:
           type: boolean
         estimatedMinutes:
           type: integer
@@ -5751,6 +5896,12 @@ components:
           type: array
           items:
             type: string
+        requiredSkillLevels:
+          type: object
+          description: Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.
+          additionalProperties:
+            type: string
+            enum: [Junior, Middle, Senior]
         desirableSkills:
           type: array
           items:
@@ -5809,9 +5960,18 @@ components:
           type: array
           minItems: 1
           maxItems: 40
+          description: Every item must remain nonempty after NFKC and whitespace normalization. Known aliases are canonicalized before saving; unknown nonempty requirements are retained.
           items:
             type: string
+            minLength: 1
             maxLength: 100
+            pattern: '\S'
+        requiredSkillLevels:
+          type: object
+          description: Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.
+          additionalProperties:
+            type: string
+            enum: [Junior, Middle, Senior]
         desirableSkills:
           type: array
           maxItems: 40
@@ -5855,6 +6015,21 @@ components:
     MatchCandidate:
       type: object
       properties:
+        qualificationSource:
+          type: string
+          enum: [skill_matrix, assessment, legacy]
+        skillProofs:
+          type: array
+          items:
+            type: object
+            required: [skill, sourceType, level, programVersion]
+            properties:
+              skill: {type: string}
+              sourceType: {type: string, enum: [signal_skill_module]}
+              level: {type: string, enum: [Junior, Middle, Senior]}
+              programVersion: {type: string}
+        categoryEvidence:
+          $ref: "#/components/schemas/SkillCategoryCertificate"
         candidateId:
           type: integer
         alias:
@@ -6877,19 +7052,14 @@ components:
     FspConnectionInput:
       type: object
       additionalProperties: false
-      required:
-        - fspId
-        - consentImport
+      required: [fspId]
       properties:
         fspId:
           type: string
           minLength: 1
           maxLength: 100
           pattern: ^[A-Za-z0-9][A-Za-z0-9._:-]{0,99}$
-          description: Opaque user-entered ID; this format is a local input restriction, not an official FSP format.
-        consentImport:
-          type: boolean
-          const: true
+          description: User-entered ID; saving it grants no verified status or ranking bonus.
     FspAchievement:
       type: object
       additionalProperties: false
@@ -6989,6 +7159,7 @@ components:
         - provenance
         - providerVersion
         - message
+        - importAvailable
       properties:
         status:
           type: string
@@ -7002,6 +7173,8 @@ components:
             - string
             - "null"
         demoAvailable:
+          type: boolean
+        importAvailable:
           type: boolean
         demoFixtureId:
           type:
@@ -7184,6 +7357,8 @@ components:
         - fspHistory
         - evidenceDate
       properties:
+        categoryEvidence:
+          $ref: "#/components/schemas/SkillCategoryCertificate"
         candidateId:
           type: integer
         alias:
@@ -7554,10 +7729,16 @@ components:
           type: string
           enum:
             - signal_assessment
+            - signal_skill_module
             - demo_example
             - legacy_record
             - company_task
             - fsp
+        level:
+          type: string
+          enum: [Junior, Middle, Senior]
+        evidenceId:
+          type: integer
         limitation:
           type:
             - string
@@ -8085,6 +8266,19 @@ components:
         - deadlineDays
         - educationalOnly
         - rubric
+    MicrotaskEligibleResumePage:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items:
+          type: array
+          maxItems: 50
+          items:
+            $ref: "#/components/schemas/MicrotaskEligibleResume"
+        nextCursor:
+          type: string
+          nullable: true
+          maxLength: 512
     MicrotaskEligibleResume:
       type: object
       properties:
@@ -9208,6 +9402,21 @@ components:
             qualification:
               type: object
               additionalProperties: true
+            completion: {"type": "object", "properties": {"completed": {"type": "integer"}, "total": {"type": "integer"}, "sections": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "label": {"type": "string"}, "completed": {"type": "boolean"}}, "required": ["id", "label", "completed"]}}}}
+            skillProgress: {"type": "object", "properties": {"confirmed": {"type": "integer"}, "total": {"type": "integer"}, "supported": {"type": "integer"}, "unsupported": {"type": "integer"}, "items": {"type": "array", "items": {"type": "object", "additionalProperties": true}}}}
+            analytics: {"type": "object", "properties": {"views": {"type": "integer"}, "downloads": {"type": "integer"}, "periodDays": {"type": "integer"}, "since": {"type": "string", "format": "date-time"}, "policy": {"type": "string"}}}
+            workPreferences: {"$ref": "#/components/schemas/ResumeWorkPreferences"}
+            legacyQualificationInfo: {"type": "object", "additionalProperties": true}
+            roleRecommendations:
+              type: array
+              items:
+                type: object
+                required: [skillId, label, level, verifiedLevel]
+                properties:
+                  skillId: {type: string}
+                  label: {type: string}
+                  level: {type: string, enum: [Junior, Middle, Senior]}
+                  verifiedLevel: {type: [string, 'null'], enum: [Junior, Middle, Senior, null]}
           required:
             - id
             - resumeId
@@ -9938,3 +10147,25 @@ components:
           type: string
           enum:
             - none
+
+    SkillCategoryCertificate: {"type": ["object", "null"], "properties": {"matrixVersion": {"type": "string"}, "specialization": {"type": "string"}, "grade": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "targetGrade": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "requirements": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "skillId": {"type": "string"}, "level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "evidenceId": {"type": "integer"}, "attemptId": {"type": "integer"}, "programVersion": {"type": "string"}, "verifiedAt": {"type": "string"}}, "required": ["id", "skillId", "level", "evidenceId", "attemptId", "programVersion", "verifiedAt"]}}}, "required": ["matrixVersion", "specialization", "grade", "targetGrade", "requirements"]}
+
+    SkillModuleEvidenceRecord: {"type": "object", "properties": {"skillId": {"type": "string"}, "label": {"type": "string"}, "level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "evidenceId": {"type": "integer"}, "attemptId": {"type": "integer"}, "programVersion": {"type": "string"}, "verifiedAt": {"type": "string", "format": "date-time"}}, "required": ["skillId", "label", "level", "evidenceId", "attemptId", "programVersion", "verifiedAt"]}
+
+    SkillModuleQualification: {"type": "object", "properties": {"verifiedGrade": {"type": ["string", "null"], "enum": ["Junior", "Middle", "Senior", null]}, "verifiedScore": {"type": "null"}, "verifiedSkills": {"type": "array", "items": {"type": "string"}}, "skills": {"type": "array", "items": {"$ref": "#/components/schemas/SkillModuleEvidenceRecord"}}, "coverage": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "label": {"type": "string"}, "skillId": {"type": ["string", "null"]}, "level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "covered": {"type": "boolean"}, "evidenceId": {"type": ["integer", "null"]}, "reason": {"type": "string"}}}}, "missing": {"type": "array", "items": {"type": "string"}}, "category": {"$ref": "#/components/schemas/SkillCategoryCertificate"}, "source": {"type": "string"}, "limitation": {"type": ["string", "null"]}, "latestAssessmentAt": {"type": ["string", "null"]}}, "required": ["verifiedGrade", "verifiedScore", "skills", "coverage", "missing", "category"]}
+
+    SkillModuleCase: {"type": "object", "properties": {"id": {"type": "string"}, "templateId": {"type": "string"}, "competencyId": {"type": "string"}, "title": {"type": "string"}, "prompt": {"type": "string"}, "options": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "text": {"type": "string"}}, "required": ["id", "text"]}}, "responseType": {"type": "string"}, "critical": {"type": "boolean"}, "templateVersion": {"type": "integer", "minimum": 1}, "seniorOutcome": {"type": "string"}}, "required": ["id", "competencyId", "title", "prompt", "critical", "templateId", "templateVersion", "responseType"]}
+
+    SkillModuleAttempt: {"type": "object", "properties": {"id": {"type": "integer"}, "resumeId": {"type": ["integer", "null"]}, "skillId": {"type": "string"}, "level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "programVersion": {"type": "string"}, "status": {"type": "string", "enum": ["active", "submitted", "expired"]}, "cases": {"type": "array", "items": {"$ref": "#/components/schemas/SkillModuleCase"}}, "answers": {"type": "object", "additionalProperties": {"type": "string"}}, "revision": {"type": "integer"}, "policy": {"type": "object", "properties": {"durationMinutes": {"type": "integer"}, "retryHours": {"type": "integer"}, "maxDailyIssues": {"type": "integer"}, "maxModuleDailyIssues": {"type": "integer"}, "threshold": {"type": "integer"}, "rubricVersion": {"type": "string"}}}, "startedAt": {"type": "string"}, "expiresAt": {"type": "string"}, "submittedAt": {"type": ["string", "null"]}, "decision": {"type": ["object", "null"], "additionalProperties": true}, "feedback": {"type": "array", "items": {"type": "object", "properties": {"competencyId": {"type": "string"}, "title": {"type": "string"}, "explanation": {"type": "string"}, "passed": {"type": "boolean"}}}}, "revocation": {"type": ["object", "null"], "properties": {"reason": {"type": "string"}, "date": {"type": "string", "format": "date-time"}}, "required": ["reason", "date"]}}, "required": ["id", "skillId", "level", "programVersion", "status", "cases", "answers", "revision", "startedAt", "expiresAt"]}
+
+    SkillModuleStartInput: {"type": "object", "properties": {"resumeId": {"type": "integer", "minimum": 1, "maximum": 2147483647}, "skillId": {"type": "string"}, "level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "programVersion": {"type": "string", "minLength": 1, "maxLength": 120}}, "required": ["resumeId", "skillId", "level"], "additionalProperties": false}
+
+    SkillModuleAnswersInput: {"type": "object", "properties": {"revision": {"type": "integer"}, "answers": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 2000}}}, "required": ["revision", "answers"]}
+
+    SkillModuleMatrix: {"type": "object", "properties": {"bankVersion": {"type": "string"}, "policy": {"type": "object", "additionalProperties": true}, "resume": {"type": ["object", "null"], "properties": {"id": {"type": "integer"}, "title": {"type": "string"}, "specialization": {"type": "string"}, "targetGrade": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "statedSkills": {"type": "array", "items": {"type": "string"}}, "revision": {"type": "integer", "minimum": 1}}}, "modules": {"type": "array", "items": {"type": "object", "additionalProperties": true, "properties": {"levels": {"type": "array", "items": {"type": "object", "properties": {"level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "available": {"type": "boolean"}, "reason": {"type": ["string", "null"]}, "availabilityCode": {"type": ["string", "null"], "enum": ["unsupported_skill_level", "skill_bank_unavailable", null]}, "activeAttemptId": {"type": ["integer", "null"]}}, "required": ["level", "available", "reason", "availabilityCode", "activeAttemptId"], "additionalProperties": true}}}}}, "qualification": {"oneOf": [{"$ref": "#/components/schemas/SkillModuleQualification"}, {"type": "null"}]}, "accountEvidence": {"type": "array", "items": {"$ref": "#/components/schemas/SkillModuleEvidenceRecord"}}, "history": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "historicalQualification": {"type": ["object", "null"], "additionalProperties": true}, "historicalAttempts": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "skillContexts": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "accountSkills": {"type": "array", "items": {"type": "object", "properties": {"skillId": {"type": ["string", "null"]}, "label": {"type": "string"}, "state": {"type": "string", "enum": ["declared", "recommended"]}, "resumeIds": {"type": "array", "items": {"type": "integer"}}, "contexts": {"type": "array", "items": {"type": "object", "properties": {"resumeId": {"type": "integer"}, "state": {"type": "string", "enum": ["declared", "recommended"]}, "targetLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}, "reason": {"type": ["string", "null"]}}, "required": ["resumeId", "state", "targetLevel", "reason"]}}, "targetLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}, "verifiedLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}}, "required": ["skillId", "label", "state", "resumeIds", "contexts", "targetLevel", "verifiedLevel"]}}}, "required": ["bankVersion", "resume", "modules", "qualification", "accountEvidence"]}
+
+    WorkspaceSearchPage: {"type": "object", "properties": {"items": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "total": {"type": "integer"}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "pageCount": {"type": "integer"}, "exportLimit": {"type": "integer"}}, "required": ["items", "total", "page", "pageSize", "pageCount"]}
+
+    ResumeDocumentPreview: {"type": "object", "properties": {"resumeId": {"type": "integer"}, "revision": {"type": "integer"}, "name": {"type": "string"}, "title": {"type": "string"}, "specialization": {"type": "string"}, "audience": {"type": "string", "enum": ["owner", "employer"]}, "contactsAllowed": {"type": "boolean"}, "sections": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "paragraphs": {"type": "array", "items": {"type": "object", "properties": {"text": {"type": "string"}, "link": {"type": "string"}}, "required": ["text"]}}}, "required": ["title", "paragraphs"]}}, "composition": {"type": "array", "items": {"type": "string"}}, "contactsPermitted": {"type": "boolean"}, "projectionVersion": {"type": "string", "pattern": "^signal-document-v1:[a-f0-9]{64}$", "description": "Stable opaque fingerprint of the effective authorised document, including identity, qualification and included skill evidence. No volatile generation time."}}, "required": ["resumeId", "name", "title", "audience", "contactsAllowed", "sections", "projectionVersion"]}
+
+    ResumeWorkPreferences: {"type": "object", "properties": {"location": {"type": "string"}, "schedule": {"type": "string"}, "employment": {"type": "string"}, "relocation": {"type": "boolean"}, "startAvailability": {"type": "string"}}, "required": ["location", "schedule", "employment", "relocation", "startAvailability"]}

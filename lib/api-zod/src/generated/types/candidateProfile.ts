@@ -3,7 +3,7 @@
  * Do not edit manually.
  * Api
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
- * OpenAPI spec version: 0.6.0
+ * OpenAPI spec version: 0.7.0
  */
 import type { CandidateProfileAssumedGrade } from './candidateProfileAssumedGrade';
 import type { CandidateProfileSalaryPeriod } from './candidateProfileSalaryPeriod';
@@ -15,6 +15,13 @@ export interface CandidateProfile {
   userId: number;
   displayName: string;
   professionalAlias: string;
+  /**
+     * Opaque revision of the current shared displayName, professionalAlias, phone and contactEmail. Identical across this account's CVs; not an authorization credential.
+     * @minLength 64
+     * @maxLength 64
+     * @pattern ^[a-f0-9]{64}$
+     */
+  readonly identityRevision: string;
   specialization: string;
   assumedGrade: CandidateProfileAssumedGrade;
   /** @nullable */
@@ -43,7 +50,7 @@ export interface CandidateProfile {
      * @minimum 1
      * @maximum 2147483647
      */
-  resumeId?: number;
+  resumeId: number;
   /**
      * @minLength 2
      * @maxLength 120
@@ -53,7 +60,7 @@ export interface CandidateProfile {
      * @minimum 1
      * @maximum 2147483647
      */
-  revision?: number;
+  revision: number;
   consentCatalog?: boolean;
   readyForOffers?: boolean;
 }

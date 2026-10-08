@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "rubricId": "employer-business-fit-preregistered-v1",
+  "synthetic": true,
+  "language": "ru",
+  "objective": "Pointwise полезность кандидата для задачи работодателя; не копия численного ранга продукта.",
+  "unit": "Один человек. Максимум бизнес-оценки среди его отдельно допустимых резюме. Навыки разных CV не объединяются. Catalog labels отдельно от strict labels.",
+  "scale": {
+    "0": "Нет обязательного допуска/права: направление, грейд, подтверждённый обязательный навык или видимость/согласие; либо запрос некорректен.",
+    "1": "Обязательный допуск есть, но существенные предпочтения формата/компенсации или прикладных задач не совпадают.",
+    "2": "Допуск есть; кандидат полезен, но желательные компетенции/условия или неопределённость требуют уточнения.",
+    "3": "Допуск есть; доступное резюме непосредственно соответствует задаче и предпочтениям. Отсутствие ФСП само по себе не снижает label."
+  },
+  "eligibilityRules": [
+    "Strict: не удалённое и не private резюме, consentMatching=true; каталог имеет отдельное consentCandidateBank=true.",
+    "Специализация совпадает; настоящая Signal qualification относится к этому резюме/направлению, valid=true и грейд не ниже минимального.",
+    "Самооценка, company_task и ФСП не создают квалификацию Signal. Без неё strict label=0, даже при catalog label>0.",
+    "Каждый обязательный навык отдельно подтверждён в этом CV. SQL не доказывает PostgreSQL. Неизвестная строка stack не становится подтверждением.",
+    "Крайние пробелы, NFKC spelling и публичные алиасы сохраняют смысл известного навыка. Только-пробельный обязательный навык отвергается до ранжирования.",
+    "В этом контроле зарплата/формат/желательные навыки — предпочтения, не дополнительные hard gates.",
+    "Год/месяц сопоставляются только при одинаковой валюте и gross/net. Неизвестная база не равна доказанному отказу и не конвертируется выдуманно.",
+    "Доверенный результат ФСП — дополнительное свидетельство только внутри направления и текущего подтверждённого грейда. Boolean, другая категория и provider error ничего не подтверждают.",
+    "Имена technical program/version/rubric не означают превосходство. Сырые проценты разных экзаменов не сравниваются как единая шкала; неизвестный процент null.",
+    "Пять CV человека не дают пять мест. Primary не отменяет подходящее согласованное secondary. Private/deleted/withdrawn версии не используются."
+  ],
+  "authorship": "Релевантность вручную назначена по бизнес-задаче до любого нового score/rankingrun. Expected sorted IDs отсутствуют. Business ties допустимы.",
+  "fspMeaning": "Есть label3 без ФСП и label1 с доверенной ФСП, но слабым fit. ФСП не увеличивает label автоматически и не компенсирует обязательный навык.",
+  "splitProtocol": {
+    "diagnostic": 12,
+    "untouched_final": 12,
+    "disjointPeople": true,
+    "finalUse": "Первый итоговый запуск, не для настройки. После настройки по его результатам он становится diagnostic; нужен новый независимый набор."
+  },
+  "metrics": {
+    "nDCGAt": [
+      3,
+      5
+    ],
+    "gain": "2^label-1",
+    "precisionAt": [
+      3,
+      5
+    ],
+    "positiveThreshold": 2,
+    "precisionDenominator": "Всегда k, недостающие места=0; пустая выдача P@k=0.",
+    "emptyWithPositiveIdeal": "nDCG=0, coverage=0, precision=0.",
+    "zeroIdeal": "nDCG=null, при пустой выдаче precision=0; отдельно число таких cases/ошибочные admissions. Не фиктивная единица.",
+    "coverage": "Strict-eligible unique people, business-positive(label>=2), returned unique, short/empty и positive recall. При expected-positive=0 recall=null.",
+    "denominators": "Все24cases остаются в отчёте; failed/empty/adapterUnsupported не исчезают. Aggregate указывает число оцениваемых и null cases.",
+    "catalog": "Отдельный coverage/eligibility; не смешивать catalog labels со strict nDCG."
+  },
+  "adapterContract": {
+    "shape": "source-neutral-v1",
+    "facts": "Explicit per-resume qualification, verifiedSkills, claimedSkills, conditions, trusted synthetic FSP results. No matching score.",
+    "allowed": "Только семантически эквивалентные технические IDs/DTO/ledger. Карта+SHA адаптера фиксируются до запуска.",
+    "forbidden": "Менять labels/need/consent/qualification/salary ради scorer или объединять skills разных CV.",
+    "unsupported": "Честно adapterUnsupported с причиной, case остаётся в отчёте, не PASS.",
+    "versionIds": "Непрозрачные provenance группы; spelling не задаёт порядок."
+  },
+  "blindnessLimits": {
+    "fullyBlind": false,
+    "author": "/root/qa01_control",
+    "priorExposure": "Ранее участвовал в старых политиках/контролях Signal, знает gates, need-fit/category-local FSP. Это ограничивает независимость.",
+    "currentAllowedExposure": "§6 business prompt с прежними агрегированными метриками; разрешённые OpenAPI DTO и статическая skill/program taxonomy. Public DTO содержит названия категорийной метаинформации.",
+    "notReadForThisTask": [
+      "current matching/comparator implementation",
+      "current individual rank results",
+      "prior fixture expected orders",
+      "new scorer outputs"
+    ],
+    "notRun": [
+      "ranking",
+      "admission evaluator",
+      "DB/runtime HTTP",
+      "new-label metrics"
+    ],
+    "claim": "Preregistered synthetic business control с ограниченной blindness, не human pilot и не полностью слепая экспертная оценка."
+  }
+}

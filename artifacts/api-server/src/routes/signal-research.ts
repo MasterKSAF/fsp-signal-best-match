@@ -8,6 +8,7 @@ import { postgresIntIdInputSchema, postgresIntIdParam, postgresIntIdSchema, pars
 import { assembleManagedAttempt, assessmentPrograms, exposedTemplateIds, ManagedBankUnavailableError } from '../lib/assessment-managed';
 import { requiredScore, scoreAttempt, type AttemptOracle } from '../lib/assessment-bank';
 import { RESEARCH_CONSENT_VERSION, RESEARCH_PROTOCOL_VERSION, researchReport, exportResearchAnswer, aggregateResearchReport } from '../lib/research-report';
+import { legacyQualificationIssuancePolicy } from '../lib/skill-bank-operator-policy';
 
 const router: IRouter = Router();
 router.param('id', postgresIntIdParam);
@@ -64,6 +65,7 @@ const CreateStudy = z.object({ title: z.string().trim().min(3).max(120), program
 router.post('/research/studies', async (req, res) => {
   const user = await identity(req, res, true); if (!user) return;
   const input = CreateStudy.safeParse(req.body); if (!input.success) { res.status(400).json({ error: 'Проверьте название, программу и срок хранения 1–90 дней.' }); return; }
+  if (legacyQualificationIssuancePolicy === 'read_complete_only') { res.status(409).json({ error: 'Новые исследования прежней программы закрыты. Сохранённые результаты и ранее открытые попытки остаются доступными.' }); return; }
   try {
     const study = await db.transaction(async tx => {
       await tx.execute(sql`select pg_advisory_xact_lock_shared(751203)`);
@@ -94,7 +96,7 @@ router.get('/research/studies/:id', async (req, res) => {
   const participants = operator ? await db.select({ id: enrollments.id, pseudonym: enrollments.pseudonym, order: enrollments.order, status: enrollments.status, independentGrade: enrollments.independentGrade, independentBasis: enrollments.independentBasis, groupAssignedAt: enrollments.groupAssignedAt, expiresAt: enrollments.expiresAt }).from(enrollments).where(eq(enrollments.studyId, study.id)) : [];
   const ownAttempts = enrollment?.status === 'active' ? await db.select({ id: attempts.id, form: attempts.form, status: attempts.status, startedAt: attempts.startedAt, dueAt: attempts.dueAt, result: attempts.result }).from(attempts).where(eq(attempts.enrollmentId, enrollment.id)).orderBy(attempts.id) : [];
   res.setHeader('Cache-Control', 'no-store');
-  res.json({ study: { id: study.id, title: study.title, programId: study.programId, grade: study.grade, status: study.status, retentionDays: study.retentionDays, measurementOrigin: study.measurementOrigin, protocolVersion: study.protocolVersion }, operator, consentText, consentVersion: RESEARCH_CONSENT_VERSION, enrollment: enrollment ? { id: enrollment.id, pseudonym: enrollment.pseudonym, status: enrollment.status, order: enrollment.order, independentGrade: enrollment.independentGrade, expiresAt: enrollment.expiresAt } : null, attempts: ownAttempts, participants });
+  res.json({ study: { id: study.id, title: study.title, programId: study.programId, grade: study.grade, status: study.status, retentionDays: study.retentionDays, measurementOrigin: study.measurementOrigin, protocolVersion: study.protocolVersion }, operator, newFormsAvailable: legacyQualificationIssuancePolicy !== 'read_complete_only', consentText, consentVersion: RESEARCH_CONSENT_VERSION, enrollment: enrollment ? { id: enrollment.id, pseudonym: enrollment.pseudonym, status: enrollment.status, order: enrollment.order, independentGrade: enrollment.independentGrade, expiresAt: enrollment.expiresAt } : null, attempts: ownAttempts, participants });
 });
 router.post('/research/studies/:id/enroll', async (req, res) => {
   const user = await identity(req, res); if (!user) return;
@@ -105,11 +107,12 @@ router.post('/research/studies/:id/enroll', async (req, res) => {
     if (!study || study.status !== 'open') return null;
     const [existing] = await tx.select().from(enrollments).where(and(eq(enrollments.studyId, study.id), eq(enrollments.userId, user.id))).limit(1);
     if (existing) return existing;
+    if (legacyQualificationIssuancePolicy === 'read_complete_only') return null;
     const all = await tx.select({ id: enrollments.id }).from(enrollments).where(eq(enrollments.studyId, study.id));
     const [enrollment] = await tx.insert(enrollments).values({ studyId: study.id, userId: user.id, pseudonym: `P-${randomBytes(6).toString('hex')}`, order: all.length % 2 ? 'BA' : 'AB', consentVersion: RESEARCH_CONSENT_VERSION, expiresAt: new Date(Date.now() + study.retentionDays * 86400000) }).returning();
     return enrollment;
   });
-  if (!result || result.status !== 'active') { res.status(409).json({ error: 'Исследование закрыто или участие уже завершено. Повтор запроса не восстанавливает согласие.' }); return; }
+  if (!result || result.status !== 'active') { res.status(409).json({ error: 'Новый набор прежней программы закрыт или участие завершено. Повтор запроса не восстанавливает согласие.' }); return; }
   res.json({ enrollmentId: result.id, pseudonym: result.pseudonym, order: result.order });
 });
 router.post('/research/studies/:id/revoke', async (req, res) => {
@@ -143,6 +146,7 @@ router.post('/research/studies/:id/attempts/start', async (req, res) => {
       if (!study || study.status !== 'open' || !study.protocolSnapshot || !enrollment || enrollment.status !== 'active' || enrollment.expiresAt <= new Date() || !enrollment.independentGrade) return null;
       const previous = await tx.select().from(attempts).where(eq(attempts.enrollmentId, enrollment.id)).orderBy(attempts.id);
       const active = previous.find(item => item.status === 'in_progress'); if (active) return active;
+      if (legacyQualificationIssuancePolicy === 'read_complete_only') return null;
       if (previous.length >= 2) return null;
       const form = enrollment.order[previous.length] as 'A' | 'B';
       await tx.execute(sql`select pg_advisory_xact_lock_shared(751203)`);
@@ -151,7 +155,7 @@ router.post('/research/studies/:id/attempts/start', async (req, res) => {
       if (disabled.some(row => assembled.templateIds.includes(row.templateId))) throw new ManagedBankUnavailableError('зафиксированная форма исследования');
       const [attempt] = await tx.insert(attempts).values({ enrollmentId: enrollment.id, form, programVersion: study.protocolSnapshot.programVersion, cases: assembled.cases, oracles: assembled.oracles, dueAt: new Date(Date.now() + 45 * 60000) }).returning(); return attempt;
     });
-    if (!result) { res.status(409).json({ error: 'Нужно активное согласие и независимая группа. Доступны ровно две формы в заданном порядке.' }); return; }
+    if (!result) { res.status(409).json({ error: 'Новые формы прежней программы не выдаются. Продолжение требует ранее открытой попытки, активного согласия и независимой группы.' }); return; }
     res.json({ attemptId: result.id });
   } catch (error) { if (error instanceof ManagedBankUnavailableError) { res.status(409).json({ error: 'Одна из форм исследования недоступна после отключения шаблона. Обратитесь к оператору.' }); return; } throw error; }
 });

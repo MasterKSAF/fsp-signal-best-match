@@ -1,0 +1,92 @@
+{
+  "capture": "Actual local browser Page.screencastFrame captures; no interface content retouching.",
+  "edit": "Chapter montage, slowed UI actions and end-frame holds; captions below the captured viewport.",
+  "voice": "Synthetic Russian narration, local Microsoft Irina Desktop; no music.",
+  "data": "Synthetic accounts. Qualification attempts prepared before recording; not a human assessment or live FSP registry.",
+  "validation": "Full ffmpeg decode completed with no errors.",
+  "sha256": "1942868ebe2eb348f52133358e92b6e2a0e9f38d6075b702b638114f5a6f61e4",
+  "scenes": [
+    {
+      "id": "01-entry",
+      "title": "Signal: кандидат и работодатель",
+      "durationSeconds": 19.686,
+      "sourceFrames": 93,
+      "paceFactor": 2.5,
+      "takes": [
+        "01-entry"
+      ]
+    },
+    {
+      "id": "02-resumes",
+      "title": "Несколько резюме в одном аккаунте",
+      "durationSeconds": 19.656,
+      "sourceFrames": 82,
+      "paceFactor": 2.5,
+      "takes": [
+        "02-resumes"
+      ]
+    },
+    {
+      "id": "03-passport",
+      "title": "Паспорт навыков и проверка уровня",
+      "durationSeconds": 23.906,
+      "sourceFrames": 74,
+      "paceFactor": 2.5,
+      "takes": [
+        "03-passport"
+      ]
+    },
+    {
+      "id": "04-contexts",
+      "title": "Вакансии и приватные запросы",
+      "durationSeconds": 20.644,
+      "sourceFrames": 173,
+      "paceFactor": 2.015,
+      "takes": [
+        "04-contexts"
+      ]
+    },
+    {
+      "id": "05-selection",
+      "title": "Подбор под конкретные требования",
+      "durationSeconds": 21.182,
+      "sourceFrames": 238,
+      "paceFactor": 1.496,
+      "takes": [
+        "05-selection",
+        "05b-comparison"
+      ]
+    },
+    {
+      "id": "06-invitation",
+      "title": "Приглашение с открытыми условиями",
+      "durationSeconds": 19.472,
+      "sourceFrames": 126,
+      "paceFactor": 2.162,
+      "takes": [
+        "06-invitation"
+      ]
+    },
+    {
+      "id": "07-tasks",
+      "title": "Задание и ответ конкретного кандидата",
+      "durationSeconds": 20.68,
+      "sourceFrames": 191,
+      "paceFactor": 1.79,
+      "takes": [
+        "07-tasks"
+      ]
+    },
+    {
+      "id": "08-company",
+      "title": "Компания, ИНН и рабочие настройки",
+      "durationSeconds": 23.417,
+      "sourceFrames": 261,
+      "paceFactor": 1.497,
+      "takes": [
+        "08-company",
+        "08b-theme"
+      ]
+    }
+  ]
+}

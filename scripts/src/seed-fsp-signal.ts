@@ -12,6 +12,8 @@ import {
   signalUsersTable,
 } from "@workspace/db";
 import { ensureCandidateResume, snapshotCandidateResume } from "../../artifacts/api-server/src/lib/signal-resume";
+import { seedOverviewDemo } from "./seed-overview-demo";
+import { naturalDemoName, naturalDemoStory, refreshNaturalDemoProfiles } from "./demo-natural-profiles";
 
 const datasetVersion = "fsp-signal-demo-v2-220x22";
 // Seeded accounts are entered only through the explicitly enabled isolated demo.
@@ -254,8 +256,8 @@ for (let i = 16; i < 220; i++) {
   ];
   candidateData.push({
     email: `synthetic-${i + 1}@candidate.example.test`,
-    name: `Демо-участник ${String(i + 1).padStart(3, '0')}`,
-    alias: `Инженер #${String(i + 1).padStart(3, '0')}`,
+    name: naturalDemoName(i),
+    alias: naturalDemoName(i),
     grade, score, skills: sets[i % sets.length],
     stack: [...sets[i % sets.length].filter(s => ['Python','SQL','PostgreSQL','FastAPI'].includes(s)), i % 2 ? 'Redis' : 'Docker'],
     years: 1 + (i % 9), fsp: i % 4 === 0,
@@ -270,7 +272,7 @@ async function getOrCreateUser(input: {
   displayName: string;
   role: "candidate" | "employer";
 }) {
-  await db
+  const inserted = await db
     .insert(signalUsersTable)
     .values({
       ...input,
@@ -278,15 +280,15 @@ async function getOrCreateUser(input: {
       emailVerified: true,
       demoMode: true,
     })
-    .onConflictDoNothing({ target: signalUsersTable.email });
+    .onConflictDoNothing({ target: signalUsersTable.email }).returning({ id: signalUsersTable.id });
   const [user] = await db
     .select()
     .from(signalUsersTable)
     .where(eq(signalUsersTable.email, input.email))
     .limit(1);
   if (!user) throw new Error(`Failed to seed demo user ${input.email}`);
-  if (!user.demoMode || user.role !== input.role) throw new Error('A reserved demo identity conflicts with a regular account. Seed stopped without modifying that account.');
-  return user;
+  if (!user.demoMode || user.reviewScopeId !== null || user.role !== input.role) throw new Error('A reserved demo identity conflicts with a regular or reviewer account. Seed stopped without modifying that account.');
+  return { ...user, createdBySeed: inserted.length > 0 };
 }
 
 async function main() {
@@ -296,14 +298,14 @@ async function main() {
   for (const [index, candidate] of candidateData.entries()) {
     const user = await getOrCreateUser({
       email: candidate.email,
-      displayName: candidate.name,
+      displayName: naturalDemoName(index),
       role: "candidate",
     });
     await db
       .insert(signalCandidateProfilesTable)
       .values({
         userId: user.id,
-        professionalAlias: candidate.alias,
+        professionalAlias: naturalDemoName(index),
         specialization: "Backend / Python",
         assumedGrade: candidate.grade ?? "Junior",
         verifiedGrade: candidate.grade,
@@ -338,6 +340,7 @@ async function main() {
     // New installations seed after migrations. Materialize each synthetic owner's
     // initial resume now so the employer catalogue does not depend on their login.
     const resume = await ensureCandidateResume(user.id);
+    if (resume && user.createdBySeed) await db.update(signalCandidateResumesTable).set({title:`Backend-разработчик · ${candidate.grade ?? "Junior"}`, ...naturalDemoStory(index)}).where(and(eq(signalCandidateResumesTable.id,resume.id),eq(signalCandidateResumesTable.userId,user.id)));
     if (resume && !resumeSeedMarker) await db.update(signalCandidateResumesTable).set({consentCatalog:resume.visibility !== 'private',readyForOffers:resume.visibility !== 'private' && index % 4 !== 0}).where(and(eq(signalCandidateResumesTable.id,resume.id),eq(signalCandidateResumesTable.userId,user.id)));
   }
   if (!resumeSeedMarker) await db.insert(signalDemoSeedTable).values({key:'multi-resume-demo-v1',version:'demo-only-publication-v1'}).onConflictDoNothing({target:signalDemoSeedTable.key});
@@ -463,6 +466,9 @@ async function main() {
     .insert(signalDemoSeedTable)
     .values({ key: "default", version: datasetVersion })
     .onConflictDoNothing({ target: signalDemoSeedTable.key });
+
+  await seedOverviewDemo();
+  if (process.env.SIGNAL_WORKSPACE_ENABLED === "true") await refreshNaturalDemoProfiles();
 
   console.info(`FSP SIGNAL synthetic seed is ready (${datasetVersion}; ${candidateData.length} candidate profiles).`);
 }

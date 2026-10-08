@@ -1,6 +1,6 @@
 {
   "name": "fsp-signal",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "MIT",
   "scripts": {
     "build": "pnpm run typecheck && pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/fsp-signal run build",

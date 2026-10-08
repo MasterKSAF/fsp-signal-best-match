@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-10-07T13:55:53Z",
+  "appendOnlyClarification": true,
+  "originalFreezeSha256": "318607b05e5779a4f47e42ed3842e7562a459f64f67e05e5e3e17fdb0b084eb0",
+  "originalInputsAndLabelsUnchanged": true,
+  "newRankingResultsDisclosedToAuthor": false,
+  "fspOutcomeSemantics": {
+    "completed_with_distinction": {
+      "authorialMeaning": "A trusted synthetic category-local positive result, with no authored first/second/third place or numeric award strength.",
+      "exactSupportedOutcome": null,
+      "status": "adapterUnsupported",
+      "reason": "The original generic distinction does not identify participation, prize or win. Mapping it to any one of those would invent an outcome.",
+      "requiredHandling": "Keep the original case and labels. Report unsupported FSP outcome coverage explicitly. If useful, publish separate clearly named sensitivity variants for participation/prize/win (+1/+2/+3), with unchanged labels; none is the authored primary result."
+    },
+    "claimed_distinction": {
+      "authorialMeaning": "An untrusted self-claim, never a trusted provider result.",
+      "trustedBonus": 0,
+      "requiredHandling": "Retain as an untrusted claim. Do not map to a trusted achievement."
+    }
+  },
+  "limits": "This clarification fixes meaning only; it does not alter frozen needs, candidate facts, business relevance labels, eligibility rules or scores. Prior policy exposure remains as disclosed in the original rubric."
+}

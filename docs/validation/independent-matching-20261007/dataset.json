@@ -1,0 +1,3476 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "independent-employer-business-20261007-v1",
+  "adapterShape": "source-neutral-v1",
+  "synthetic": true,
+  "measurementTimeForAdapter": "2026-10-07T12:00:00Z",
+  "taxonomy": {
+    "programs": [
+      "Backend / Python",
+      "Frontend / TypeScript"
+    ],
+    "grades": [
+      "Junior",
+      "Middle",
+      "Senior"
+    ],
+    "supportedVerifiedSkills": {
+      "Backend / Python": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "Frontend / TypeScript": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ]
+    },
+    "recognizedWithoutGeneralVerification": [
+      "PostgreSQL",
+      "React",
+      "FastAPI"
+    ],
+    "intentionallyUnsupportedRequiredSkill": "Quantum Query",
+    "aliases": {
+      "py": "Python",
+      "ts": "TypeScript",
+      "API-контракты": "API contracts",
+      "a11y": "Accessibility"
+    }
+  },
+  "needs": [
+    {
+      "needId": "D01",
+      "split": "diagnostic",
+      "title": "Приём платежных уведомлений",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "Python",
+        "API contracts"
+      ],
+      "desirableSkills": [
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 140000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "API-обработчики с контрактами; желательно SQL-хранилище журнала операций.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "mandatory_skill",
+        "strong_no_fsp"
+      ]
+    },
+    {
+      "needId": "D02",
+      "split": "diagnostic",
+      "title": "Сверка отчётов с повторами",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "desirableSkills": [
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 195000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Удалённые SQL-сверки и повторяемые задачи. Net/gross нельзя угадывать.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "unknown_salary_basis",
+        "conditions",
+        "desirable"
+      ]
+    },
+    {
+      "needId": "D03",
+      "split": "diagnostic",
+      "title": "Асинхронная панель администратора",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI"
+      ],
+      "desirableSkills": [
+        "Frontend architecture"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 170000,
+        "max": 220000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Сложные переходы состояния, архитектура UI предпочтительна; удалённая команда.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "category_versions",
+        "context"
+      ]
+    },
+    {
+      "needId": "D04",
+      "split": "diagnostic",
+      "title": "Доступные анкеты",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "TypeScript",
+        "Accessibility"
+      ],
+      "desirableSkills": [
+        "Frontend state"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 100000,
+        "max": 145000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Доступные анкеты; старший грейд не компенсирует дорогую гибридную позицию.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "no_fsp",
+        "category_not_universal"
+      ]
+    },
+    {
+      "needId": "D05",
+      "split": "diagnostic",
+      "title": "Именно PostgreSQL",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "Python",
+        "PostgreSQL"
+      ],
+      "desirableSkills": [
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Нужно подтверждение PostgreSQL; общего SQL или строки stack недостаточно.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": true,
+      "focus": [
+        "recognized_unverified_requirement",
+        "empty_output"
+      ]
+    },
+    {
+      "needId": "D06",
+      "split": "diagnostic",
+      "title": "Контракты с алиасами запроса",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "  py  ",
+        " API-контракты  "
+      ],
+      "desirableSkills": [
+        " SQL "
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 140000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Реальная задача API: крайние пробелы и публичный алиас не меняют обязательный навык.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "whitespace",
+        "aliases"
+      ]
+    },
+    {
+      "needId": "D07",
+      "split": "diagnostic",
+      "title": "Пустое обязательное требование",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        " \t  "
+      ],
+      "desirableSkills": [],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Только-пробельное требование должно быть отвергнуто до ранжирования.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "reject-before-ranking",
+        "reason": "blank_required_skill"
+      },
+      "predeclaredEmptyStrictOutput": true,
+      "focus": [
+        "blank_invalid",
+        "empty_output"
+      ]
+    },
+    {
+      "needId": "D08",
+      "split": "diagnostic",
+      "title": "Годовой бюджет асинхронного UI",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "Async UI"
+      ],
+      "desirableSkills": [
+        "Frontend performance"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 2400000,
+        "max": 3000000,
+        "period": "year",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Асинхронный UI и годовой gross-бюджет: только честный month/year перевод.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "year_month",
+        "desirable_tradeoff"
+      ]
+    },
+    {
+      "needId": "D09",
+      "split": "diagnostic",
+      "title": "Надёжные повторные запросы",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "API contracts",
+        "Idempotency"
+      ],
+      "desirableSkills": [
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 195000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Предотвратить двойную обработку. ФСП иной категории не заменяет прикладную пригодность.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "trusted_fsp_same_category_only",
+        "no_fsp"
+      ]
+    },
+    {
+      "needId": "D10",
+      "split": "diagnostic",
+      "title": "Небольшой сервис автоматизации",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "Python"
+      ],
+      "desirableSkills": [
+        "API contracts"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 130000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Небольшой Python-сервис; API-контракты желательны, Python единственный mandatory skill.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "legacy_null_quality",
+        "grade_floor"
+      ]
+    },
+    {
+      "needId": "D11",
+      "split": "diagnostic",
+      "title": "Оптимизация тяжёлой UI-таблицы",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Senior",
+      "requiredSkills": [
+        "TypeScript",
+        "Frontend performance"
+      ],
+      "desirableSkills": [
+        "Frontend architecture"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 250000,
+        "max": 320000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Senior performance обязателен. Короткая выдача из одного человека допустима и учитывается.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "short_output",
+        "strict_grade"
+      ]
+    },
+    {
+      "needId": "D12",
+      "split": "diagnostic",
+      "title": "Каталог не равен строгому подбору",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python"
+      ],
+      "desirableSkills": [
+        "SQL",
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 200000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Портфолио без квалификации изучается в каталоге; strict требует Middle.",
+      "poolPersonIds": [
+        41000,
+        41001,
+        41002,
+        41003,
+        41004,
+        41005,
+        41006,
+        41007,
+        41008,
+        41009,
+        41010,
+        41011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "ungraded_catalog",
+        "strict_no_display",
+        "five_cv_one_person"
+      ]
+    },
+    {
+      "needId": "F13",
+      "split": "untouched_final",
+      "title": "Удалённая витрина сверок",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "desirableSkills": [
+        "Architecture"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 180000,
+        "max": 230000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Развивать SQL-витрину; архитектура желательна, удалённая работа и бюджет существенны.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "mandatory_missing",
+        "condition_tradeoff"
+      ]
+    },
+    {
+      "needId": "F14",
+      "split": "untouched_final",
+      "title": "Webhook без двойных операций",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "API contracts",
+        "Idempotency"
+      ],
+      "desirableSkills": [
+        "Incident diagnosis"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 200000,
+        "max": 240000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Удалённый webhook-шлюз. Senior без mandatory идемпотентности не проходит.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "required_missing_despite_high_grade",
+        "strong_no_fsp"
+      ]
+    },
+    {
+      "needId": "F15",
+      "split": "untouched_final",
+      "title": "Пакетная загрузка таблиц",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "desirableSkills": [
+        "Replay safety"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 150000,
+        "max": 190000,
+        "period": "month",
+        "type": "net",
+        "currency": "RUB"
+      },
+      "businessTask": "Загрузка в гибридной команде. Net/gross неопределённость не равна отказу.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "salary_noncomparability",
+        "grade_categories"
+      ]
+    },
+    {
+      "needId": "F16",
+      "split": "untouched_final",
+      "title": "Доступный асинхронный кабинет",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI"
+      ],
+      "desirableSkills": [
+        "Accessibility"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 170000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Кабинет с состоянием и доступностью, подходящая удалённая работа предпочтительна.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "required_missing",
+        "company_task_not_grade"
+      ]
+    },
+    {
+      "needId": "F17",
+      "split": "untouched_final",
+      "title": "Доступный публичный портал",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "TypeScript",
+        "Accessibility"
+      ],
+      "desirableSkills": [
+        "Frontend state"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 140000,
+        "max": 180000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Доступность обязательна;100 баллов Junior без этого навыка не заменяют requirement.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "verified_requirement",
+        "no_fsp"
+      ]
+    },
+    {
+      "needId": "F18",
+      "split": "untouched_final",
+      "title": "Быстрый каталог интерфейса",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Senior",
+      "requiredSkills": [
+        "TypeScript",
+        "Frontend performance"
+      ],
+      "desirableSkills": [
+        "Accessibility"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 260000,
+        "max": 300000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Ускорить большой каталог UI. Senior performance обязателен; доступность и формат существенны.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "short_output",
+        "fsp_categories",
+        "conditions"
+      ]
+    },
+    {
+      "needId": "F19",
+      "split": "untouched_final",
+      "title": "Контрактные API для инцидентов",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "API contracts"
+      ],
+      "desirableSkills": [
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 200000,
+        "max": 240000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Удалённая эксплуатация API: ФСП только своей категории, не универсальная награда.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "fsp_different_categories",
+        "business_fit"
+      ]
+    },
+    {
+      "needId": "F20",
+      "split": "untouched_final",
+      "title": "Сверки независимо от версии экзамена",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "SQL"
+      ],
+      "desirableSkills": [],
+      "workFormat": "remote",
+      "salary": {
+        "min": 180000,
+        "max": 230000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "SQL-сверки: имя версии и неизвестный исторический процент не означают худший грейд.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "different_versions",
+        "legacy_null"
+      ]
+    },
+    {
+      "needId": "F21",
+      "split": "untouched_final",
+      "title": "Одна подходящая версия из пяти CV",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Async UI"
+      ],
+      "desirableSkills": [
+        "Frontend performance"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 220000,
+        "max": 290000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Подходящее согласованное frontend CV; private primary backend и закрытые версии не используются.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "five_cv_dedup",
+        "selected_context",
+        "primary_not_override"
+      ]
+    },
+    {
+      "needId": "F22",
+      "split": "untouched_final",
+      "title": "Неподдержанный язык требований",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "Python",
+        "Quantum Query"
+      ],
+      "desirableSkills": [
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 230000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Quantum Query отсутствует в подтверждаемой программе; claimed stack не даёт strict proof.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": true,
+      "focus": [
+        "unknown_skill",
+        "fsp_not_unlock",
+        "empty_output"
+      ]
+    },
+    {
+      "needId": "F23",
+      "split": "untouched_final",
+      "title": "Только Unicode-пробельное требование",
+      "specialization": "Frontend / TypeScript",
+      "minimumGrade": "Junior",
+      "requiredSkills": [
+        "\t 　"
+      ],
+      "desirableSkills": [],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Обязательный навык из Unicode-пробелов отвергается до выдачи.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "reject-before-ranking",
+        "reason": "blank_required_skill"
+      },
+      "predeclaredEmptyStrictOutput": true,
+      "focus": [
+        "unicode_blank",
+        "empty_output"
+      ]
+    },
+    {
+      "needId": "F24",
+      "split": "untouched_final",
+      "title": "Портфолио повторяемых операций",
+      "specialization": "Backend / Python",
+      "minimumGrade": "Middle",
+      "requiredSkills": [
+        "Python",
+        "Idempotency"
+      ],
+      "desirableSkills": [
+        "API contracts"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 190000,
+        "max": 240000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessTask": "Middle repeat safety; непроверенное портфолио в каталоге отдельно от strict рекомендации.",
+      "poolPersonIds": [
+        52000,
+        52001,
+        52002,
+        52003,
+        52004,
+        52005,
+        52006,
+        52007,
+        52008,
+        52009,
+        52010,
+        52011
+      ],
+      "requestValidation": {
+        "expected": "accept",
+        "reason": null
+      },
+      "predeclaredEmptyStrictOutput": false,
+      "focus": [
+        "catalog_unconfirmed",
+        "strict_zero",
+        "five_cv_person"
+      ]
+    }
+  ],
+  "people": [
+    {
+      "personId": 41000,
+      "split": "diagnostic",
+      "alias": "Апиада",
+      "synthetic": true
+    },
+    {
+      "personId": 41001,
+      "split": "diagnostic",
+      "alias": "Табличник",
+      "synthetic": true
+    },
+    {
+      "personId": 41002,
+      "split": "diagnostic",
+      "alias": "Рестарт",
+      "synthetic": true
+    },
+    {
+      "personId": 41003,
+      "split": "diagnostic",
+      "alias": "Малаяформа",
+      "synthetic": true
+    },
+    {
+      "personId": 41004,
+      "split": "diagnostic",
+      "alias": "Архивист",
+      "synthetic": true
+    },
+    {
+      "personId": 41005,
+      "split": "diagnostic",
+      "alias": "Многогранник",
+      "synthetic": true
+    },
+    {
+      "personId": 41006,
+      "split": "diagnostic",
+      "alias": "Интерфейсник",
+      "synthetic": true
+    },
+    {
+      "personId": 41007,
+      "split": "diagnostic",
+      "alias": "Доступнаяформа",
+      "synthetic": true
+    },
+    {
+      "personId": 41008,
+      "split": "diagnostic",
+      "alias": "Быстрыйэкран",
+      "synthetic": true
+    },
+    {
+      "personId": 41009,
+      "split": "diagnostic",
+      "alias": "Безэкзамена",
+      "synthetic": true
+    },
+    {
+      "personId": 41010,
+      "split": "diagnostic",
+      "alias": "Локальноезадание",
+      "synthetic": true
+    },
+    {
+      "personId": 41011,
+      "split": "diagnostic",
+      "alias": "Закрытыйэксперт",
+      "synthetic": true
+    },
+    {
+      "personId": 52000,
+      "split": "untouched_final",
+      "alias": "Шлюзница",
+      "synthetic": true
+    },
+    {
+      "personId": 52001,
+      "split": "untouched_final",
+      "alias": "Пакетник",
+      "synthetic": true
+    },
+    {
+      "personId": 52002,
+      "split": "untouched_final",
+      "alias": "Схематик",
+      "synthetic": true
+    },
+    {
+      "personId": 52003,
+      "split": "untouched_final",
+      "alias": "Серверныймастер",
+      "synthetic": true
+    },
+    {
+      "personId": 52004,
+      "split": "untouched_final",
+      "alias": "Скриптовед",
+      "synthetic": true
+    },
+    {
+      "personId": 52005,
+      "split": "untouched_final",
+      "alias": "Двусторонник",
+      "synthetic": true
+    },
+    {
+      "personId": 52006,
+      "split": "untouched_final",
+      "alias": "Равныйдоступ",
+      "synthetic": true
+    },
+    {
+      "personId": 52007,
+      "split": "untouched_final",
+      "alias": "Новичокинтерфейса",
+      "synthetic": true
+    },
+    {
+      "personId": 52008,
+      "split": "untouched_final",
+      "alias": "Лёгкаятаблица",
+      "synthetic": true
+    },
+    {
+      "personId": 52009,
+      "split": "untouched_final",
+      "alias": "Практикбезгрейда",
+      "synthetic": true
+    },
+    {
+      "personId": 52010,
+      "split": "untouched_final",
+      "alias": "Виджетопыт",
+      "synthetic": true
+    },
+    {
+      "personId": 52011,
+      "split": "untouched_final",
+      "alias": "Убравшийрезюме",
+      "synthetic": true
+    }
+  ],
+  "resumes": [
+    {
+      "resumeId": 410001,
+      "personId": 41000,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Интеграции платежей",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "payments",
+          "api"
+        ],
+        "tasks": [
+          "contracts",
+          "retries"
+        ],
+        "title": "Интеграции платежей"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-cobalt",
+        "rubricId": "rubric-cobalt",
+        "resultPercent": 88,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 410011,
+      "personId": 41001,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Хранилище отчётов",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "Incident diagnosis"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "Incident diagnosis",
+        "PostgreSQL"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 150000,
+        "max": 170000,
+        "period": "month",
+        "type": "net",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "data",
+          "reports"
+        ],
+        "tasks": [
+          "sql",
+          "operations"
+        ],
+        "title": "Хранилище отчётов"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-amaranth",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 96,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410021,
+      "personId": 41002,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Надёжность распределённых сервисов",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 240000,
+        "max": 280000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "inventory",
+          "api"
+        ],
+        "tasks": [
+          "architecture",
+          "retries",
+          "incidents"
+        ],
+        "title": "Надёжность распределённых сервисов"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-senior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 83,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410031,
+      "personId": 41003,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Простые формы и CRUD",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "API contracts"
+      ],
+      "claimedSkills": [
+        "Python",
+        "API contracts"
+      ],
+      "workFormat": "office",
+      "salary": {
+        "min": 90000,
+        "max": 120000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "forms"
+        ],
+        "tasks": [
+          "contracts"
+        ],
+        "title": "Простые формы и CRUD"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-junior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 100,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Junior",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Junior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410041,
+      "personId": 41004,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Небольшие скрипты автоматизации",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 185000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "automation"
+        ],
+        "tasks": [
+          "scripting"
+        ],
+        "title": "Небольшие скрипты автоматизации"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "legacy_valid_grade",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-cedar",
+        "rubricId": null,
+        "resultPercent": null,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "untrusted_boolean_only",
+        "trustedResults": [],
+        "legacyBoolean": true
+      }
+    },
+    {
+      "resumeId": 410051,
+      "personId": 41005,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Личное учебное резюме",
+      "specialization": "Backend / Python",
+      "visibility": "private",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 130000,
+        "max": 160000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "learning"
+        ],
+        "tasks": [
+          "sql"
+        ],
+        "title": "Личное учебное резюме"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-junior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 90,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410061,
+      "personId": 41006,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Состояние сложных веб-приложений",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI",
+        "Frontend architecture"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI",
+        "Frontend architecture",
+        "React"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 170000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "admin",
+          "web"
+        ],
+        "tasks": [
+          "state",
+          "async"
+        ],
+        "title": "Состояние сложных веб-приложений"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-middle",
+        "programVersion": "rev-cobalt",
+        "rubricId": "rubric-cobalt",
+        "resultPercent": 91,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410071,
+      "personId": 41007,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Доступные формы",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Frontend state"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Frontend state"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 110000,
+        "max": 140000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "forms",
+          "accessibility"
+        ],
+        "tasks": [
+          "a11y",
+          "state"
+        ],
+        "title": "Доступные формы"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-junior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 86,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 410081,
+      "personId": 41008,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Производительность административного UI",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 270000,
+        "max": 310000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "admin",
+          "performance"
+        ],
+        "tasks": [
+          "performance",
+          "architecture",
+          "a11y"
+        ],
+        "title": "Производительность административного UI"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-senior",
+        "programVersion": "rev-amaranth",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 93,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410091,
+      "personId": 41009,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Опыт API без экзамена",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 180000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "api",
+          "payments"
+        ],
+        "tasks": [
+          "contracts",
+          "retries"
+        ],
+        "title": "Опыт API без экзамена"
+      },
+      "qualification": null,
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 410101,
+      "personId": 41010,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Корпоративный widget task",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [],
+      "claimedSkills": [
+        "TypeScript",
+        "React",
+        "Accessibility"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "web"
+        ],
+        "tasks": [
+          "widget"
+        ],
+        "title": "Корпоративный widget task"
+      },
+      "qualification": null,
+      "otherEvidence": [
+        {
+          "purpose": "company_task",
+          "resultPercent": 100,
+          "awardsSignalGrade": false
+        }
+      ],
+      "fspEvidence": {
+        "state": "untrusted_boolean_only",
+        "trustedResults": [],
+        "legacyBoolean": true
+      }
+    },
+    {
+      "resumeId": 410111,
+      "personId": 41011,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Отозванное экспертное резюме",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": false,
+      "consentCandidateBank": false,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 140000,
+        "max": 175000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "api",
+          "data"
+        ],
+        "tasks": [
+          "contracts",
+          "sql"
+        ],
+        "title": "Отозванное экспертное резюме"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-senior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 95,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 520001,
+      "personId": 52000,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Webhook шлюз и инциденты",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "API contracts",
+        "Idempotency",
+        "Incident diagnosis"
+      ],
+      "claimedSkills": [
+        "Python",
+        "API contracts",
+        "Idempotency",
+        "Incident diagnosis",
+        "SQL",
+        "Quantum Query"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 200000,
+        "max": 235000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "api",
+          "operations"
+        ],
+        "tasks": [
+          "contracts",
+          "retries",
+          "incidents"
+        ],
+        "title": "Webhook шлюз и инциденты"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-cobalt",
+        "rubricId": "rubric-cobalt",
+        "resultPercent": 89,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 520011,
+      "personId": 52001,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Пакетная загрузка таблиц",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "PostgreSQL"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 140000,
+        "max": 175000,
+        "period": "month",
+        "type": "net",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "data",
+          "imports"
+        ],
+        "tasks": [
+          "sql",
+          "batch"
+        ],
+        "title": "Пакетная загрузка таблиц"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-junior",
+        "programVersion": "rev-amaranth",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 97,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Junior",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Junior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520021,
+      "personId": 52002,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Архитектура витрин данных",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 260000,
+        "max": 290000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "data",
+          "reports"
+        ],
+        "tasks": [
+          "sql",
+          "architecture",
+          "incidents"
+        ],
+        "title": "Архитектура витрин данных"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-senior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 100,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520031,
+      "personId": 52003,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Внутренние сервисы офиса",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency"
+      ],
+      "workFormat": "office",
+      "salary": {
+        "min": 170000,
+        "max": 220000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "api",
+          "forms"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "retries"
+        ],
+        "title": "Внутренние сервисы офиса"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 85,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Backend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Backend / Python",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520041,
+      "personId": 52004,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Автоматизация сверок",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 180000,
+        "max": 205000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "data",
+          "automation"
+        ],
+        "tasks": [
+          "sql",
+          "scripting"
+        ],
+        "title": "Автоматизация сверок"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "legacy_valid_grade",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-cedar",
+        "rubricId": null,
+        "resultPercent": null,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "untrusted_boolean_only",
+        "trustedResults": [],
+        "legacyBoolean": true
+      }
+    },
+    {
+      "resumeId": 520051,
+      "personId": 52005,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Личное начальное резюме",
+      "specialization": "Backend / Python",
+      "visibility": "private",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python"
+      ],
+      "claimedSkills": [
+        "Python"
+      ],
+      "workFormat": "office",
+      "salary": {
+        "min": 100000,
+        "max": 130000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "learning"
+        ],
+        "tasks": [
+          "scripting"
+        ],
+        "title": "Личное начальное резюме"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-junior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 90,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520061,
+      "personId": 52006,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Доступный административный портал",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 180000,
+        "max": 205000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "admin",
+          "accessibility"
+        ],
+        "tasks": [
+          "state",
+          "async",
+          "a11y"
+        ],
+        "title": "Доступный административный портал"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-middle",
+        "programVersion": "rev-cobalt",
+        "rubricId": "rubric-cobalt",
+        "resultPercent": 87,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 520071,
+      "personId": 52007,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Простые асинхронные формы",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 100000,
+        "max": 130000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "forms"
+        ],
+        "tasks": [
+          "state",
+          "async"
+        ],
+        "title": "Простые асинхронные формы"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Junior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-junior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 100,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Junior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Junior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520081,
+      "personId": 52008,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Быстрые доступные таблицы",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 265000,
+        "max": 295000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "performance",
+          "data"
+        ],
+        "tasks": [
+          "performance",
+          "a11y",
+          "architecture"
+        ],
+        "title": "Быстрые доступные таблицы"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-senior",
+        "programVersion": "rev-amaranth",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 84,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520091,
+      "personId": 52009,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Портфолио интеграций без квалификации",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Quantum Query"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 190000,
+        "max": 230000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "api",
+          "imports"
+        ],
+        "tasks": [
+          "contracts",
+          "retries",
+          "sql"
+        ],
+        "title": "Портфолио интеграций без квалификации"
+      },
+      "qualification": null,
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 520101,
+      "personId": 52010,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Корпоративная задача интерфейса",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [],
+      "claimedSkills": [
+        "TypeScript",
+        "Accessibility",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 175000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "admin"
+        ],
+        "tasks": [
+          "widget",
+          "state"
+        ],
+        "title": "Корпоративная задача интерфейса"
+      },
+      "qualification": null,
+      "otherEvidence": [
+        {
+          "purpose": "company_task",
+          "resultPercent": 100,
+          "awardsSignalGrade": false
+        }
+      ],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": true,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-untrusted",
+            "trusted": false,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "claimed_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520111,
+      "personId": 52011,
+      "revision": 3,
+      "isPrimary": true,
+      "title": "Закрытый бывший публичный UI",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "private",
+      "deleted": false,
+      "consentMatching": false,
+      "consentCandidateBank": false,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "domains": [
+          "admin"
+        ],
+        "tasks": [
+          "state",
+          "performance"
+        ],
+        "title": "Закрытый бывший публичный UI"
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-senior",
+        "programVersion": "rev-cedar",
+        "rubricId": "rubric-amaranth",
+        "resultPercent": 98,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "not_connected",
+        "trustedResults": [],
+        "legacyBoolean": false
+      }
+    },
+    {
+      "resumeId": 410052,
+      "personId": 41005,
+      "revision": 2,
+      "isPrimary": false,
+      "title": "Согласованные API и SQL",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 2160000,
+        "max": 2340000,
+        "period": "year",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Согласованные API и SQL",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410053,
+      "personId": 41005,
+      "revision": 3,
+      "isPrimary": false,
+      "title": "Согласованный интерфейс",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Async UI"
+      ],
+      "workFormat": "hybrid",
+      "salary": {
+        "min": 180000,
+        "max": 210000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Согласованный интерфейс",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-middle",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410054,
+      "personId": 41005,
+      "revision": 4,
+      "isPrimary": false,
+      "title": "Удалённая сильная версия",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": true,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 170000,
+        "max": 195000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Удалённая сильная версия",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-senior",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 410055,
+      "personId": 41005,
+      "revision": 5,
+      "isPrimary": false,
+      "title": "Согласие отозвано",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": false,
+      "consentCandidateBank": false,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Согласие отозвано",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Middle",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Middle"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520052,
+      "personId": 52005,
+      "revision": 2,
+      "isPrimary": false,
+      "title": "Пакетная автоматизация и повторы",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "Idempotency"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "Idempotency"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 200000,
+        "max": 225000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Пакетная автоматизация и повторы",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Middle",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-middle",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520053,
+      "personId": 52005,
+      "revision": 3,
+      "isPrimary": false,
+      "title": "Согласованный сложный frontend",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 260000,
+        "max": 290000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Согласованный сложный frontend",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-senior",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520054,
+      "personId": 52005,
+      "revision": 4,
+      "isPrimary": false,
+      "title": "Удалённый backend",
+      "specialization": "Backend / Python",
+      "visibility": "public",
+      "deleted": true,
+      "consentMatching": true,
+      "consentCandidateBank": true,
+      "verifiedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "claimedSkills": [
+        "Python",
+        "SQL",
+        "API contracts",
+        "Idempotency",
+        "Architecture",
+        "Incident diagnosis",
+        "Replay safety"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 160000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Удалённый backend",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Backend / Python",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "backend-synthetic-senior",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "resumeId": 520055,
+      "personId": 52005,
+      "revision": 5,
+      "isPrimary": false,
+      "title": "Отозванный frontend",
+      "specialization": "Frontend / TypeScript",
+      "visibility": "public",
+      "deleted": false,
+      "consentMatching": false,
+      "consentCandidateBank": false,
+      "verifiedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "claimedSkills": [
+        "TypeScript",
+        "Frontend state",
+        "Accessibility",
+        "Frontend performance",
+        "Frontend architecture",
+        "Async UI"
+      ],
+      "workFormat": "remote",
+      "salary": {
+        "min": 150000,
+        "max": 190000,
+        "period": "month",
+        "type": "gross",
+        "currency": "RUB"
+      },
+      "businessContext": {
+        "title": "Отозванный frontend",
+        "domains": [
+          "api",
+          "admin"
+        ],
+        "tasks": [
+          "contracts",
+          "sql",
+          "state",
+          "async"
+        ]
+      },
+      "qualification": {
+        "purpose": "signal_qualification",
+        "valid": true,
+        "specialization": "Frontend / TypeScript",
+        "declaredGrade": "Senior",
+        "verificationState": "current_linked",
+        "programId": "frontend-synthetic-senior",
+        "programVersion": "rev-lilac",
+        "rubricId": "rubric-lilac",
+        "resultPercent": 92,
+        "confirmedAt": "2026-10-01T10:00:00Z"
+      },
+      "otherEvidence": [],
+      "fspEvidence": {
+        "state": "connected",
+        "legacyBoolean": false,
+        "trustedResults": [
+          {
+            "eventId": "synthetic-Frontend-Senior",
+            "trusted": true,
+            "category": {
+              "specialization": "Frontend / TypeScript",
+              "grade": "Senior"
+            },
+            "result": "completed_with_distinction",
+            "occurredAt": "2026-09-26T12:00:00Z"
+          }
+        ]
+      }
+    }
+  ],
+  "inputOrderPolicy": "Storage order is not an expected ranking. At least one deterministic permutation per split; same facts/IDs/labels.",
+  "catalogContract": {
+    "includeUnconfirmed": true,
+    "specialization": "same as need",
+    "minimumGradeFilter": null,
+    "strictSignalQualificationRequired": false
+  },
+  "provenance": "Explicit synthetic per-resume facts, no real participant/provider credentials or runtime seeds. Legacy resultPercent=null; no merging evidence across CV."
+}

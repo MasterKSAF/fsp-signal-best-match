@@ -12,7 +12,7 @@ function resume(id: number, specialization = "Backend / Python"): CandidateEvide
   return { id, userId: ownerId, revision: 1, title: `Owned ${id}`, specialization, visibility: "private", isPrimary: id === 1, deletedAt: null, legacyQualification: null };
 }
 function proof(id = 901, programId: "backend-python" | "frontend-typescript" = "backend-python", grade: "Junior" | "Middle" | "Senior" = "Middle"): ResumeQualificationAttempt {
-  const form = assembleManagedAttempt(programId, grade, `evidence-registry-${id}`);
+  const form = assembleManagedAttempt(programId, grade, `evidence-registry-${id}`, {programVersion:programId === "backend-python" ? "signal-backend-python-v6" : "signal-frontend-typescript-v2"});
   return { id, userId: ownerId, resumeId: 1, resumeRevision: 1, resumeSpecialization: programId === "backend-python" ? "Backend / Python" : "Frontend / TypeScript",
     programId, grade, programVersion: programId === "backend-python" ? "signal-backend-python-v6" : "signal-frontend-typescript-v2",
     purpose: "signal_qualification", purposeOrigin: "candidate_confirmed", gradeConfirmedAt: new Date("2026-10-02T10:00:00Z"),

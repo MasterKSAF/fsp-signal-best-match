@@ -1,0 +1,2 @@
+import {seniorRequirementProbe} from '../artifacts/api-server/src/lib/skill-senior-outcomes';
+for(const skill of ['python','sql','typescript','react','backend-engineering','frontend-engineering']){const counts=[0,0,0,0];for(let c=0;c<6;c++)for(let s=0;s<3;s++){const a=seniorRequirementProbe(skill,c,s,5,true).parts[1].choices!;const rank=a.slice(1).filter(x=>x.length<a[0]!.length).length;counts[rank]++;if(skill==='backend-engineering')console.log(c,s,rank,a.map(x=>x.length));}console.log(skill,counts);}

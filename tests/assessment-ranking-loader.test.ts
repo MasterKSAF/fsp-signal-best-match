@@ -47,10 +47,10 @@ function candidate(program: ProgramId, grade: SignalGrade, userId = 101): MatchC
     hasFspHistory: false, visibility: 'pseudonymous', consentMatching: true, demoMode: false };
 }
 function need(program: ProgramId, grade: SignalGrade = 'Junior'): MatchNeed {
-  return { specialization: specialization(program), grade, requiredSkills: [], desirableSkills: [], workFormat: 'Удалённо', salaryMin: 100000, salaryMax: 200000, salaryType: 'gross', salaryPeriod: 'month' };
+  return { specialization: specialization(program), grade, requiredSkills: [program === 'backend-python' ? 'Python' : 'TypeScript'], desirableSkills: [], workFormat: 'Удалённо', salaryMin: 100000, salaryMax: 200000, salaryType: 'gross', salaryPeriod: 'month' };
 }
 function saved(program: ProgramId, grade: SignalGrade, userId = 101, score = 83): SavedRow {
-  const form = assembleManagedAttempt(program, grade, `loader-regression-${program}-${grade}`);
+  const form = assembleManagedAttempt(program, grade, `loader-regression-${program}-${grade}`, {programVersion:program === 'backend-python' ? 'signal-backend-python-v6' : 'signal-frontend-typescript-v2'});
   return { id: userId + 1000, userId, programId: program, programVersion: program === 'backend-python' ? 'signal-backend-python-v6' : 'signal-frontend-typescript-v2', purpose: 'signal_qualification', grade, score, submittedAt: at, oracles: form.oracles };
 }
 
@@ -120,6 +120,31 @@ test('mixed grade, FSP, linked score and unknown-quality pools retain exact orde
     const beforePool = evaluatedPool(program, before.result), afterPool = evaluatedPool(program, after.result);
     assert.equal(digest(beforePool), digest(afterPool), 'Pool order or complete explanation changed');
     assert.ok(afterPool.findIndex(row => row.candidateId === 202) < afterPool.findIndex(row => row.candidateId === 201), 'Comparable100 must beat83+FSP');
+  }
+});
+
+test('new integer comparison rule survives rubric projection and cannot be removed or moved', async () => {
+  const {assessmentRubricKey}=await loader();
+  for (const program of programs) {
+    const version=program==='backend-python'?'signal-backend-python-v7':'signal-frontend-typescript-v3';
+    const form=assembleManagedAttempt(program,'Middle',`new-integer-rule-${program}`);
+    const row={...saved(program,'Middle'),programVersion:version,oracles:form.oracles};
+    const result=await evidenceRead([candidate(program,'Middle')],[row],true);
+    assert.equal(result.result[0].assessmentEvidence?.programVersion,version);
+    const metadataRead=result.captures.find(c=>'oracles' in c.fields)!;
+    const projection=dialect.sqlToQuery(metadataRead.fields.oracles as never).sql;
+    assert.match(projection,/'answerComparison'/,'SQL projection must retain the authoritative scoring rule');
+    const removed=structuredClone(form.oracles);
+    for (const oracle of Object.values(removed)) delete oracle.blueprint!.answerComparison;
+    assert.equal(assessmentRubricKey(removed,program,version,'Middle'),null);
+    const misplaced=structuredClone(form.oracles);
+    Object.values(misplaced)[0].blueprint!.answerComparison='canonical_integer_v1';
+    assert.equal(assessmentRubricKey(misplaced,program,version,'Middle'),null);
+    const legacy=saved(program,'Middle');
+    const original=assessmentRubricKey(legacy.oracles,program,legacy.programVersion!,'Middle');
+    const nullProjected=structuredClone(legacy.oracles) as Record<string,{blueprint:Record<string,unknown>}>;
+    for(const oracle of Object.values(nullProjected))oracle.blueprint.answerComparison=null;
+    assert.equal(assessmentRubricKey(nullProjected,program,legacy.programVersion!,'Middle'),original,'Absent legacy rule is not a retroactive rubric change');
   }
 });
 

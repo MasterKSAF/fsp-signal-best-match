@@ -4,6 +4,7 @@ import App from './App';
 import { ErrorBoundary } from '@/components/error-boundary';
 
 import './index.css';
+import './theme-palettes.css';
 import { initializeMotionPreferences } from '@/lib/motion-preference';
 
 initializeMotionPreferences();

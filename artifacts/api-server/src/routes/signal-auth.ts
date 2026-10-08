@@ -1,5 +1,5 @@
-import { randomInt } from "node:crypto";
-import { and, count, desc, eq, gt, isNull } from "drizzle-orm";
+import { z } from 'zod';
+import { and, count, eq, isNull } from "drizzle-orm";
 import { Router, type IRouter, type Request, type Response } from "express";
 import {
   GetCurrentUserResponse,
@@ -17,12 +17,10 @@ import {
   db,
   signalCandidateProfilesTable,
   signalCompaniesTable,
-  signalConsentsTable,
   signalDemoSeedTable,
   signalNeedsTable,
   signalSessionsTable,
   signalUsersTable,
-  signalVerificationTokensTable,
 } from "@workspace/db";
 import { logger } from "../lib/logger";
 import {
@@ -35,7 +33,6 @@ import {
   createSession,
   getSessionUser,
   hashPassword,
-  hashVerificationCode,
   revokeSession,
   toPublicSignalUser,
   verifyPassword,
@@ -44,6 +41,7 @@ import {
   isDemoModeEnabled,
   isDemoVerificationCodeExposureEnabled,
 } from "../lib/signal-runtime";
+import { preparePendingRegistration, consumePendingRegistration } from '../lib/signal-registration';
 import { isOverviewDemo, signalPoolPredicate } from "../lib/signal-pool-scope";
 
 const router: IRouter = Router();
@@ -153,107 +151,32 @@ router.post("/auth/register", async (req, res): Promise<void> => {
     return;
   }
 
-  let [user] = await db
-    .select()
-    .from(signalUsersTable)
-    .where(eq(signalUsersTable.email, email))
-    .limit(1);
-  if (!user) {
-    try {
-      user = await db.transaction(async (tx) => {
-        const [createdUser] = await tx
-          .insert(signalUsersTable)
-          .values({
-            email,
-            passwordHash: await hashPassword(input.password),
-            role: input.role,
-            displayName,
-            emailVerified: false,
-            // Public registration always enters the real pool, including while
-            // a local synthetic demo is enabled.
-            demoMode: false,
-          })
-          .returning();
-        if (!createdUser) throw new Error("User creation did not return a row");
-        await tx.insert(signalConsentsTable).values([
-          { userId: createdUser.id, consentType: "terms", version: CONSENT_VERSION },
-          { userId: createdUser.id, consentType: "privacy", version: CONSENT_VERSION },
-        ]);
-        if (createdUser.role === "candidate") {
-          await tx.insert(signalCandidateProfilesTable).values({
-            userId: createdUser.id,
-            professionalAlias: createdUser.displayName,
-            contactEmail: createdUser.email,
-            visibility: "private",
-            consentMatching: false,
-          });
-        } else {
-          await tx.insert(signalCompaniesTable).values({
-            ownerUserId: createdUser.id,
-            name: createdUser.displayName,
-            contactEmail: createdUser.email,
-            contactMethod: "Электронная почта",
-          });
-        }
-        return createdUser;
-      });
-    } catch {
-      // A concurrent registration may have won the unique-email race.  Keep
-      // the response indistinguishable from a normal registration.
-      [user] = await db
-        .select()
-        .from(signalUsersTable)
-        .where(eq(signalUsersTable.email, email))
-        .limit(1);
-    }
-  }
-
-  if (!user) {
-    res.status(503).json({ error: "Регистрация временно недоступна. Попробуйте позже." });
+  let demoVerificationCode: string | undefined;
+  let challenge: Awaited<ReturnType<typeof preparePendingRegistration>>;
+  try {
+    challenge = await preparePendingRegistration({ email, password: input.password, role: input.role, displayName }, CONSENT_VERSION, MAILBOX_TTL_MS);
+  } catch (error) {
+    logger.warn({ registrationError: error instanceof Error ? error.name : 'unknown' }, 'Registration challenge could not be prepared');
+    res.status(503).json({ error: 'Регистрация временно недоступна. Попробуйте позже.' });
     return;
   }
-  let demoVerificationCode: string | undefined;
-  if (!user.emailVerified) {
-    const code = String(randomInt(100000, 1_000_000));
-    await db
-      .update(signalVerificationTokensTable)
-      .set({ consumedAt: new Date() })
-      .where(
-        and(
-          eq(signalVerificationTokensTable.userId, user.id),
-          isNull(signalVerificationTokensTable.consumedAt),
-        ),
-      );
-    await db.insert(signalVerificationTokensTable).values({
-      userId: user.id,
-      tokenHash: hashVerificationCode(code),
-      expiresAt: new Date(Date.now() + MAILBOX_TTL_MS),
-    });
-
+  if (challenge.code) {
     if (isMailTransportConfigured()) {
       try {
-        await sendVerificationEmail({
-          to: email,
-          code,
-          publicUrl: process.env.PUBLIC_URL,
-        });
+        await sendVerificationEmail({ to: email, code: challenge.code, publicUrl: process.env.PUBLIC_URL });
       } catch (error) {
-        logger.warn(
-          { mailError: error instanceof Error ? error.name : "unknown" },
-          "Verification email delivery failed",
-        );
-        res.status(503).json({
-          error: "Регистрация временно недоступна. Попробуйте позже.",
-        });
+        logger.warn({ mailError: error instanceof Error ? error.name : 'unknown' }, 'Verification email delivery failed');
+        res.status(503).json({ error: 'Регистрация временно недоступна. Попробуйте позже.' });
         return;
       }
     }
-    if (showLocalCode) demoVerificationCode = code;
+    if (showLocalCode) demoVerificationCode = challenge.code;
   }
 
   res.status(201).json(
-    RegisterResponse.parse({
+    RegisterResponse.extend({registrationId:z.string().uuid()}).parse({
       email,
+      registrationId:challenge.registrationId,
       verificationRequired: true,
       ...(demoVerificationCode ? { demoVerificationCode } : {}),
       notice: registrationNotice(),
@@ -262,7 +185,7 @@ router.post("/auth/register", async (req, res): Promise<void> => {
 });
 
 router.post("/auth/verify-email", async (req, res): Promise<void> => {
-  const parsed = VerifyEmailBody.safeParse(req.body);
+  const parsed = VerifyEmailBody.extend({registrationId:z.string().uuid()}).safeParse(req.body);
   if (!parsed.success || !/^\d{6}$/.test(parsed.data?.code ?? "")) {
     res.status(400).json({ error: "Введите корректный адрес и шестизначный код." });
     return;
@@ -273,56 +196,9 @@ router.post("/auth/verify-email", async (req, res): Promise<void> => {
     sendRateLimit(res, limiter.retryAfterMs);
     return;
   }
-  const [user] = await db
-    .select()
-    .from(signalUsersTable)
-    .where(eq(signalUsersTable.email, email))
-    .limit(1);
-  if (!user) {
-    res.status(400).json({ error: "Код недействителен или срок его действия истёк." });
-    return;
-  }
-  const [token] = await db
-    .select()
-    .from(signalVerificationTokensTable)
-    .where(
-      and(
-        eq(signalVerificationTokensTable.userId, user.id),
-        eq(
-          signalVerificationTokensTable.tokenHash,
-          hashVerificationCode(parsed.data.code),
-        ),
-        isNull(signalVerificationTokensTable.consumedAt),
-        gt(signalVerificationTokensTable.expiresAt, new Date()),
-      ),
-    )
-    .orderBy(desc(signalVerificationTokensTable.createdAt))
-    .limit(1);
-  if (!token) {
-    res.status(400).json({ error: "Код недействителен или срок его действия истёк." });
-    return;
-  }
-
-  const [verified] = await db.transaction(async (tx) => {
-    const [consumed] = await tx
-      .update(signalVerificationTokensTable)
-      .set({ consumedAt: new Date() })
-      .where(
-        and(
-          eq(signalVerificationTokensTable.id, token.id),
-          isNull(signalVerificationTokensTable.consumedAt),
-        ),
-      )
-      .returning();
-    if (!consumed) return [];
-    return tx
-      .update(signalUsersTable)
-      .set({ emailVerified: true })
-      .where(eq(signalUsersTable.id, user.id))
-      .returning();
-  });
+  const verified = await consumePendingRegistration(email, parsed.data.code, parsed.data.registrationId);
   if (!verified) {
-    res.status(400).json({ error: "Код недействителен или срок его действия истёк." });
+    res.status(400).json({ error: 'Код недействителен или срок его действия истёк.' });
     return;
   }
   verificationAttempts.reset(rateLimitKey(requestIp(req), email));
@@ -420,6 +296,34 @@ router.get("/me", async (req, res): Promise<void> => {
       expiresAt: session.expiresAt.toISOString(),
     }),
   );
+});
+
+async function ownAccount(user: typeof signalUsersTable.$inferSelect) {
+  const [profile] = user.role === 'candidate' ? await db.select({alias:signalCandidateProfilesTable.professionalAlias}).from(signalCandidateProfilesTable).where(eq(signalCandidateProfilesTable.userId,user.id)).limit(1) : [];
+  return {id:user.id,displayName:user.displayName,email:user.email,emailVerified:user.emailVerified,role:user.role,demoMode:user.demoMode,reviewMode:user.reviewScopeId!==null,createdAt:user.createdAt.toISOString(),professionalAlias:profile?.alias??null};
+}
+router.get('/me/account',async(req,res):Promise<void>=>{
+  const session=await getSessionUser(req); if(!session){res.status(401).json({error:'Войдите, чтобы продолжить.'});return;}
+  res.set('Cache-Control','no-store').json(await ownAccount(session.user));
+});
+const AccountUpdate=z.object({displayName:z.string().trim().min(2).max(120),expectedDisplayName:z.string().min(2).max(120),professionalAlias:z.string().trim().min(2).max(120).optional(),expectedProfessionalAlias:z.string().max(120).optional()}).strict().refine(v=>(v.professionalAlias===undefined)===(v.expectedProfessionalAlias===undefined));
+router.patch('/me/account',async(req,res):Promise<void>=>{
+  const session=await getSessionUser(req);if(!session){res.status(401).json({error:'Войдите, чтобы продолжить.'});return;}
+  const parsed=AccountUpdate.safeParse(req.body);if(!parsed.success){res.status(400).json({error:'Проверьте имя и псевдоним.'});return;}
+  const input=parsed.data;
+  const result=await db.transaction(async tx=>{
+    const [current]=await tx.select().from(signalUsersTable).where(eq(signalUsersTable.id,session.user.id)).for('update');
+    if(!current||current.displayName!==input.expectedDisplayName)return null;
+    if(input.professionalAlias!==undefined){
+      if(current.role!=='candidate')return null;
+      const [profile]=await tx.select().from(signalCandidateProfilesTable).where(eq(signalCandidateProfilesTable.userId,current.id)).for('update');
+      if(!profile||profile.professionalAlias!==input.expectedProfessionalAlias)return null;
+      await tx.update(signalCandidateProfilesTable).set({professionalAlias:input.professionalAlias}).where(eq(signalCandidateProfilesTable.userId,current.id));
+    }
+    const [saved]=await tx.update(signalUsersTable).set({displayName:input.displayName}).where(eq(signalUsersTable.id,current.id)).returning();return saved;
+  });
+  if(!result){res.status(409).json({error:'Данные аккаунта изменились. Обновите страницу и повторите сохранение.',code:'account_revision_conflict'});return;}
+  res.set('Cache-Control','no-store').json(await ownAccount(result));
 });
 
 router.post("/auth/logout", async (req, res): Promise<void> => {
