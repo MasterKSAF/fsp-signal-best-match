@@ -13,7 +13,22 @@ export interface InvitationInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  needId: number;
+  jobId?: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  contextVersion: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeRevision?: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  needId?: number;
   /**
      * @minimum 1
      * @maximum 2147483647
@@ -45,7 +60,7 @@ export interface InvitationInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  resumeId?: number;
+  resumeId: number;
   /**
      * @minLength 8
      * @maxLength 128

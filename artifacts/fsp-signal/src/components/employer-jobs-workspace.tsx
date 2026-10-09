@@ -5,29 +5,29 @@ import { ArrowRight, BriefcaseBusiness, Check, MoreHorizontal, Plus, Search, Tar
 import { DictionaryCombobox, DictionaryTags, useSkillDictionary } from './dictionary-input';
 import { ROLE_OPTIONS, WORK_FORMAT_OPTIONS } from '@/lib/professional-dictionaries';
 import { professionLabel, selectionHref } from '@/lib/employer-workspace-navigation';
-import { editorSkillLevels } from '@/lib/employer-context-levels';
+import { contextRequirements, editorRequirements, requirementLabel, requirementModeLabel, verifiedRequirementLevels, type RequirementMode, type SkillRequirement } from '@/lib/context-requirements';
 import { contextActions, contextListHref, contextListOptions, contextSortOptions, filterContextList, type ContextListOptions, type ContextListTab } from '@/lib/employer-context-list';
 import type { DictionaryOption } from '@/lib/professional-dictionaries';
 import { SkillCoverage } from './matching-support';
-import { SkillLevelRequirements, type MinimumSkillLevels } from './skill-requirements';
+import { SkillRequirementEditor, type MinimumSkillLevels } from './skill-requirements';
 import { Dialog } from './product-enhancements';
 import { FormField } from './form-field';
 import { InlineInfo } from './inline-info';
-import { OpportunityFeedback, OpportunityStatus, Salary, opportunityApi, useOpportunityAction } from './opportunity-ui';
+import { OpportunityFeedback, OpportunityRequestError, OpportunityStatus, Salary, opportunityApi, useOpportunityAction } from './opportunity-ui';
 import './employer-workspace.css';
 
 type Context = {
   id: number; title: string; specialization: string; description: string; grade: 'Junior' | 'Middle' | 'Senior';
   workFormat: string; salaryMin: number; salaryMax: number; salaryPeriod: 'month' | 'year'; salaryType: 'gross' | 'net';
   status?: string; version?: number; revision?: number; skills?: string[]; requiredSkills?: string[]; desirableSkills?: string[];
-  requiredSkillLevels?: MinimumSkillLevels; skillRequirements?: {skill: string; level?: 'Junior' | 'Middle' | 'Senior'}[];
+  requiredSkillLevels?: MinimumSkillLevels; skillRequirements?: SkillRequirement[]; gradeMode?: RequirementMode;
   location?: string; shortlistCount?: number; applicationCount?: number; updatedAt?: string; createdAt?: string;
 };
 type Kind = 'job' | 'need';
 type Draft = {
   title: string; specialization: string; description: string; grade: Context['grade']; workFormat: string;
   salaryMin: number; salaryMax: number; salaryPeriod: Context['salaryPeriod']; salaryType: Context['salaryType'];
-  skills: string[]; desirableSkills: string[]; levels: MinimumSkillLevels; location: string;
+  skills: string[]; desirableSkills: string[]; skillRequirements: SkillRequirement[]; gradeMode: RequirementMode; location: string;
 };
 const invalidateKeys = ['employer-jobs', 'employer-needs', 'employer-applications', 'employer-selection-contexts', 'employer-selection', 'employer-shortlist'];
 const initialDraft = (context?: Context): Draft => ({
@@ -36,15 +36,15 @@ const initialDraft = (context?: Context): Draft => ({
   salaryMin: context?.salaryMin ?? 150000, salaryMax: context?.salaryMax ?? 220000,
   salaryPeriod: context?.salaryPeriod ?? 'month', salaryType: context?.salaryType ?? 'gross',
   skills: context?.skills ?? context?.requiredSkills ?? [], desirableSkills: context?.desirableSkills ?? [],
-  levels: context?.requiredSkillLevels ?? Object.fromEntries((context?.skillRequirements ?? []).filter(item => item.level).map(item => [item.skill, item.level!])),
+  skillRequirements: contextRequirements(context ?? {}), gradeMode: context?.gradeMode ?? 'verified',
   location: context?.location ?? '',
 });
 function contextPayload(draft: Draft, kind: Kind, dictionary: readonly DictionaryOption[] = []) {
-  const { skills, levels, desirableSkills, location, ...conditions } = draft;
-  const selectedLevels = editorSkillLevels(skills, levels, dictionary);
-  return kind === 'need' ? {...conditions, requiredSkills: skills, desirableSkills,
-    requiredSkillLevels: selectedLevels}
-    : {...conditions, skills, location, skillRequirements: skills.map(skill => ({skill, ...(selectedLevels[skill] ? {level: selectedLevels[skill]} : {})}))};
+  const { skills, skillRequirements, desirableSkills, location, ...conditions } = draft;
+  const requirements = editorRequirements(skills,{skillRequirements},dictionary);
+  return kind === 'need' ? {...conditions, requiredSkills: skills, desirableSkills, skillRequirements:requirements,
+    requiredSkillLevels: verifiedRequirementLevels(requirements)}
+    : {...conditions, skills, location, skillRequirements:requirements};
 }
 export function EmployerJobsPage({ initialTab }: { initialTab?: 'jobs' | 'needs' } = {}) {
   const search = useSearch();
@@ -59,6 +59,11 @@ export function EmployerJobsPage({ initialTab }: { initialTab?: 'jobs' | 'needs'
   const query = tab === 'jobs' ? jobs : needs, kind: Kind = tab === 'jobs' ? 'job' : 'need';
   const filters=contextListOptions(search,tab),visible=filterContextList(query.data??[],filters);
   useEffect(() => { setEdit(null); setConfirm(null); act.reset(); }, [tab]);
+  useEffect(() => {
+    if(params.get('create')!=='1')return;
+    setEdit({kind}); const next=new URLSearchParams(search);next.delete('create');
+    navigate(`/employer/jobs?${next}`,{replace:true});
+  },[search,kind]);
   useEffect(() => {
     if (params.get('tab') === 'applications') { const next = new URLSearchParams(search); next.delete('tab'); navigate(`/employer/applications?${next}`,{replace:true}); }
   },[search]);
@@ -103,11 +108,11 @@ export function EmployerJobsPage({ initialTab }: { initialTab?: 'jobs' | 'needs'
       : <div className="employer-context-list">{visible.map(context => {
         const status = context.status ?? 'active', archived = status === 'archived';
         const available=contextActions(kind,status);
-        const required = context.skills ?? context.requiredSkills ?? [];
+        const required = contextRequirements(context);
         return <article className="panel employer-context-row" id={`context-${kind}-${context.id}`} key={context.id} data-testid={`card-${kind}-${context.id}`}>
           <div className="employer-context-main"><div className="employer-context-heading"><h2>{professionLabel(context.title)}</h2>{kind === 'need' && !archived ? <span className="opportunity-status">Приватный запрос</span> : <OpportunityStatus status={status}/>}</div>
-            <div className="employer-context-meta"><span>{professionLabel(context.specialization)}</span><span>Грейд от {context.grade}</span><span>{context.workFormat}</span>{context.location && <span>{context.location}</span>}</div>
-            <p className="employer-context-description">{context.description}</p><div className="employer-requirements" aria-label="Требования работодателя">{required.slice(0,6).map(skill => <span className="employer-requirement-chip" key={skill}>{skill}</span>)}{required.length > 6 && <span className="employer-requirement-chip">Ещё {required.length-6}</span>}</div>
+            <div className="employer-context-meta"><span>{professionLabel(context.specialization)}</span><span>Грейд от {context.grade} · {requirementModeLabel(context.gradeMode).toLocaleLowerCase('ru-RU')}</span><span>{context.workFormat}</span>{context.location && <span>{context.location}</span>}</div>
+            <p className="employer-context-description">{context.description}</p><div className="employer-requirements" aria-label="Требования работодателя">{required.slice(0,6).map(item => <span className="employer-requirement-chip" key={item.skill}>{requirementLabel(item)}</span>)}{required.length > 6 && <span className="employer-requirement-chip">Ещё {required.length-6}</span>}</div>
           </div>
           <div className="employer-context-side"><Salary job={context}/><div className="employer-context-counters">
             {kind === 'job' && <Link href={`/employer/applications?jobId=${context.id}`} className="employer-counter applications" aria-label={`Отклики на ${context.title}: ${context.applicationCount ?? 'количество недоступно'}`}>Отклики <b>{context.applicationCount ?? '—'}</b></Link>}
@@ -145,6 +150,7 @@ function ContextMenu({title, disabled, children}: {title:string; disabled:boolea
 function ContextEditor({kind,context,close,reload}:{kind:Kind;context?:Context;close:()=>void;reload:()=>void}) {
   const initial = initialDraft(context), [draft,setDraft] = useState(initial);
   const action = useOpportunityAction(invalidateKeys), skills = useSkillDictionary();
+  const fieldErrors = action.error instanceof OpportunityRequestError ? action.error.fieldErrors : {};
   const set = <K extends keyof Draft>(key:K,value:Draft[K]) => setDraft(old => ({...old,[key]:value}));
   const submit = (event: FormEvent) => {
     event.preventDefault(); const payload = contextPayload(draft,kind,skills.data), before = contextPayload(initial,kind,skills.data);
@@ -152,22 +158,23 @@ function ContextEditor({kind,context,close,reload}:{kind:Kind;context?:Context;c
     action.mutate({path:context ? `/employer/${kind === 'job' ? 'jobs' : 'needs'}/${context.id}` : `/employer/${kind === 'job' ? 'jobs' : 'needs'}`, method:context ? 'PUT' : 'POST', body:context ? {...changed,...(kind === 'job' ? {version:context.version} : {revision:context.revision})} : changed},{onSuccess:close});
   };
   return <form className="panel opportunity-form employer-context-editor" onSubmit={submit}>
-    <div className="opportunity-form-title"><h2>{context ? 'Редактирование' : kind === 'job' ? 'Новая вакансия' : 'Новый приватный запрос'}</h2><button type="button" className="icon-button" aria-label="Закрыть редактор" onClick={close}><X size={18}/></button></div>
+    <div className="opportunity-form-title"><h2>{context ? 'Редактирование' : kind === 'job' ? 'Новая вакансия' : 'Новый приватный запрос'}<InlineInfo>{kind==='job'?'После публикации кандидаты смогут отправлять отклики.':'Запрос видит только ваша компания. По нему можно самостоятельно подобрать и пригласить специалистов.'}</InlineInfo></h2><button type="button" className="icon-button" aria-label="Закрыть редактор" onClick={close}><X size={18}/></button></div>
     <fieldset disabled={action.isPending}><div className="opportunity-form-grid">
-      <FormField label="Название роли" layout="vertical"><DictionaryCombobox required minLength={3} maxLength={160} options={ROLE_OPTIONS} value={draft.title} onChange={value=>set('title',value)}/></FormField>
+      <FormField label={kind==='need'?'Внутреннее название запроса':'Название роли'} layout="vertical" error={fieldErrors.title}><DictionaryCombobox required minLength={3} maxLength={160} options={ROLE_OPTIONS} value={draft.title} onChange={value=>set('title',value)}/></FormField>
       <FormField label="Направление" layout="vertical"><select className="input" value={draft.specialization} onChange={event=>set('specialization',event.target.value)}><option value="Backend / Python">Backend-разработчик</option><option value="Frontend / TypeScript">Frontend-разработчик</option>{!['Backend / Python','Frontend / TypeScript'].includes(draft.specialization) && <option value={draft.specialization}>{professionLabel(draft.specialization)}</option>}</select></FormField>
       <FormField label="Требуемый грейд" layout="vertical"><select className="input" value={draft.grade} onChange={event=>set('grade',event.target.value as Draft['grade'])}><option>Junior</option><option>Middle</option><option>Senior</option></select></FormField>
+      <FormField label="Подтверждение общего грейда" layout="vertical" error={fieldErrors.gradeMode} hint="Общий грейд выбранного резюме и уровни отдельных навыков проверяются отдельно."><select className="input" value={draft.gradeMode} onChange={event=>set('gradeMode',event.target.value as RequirementMode)}><option value="declared_or_verified">Достаточно заявленного</option><option value="verified">Требуется подтверждение</option></select></FormField>
       <FormField label="Формат работы" layout="vertical"><DictionaryCombobox required maxLength={120} options={WORK_FORMAT_OPTIONS} value={draft.workFormat} onChange={value=>set('workFormat',value)}/></FormField>
       <FormField label="Зарплата от, ₽" layout="vertical"><input className="input" type="number" required min={1} max={100000000} value={draft.salaryMin} onChange={event=>set('salaryMin',Number(event.target.value))}/></FormField>
       <FormField label="Зарплата до, ₽" layout="vertical"><input className="input" type="number" required min={draft.salaryMin} max={100000000} value={draft.salaryMax} onChange={event=>set('salaryMax',Number(event.target.value))}/></FormField>
       <FormField label="Период" layout="vertical"><select className="input" value={draft.salaryPeriod} onChange={event=>set('salaryPeriod',event.target.value as Draft['salaryPeriod'])}><option value="month">В месяц</option><option value="year">В год</option></select></FormField>
       <FormField label="Налоги" layout="vertical"><select className="input" value={draft.salaryType} onChange={event=>set('salaryType',event.target.value as Draft['salaryType'])}><option value="gross">До вычета налогов</option><option value="net">На руки</option></select></FormField>
       {kind === 'job' && <FormField label="Локация" layout="vertical"><input className="input" maxLength={160} value={draft.location} onChange={event=>set('location',event.target.value)}/></FormField>}
-      <FormField label="Обязательные навыки" layout="vertical"><DictionaryTags required options={skills.data ?? []} maxItems={kind === 'job' ? 20 : 40} maxLength={kind === 'job' ? 60 : 100} value={draft.skills} onChange={value=>setDraft(old=>({...old,skills:value,levels:editorSkillLevels(value,old.levels,skills.data)}))}/></FormField>
-      {!!draft.skills.length && <SkillLevelRequirements skills={draft.skills} value={editorSkillLevels(draft.skills,draft.levels,skills.data)} onChange={value=>set('levels',value)}/>} 
+      <FormField label="Обязательные навыки" layout="vertical" error={fieldErrors.skills ?? fieldErrors.requiredSkills}><DictionaryTags required options={skills.data ?? []} maxItems={kind === 'job' ? 20 : 40} maxLength={kind === 'job' ? 60 : 100} value={draft.skills} onChange={value=>setDraft(old=>({...old,skills:value,skillRequirements:editorRequirements(value,old,skills.data)}))}/></FormField>
+      {!!draft.skills.length && <SkillRequirementEditor dictionary={skills.data} value={editorRequirements(draft.skills,draft,skills.data)} onChange={value=>set('skillRequirements',value)} error={fieldErrors.skillRequirements ?? fieldErrors.requiredSkillLevels}/>}
       {kind === 'need' && <FormField label="Желательные навыки" layout="vertical"><DictionaryTags options={skills.data ?? []} maxItems={40} maxLength={100} value={draft.desirableSkills} onChange={value=>set('desirableSkills',value)}/></FormField>}
-    </div>{!!draft.skills.length&&<div className="employer-requirement-info">Проверки навыков<SkillCoverage specialization={draft.specialization} requirements={draft.skills}/></div>}
-      <FormField label="Задачи и условия" layout="vertical"><textarea className="input" required minLength={kind === 'job' ? 30 : 10} maxLength={6000} rows={4} value={draft.description} onChange={event=>set('description',event.target.value)}/></FormField>
+    </div>{draft.skillRequirements.some(item=>item.mode!=='declared_or_verified')&&<div className="employer-requirement-info">Проверки навыков<SkillCoverage specialization={draft.specialization} requirements={draft.skillRequirements.filter(item=>item.mode!=='declared_or_verified').map(item=>item.skill)}/></div>}
+      <FormField label={kind==='need'?'Внутренние задачи и заметки':'Задачи и условия'} layout="vertical" error={fieldErrors.description} hint={kind==='need'?'Эти заметки не отправляются кандидату. Условия приглашения вы проверите перед отправкой.':undefined}><textarea className="input" required minLength={kind === 'job' ? 30 : 10} maxLength={6000} rows={4} value={draft.description} onChange={event=>set('description',event.target.value)}/></FormField>
       <div className="form-actions"><button className="button primary" type="submit"><Check size={16}/>{action.isPending ? 'Сохраняем…' : context ? 'Сохранить изменения' : kind === 'job' ? 'Сохранить черновик' : 'Создать запрос'}<ArrowRight size={15}/></button></div>
     </fieldset><OpportunityFeedback error={action.error}/>{action.isError && context && <button type="button" className="button secondary" onClick={reload}>Загрузить актуальную карточку</button>}
   </form>;

@@ -120,6 +120,13 @@
       "when": 1791417600016,
       "tag": "0016_company_inn",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791504000017,
+      "tag": "0017_recruiting_requirements",
+      "breakpoints": true
     }
   ]
 }

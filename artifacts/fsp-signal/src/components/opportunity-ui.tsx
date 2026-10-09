@@ -2,6 +2,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import "./opportunities.css";
 import { FormField } from './form-field';
+export class OpportunityRequestError extends Error {
+  constructor(message: string, readonly status: number, readonly fieldErrors: Record<string,string> = {}) { super(message); }
+}
 export async function opportunityApi<T = any>(
   path: string,
   method = "GET",
@@ -15,8 +18,9 @@ export async function opportunityApi<T = any>(
   });
   const value = await response.json();
   if (!response.ok)
-    throw new Error(
+    throw new OpportunityRequestError(
       (value.error || "Не удалось выполнить действие. Попробуйте ещё раз.") + (value.retryAt && Number.isFinite(Date.parse(value.retryAt)) ? ` Повторить можно после ${new Date(value.retryAt).toLocaleString("ru-RU")}.` : ""),
+      response.status, value.fieldErrors && typeof value.fieldErrors === 'object' ? value.fieldErrors : {},
     );
   return value;
 }

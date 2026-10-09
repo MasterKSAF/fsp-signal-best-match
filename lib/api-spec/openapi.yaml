@@ -5877,9 +5877,95 @@ components:
         - evidence
         - nextStep
         - gradeChanged
+    RequirementMode:
+      type: string
+      enum: [verified, declared_or_verified]
+      description: Missing legacy mode means verified. Declaration never becomes proof.
+    RecruitingSkillRequirement:
+      type: object
+      additionalProperties: false
+      required: [skill]
+      properties:
+        skill: {type: string, minLength: 1, maxLength: 100}
+        mode:
+          $ref: "#/components/schemas/RequirementMode"
+        level:
+          type: string
+          enum: [Junior, Middle, Senior]
+          description: Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.
+    InvitationContext:
+      type: object
+      required: [type, id, version, title, available]
+      properties:
+        type: {type: string, enum: [need, job]}
+        id: {type: [integer, "null"]}
+        version: {type: [integer, "null"]}
+        title: {type: string}
+        available: {type: boolean}
+    InvitationConditions:
+      type: object
+      properties:
+        title: {type: string}
+        salaryMin: {type: integer}
+        salaryMax: {type: integer}
+        salaryPeriod: {type: string}
+        salaryType: {type: string}
+        workFormat: {type: string}
+    InvitationContextSnapshot:
+      type: [object, "null"]
+      description: Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.
+      properties:
+        type: {type: string, enum: [need, job]}
+        id: {type: [integer, "null"]}
+        version: {type: [integer, "null"]}
+        title: {type: string}
+        invitationConditions:
+          $ref: "#/components/schemas/InvitationConditions"
+        specialization: {type: string}
+        grade: {type: string}
+        gradeMode:
+          $ref: "#/components/schemas/RequirementMode"
+        skillRequirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecruitingSkillRequirement"
+        requirementsVersion: {type: string}
+        requiredSkills: {type: array, items: {type: string}}
+        requiredSkillLevels:
+          type: object
+          additionalProperties: {type: string, enum: [Junior, Middle, Senior]}
+        desirableSkills: {type: array, items: {type: string}}
+        description: {type: string}
+        workFormat: {type: string}
+        salaryMin: {type: integer}
+        salaryMax: {type: integer}
+        salaryPeriod: {type: string}
+        salaryType: {type: string}
+        status: {type: string}
+        updatedAt: {type: string}
+    InvitationCompany:
+      type: [object, "null"]
+      properties:
+        id: {type: integer}
+        name: {type: string}
+        description: {type: string}
+        industry: {type: string}
+        contactEmail: {type: [string, "null"]}
+        contactPhone: {type: [string, "null"]}
+        contactMethod: {type: string}
     EmployerNeed:
       type: object
       properties:
+        requirementsVersion:
+          type: string
+          enum: [signal-requirements-v1]
+        gradeMode:
+          $ref: "#/components/schemas/RequirementMode"
+        skillRequirements:
+          type: array
+          maxItems: 40
+          items:
+            $ref: "#/components/schemas/RecruitingSkillRequirement"
         id:
           type: integer
         title:
@@ -5944,6 +6030,13 @@ components:
     EmployerNeedInput:
       type: object
       properties:
+        gradeMode:
+          $ref: "#/components/schemas/RequirementMode"
+        skillRequirements:
+          type: array
+          maxItems: 40
+          items:
+            $ref: "#/components/schemas/RecruitingSkillRequirement"
         title:
           type: string
           minLength: 3
@@ -6116,6 +6209,12 @@ components:
     MatchEvidence:
       type: object
       properties:
+        requirementMode:
+          $ref: "#/components/schemas/RequirementMode"
+        satisfied:
+          type: boolean
+        reason:
+          type: [string, "null"]
         requirement:
           type: string
         evidence:
@@ -6246,7 +6345,17 @@ components:
         id:
           type: integer
         needId:
-          type: integer
+          type: [integer, "null"]
+        jobId:
+          type: [integer, "null"]
+        contextVersion:
+          type: [integer, "null"]
+        context:
+          $ref: "#/components/schemas/InvitationContext"
+        contextSnapshot:
+          $ref: "#/components/schemas/InvitationContextSnapshot"
+        company:
+          $ref: "#/components/schemas/InvitationCompany"
         candidateId:
           type: integer
         candidateAlias:
@@ -6315,6 +6424,18 @@ components:
     InvitationInput:
       type: object
       properties:
+        jobId:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        contextVersion:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+        resumeRevision:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
         needId:
           type: integer
           maximum: 2147483647
@@ -6362,7 +6483,8 @@ components:
           minLength: 8
           maxLength: 128
       required:
-        - needId
+        - contextVersion
+        - resumeId
         - candidateId
         - title
         - message
@@ -7930,6 +8052,16 @@ components:
     JobInput:
       type: object
       properties:
+        location:
+          type: string
+          maxLength: 160
+        gradeMode:
+          $ref: "#/components/schemas/RequirementMode"
+        skillRequirements:
+          type: array
+          maxItems: 40
+          items:
+            $ref: "#/components/schemas/RecruitingSkillRequirement"
         title:
           type: string
           minLength: 3
@@ -7986,6 +8118,19 @@ components:
     JobPublication:
       type: object
       properties:
+        location:
+          type: string
+          maxLength: 160
+        requirementsVersion:
+          type: string
+          enum: [signal-requirements-v1]
+        gradeMode:
+          $ref: "#/components/schemas/RequirementMode"
+        skillRequirements:
+          type: array
+          maxItems: 40
+          items:
+            $ref: "#/components/schemas/RecruitingSkillRequirement"
         title:
           type: string
           minLength: 3

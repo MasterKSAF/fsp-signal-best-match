@@ -81,3 +81,10 @@
 .employer-context-panel>.opportunity-empty p{margin:0 0 12px}
 @media(max-width:760px){.employer-context-filters{grid-template-columns:minmax(0,1fr) minmax(180px,.8fr)}.employer-context-filters>.button{justify-self:start}.employer-context-result-count{grid-column:auto;justify-self:end}}
 @media(max-width:580px){.employer-context-tabs .button{min-width:0;flex:1}.employer-context-filters{grid-template-columns:minmax(0,1fr)}.employer-context-filters .input{font-size:16px}.employer-context-result-count{justify-self:start}}
+/* Requirement controls describe employer conditions, not candidate evidence. */
+.skill-requirement-editor{grid-column:1/-1;min-width:0;padding:14px;border:1px solid hsl(var(--border));border-radius:12px;display:grid;gap:12px}
+.skill-requirement-editor legend{padding:0 7px;font-size:.84rem;font-weight:650}
+.skill-requirement-row{display:grid;grid-template-columns:minmax(100px,.7fr) minmax(200px,1.3fr) minmax(170px,1fr);align-items:center;gap:12px}
+.skill-requirement-row>strong{overflow-wrap:anywhere;font-size:.85rem}
+.skill-requirement-note{font-size:.78rem;line-height:1.45}
+@media(max-width:750px){.skill-requirement-row{grid-template-columns:1fr}.skill-requirement-row+.skill-requirement-row{border-top:1px solid hsl(var(--border));padding-top:12px}}

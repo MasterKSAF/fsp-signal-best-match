@@ -907,6 +907,129 @@ export interface AssessmentAnswersInput {
   answers: AssessmentAnswersInputAnswersItem[];
 }
 
+/**
+ * Missing legacy mode means verified. Declaration never becomes proof.
+ */
+export type RequirementMode = typeof RequirementMode[keyof typeof RequirementMode];
+
+
+export const RequirementMode = {
+  verified: 'verified',
+  declared_or_verified: 'declared_or_verified',
+} as const;
+
+/**
+ * Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.
+ */
+export type RecruitingSkillRequirementLevel = typeof RecruitingSkillRequirementLevel[keyof typeof RecruitingSkillRequirementLevel];
+
+
+export const RecruitingSkillRequirementLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export interface RecruitingSkillRequirement {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  skill: string;
+  mode?: RequirementMode;
+  /** Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum. */
+  level?: RecruitingSkillRequirementLevel;
+}
+
+export type InvitationContextType = typeof InvitationContextType[keyof typeof InvitationContextType];
+
+
+export const InvitationContextType = {
+  need: 'need',
+  job: 'job',
+} as const;
+
+export interface InvitationContext {
+  type: InvitationContextType;
+  /** @nullable */
+  id: number | null;
+  /** @nullable */
+  version: number | null;
+  title: string;
+  available: boolean;
+}
+
+export interface InvitationConditions {
+  title?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryPeriod?: string;
+  salaryType?: string;
+  workFormat?: string;
+}
+
+export type InvitationContextSnapshotType = typeof InvitationContextSnapshotType[keyof typeof InvitationContextSnapshotType];
+
+
+export const InvitationContextSnapshotType = {
+  need: 'need',
+  job: 'job',
+} as const;
+
+export type InvitationContextSnapshotRequiredSkillLevels = {[key: string]: 'Junior' | 'Middle' | 'Senior'};
+
+/**
+ * Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.
+ * @nullable
+ */
+export type InvitationContextSnapshot = {
+  type?: InvitationContextSnapshotType;
+  /** @nullable */
+  id?: number | null;
+  /** @nullable */
+  version?: number | null;
+  title?: string;
+  invitationConditions?: InvitationConditions;
+  specialization?: string;
+  grade?: string;
+  gradeMode?: RequirementMode;
+  skillRequirements?: RecruitingSkillRequirement[];
+  requirementsVersion?: string;
+  requiredSkills?: string[];
+  requiredSkillLevels?: InvitationContextSnapshotRequiredSkillLevels;
+  desirableSkills?: string[];
+  description?: string;
+  workFormat?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryPeriod?: string;
+  salaryType?: string;
+  status?: string;
+  updatedAt?: string;
+} | null;
+
+/**
+ * @nullable
+ */
+export type InvitationCompany = {
+  id?: number;
+  name?: string;
+  description?: string;
+  industry?: string;
+  /** @nullable */
+  contactEmail?: string | null;
+  /** @nullable */
+  contactPhone?: string | null;
+  contactMethod?: string;
+} | null;
+
+export type EmployerNeedRequirementsVersion = typeof EmployerNeedRequirementsVersion[keyof typeof EmployerNeedRequirementsVersion];
+
+
+export const EmployerNeedRequirementsVersion = {
+  'signal-requirements-v1': 'signal-requirements-v1',
+} as const;
+
 export type EmployerNeedGrade = typeof EmployerNeedGrade[keyof typeof EmployerNeedGrade];
 
 
@@ -938,6 +1061,10 @@ export const EmployerNeedSalaryType = {
 } as const;
 
 export interface EmployerNeed {
+  requirementsVersion?: EmployerNeedRequirementsVersion;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   id: number;
   title: string;
   specialization: string;
@@ -986,6 +1113,9 @@ export const EmployerNeedInputSalaryType = {
 } as const;
 
 export interface EmployerNeedInput {
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160
@@ -1390,6 +1520,10 @@ export interface SafeSkillProof {
 }
 
 export interface MatchEvidence {
+  requirementMode?: RequirementMode;
+  satisfied?: boolean;
+  /** @nullable */
+  reason?: string | null;
   requirement: string;
   evidence: string;
   source: string;
@@ -1478,7 +1612,15 @@ export const InvitationStatus = {
 
 export interface Invitation {
   id: number;
-  needId: number;
+  /** @nullable */
+  needId: number | null;
+  /** @nullable */
+  jobId?: number | null;
+  /** @nullable */
+  contextVersion?: number | null;
+  context?: InvitationContext;
+  contextSnapshot?: InvitationContextSnapshot | null;
+  company?: InvitationCompany | null;
   candidateId: number;
   candidateAlias: string;
   companyName: string;
@@ -1527,7 +1669,22 @@ export interface InvitationInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  needId: number;
+  jobId?: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  contextVersion: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeRevision?: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  needId?: number;
   /**
      * @minimum 1
      * @maximum 2147483647
@@ -1559,7 +1716,7 @@ export interface InvitationInput {
      * @minimum 1
      * @maximum 2147483647
      */
-  resumeId?: number;
+  resumeId: number;
   /**
      * @minLength 8
      * @maxLength 128
@@ -2492,6 +2649,11 @@ export const JobInputSalaryType = {
 } as const;
 
 export interface JobInput {
+  /** @maxLength 160 */
+  location?: string;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160
@@ -2513,6 +2675,13 @@ export interface JobInput {
   salaryPeriod: JobInputSalaryPeriod;
   salaryType: JobInputSalaryType;
 }
+
+export type JobPublicationRequirementsVersion = typeof JobPublicationRequirementsVersion[keyof typeof JobPublicationRequirementsVersion];
+
+
+export const JobPublicationRequirementsVersion = {
+  'signal-requirements-v1': 'signal-requirements-v1',
+} as const;
 
 export type JobPublicationGrade = typeof JobPublicationGrade[keyof typeof JobPublicationGrade];
 
@@ -2559,6 +2728,12 @@ export const JobPublicationStatus = {
 } as const;
 
 export interface JobPublication {
+  /** @maxLength 160 */
+  location?: string;
+  requirementsVersion?: JobPublicationRequirementsVersion;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160

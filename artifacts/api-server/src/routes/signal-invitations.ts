@@ -31,6 +31,7 @@ import { loadNeedSkillLevels } from '../lib/need-skill-levels';
 import { loadOwnedSelectionContext } from '../lib/signal-employer-context';
 import { ContextCreateInvitationBody, InvitationIdempotencyKey, invitationContextSnapshot, pendingInvitationCompatible } from '../lib/invitation-context-input';
 import { invitationAllowsWorkFormat } from '../lib/invitation-work-format';
+import { invitationContextProjection, invitationPublicCompany, type InvitationAudience } from '../lib/invitation-public-projection';
 import {
   poolScopeForAccount,
   signalPoolPredicate,
@@ -138,6 +139,7 @@ async function needForMatch(need: typeof signalNeedsTable.$inferSelect): Promise
 
 async function invitationPayload(
   invitation: typeof signalInvitationsTable.$inferSelect,
+  audience: InvitationAudience,
 ) {
   const [[company], [profile], [grant]] = await Promise.all([
     db
@@ -173,13 +175,20 @@ async function invitationPayload(
   const companyContact = company
     ? `${company.contactMethod}: ${company.contactEmail}${company.contactPhone ? ` · ${company.contactPhone}` : ""}`
     : "Контакт компании не указан";
+  const ref = invitation.jobId !== null ? {type:'job' as const,id:invitation.jobId}
+    : invitation.needId !== null ? {type:'need' as const,id:invitation.needId} : null;
+  const liveContext = ref ? await loadOwnedSelectionContext(invitation.companyId,ref) : null;
+  const projectedContext = invitationContextProjection(invitation,audience,{
+    owner:Boolean(liveContext?.active),
+    candidate:liveContext?.context.type === 'job' && liveContext.context.status === 'published',
+  });
   return {
     id: invitation.id,
     needId: invitation.needId,
     jobId:invitation.jobId,
-    context:{type:invitation.jobId!==null?'job':'need',id:invitation.jobId??invitation.needId,version:invitation.contextVersion},
+    context:projectedContext.context,
     contextVersion:invitation.contextVersion,
-    contextSnapshot:invitation.contextSnapshot,
+    contextSnapshot:projectedContext.contextSnapshot,
     companyId: invitation.companyId,
     resumeId: invitation.resumeId,
     resumeSnapshot:
@@ -206,6 +215,7 @@ async function invitationPayload(
     candidateId: invitation.candidateUserId,
     candidateAlias: profile?.alias ?? "Кандидат",
     companyName: company?.name ?? "Компания",
+    company: invitationPublicCompany(company),
     companyContact,
     title: invitation.title,
     message: invitation.message,
@@ -288,13 +298,13 @@ router.get('/me/invitations/search', async (req, res) => {
   const page = Math.min(filters.page,Math.max(1,Math.ceil(totals.total/filters.pageSize)));
   const rows = await join().where(condition).orderBy(...order).limit(filters.pageSize).offset((page-1)*filters.pageSize);
   res.setHeader('Cache-Control','no-store');
-  res.json({ items: await Promise.all(rows.map(({invitation})=>invitationPayload(invitation))), total: totals.total, page, pageSize: filters.pageSize, pageCount: Math.ceil(totals.total/filters.pageSize) });
+  res.json({ items: await Promise.all(rows.map(({invitation})=>invitationPayload(invitation,'candidate'))), total: totals.total, page, pageSize: filters.pageSize, pageCount: Math.ceil(totals.total/filters.pageSize) });
 });
 router.get('/me/invitations/:id', async (req, res) => {
   const context = await candidateContext(req, res); if (!context) return;
   const row = await invitationInCandidatePool(Number(req.params.id), context);
   if (!row) { res.status(404).json({ error: 'Приглашение не найдено.' }); return; }
-  res.setHeader('Cache-Control','no-store'); res.json(await invitationPayload(row));
+  res.setHeader('Cache-Control','no-store'); res.json(await invitationPayload(row,'candidate'));
 });
 router.get("/me/invitations", async (req, res): Promise<void> => {
   const context = await candidateContext(req, res);
@@ -320,7 +330,7 @@ router.get("/me/invitations", async (req, res): Promise<void> => {
   res.setHeader("Cache-Control", "no-store");
   res.json(
     await Promise.all(
-      rows.map(({ invitation }) => invitationPayload(invitation)),
+      rows.map(({ invitation }) => invitationPayload(invitation,'candidate')),
     ),
   );
 });
@@ -350,7 +360,8 @@ router.post("/me/invitations/:id/view", async (req, res): Promise<void> => {
     )
     .returning();
   // Idempotent and monotonic: viewing never reopens an accepted/closed offer.
-  res.json(await invitationPayload(updated ?? owned));
+  res.setHeader('Cache-Control','no-store');
+  res.json(await invitationPayload(updated ?? owned,'candidate'));
 });
 
 router.get("/employer/invitations", async (req, res): Promise<void> => {
@@ -373,7 +384,7 @@ router.get("/employer/invitations", async (req, res): Promise<void> => {
   res.setHeader("Cache-Control", "no-store");
   res.json(
     await Promise.all(
-      rows.map(({ invitation }) => invitationPayload(invitation)),
+      rows.map(({ invitation }) => invitationPayload(invitation,'employer')),
     ),
   );
 });
@@ -604,7 +615,7 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
   }
   res
     .status(creation.created ? 201 : 200)
-    .json(await invitationPayload(creation.invitation));
+    .json(await invitationPayload(creation.invitation,'employer'));
 });
 
 router.post("/me/invitations/:id/decision", async (req, res): Promise<void> => {
@@ -678,7 +689,8 @@ router.post("/me/invitations/:id/decision", async (req, res): Promise<void> => {
       .json({ error: "Приглашение уже недоступно для этого действия." });
     return;
   }
-  const invitation = await invitationPayload(result);
+  const invitation = await invitationPayload(result,'candidate');
+  res.setHeader('Cache-Control','no-store');
   res.json({ invitation, disclosedContacts: null });
 });
 
@@ -734,7 +746,7 @@ router.post(
         )
         .limit(1);
       if (current?.status === "withdrawn") {
-        res.json(await invitationPayload(current));
+        res.json(await invitationPayload(current,'employer'));
         return;
       }
       res
@@ -742,7 +754,7 @@ router.post(
         .json({ error: "После ответа кандидата приглашение отозвать нельзя." });
       return;
     }
-    res.json(await invitationPayload(updated));
+    res.json(await invitationPayload(updated,'employer'));
   },
 );
 

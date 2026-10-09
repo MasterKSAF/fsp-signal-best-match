@@ -7,10 +7,17 @@
  */
 import type { EmployerNeedGrade } from './employerNeedGrade';
 import type { EmployerNeedRequiredSkillLevels } from './employerNeedRequiredSkillLevels';
+import type { EmployerNeedRequirementsVersion } from './employerNeedRequirementsVersion';
 import type { EmployerNeedSalaryPeriod } from './employerNeedSalaryPeriod';
 import type { EmployerNeedSalaryType } from './employerNeedSalaryType';
+import type { RecruitingSkillRequirement } from './recruitingSkillRequirement';
+import type { RequirementMode } from './requirementMode';
 
 export interface EmployerNeed {
+  requirementsVersion?: EmployerNeedRequirementsVersion;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   id: number;
   title: string;
   specialization: string;

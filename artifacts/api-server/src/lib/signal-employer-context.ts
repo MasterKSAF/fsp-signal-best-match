@@ -4,18 +4,21 @@ import { db, signalNeedsTable as needs, signalJobsTable as jobs,
   signalShortlistTable as shortlist, signalApplicationsTable as applications } from '@workspace/db';
 import { selectionMatchNeed, requirementLevels, selectionContextActive, selectionContextKey,
   type SelectionContextDto, type SelectionContextRef } from './selection-context-contract';
+import { interpretSkillRequirements, REQUIREMENTS_VERSION } from './recruiting-requirements';
 
 export type SelectionContextReader = Pick<typeof db, 'select'>;
 export type LoadedSelectionContext = { context: SelectionContextDto; matchNeed: ReturnType<typeof selectionMatchNeed>; active: boolean };
 export function needSelectionContext(need: typeof needs.$inferSelect, requiredSkillLevels: SelectionContextDto['requiredSkillLevels'] = {}): SelectionContextDto {
   return { type:'need', id:need.id, version:need.revision, title:need.title, specialization:need.specialization,
     grade:need.grade, requiredSkills:need.requiredSkills, requiredSkillLevels, desirableSkills:need.desirableSkills,
+    gradeMode:need.gradeMode, skillRequirements:interpretSkillRequirements(need.requiredSkills,need.skillRequirements,requiredSkillLevels),requirementsVersion:REQUIREMENTS_VERSION,
     description:need.description, workFormat:need.workFormat, salaryMin:need.salaryMin, salaryMax:need.salaryMax,
     salaryPeriod:need.salaryPeriod, salaryType:need.salaryType, status:need.status, updatedAt:need.updatedAt.toISOString() };
 }
 export function jobSelectionContext(job: typeof jobs.$inferSelect, skillRequirements: typeof requirements.$inferSelect.skillRequirements = []): SelectionContextDto {
   return { type:'job', id:job.id, version:job.version, title:job.title, specialization:job.specialization,
     grade:job.grade as SelectionContextDto['grade'], requiredSkills:job.skills,
+    gradeMode:job.gradeMode,skillRequirements:interpretSkillRequirements(job.skills,skillRequirements),requirementsVersion:REQUIREMENTS_VERSION,
     requiredSkillLevels:requirementLevels(skillRequirements), desirableSkills:[], description:job.description,
     workFormat:job.workFormat, salaryMin:job.salaryMin, salaryMax:job.salaryMax, salaryPeriod:job.salaryPeriod,
     salaryType:job.salaryType, status:job.status, updatedAt:job.updatedAt.toISOString() };

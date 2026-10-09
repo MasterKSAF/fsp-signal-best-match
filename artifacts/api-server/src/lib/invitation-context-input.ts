@@ -6,10 +6,9 @@ export const InvitationIdempotencyKey = z.string().min(1).max(128).regex(/^[A-Za
 export const ContextCreateInvitationBody = CreateInvitationBody.extend({
   needId:postgresIntIdSchema.optional(), jobId:postgresIntIdSchema.optional(),
   candidateId:postgresIntIdSchema, resumeId:postgresIntIdSchema,
-  contextVersion:postgresIntIdSchema.optional(), resumeRevision:postgresIntIdSchema.optional(),
+  contextVersion:postgresIntIdSchema, resumeRevision:postgresIntIdSchema.optional(),
   idempotencyKey:InvitationIdempotencyKey.optional(),
-}).strict().refine(value=>(value.needId!==undefined)!==(value.jobId!==undefined),{message:'Выберите ровно одну вакансию или запрос.'})
-  .refine(value=>value.jobId===undefined||value.contextVersion!==undefined,{message:'Укажите редакцию вакансии.'});
+}).strict().refine(value=>(value.needId!==undefined)!==(value.jobId!==undefined),{message:'Выберите ровно одну вакансию или запрос.'});
 export function invitationContextSnapshot(context:SelectionContextDto,conditions:{title:string;salaryMin:number;salaryMax:number;salaryPeriod:string;salaryType:string;workFormat:string}) {
   return JSON.parse(JSON.stringify({...context,invitationConditions:conditions})) as Record<string,unknown>;
 }

@@ -6,9 +6,14 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { MatchEvidenceStatus } from './matchEvidenceStatus';
+import type { RequirementMode } from './requirementMode';
 import type { SafeSkillProof } from './safeSkillProof';
 
 export interface MatchEvidence {
+  requirementMode?: RequirementMode;
+  satisfied?: boolean;
+  /** @nullable */
+  reason?: string | null;
   requirement: string;
   evidence: string;
   source: string;

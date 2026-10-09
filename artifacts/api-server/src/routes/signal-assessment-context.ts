@@ -8,6 +8,8 @@ import { getSessionUser } from "../lib/signal-auth";
 import { listAssessmentContexts, selectContextForNeed, snapshotForNeed } from "../lib/assessment-context";
 import { isProgramId, programSpecialization } from "../lib/assessment-managed";
 import { postgresIntIdParam, parsePostgresIntId } from "../lib/postgres-id";
+import { candidateAssessmentContextSnapshot } from '../lib/assessment-context-public-projection';
+import { PRIVATE_REQUEST_INVITATION_LABEL } from '../lib/invitation-public-projection';
 
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
@@ -37,7 +39,9 @@ router.get("/assessments/contexts", async (req, res) => {
     .innerJoin(signalNeedsTable, eq(signalInvitationsTable.needId, signalNeedsTable.id))
     .where(and(eq(signalInvitationsTable.candidateUserId, session.user.id), inArray(signalInvitationsTable.status, [...activeContextInvitationStatuses]), eq(signalNeedsTable.specialization, programSpecialization(programId)!)))
     .orderBy(desc(signalInvitationsTable.createdAt)).limit(30);
-  res.json({ profiles: listAssessmentContexts(programId), invitations: rows.map((row) => ({ id: row.id, title: row.need.title, snapshot: snapshotForNeed(row.need) })) });
+  res.setHeader('Cache-Control','no-store');
+  res.json({ profiles: listAssessmentContexts(programId), invitations: rows.map((row) => ({ id: row.id,
+    title:PRIVATE_REQUEST_INVITATION_LABEL,snapshot:candidateAssessmentContextSnapshot(snapshotForNeed(row.need)) })) });
 });
 
 router.get("/assessments/attempts/:id/context", async (req, res) => {
@@ -51,7 +55,8 @@ router.get("/assessments/attempts/:id/context", async (req, res) => {
     .leftJoin(signalAssessmentContextsTable, eq(signalAssessmentContextsTable.attemptId, signalAssessmentAttemptsTable.id))
     .where(and(eq(signalAssessmentAttemptsTable.id, attemptId), eq(signalAssessmentAttemptsTable.userId, session.user.id), eq(signalAssessmentAttemptsTable.purpose, "signal_qualification"))).limit(1);
   if (!row) { res.status(404).json({ error: "Проверка не найдена." }); return; }
-  res.json({ snapshot: row.snapshot ?? null });
+  res.setHeader('Cache-Control','no-store');
+  res.json({ snapshot:candidateAssessmentContextSnapshot(row.snapshot) });
 });
 
 router.get("/employer/needs/:id/assessment-context", async (req, res) => {

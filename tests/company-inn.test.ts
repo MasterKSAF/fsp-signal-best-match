@@ -33,5 +33,8 @@ test('documented API contract round-trips INN as text and still permits older re
 test('migration 17 adds only an optional text company column and format constraint, preserving existing history',()=>{
   const migration=readFileSync('lib/db/migrations/0016_company_inn.sql','utf8');
   assert.match(migration,/ADD COLUMN inn text;/);assert.equal(/NOT NULL|UPDATE |DELETE |DROP |TRUNCATE|signal_jobs|signal_micro|signal_invitations/.test(migration),false);
-  const journal=JSON.parse(readFileSync('lib/db/migrations/meta/_journal.json','utf8'));assert.equal(journal.entries.at(-1).idx,16);assert.equal(journal.entries.at(-1).tag,'0016_company_inn');
+  const journal=JSON.parse(readFileSync('lib/db/migrations/meta/_journal.json','utf8'));
+  const entries=journal.entries.filter((entry:{idx:number})=>entry.idx===16);
+  assert.equal(entries.length,1);assert.equal(entries[0].tag,'0016_company_inn');
+  assert.equal(journal.entries.filter((entry:{tag:string})=>entry.tag==='0016_company_inn').length,1);
 });

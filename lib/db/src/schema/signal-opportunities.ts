@@ -39,6 +39,7 @@ export const signalJobsTable = pgTable(
     description: text("description").notNull(),
     specialization: text("specialization").notNull(),
     grade: text("grade").notNull(),
+    gradeMode: text('grade_mode', { enum: ['verified','declared_or_verified'] }).notNull().default('verified'),
     skills: text("skills").array().notNull().default([]),
     workFormat: text("work_format").notNull(),
     salaryMin: integer("salary_min").notNull(),
@@ -61,6 +62,7 @@ export const signalJobsTable = pgTable(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (t) => [
+    check('signal_jobs_grade_mode_check',sql`${t.gradeMode} IN ('verified','declared_or_verified')`),
     check(
       "signal_jobs_salary_check",
       sql`${t.salaryMin} > 0 AND ${t.salaryMax} >= ${t.salaryMin}`,

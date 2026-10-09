@@ -1,10 +1,12 @@
 import { z } from "zod";
+import { RequirementModeSchema } from './recruiting-requirements';
 export const jobInput = z
   .object({
     title: z.string().trim().min(3).max(160),
     description: z.string().trim().min(30).max(6000),
     specialization: z.string().trim().min(2).max(100),
     grade: z.enum(["Junior", "Middle", "Senior"]),
+    gradeMode: RequirementModeSchema.optional(),
     skills: z.array(z.string().trim().min(1).max(60)).max(20),
     workFormat: z.enum(["Удалённо", "Офис", "Гибрид"]),
     salaryMin: z.number().int().positive().max(100000000),

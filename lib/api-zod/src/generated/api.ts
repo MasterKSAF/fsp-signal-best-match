@@ -758,15 +758,69 @@ export const SaveCandidateProfileResponse = zod.object({
 })
 
 
+export const listMyInvitationsResponseContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const listMyInvitationsResponseResumeIdMax = 2147483647;
 
-export const listMyInvitationsResponseCompanyIdMax = 2147483647;
+export const listMyInvitationsResponseCompanyIdMaxOne = 2147483647;
 
 
 
 export const ListMyInvitationsResponseItem = zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(listMyInvitationsResponseContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -783,7 +837,7 @@ export const ListMyInvitationsResponseItem = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(listMyInvitationsResponseResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(listMyInvitationsResponseCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(listMyInvitationsResponseCompanyIdMaxOne).optional()
 })
 export const ListMyInvitationsResponse = zod.array(ListMyInvitationsResponseItem)
 
@@ -800,16 +854,70 @@ export const DecideInvitationBody = zod.object({
   "decision": zod.enum(['accept', 'decline'])
 })
 
+export const decideInvitationResponseInvitationContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const decideInvitationResponseInvitationResumeIdMax = 2147483647;
 
-export const decideInvitationResponseInvitationCompanyIdMax = 2147483647;
+export const decideInvitationResponseInvitationCompanyIdMaxOne = 2147483647;
 
 
 
 export const DecideInvitationResponse = zod.object({
   "invitation": zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(decideInvitationResponseInvitationContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -826,7 +934,7 @@ export const DecideInvitationResponse = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(decideInvitationResponseInvitationResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(decideInvitationResponseInvitationCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(decideInvitationResponseInvitationCompanyIdMaxOne).optional()
 }),
   "disclosedContacts": zod.object({
   "displayName": zod.string().optional(),
@@ -1284,7 +1392,20 @@ export const SubmitAssessmentAttemptResponse = zod.object({
 })
 
 
+export const listEmployerNeedsResponseSkillRequirementsItemSkillMax = 100;
+
+export const listEmployerNeedsResponseSkillRequirementsMax = 40;
+
+
+
 export const ListEmployerNeedsResponseItem = zod.object({
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(listEmployerNeedsResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(listEmployerNeedsResponseSkillRequirementsMax).optional(),
   "id": zod.number().int(),
   "title": zod.string(),
   "specialization": zod.string(),
@@ -1302,6 +1423,10 @@ export const ListEmployerNeedsResponseItem = zod.object({
 })
 export const ListEmployerNeedsResponse = zod.array(ListEmployerNeedsResponseItem)
 
+
+export const createEmployerNeedBodySkillRequirementsItemSkillMax = 100;
+
+export const createEmployerNeedBodySkillRequirementsMax = 40;
 
 export const createEmployerNeedBodyTitleMin = 3;
 export const createEmployerNeedBodyTitleMax = 160;
@@ -1324,6 +1449,12 @@ export const createEmployerNeedBodyDescriptionMax = 3000;
 
 
 export const CreateEmployerNeedBody = zod.object({
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(createEmployerNeedBodySkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(createEmployerNeedBodySkillRequirementsMax).optional(),
   "title": zod.string().min(createEmployerNeedBodyTitleMin).max(createEmployerNeedBodyTitleMax),
   "specialization": zod.string(),
   "grade": zod.enum(['Junior', 'Middle', 'Senior']),
@@ -1338,7 +1469,20 @@ export const CreateEmployerNeedBody = zod.object({
   "salaryType": zod.enum(['gross', 'net'])
 })
 
+export const createEmployerNeedResponseSkillRequirementsItemSkillMax = 100;
+
+export const createEmployerNeedResponseSkillRequirementsMax = 40;
+
+
+
 export const CreateEmployerNeedResponse = zod.object({
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(createEmployerNeedResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(createEmployerNeedResponseSkillRequirementsMax).optional(),
   "id": zod.number().int(),
   "title": zod.string(),
   "specialization": zod.string(),
@@ -1550,6 +1694,9 @@ export const GetMatchExplanationResponse = zod.object({
   "scope": zod.enum(['shared_fit', 'within_comparable_group']).optional()
 })),
   "evidence": zod.array(zod.object({
+  "requirementMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "satisfied": zod.boolean().optional(),
+  "reason": zod.string().nullish(),
   "requirement": zod.string(),
   "evidence": zod.string(),
   "source": zod.string(),
@@ -1606,15 +1753,69 @@ export const GetMatchExplanationResponse = zod.object({
 })
 
 
+export const listEmployerInvitationsResponseContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const listEmployerInvitationsResponseResumeIdMax = 2147483647;
 
-export const listEmployerInvitationsResponseCompanyIdMax = 2147483647;
+export const listEmployerInvitationsResponseCompanyIdMaxOne = 2147483647;
 
 
 
 export const ListEmployerInvitationsResponseItem = zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(listEmployerInvitationsResponseContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -1631,10 +1832,16 @@ export const ListEmployerInvitationsResponseItem = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(listEmployerInvitationsResponseResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(listEmployerInvitationsResponseCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(listEmployerInvitationsResponseCompanyIdMaxOne).optional()
 })
 export const ListEmployerInvitationsResponse = zod.array(ListEmployerInvitationsResponseItem)
 
+
+export const createInvitationBodyJobIdMax = 2147483647;
+
+export const createInvitationBodyContextVersionMax = 2147483647;
+
+export const createInvitationBodyResumeRevisionMax = 2147483647;
 
 export const createInvitationBodyNeedIdMax = 2147483647;
 
@@ -1659,7 +1866,10 @@ export const createInvitationBodyIdempotencyKeyMax = 128;
 
 
 export const CreateInvitationBody = zod.object({
-  "needId": zod.number().int().min(1).max(createInvitationBodyNeedIdMax),
+  "jobId": zod.number().int().min(1).max(createInvitationBodyJobIdMax).optional(),
+  "contextVersion": zod.number().int().min(1).max(createInvitationBodyContextVersionMax),
+  "resumeRevision": zod.number().int().min(1).max(createInvitationBodyResumeRevisionMax).optional(),
+  "needId": zod.number().int().min(1).max(createInvitationBodyNeedIdMax).optional(),
   "candidateId": zod.number().int().min(1).max(createInvitationBodyCandidateIdMax),
   "title": zod.string().min(createInvitationBodyTitleMin).max(createInvitationBodyTitleMax),
   "message": zod.string().min(createInvitationBodyMessageMin).max(createInvitationBodyMessageMax),
@@ -1669,19 +1879,73 @@ export const CreateInvitationBody = zod.object({
   "salaryPeriod": zod.enum(['month', 'year']),
   "salaryType": zod.enum(['gross', 'net']),
   "workFormat": zod.string(),
-  "resumeId": zod.number().int().min(1).max(createInvitationBodyResumeIdMax).optional(),
+  "resumeId": zod.number().int().min(1).max(createInvitationBodyResumeIdMax),
   "idempotencyKey": zod.string().min(createInvitationBodyIdempotencyKeyMin).max(createInvitationBodyIdempotencyKeyMax).optional()
 })
 
+export const createInvitationResponseContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const createInvitationResponseResumeIdMax = 2147483647;
 
-export const createInvitationResponseCompanyIdMax = 2147483647;
+export const createInvitationResponseCompanyIdMaxOne = 2147483647;
 
 
 
 export const CreateInvitationResponse = zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(createInvitationResponseContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -1698,7 +1962,7 @@ export const CreateInvitationResponse = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(createInvitationResponseResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(createInvitationResponseCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(createInvitationResponseCompanyIdMaxOne).optional()
 })
 
 
@@ -1726,15 +1990,69 @@ export const WithdrawInvitationParams = zod.object({
   "id": zod.coerce.number().int().min(1).max(withdrawInvitationPathIdMax)
 })
 
+export const withdrawInvitationResponseContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const withdrawInvitationResponseResumeIdMax = 2147483647;
 
-export const withdrawInvitationResponseCompanyIdMax = 2147483647;
+export const withdrawInvitationResponseCompanyIdMaxOne = 2147483647;
 
 
 
 export const WithdrawInvitationResponse = zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(withdrawInvitationResponseContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -1751,7 +2069,7 @@ export const WithdrawInvitationResponse = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(withdrawInvitationResponseResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(withdrawInvitationResponseCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(withdrawInvitationResponseCompanyIdMaxOne).optional()
 })
 
 
@@ -3275,15 +3593,69 @@ export const ViewInvitationParams = zod.object({
   "id": zod.coerce.number().int().min(1).max(viewInvitationPathIdMax)
 })
 
+export const viewInvitationResponseContextSnapshotSkillRequirementsItemSkillMax = 100;
+
 export const viewInvitationResponseResumeIdMax = 2147483647;
 
-export const viewInvitationResponseCompanyIdMax = 2147483647;
+export const viewInvitationResponseCompanyIdMaxOne = 2147483647;
 
 
 
 export const ViewInvitationResponse = zod.object({
   "id": zod.number().int(),
-  "needId": zod.number().int(),
+  "needId": zod.number().int().nullable(),
+  "jobId": zod.number().int().nullish(),
+  "contextVersion": zod.number().int().nullish(),
+  "context": zod.object({
+  "type": zod.enum(['need', 'job']),
+  "id": zod.number().int().nullable(),
+  "version": zod.number().int().nullable(),
+  "title": zod.string(),
+  "available": zod.boolean()
+}).optional(),
+  "contextSnapshot": zod.object({
+  "type": zod.enum(['need', 'job']).optional(),
+  "id": zod.number().int().nullish(),
+  "version": zod.number().int().nullish(),
+  "title": zod.string().optional(),
+  "invitationConditions": zod.object({
+  "title": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "workFormat": zod.string().optional()
+}).optional(),
+  "specialization": zod.string().optional(),
+  "grade": zod.string().optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(viewInvitationResponseContextSnapshotSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).optional(),
+  "requirementsVersion": zod.string().optional(),
+  "requiredSkills": zod.array(zod.string()).optional(),
+  "requiredSkillLevels": zod.record(zod.string(), zod.enum(['Junior', 'Middle', 'Senior'])).optional(),
+  "desirableSkills": zod.array(zod.string()).optional(),
+  "description": zod.string().optional(),
+  "workFormat": zod.string().optional(),
+  "salaryMin": zod.number().int().optional(),
+  "salaryMax": zod.number().int().optional(),
+  "salaryPeriod": zod.string().optional(),
+  "salaryType": zod.string().optional(),
+  "status": zod.string().optional(),
+  "updatedAt": zod.string().optional()
+}).nullish().describe('Immutable historical conditions. Candidate projection omits private request details; employer projection includes owned context fields.'),
+  "company": zod.object({
+  "id": zod.number().int().optional(),
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "industry": zod.string().optional(),
+  "contactEmail": zod.string().nullish(),
+  "contactPhone": zod.string().nullish(),
+  "contactMethod": zod.string().optional()
+}).nullish(),
   "candidateId": zod.number().int(),
   "candidateAlias": zod.string(),
   "companyName": zod.string(),
@@ -3300,7 +3672,7 @@ export const ViewInvitationResponse = zod.object({
   "contactShared": zod.boolean(),
   "createdAt": zod.coerce.date(),
   "resumeId": zod.number().int().min(1).max(viewInvitationResponseResumeIdMax).nullish(),
-  "companyId": zod.number().int().min(1).max(viewInvitationResponseCompanyIdMax).optional()
+  "companyId": zod.number().int().min(1).max(viewInvitationResponseCompanyIdMaxOne).optional()
 })
 
 
@@ -3345,6 +3717,12 @@ export const GetAssessmentCompetenciesResponse = zod.object({
 /**
  * @summary Published jobs in the current session pool; anonymous sees real pool
  */
+export const listPublicJobsResponseLocationMax = 160;
+
+export const listPublicJobsResponseSkillRequirementsItemSkillMax = 100;
+
+export const listPublicJobsResponseSkillRequirementsMax = 40;
+
 export const listPublicJobsResponseTitleMin = 3;
 export const listPublicJobsResponseTitleMax = 160;
 
@@ -3356,6 +3734,14 @@ export const listPublicJobsResponseDescriptionMax = 6000;
 
 
 export const ListPublicJobsResponseItem = zod.object({
+  "location": zod.string().max(listPublicJobsResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(listPublicJobsResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(listPublicJobsResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(listPublicJobsResponseTitleMin).max(listPublicJobsResponseTitleMax),
   "description": zod.string().min(listPublicJobsResponseDescriptionMin).max(listPublicJobsResponseDescriptionMax),
   "specialization": zod.string(),
@@ -3387,6 +3773,12 @@ export const GetPublicJobParams = zod.object({
   "id": zod.coerce.number().int().min(1).max(getPublicJobPathIdMax)
 })
 
+export const getPublicJobResponseLocationMax = 160;
+
+export const getPublicJobResponseSkillRequirementsItemSkillMax = 100;
+
+export const getPublicJobResponseSkillRequirementsMax = 40;
+
 export const getPublicJobResponseTitleMin = 3;
 export const getPublicJobResponseTitleMax = 160;
 
@@ -3398,6 +3790,14 @@ export const getPublicJobResponseDescriptionMax = 6000;
 
 
 export const GetPublicJobResponse = zod.object({
+  "location": zod.string().max(getPublicJobResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(getPublicJobResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(getPublicJobResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(getPublicJobResponseTitleMin).max(getPublicJobResponseTitleMax),
   "description": zod.string().min(getPublicJobResponseDescriptionMin).max(getPublicJobResponseDescriptionMax),
   "specialization": zod.string(),
@@ -3420,6 +3820,12 @@ export const GetPublicJobResponse = zod.object({
 /**
  * @summary Own drafts, publications, closed jobs and archive
  */
+export const listEmployerJobsResponseLocationMax = 160;
+
+export const listEmployerJobsResponseSkillRequirementsItemSkillMax = 100;
+
+export const listEmployerJobsResponseSkillRequirementsMax = 40;
+
 export const listEmployerJobsResponseTitleMin = 3;
 export const listEmployerJobsResponseTitleMax = 160;
 
@@ -3431,6 +3837,14 @@ export const listEmployerJobsResponseDescriptionMax = 6000;
 
 
 export const ListEmployerJobsResponseItem = zod.object({
+  "location": zod.string().max(listEmployerJobsResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(listEmployerJobsResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(listEmployerJobsResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(listEmployerJobsResponseTitleMin).max(listEmployerJobsResponseTitleMax),
   "description": zod.string().min(listEmployerJobsResponseDescriptionMin).max(listEmployerJobsResponseDescriptionMax),
   "specialization": zod.string(),
@@ -3454,6 +3868,12 @@ export const ListEmployerJobsResponse = zod.array(ListEmployerJobsResponseItem)
 /**
  * @summary Create separate draft; never publish a private need implicitly
  */
+export const createJobDraftBodyLocationMax = 160;
+
+export const createJobDraftBodySkillRequirementsItemSkillMax = 100;
+
+export const createJobDraftBodySkillRequirementsMax = 40;
+
 export const createJobDraftBodyTitleMin = 3;
 export const createJobDraftBodyTitleMax = 160;
 
@@ -3465,6 +3885,13 @@ export const createJobDraftBodyDescriptionMax = 6000;
 
 
 export const CreateJobDraftBody = zod.object({
+  "location": zod.string().max(createJobDraftBodyLocationMax).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(createJobDraftBodySkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(createJobDraftBodySkillRequirementsMax).optional(),
   "title": zod.string().min(createJobDraftBodyTitleMin).max(createJobDraftBodyTitleMax),
   "description": zod.string().min(createJobDraftBodyDescriptionMin).max(createJobDraftBodyDescriptionMax),
   "specialization": zod.string(),
@@ -3477,6 +3904,12 @@ export const CreateJobDraftBody = zod.object({
   "salaryType": zod.enum(['gross', 'net'])
 })
 
+export const createJobDraftResponseLocationMax = 160;
+
+export const createJobDraftResponseSkillRequirementsItemSkillMax = 100;
+
+export const createJobDraftResponseSkillRequirementsMax = 40;
+
 export const createJobDraftResponseTitleMin = 3;
 export const createJobDraftResponseTitleMax = 160;
 
@@ -3488,6 +3921,14 @@ export const createJobDraftResponseDescriptionMax = 6000;
 
 
 export const CreateJobDraftResponse = zod.object({
+  "location": zod.string().max(createJobDraftResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(createJobDraftResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(createJobDraftResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(createJobDraftResponseTitleMin).max(createJobDraftResponseTitleMax),
   "description": zod.string().min(createJobDraftResponseDescriptionMin).max(createJobDraftResponseDescriptionMax),
   "specialization": zod.string(),
@@ -3518,6 +3959,12 @@ export const EditJobParams = zod.object({
   "id": zod.coerce.number().int().min(1).max(editJobPathIdMax)
 })
 
+export const editJobBodyLocationMax = 160;
+
+export const editJobBodySkillRequirementsItemSkillMax = 100;
+
+export const editJobBodySkillRequirementsMax = 40;
+
 export const editJobBodyTitleMin = 3;
 export const editJobBodyTitleMax = 160;
 
@@ -3529,6 +3976,13 @@ export const editJobBodyDescriptionMax = 6000;
 
 
 export const EditJobBody = zod.object({
+  "location": zod.string().max(editJobBodyLocationMax).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(editJobBodySkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(editJobBodySkillRequirementsMax).optional(),
   "title": zod.string().min(editJobBodyTitleMin).max(editJobBodyTitleMax),
   "description": zod.string().min(editJobBodyDescriptionMin).max(editJobBodyDescriptionMax),
   "specialization": zod.string(),
@@ -3541,6 +3995,12 @@ export const EditJobBody = zod.object({
   "salaryType": zod.enum(['gross', 'net'])
 })
 
+export const editJobResponseLocationMax = 160;
+
+export const editJobResponseSkillRequirementsItemSkillMax = 100;
+
+export const editJobResponseSkillRequirementsMax = 40;
+
 export const editJobResponseTitleMin = 3;
 export const editJobResponseTitleMax = 160;
 
@@ -3552,6 +4012,14 @@ export const editJobResponseDescriptionMax = 6000;
 
 
 export const EditJobResponse = zod.object({
+  "location": zod.string().max(editJobResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(editJobResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(editJobResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(editJobResponseTitleMin).max(editJobResponseTitleMax),
   "description": zod.string().min(editJobResponseDescriptionMin).max(editJobResponseDescriptionMax),
   "specialization": zod.string(),
@@ -3586,6 +4054,12 @@ export const SetJobStatusBody = zod.object({
   "status": zod.enum(['published', 'closed', 'archived'])
 })
 
+export const setJobStatusResponseLocationMax = 160;
+
+export const setJobStatusResponseSkillRequirementsItemSkillMax = 100;
+
+export const setJobStatusResponseSkillRequirementsMax = 40;
+
 export const setJobStatusResponseTitleMin = 3;
 export const setJobStatusResponseTitleMax = 160;
 
@@ -3597,6 +4071,14 @@ export const setJobStatusResponseDescriptionMax = 6000;
 
 
 export const SetJobStatusResponse = zod.object({
+  "location": zod.string().max(setJobStatusResponseLocationMax).optional(),
+  "requirementsVersion": zod.enum(['signal-requirements-v1']).optional(),
+  "gradeMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "skillRequirements": zod.array(zod.object({
+  "skill": zod.string().min(1).max(setJobStatusResponseSkillRequirementsItemSkillMax),
+  "mode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "level": zod.enum(['Junior', 'Middle', 'Senior']).optional().describe('Only for verified mode and skills with an available level assessment. Omission imposes no implicit Junior minimum.')
+})).max(setJobStatusResponseSkillRequirementsMax).optional(),
   "title": zod.string().min(setJobStatusResponseTitleMin).max(setJobStatusResponseTitleMax),
   "description": zod.string().min(setJobStatusResponseDescriptionMin).max(setJobStatusResponseDescriptionMax),
   "specialization": zod.string(),
@@ -8468,6 +8950,9 @@ export const CompareResumePairResponse = zod.object({
 }),
   "factors": zod.array(zod.record(zod.string(), zod.unknown())),
   "evidence": zod.array(zod.object({
+  "requirementMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "satisfied": zod.boolean().optional(),
+  "reason": zod.string().nullish(),
   "requirement": zod.string(),
   "evidence": zod.string(),
   "source": zod.string(),
@@ -8567,6 +9052,9 @@ export const CompareResumePairResponse = zod.object({
 }),
   "factors": zod.array(zod.record(zod.string(), zod.unknown())),
   "evidence": zod.array(zod.object({
+  "requirementMode": zod.enum(['verified', 'declared_or_verified']).optional().describe('Missing legacy mode means verified. Declaration never becomes proof.'),
+  "satisfied": zod.boolean().optional(),
+  "reason": zod.string().nullish(),
   "requirement": zod.string(),
   "evidence": zod.string(),
   "source": zod.string(),

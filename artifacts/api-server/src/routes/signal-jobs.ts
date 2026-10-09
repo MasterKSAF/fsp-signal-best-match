@@ -29,8 +29,9 @@ import {
 import { assertCompanyActionAllowed } from "../lib/signal-trust";
 import { jobInput, jobTransitionAllowed } from "../lib/opportunity-rules";
 import { signalJobRequirementsTable as requirements } from '../../../../lib/db/src/schema/signal-job-discovery';
-import { skillRequirementCovered } from '../lib/skill-module-qualification';
-import { getCurrentResumeWorkspaceQualification } from '../lib/skill-module-service';
+import { getCurrentResumeWorkspaceQualification, moduleMatchEvidence } from '../lib/skill-module-service';
+import { evaluateGradeRequirement, evaluateSkillRequirement, interpretSkillRequirements, validateRecruitingRequirements, REQUIREMENTS_VERSION } from '../lib/recruiting-requirements';
+import type { SignalGrade } from '../lib/signal-matching';
 import { escapeLike, jobDetailsInput, jobSearchInput, parseSkillFilters, JOB_EXPORT_COLUMNS, JOB_EXPORT_LIMIT,
   jobExportCells, jobsCsv, type JobSearchFilters } from '../lib/job-discovery';
 import { personalJobFilterConditions } from '../lib/job-personal-filters';
@@ -58,6 +59,7 @@ const snapshot = (job: typeof jobs.$inferSelect, companyName: string) => ({
   description: job.description,
   specialization: job.specialization,
   grade: job.grade,
+  gradeMode:job.gradeMode,
   skills: job.skills,
   workFormat: job.workFormat,
   salaryMin: job.salaryMin,
@@ -78,7 +80,7 @@ const publicJob = (row: {
   publishedAt: row.job.publishedAt,
   updatedAt: row.job.updatedAt,
   location: row.location ?? '',
-  skillRequirements: row.skillRequirements ?? [],
+  skillRequirements: interpretSkillRequirements(row.job.skills,row.skillRequirements??[]),requirementsVersion:REQUIREMENTS_VERSION,
   salaryCurrency: 'RUB',
 });
 
@@ -119,10 +121,12 @@ async function jobResumeContext(userId: number, resumeId: number) {
 }
 function withJobCoverage(job: ReturnType<typeof publicJob>, context: Awaited<ReturnType<typeof jobResumeContext>>) {
   if (!context) return job;
-  const explicit = new Map(job.skillRequirements.map(item=>[item.skill.toLowerCase(),item]));
-  const expected = [...new Set([...job.skills,...job.skillRequirements.map(item=>item.skill)])].map(skill=>explicit.get(skill.toLowerCase())??{skill});
-  return { ...job,skillCoverage:{verified:expected.filter(item=>skillRequirementCovered(item,context.qualification.skills)).length,required:expected.length},
-    gradeRequirement:{required:job.grade,verified:context.qualification.verifiedGrade,specializationMatches:context.resume.specialization===job.specialization} };
+  const candidate={userId:context.resume.userId,stack:context.resume.stack,statedSkills:context.resume.skills,
+    assumedGrade:context.resume.assumedGrade,verifiedGrade:context.qualification.verifiedGrade,verifiedSkills:context.qualification.verifiedSkills,
+    skillEvidence:moduleMatchEvidence(context.resume.userId,context.qualification.skills)};
+  const items=job.skillRequirements.map(item=>{const {provenance:_proof,...result}=evaluateSkillRequirement(item,candidate);return result;});
+  return { ...job,skillCoverage:{verified:items.filter(item=>item.verified).length,required:items.length,satisfied:items.filter(item=>item.covered).length,items},
+    gradeRequirement:{...evaluateGradeRequirement(job.grade as SignalGrade,job.gradeMode,candidate),specializationMatches:context.resume.specialization===job.specialization} };
 }
 router.get('/public/jobs/search', async (req, res) => {
   if (!workspaceEnabled()) { res.status(503).json({ error: 'Новая выдача доступна на отдельном стенде Signal.' }); return; }
@@ -204,25 +208,28 @@ router.post("/employer/jobs", async (req, res) => {
   if (!actor?.company) return;
   const { location, skillRequirements, ...base } = req.body ?? {};
   const input = jobInput.safeParse(base), details = jobDetailsInput.safeParse({ location, skillRequirements });
-  if (!input.success || !details.success || details.data.skillRequirements?.some(item => !input.data.skills.some(skill => skill.toLowerCase()===item.skill.toLowerCase()))) {
+  if (!input.success || !details.success) {
     res.status(400).json({
-      error: "Заполните условия, описание и зарплатную вилку в рублях.",
+      error: "Заполните условия, описание и зарплатную вилку в рублях.",fieldErrors:!input.success?input.error.flatten().fieldErrors:!details.success?details.error.flatten().fieldErrors:undefined,
     });
     return;
   }
+  const validated=validateRecruitingRequirements(input.data.skills,details.data.skillRequirements,undefined);
+  if(!validated.success){res.status(400).json({error:'Проверьте требования навыков.',fieldErrors:validated.fieldErrors});return;}
+  const normalizedDetails={...details.data,skillRequirements:validated.data};
   const job = await db.transaction(async tx => {
     const [created] = await tx.insert(jobs).values({ ...input.data, companyId: actor.company!.id }).returning();
-    if (workspaceEnabled()) await tx.insert(requirements).values({ jobId: created.id, ...details.data });
+    if (workspaceEnabled()) await tx.insert(requirements).values({ jobId: created.id, ...normalizedDetails });
     return created;
   });
-  res.status(201).json(publicJob({ job, companyName: actor.company.name, ...details.data }));
+  res.status(201).json(publicJob({ job, companyName: actor.company.name, ...normalizedDetails }));
 });
 router.put("/employer/jobs/:id", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
   const patch = JobPatchBody.safeParse(req.body);
   if (!patch.success) {
-    res.status(400).json({ error: "Проверьте условия вакансии." });
+    res.status(400).json({ error: "Проверьте условия вакансии.",fieldErrors:patch.error.flatten().fieldErrors });
     return;
   }
   const result = await db.transaction(async (tx) => {
@@ -241,7 +248,10 @@ router.put("/employer/jobs/:id", async (req, res) => {
     if(current.version!==patch.data.version)return {code:409 as const};
     const {version:_version,location,skillRequirements,...basePatch}=patch.data;
     const input = jobInput.safeParse(mergePresentFields(contextBaseFields(current,JobInputShape),basePatch));
-    if(!input.success || skillRequirements?.some(item=>!input.data.skills.some(skill=>skill.toLowerCase()===item.skill.toLowerCase())))return {code:400 as const};
+    if(!input.success)return {code:400 as const,fieldErrors:input.error.flatten().fieldErrors};
+    const [existingDetails] = workspaceEnabled()?await tx.select().from(requirements).where(eq(requirements.jobId,current.id)).limit(1):[];
+    const validated=validateRecruitingRequirements(input.data.skills,skillRequirements,undefined,existingDetails?.skillRequirements);
+    if(!validated.success)return {code:400 as const,fieldErrors:validated.fieldErrors};
     const [updated] = await tx
       .update(jobs)
       .set({
@@ -253,15 +263,14 @@ router.put("/employer/jobs/:id", async (req, res) => {
       .returning();
     // Omitted add-on fields preserve the current requirements. No legacy level is inferred.
     if (workspaceEnabled()) {
-    const [existingDetails] = await tx.select().from(requirements).where(eq(requirements.jobId, current.id)).limit(1);
     const nextDetails = { location: location ?? existingDetails?.location ?? '',
-      skillRequirements: (skillRequirements ?? existingDetails?.skillRequirements ?? []).filter(item => input.data.skills.some(skill => skill.toLowerCase()===item.skill.toLowerCase())) };
+      skillRequirements: validated.data };
     await tx.insert(requirements).values({ jobId: current.id, ...nextDetails }).onConflictDoUpdate({ target: requirements.jobId, set: nextDetails });
     }
     return {job:updated};
   });
   if (!result.job) {
-    res.status(result.code??409).json({ error: result.code===409?'Вакансия изменилась. Обновите данные и повторите сохранение.':result.code===400?'Проверьте требования и зарплатную вилку.':"Вакансия недоступна для изменения.",code:result.code===409?'VERSION_CONFLICT':undefined });
+    res.status(result.code??409).json({ error: result.code===409?'Вакансия изменилась. Обновите данные и повторите сохранение.':result.code===400?'Проверьте требования и зарплатную вилку.':"Вакансия недоступна для изменения.",fieldErrors:result.fieldErrors,code:result.code===409?'VERSION_CONFLICT':undefined });
     return;
   }
   const job=result.job;

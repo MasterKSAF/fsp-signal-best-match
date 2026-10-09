@@ -6,12 +6,21 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { JobPublicationGrade } from './jobPublicationGrade';
+import type { JobPublicationRequirementsVersion } from './jobPublicationRequirementsVersion';
 import type { JobPublicationSalaryPeriod } from './jobPublicationSalaryPeriod';
 import type { JobPublicationSalaryType } from './jobPublicationSalaryType';
 import type { JobPublicationStatus } from './jobPublicationStatus';
 import type { JobPublicationWorkFormat } from './jobPublicationWorkFormat';
+import type { RecruitingSkillRequirement } from './recruitingSkillRequirement';
+import type { RequirementMode } from './requirementMode';
 
 export interface JobPublication {
+  /** @maxLength 160 */
+  location?: string;
+  requirementsVersion?: JobPublicationRequirementsVersion;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160

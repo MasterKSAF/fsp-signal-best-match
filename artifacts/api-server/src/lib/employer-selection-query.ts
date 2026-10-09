@@ -83,6 +83,7 @@ export function sortSelection(people:SelectionPerson[],input:Pick<SelectionQuery
 }
 export function selectionMatchSummary(evaluation:MatchEvaluation) {
   return {eligible:evaluation.eligible,score:evaluation.eligible?evaluation.ranking.businessFitScore:null,
+    ineligibilityReasons:evaluation.ineligibilityReasons,gaps:evaluation.gaps,evidence:evaluation.evidence,
     summary:evaluation.eligible?'Соответствие требованиям выбранной вакансии или запроса с учётом подтверждённых навыков и условий.':'Текущие требования не совпадают с выбранным резюме.',
     salaryNote:evaluation.salaryCompatibility==='unknown'?'Недостаточно сопоставимых данных о периоде или расчёте зарплаты.':null};
 }
@@ -97,7 +98,7 @@ export function selectionCandidate(row:SelectionResume,alternatives:SelectionRes
   for(const skill of [...row.stack,...row.statedSkills])if(!bySkill.has(canonicalSkillKey(skill)))bySkill.set(canonicalSkillKey(skill),{label:skill,status:'declared'});
   return {candidateId:row.userId,resumeId:row.resumeId,resumeRevision:row.resumeRevision,title:row.title,specialization:row.specialization,
     alias:row.alias,publicName:row.visibility==='public'?row.publicName:null,avatarDataUrl:row.visibility==='public'?row.avatarDataUrl:null,
-    verifiedGrade:row.verifiedGrade,skillChips:[...bySkill.values()],stack:row.stack,yearsExperience:row.yearsExperience,
+    verifiedGrade:row.verifiedGrade,declaredGrade:row.assumedGrade,skillChips:[...bySkill.values()],stack:row.stack,yearsExperience:row.yearsExperience,
     workFormat:row.workFormat,location:row.location,salaryMin:row.salaryMin,salaryMax:row.salaryMax,salaryPeriod:row.salaryPeriod??null,salaryType:row.salaryType??null,
     fspHistory:row.hasFspHistory,shortlisted,needsReview,availableResumes:alternatives.map(item=>({id:item.resumeId,title:item.title,specialization:item.specialization,grade:item.verifiedGrade})),
     ...(evaluation?{match:selectionMatchSummary(evaluation)}:{})};

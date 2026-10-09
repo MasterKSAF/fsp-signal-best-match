@@ -113,16 +113,16 @@ export function PublicEntry({ themeSlot, brandSlot, navigationSlot, initialRole 
       </header>
       <div className="entry-back-row app-back-row">{navigationSlot}</div>
       <main className="entry-main" id="main-content">
-        <section className="entry-intro" aria-labelledby="entry-title"><h1 id="entry-title">Нужные люди.<br /><span>Подходящая работа.</span></h1><p>Проверенные навыки. Предложения с зарплатой.</p></section>
+        <section className="entry-intro" aria-labelledby="entry-title"><h1 id="entry-title">Осознанный выбор&nbsp;—<br /><span>лучшее начало!</span></h1><p>Проверенные навыки. Предложения с зарплатой.</p></section>
         <section className="entry-role-grid" aria-label="Возможности Signal">
           <article className="entry-role-card entry-candidate-card" data-accent="profile">
             <div className="entry-card-top"><span className="themed-icon"><Code2 size={18} strokeWidth={1.75} aria-hidden="true" /></span><span className="entry-role-caption">КАНДИДАТАМ</span></div>
-            <h2><span>Навыки</span> открывают любые двери</h2>
+            <h2>Покажите свои навыки</h2>
             <ul className="entry-benefits"><li><BadgeCheck />Подтвердите свой уровень</li><li><Mail />Получайте приглашения с зарплатой</li><li><ShieldCheck />Решайте, кому открыть контакты</li></ul>
           </article>
           <article className="entry-role-card entry-employer-card" data-accent="employer">
             <div className="entry-card-top"><span className="themed-icon"><BriefcaseBusiness size={18} strokeWidth={1.75} aria-hidden="true" /></span><span className="entry-role-caption">РАБОТОДАТЕЛЯМ</span></div>
-            <h2>Найдите своих специалистов</h2>
+            <h2>Соберите сильную команду</h2>
             <ul className="entry-benefits"><li><BadgeCheck />Выбирайте по проверенным навыкам</li><li><Target />Сравнивайте кандидатов по задаче</li><li><Handshake />Приглашайте напрямую</li></ul>
           </article>
         </section>
@@ -159,6 +159,11 @@ const autumnLeafPositions = [
   [44, 2, 37, 12], [54, 89, 44, -16], [20, 68, 47, 128], [77, 54, 42, -98],
   [4, 64, 51, 167], [88, 27, 49, 113], [36, 94, 38, 43], [58, 6, 36, -31],
   [38, 20, 31, 71], [57, 71, 35, -108], [91, 64, 43, 16], [13, 54, 34, -19],
+  [5, 15, 62, -62], [91, 13, 75, 128], [1, 33, 57, 16], [96, 31, 70, 49],
+  [9, 61, 68, -35], [87, 50, 62, 156], [15, 91, 59, 88], [74, 93, 56, -74],
+  [31, 7, 43, 42], [74, 6, 50, -16], [42, 85, 56, 146], [61, 79, 45, -39],
+  [2, 77, 70, 72], [96, 76, 55, -15], [18, 22, 42, 118], [80, 33, 46, -53],
+  [27, 93, 49, 29], [51, 96, 51, -86], [64, 0, 41, 102], [85, 88, 61, 55],
 ] as const;
 
 function AutumnLeaf({ variant }: { variant: number }) {

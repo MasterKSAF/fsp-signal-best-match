@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { retainedSkillLevelRequirements, validateSkillLevelRequirements } from '../artifacts/api-server/src/lib/skill-level-requirements';
 import { requirementLevels, selectionMatchNeed, type SelectionContextDto } from '../artifacts/api-server/src/lib/selection-context-contract';
 import { pendingInvitationCompatible } from '../artifacts/api-server/src/lib/invitation-context-input';
-import { evaluateMatch, type SignalGrade } from '../artifacts/api-server/src/lib/signal-matching';
+import { evaluateMatch, type SafeSkillEvidence, type SignalGrade } from '../artifacts/api-server/src/lib/signal-matching';
 import { MATCH_CONTROL_CANDIDATES } from '../artifacts/api-server/src/lib/matching-control-fixtures';
 
 test('C01 canonical stored keys, raw labels, aliases and unknown raw skills survive repeated level round trips',()=>{
@@ -29,13 +29,16 @@ test('C01 omitted levels preserve retained requirements; explicit clearing and s
 const context:SelectionContextDto={type:'need',id:1,version:1,title:'Проверка границы уровня',specialization:'Backend / Python',grade:'Junior',
   requiredSkills:['Python'],requiredSkillLevels:{'skill:python':'Senior'},desirableSkills:[],description:'Проверка одинакового допуска для вакансии и запроса',
   workFormat:'Удалённо',salaryMin:1,salaryMax:1000000,salaryPeriod:'month',salaryType:'gross',status:'active',updatedAt:'2026-10-09T00:00:00Z'};
+const moduleProof=(level:SignalGrade):SafeSkillEvidence=>({skill:'Python',level,sourceType:'signal_skill_module',candidateId:MATCH_CONTROL_CANDIDATES[0].userId,
+  attemptId:71,programId:'skill:python',programVersion:'signal-skills-v2',templateId:null,templateVersion:null,criterionId:'module:python',criterion:'Synthetic boundary proof',
+  result:null,date:'2026-10-09T00:00:00Z',limitation:null});
 test('C02 shared job adapter canonicalizes aliases and applies the same Junior/Middle/Senior boundary as needs',()=>{
   for(const skill of ['Python','py'])for(const minimum of ['Junior','Middle','Senior'] as const)for(const level of ['Junior','Middle','Senior'] as const) {
     const need=selectionMatchNeed({...context,requiredSkills:[skill],requiredSkillLevels:{'skill:python':minimum}});
     const job=selectionMatchNeed({...context,type:'job',requiredSkills:[skill],requiredSkillLevels:requirementLevels([{skill,level:minimum}])});
     const candidate={...MATCH_CONTROL_CANDIDATES[0],specialization:context.specialization,verifiedGrade:level,verifiedSkills:['Python'],
       consentMatching:true,visibility:'pseudonymous' as const,readyForOffers:true,workFormat:'Удалённо',salaryMin:100000,salaryMax:200000,salaryPeriod:'month' as const,salaryType:'gross' as const,
-      skillEvidence:[{skill:'Python',level,sourceType:'signal_skill_module' as const,criterion:'Synthetic boundary proof'}]};
+      skillEvidence:[moduleProof(level)]};
     assert.deepEqual(job.requiredSkillLevels,{'skill:python':minimum});
     const rank:Record<SignalGrade,number>={Junior:1,Middle:2,Senior:3};
     assert.equal(evaluateMatch(need,candidate,true).eligible,rank[level]>=rank[minimum]);
@@ -48,7 +51,8 @@ test('C02 a declared label or legacy overall evidence cannot bypass an explicit 
     statedSkills:['Python'],stack:['Python'],consentMatching:true,visibility:'pseudonymous' as const,readyForOffers:true,workFormat:'Удалённо',
     salaryMin:100000,salaryMax:200000,salaryPeriod:'month' as const,salaryType:'gross' as const};
   assert.equal(evaluateMatch(need,{...candidate,skillEvidence:[]},true).eligible,false);
-  assert.equal(evaluateMatch(need,{...candidate,skillEvidence:[{skill:'Python',level:'Senior',sourceType:'signal_assessment',criterion:'Historical overall proof'}]},true).eligible,false);
+  assert.equal(evaluateMatch(need,{...candidate,skillEvidence:[{...moduleProof('Senior'),sourceType:'signal_assessment',criterion:'Historical overall proof'}]},true).eligible,false);
+  assert.equal(evaluateMatch(need,{...candidate,skillEvidence:[{...moduleProof('Senior'),candidateId:candidate.userId+1}]},true).eligible,false,'proof belonging to another person cannot satisfy an exact module minimum');
 });
 const conditions={resumeId:4,title:'Отправленные условия',message:'Приглашение на разговор',reason:'Подходящий подтверждённый профиль',salaryMin:100000,salaryMax:200000,salaryPeriod:'month',salaryType:'gross',workFormat:'Удалённо'};
 test('C03 new-key reuse requires the exact CV, sent conditions and prepared revisions without mutating the pending invitation',()=>{

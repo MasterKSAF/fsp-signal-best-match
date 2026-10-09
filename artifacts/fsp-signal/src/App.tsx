@@ -33,6 +33,7 @@ import { InlineInfo } from '@/components/inline-info';
 import { SkillChips, employerSkillChips } from '@/components/skill-chip';
 import { MyResumesPage, ResumeDocumentButton, ResumeSaveRegistration, useResumeSaveBusy } from '@/components/my-resumes';
 import { CandidateInvitationsPage } from '@/components/candidate-invitations';
+import { InvitationCompanyCard, InvitationContextLabel, type InvitationCompanyView, type InvitationContextView } from '@/components/invitation-context';
 import { CandidateWorkspaceOverview } from '@/components/workspace-overview';
 import { clearWorkspaceDrafts, readWorkspaceDraft, writeWorkspaceDraft, workspaceDraftKey } from '@/lib/workspace-drafts';
 import { CandidateResumeSection } from '@/components/candidate-resume';
@@ -198,12 +199,14 @@ function Shell({ children, theme }: { children: ReactNode; theme: ReturnType<typ
   useEffect(() => { const title = role === 'employer' ? employerSectionTitle(location) : candidateNav.find(([path]) => path === location)?.[1]; document.title = title ? `${title} · Signal` : 'Signal'; }, [location, role]);
   const trustAccess = useQuery({ queryKey: ['trust', 'access', user?.id], queryFn: () => resumeRequest<{moderator:boolean}>('/me/trust-status'), enabled: !!user });
   const roleName = role === 'employer' ? 'Работодатель' : 'Кандидат';
+  const ownCompany = useQuery({queryKey:['employer-company',user?.id],queryFn:()=>resumeRequest<{company:{id:number;name:string}|null}>('/employer/company'),enabled:user?.role==='employer',staleTime:0,gcTime:0,retry:false});
+  const companyName = user?.role==='employer'&&!ownCompany.isError?ownCompany.data?.company?.name:undefined;
   return <div className="app-shell"><a className="skip-link" href="#main-content">Перейти к содержимому</a>
     <header className="topbar">
       <button ref={menuRef} className="icon-button mobile-menu" aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"} aria-expanded={mobileOpen} aria-controls="workspace-sidebar" onClick={() => setMobileOpen(!mobileOpen)} data-testid="button-mobile-menu">{mobileOpen ? <X /> : <Menu />}</button>
       <div className="header-brand-group"><Brand href={role === 'employer' ? '/employer' : role === 'candidate' ? '/candidate' : '/'} /></div>
       <span className="topbar-divider" />
-      <span className="topbar-context">{roleName}<span className="role-dot" /></span>
+      <span className="topbar-context" title={companyName?`${roleName} · ${companyName}`:roleName}><span className="topbar-role-label">{roleName}{companyName&&<> · <span className="topbar-company">{companyName}</span></>}</span><span className="role-dot" /></span>
       <div className="topbar-right">
         {user && <EnvironmentIndicator isDemo={user.demoMode} isReview={user.reviewMode} />}
         <ThemeMenu theme={theme} />
@@ -366,10 +369,10 @@ export function CandidateResumeEditor({ resumeId }: { resumeId?: number }) {
   </>;
 }
 
-function InvitationCard({ invitation: i, candidate, onDecision, onRevoke, pending, disclosed }: { invitation: Invitation; candidate: boolean; onDecision?: (id: number, decision: 'accept' | 'decline') => void; onRevoke?: (id: number) => void; pending?: boolean; disclosed?: { displayName?: string; email?: string; phone?: string | null } | null }) {
+function InvitationCard({ invitation: i, candidate, onDecision, onRevoke, pending, disclosed }: { invitation: Invitation & {context?:InvitationContextView|null;company?:InvitationCompanyView|null}; candidate: boolean; onDecision?: (id: number, decision: 'accept' | 'decline') => void; onRevoke?: (id: number) => void; pending?: boolean; disclosed?: { displayName?: string; email?: string; phone?: string | null } | null }) {
   const statusNames: Record<string, string> = { sent: 'Ожидает ответа', viewed: 'Просмотрено', accepted: 'Принято', declined: 'Отклонено', withdrawn: 'Отозвано', expired: 'Истекло' };
   return <article className="panel invitation-card" data-testid={`card-invitation-${i.id}`}><div className="invitation-card-top"><div><span className="eyebrow">{candidate ? i.companyName : i.candidateAlias}</span><h2>{i.title}</h2></div><Badge tone={i.status === 'accepted' ? 'verified' : i.status === 'declined' ? 'muted' : 'accent'}>{statusNames[i.status] || i.status}</Badge></div>
-    <p className="invitation-message">{i.message}</p>{candidate && <div className="company-contact"><BriefcaseBusiness size={16} /><span><b>Контакт компании</b>{i.companyContact || 'Компания не указала контакт'}</span></div>}<div className="invitation-terms"><span><Banknote size={16} /> <b className="mono">{i.salaryMin.toLocaleString('ru-RU')}–{i.salaryMax.toLocaleString('ru-RU')} ₽</b> / {i.salaryPeriod === 'month' ? 'мес.' : 'год'} · {i.salaryType === 'gross' ? 'до вычета' : 'на руки'}</span><span><BriefcaseBusiness size={15} /> {i.workFormat}</span></div><div className="interest-reason"><b>Почему интерес:</b> {i.reason}</div>
+    <InvitationContextLabel context={i.context} candidate={candidate}/><p className="invitation-message">{i.message}</p>{candidate && <InvitationCompanyCard company={i.company} fallbackName={i.companyName} fallbackContact={i.companyContact}/>}<div className="invitation-terms"><span><Banknote size={16} /> <b className="mono">{i.salaryMin.toLocaleString('ru-RU')}–{i.salaryMax.toLocaleString('ru-RU')} ₽</b> / {i.salaryPeriod === 'month' ? 'мес.' : 'год'} · {i.salaryType === 'gross' ? 'до вычета' : 'на руки'}</span><span><BriefcaseBusiness size={15} /> {i.workFormat}</span></div><div className="interest-reason"><b>Почему интерес:</b> {i.reason}</div>
     {candidate && i.status === 'accepted' && i.contactShared && <div className="contact-release"><UnlockMark /><div><b>Контакты открыты для {i.companyName}</b>{disclosed ? <span>{disclosed.displayName || ''}{disclosed.email ? ` · ${disclosed.email}` : ''}{disclosed.phone ? ` · ${disclosed.phone}` : ''}</span> : <span>Вы дали согласие на передачу данных этой компании. Контактные данные можно обновить в паспорте.</span>}<button className="button text-button" disabled={pending} onClick={() => onRevoke?.(i.id)} data-testid={`button-revoke-contact-${i.id}`}>Отозвать дальнейший доступ</button></div></div>}
     {candidate && i.status === 'accepted' && !i.contactShared && <div className="contact-release"><LockKeyhole size={16} /><div><b>Доступ к контактам отозван</b><span>Компания больше не может запрашивать ваши контакты через Signal.</span></div></div>}
     {candidate && (i.status === 'sent' || i.status === 'viewed') && <div className="decision-row"><p><LockKeyhole size={15} /> При принятии контакты будут переданы только этой компании.</p><div><button className="button secondary" disabled={pending} onClick={() => onDecision?.(i.id, 'decline')} data-testid={`button-decline-${i.id}`}>Отклонить</button><button className="button primary" disabled={pending} onClick={() => onDecision?.(i.id, 'accept')} data-testid={`button-accept-${i.id}`}>Принять и открыть контакты <ArrowRight size={15} /></button></div></div>}

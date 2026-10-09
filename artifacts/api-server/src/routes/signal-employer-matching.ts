@@ -65,6 +65,7 @@ import {
 } from "../lib/postgres-id";
 
 import { loadNeedSkillLevels, validateSkillLevelRequirements, retainedSkillLevelRequirements } from "../lib/need-skill-levels";
+import { interpretSkillRequirements, validateRecruitingRequirements, REQUIREMENTS_VERSION } from '../lib/recruiting-requirements';
 
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
@@ -111,6 +112,7 @@ async function needForMatch(need: typeof signalNeedsTable.$inferSelect): Promise
   return {
     specialization: need.specialization,
     grade: need.grade as SignalGrade,
+    gradeMode:need.gradeMode,skillRequirements:interpretSkillRequirements(need.requiredSkills,need.skillRequirements,levels),
     requiredSkills: need.requiredSkills,
     requiredSkillLevels: levels,
     desirableSkills: need.desirableSkills,
@@ -135,12 +137,13 @@ function companyPayload(company: typeof signalCompaniesTable.$inferSelect) {
   };
 }
 
-function needPayload(need: typeof signalNeedsTable.$inferSelect) {
+function needPayload(need: typeof signalNeedsTable.$inferSelect, levels:Record<string,SignalGrade>={}) {
   return {
     id: need.id,
     title: need.title,
     specialization: need.specialization,
     grade: need.grade,
+    gradeMode:need.gradeMode,skillRequirements:interpretSkillRequirements(need.requiredSkills,need.skillRequirements,levels),requirementsVersion:REQUIREMENTS_VERSION,
     requiredSkills: need.requiredSkills,
     desirableSkills: need.desirableSkills,
     description: need.description,
@@ -339,7 +342,7 @@ router.get("/employer/needs", async (req, res): Promise<void> => {
   const levels = await loadNeedSkillLevels(needs.map(need => need.id));
   const counters = await loadSelectionCounters(context.companyId);
   res.setHeader('Cache-Control','no-store');
-  res.json(needs.map(need => ({ ...ListEmployerNeedsResponse.parse([{...needPayload(need),requiredSkillLevels:levels.get(need.id)??{}}])[0],
+  res.json(needs.map(need => ({ ...ListEmployerNeedsResponse.parse([{...needPayload(need,levels.get(need.id)),requiredSkillLevels:levels.get(need.id)??{}}])[0],
     revision:need.revision,status:need.status,updatedAt:need.updatedAt.toISOString(),
     shortlistCount:counters.shortlist.get(selectionContextKey({type:'need',id:need.id}))??0 })));
 });
@@ -354,7 +357,7 @@ router.post("/employer/needs", async (req, res): Promise<void> => {
   }
   const parsed = CreateEmployerNeedBody.safeParse({ ...req.body, requiredSkills: required.data });
   if (!parsed.success) {
-    res.status(400).json({ error: "Проверьте обязательные поля потребности." });
+    res.status(400).json({ error: "Проверьте обязательные поля потребности.",fieldErrors:parsed.error.flatten().fieldErrors });
     return;
   }
   const input = parsed.data;
@@ -364,13 +367,13 @@ router.post("/employer/needs", async (req, res): Promise<void> => {
       .json({ error: "Минимальная зарплата не может быть выше максимальной." });
     return;
   }
-  const levelInput = validateSkillLevelRequirements(req.body?.requiredSkillLevels, input.requiredSkills);
-  if (!levelInput.success) { res.status(400).json({ error: 'Укажите допустимые уровни только для обязательных навыков.', code: 'INVALID_SKILL_LEVELS' }); return; }
-  if (Object.keys(levelInput.data).length && process.env.SIGNAL_WORKSPACE_ENABLED !== 'true') { res.status(503).json({ error: 'Требования по уровням пока недоступны.' }); return; }
+  const levelInput = validateRecruitingRequirements(input.requiredSkills,req.body?.skillRequirements,req.body?.requiredSkillLevels);
+  if (!levelInput.success) { res.status(400).json({ error: 'Проверьте требования навыков.', code: 'INVALID_REQUIREMENTS',fieldErrors:levelInput.fieldErrors }); return; }
+  if (Object.keys(levelInput.levels).length && process.env.SIGNAL_WORKSPACE_ENABLED !== 'true') { res.status(503).json({ error: 'Требования по уровням пока недоступны.' }); return; }
   const need = await db.transaction(async tx => {
     const { requiredSkillLevels: _levels, ...baseInput } = input as typeof input & { requiredSkillLevels?: unknown };
-    const [created] = await tx.insert(signalNeedsTable).values({ ...baseInput, companyId: context.companyId }).returning();
-    if (created && process.env.SIGNAL_WORKSPACE_ENABLED === 'true') await tx.insert(signalNeedSkillLevelsTable).values({ needId: created.id, levels: levelInput.data });
+    const [created] = await tx.insert(signalNeedsTable).values({ ...baseInput,skillRequirements:levelInput.data, companyId: context.companyId }).returning();
+    if (created && process.env.SIGNAL_WORKSPACE_ENABLED === 'true') await tx.insert(signalNeedSkillLevelsTable).values({ needId: created.id, levels: levelInput.levels });
     return created;
   });
   if (!need) {
@@ -378,7 +381,7 @@ router.post("/employer/needs", async (req, res): Promise<void> => {
     return;
   }
   res.status(201).json({
-    ...CreateEmployerNeedResponse.parse({ ...needPayload(need), requiredSkillLevels: levelInput.data }),
+    ...CreateEmployerNeedResponse.parse({ ...needPayload(need,levelInput.levels), requiredSkillLevels: levelInput.levels }),
     revision:need.revision,status:need.status,updatedAt:need.updatedAt.toISOString(),shortlistCount:0,
     catalogVersion: CURRENT_SKILL_COVERAGE_VERSION,
     requirements: need.requiredSkills.map(resolveSkill),
@@ -389,29 +392,29 @@ router.post("/employer/needs", async (req, res): Promise<void> => {
 router.put('/employer/needs/:id', async (req,res):Promise<void> => {
   const actor = await employerContext(req,res); if(!actor)return;
   const parsed = NeedPatchBody.safeParse(req.body);
-  if(!parsed.success){res.status(400).json({error:'Проверьте изменения запроса.',code:'INVALID_NEED_PATCH'});return;}
+  if(!parsed.success){res.status(400).json({error:'Проверьте изменения запроса.',code:'INVALID_NEED_PATCH',fieldErrors:parsed.error.flatten().fieldErrors});return;}
   const result = await db.transaction(async tx => {
     const [current] = await tx.select().from(signalNeedsTable).where(and(eq(signalNeedsTable.id,Number(req.params.id)),eq(signalNeedsTable.companyId,actor.companyId),isNull(signalNeedsTable.deletedAt))).for('update');
     if(!current)return {code:404 as const};
     if(current.revision!==parsed.data.revision)return {code:409 as const};
-    const {revision:_revision,status,requiredSkillLevels:levelPatch,...basePatch}=parsed.data;
+    const {revision:_revision,status,requiredSkillLevels:levelPatch,skillRequirements:requirementPatch,...basePatch}=parsed.data;
     const merged = CreateEmployerNeedBody.safeParse(mergePresentFields(contextBaseFields(current,CreateEmployerNeedBody.shape),basePatch));
     if(!merged.success||merged.data.salaryMin>merged.data.salaryMax)return {code:400 as const};
     const [existingLevels] = await tx.select().from(signalNeedSkillLevelsTable).where(eq(signalNeedSkillLevelsTable.needId,current.id)).limit(1);
     const preservedLevels = retainedSkillLevelRequirements(existingLevels?.levels??{},merged.data.requiredSkills);
-    const validated = validateSkillLevelRequirements(levelPatch===undefined?preservedLevels:levelPatch,merged.data.requiredSkills);
-    if(!validated.success)return {code:400 as const};
+    const validated = validateRecruitingRequirements(merged.data.requiredSkills,requirementPatch,levelPatch,current.skillRequirements,preservedLevels);
+    if(!validated.success)return {code:400 as const,fieldErrors:validated.fieldErrors};
     const {requiredSkillLevels:_levels,...base}=merged.data;
-    const [need] = await tx.update(signalNeedsTable).set({...base,status:status??current.status,revision:current.revision+1,updatedAt:new Date()})
+    const [need] = await tx.update(signalNeedsTable).set({...base,skillRequirements:validated.data,status:status??current.status,revision:current.revision+1,updatedAt:new Date()})
       .where(and(eq(signalNeedsTable.id,current.id),eq(signalNeedsTable.companyId,actor.companyId),eq(signalNeedsTable.revision,parsed.data.revision))).returning();
     if(!need)return {code:409 as const};
-    await tx.insert(signalNeedSkillLevelsTable).values({needId:need.id,levels:validated.data}).onConflictDoUpdate({target:signalNeedSkillLevelsTable.needId,set:{levels:validated.data}});
+    await tx.insert(signalNeedSkillLevelsTable).values({needId:need.id,levels:validated.levels}).onConflictDoUpdate({target:signalNeedSkillLevelsTable.needId,set:{levels:validated.levels}});
     if(status==='archived')await tx.delete(signalShortlistTable).where(and(eq(signalShortlistTable.companyId,actor.companyId),eq(signalShortlistTable.contextType,'need'),eq(signalShortlistTable.contextId,need.id)));
-    return {need,levels:validated.data};
+    return {need,levels:validated.levels};
   });
-  if(!result.need){res.status(result.code!).json({error:result.code===409?'Запрос изменился. Обновите данные и повторите сохранение.':result.code===404?'Запрос не найден.':'Проверьте требования и зарплатную вилку.',code:result.code===409?'VERSION_CONFLICT':undefined});return;}
+  if(!result.need){res.status(result.code!).json({error:result.code===409?'Запрос изменился. Обновите данные и повторите сохранение.':result.code===404?'Запрос не найден.':'Проверьте требования и зарплатную вилку.',fieldErrors:result.fieldErrors,code:result.code===409?'VERSION_CONFLICT':undefined});return;}
   const counters=await loadSelectionCounters(actor.companyId);
-  res.json({...needPayload(result.need),requiredSkillLevels:result.levels,shortlistCount:counters.shortlist.get(`need:${result.need.id}`)??0});
+  res.json({...needPayload(result.need,result.levels),requiredSkillLevels:result.levels,shortlistCount:counters.shortlist.get(`need:${result.need.id}`)??0});
 });
 
 router.delete('/employer/needs/:id', async(req,res):Promise<void> => {

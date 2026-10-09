@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {normalizeJobFilterParams,normalizeJobSkillFilters} from '../artifacts/fsp-signal/src/lib/job-skill-filters';
 import {workPreferencesSnapshot,type WorkPreferences} from '../artifacts/fsp-signal/src/lib/work-preferences-recovery';
-import {jobSearchInput,parseSkillFilters} from '../artifacts/api-server/src/lib/job-discovery';
+import {jobDetailsInput,jobSearchInput,parseSkillFilters} from '../artifacts/api-server/src/lib/job-discovery';
 
 test('malformed skill URLs never expose invalid records to the UI or server parser',()=>{
   for(const raw of ['[null]','[true]','[1]','["SQL"]','null','{}','true','"SQL"','[{}]','[{"level":"Senior"}]','[{"skill":1}]','[{"skill":" "}]','[{"skill":"SQL","level":"Expert"}]','[{"skill":"SQL","level":null}]','[{"skill":"SQL","extra":true}]','not-json']){
@@ -34,6 +34,14 @@ test('valid heterogeneous levels survive URL serialization, reload and back/forw
     assert.equal(normalized.invalid,false);assert.deepEqual(normalized.skills,expected);
     assert.deepEqual(parseSkillFilters(jobSearchInput.parse(Object.fromEntries(normalized.params)).skills),expected);
   }
+});
+test('search retains historical PostgreSQL levels without allowing a new unsupported employer proof requirement',()=>{
+  const filters=[{skill:'PostgreSQL',level:'Middle'}];
+  const normalized=normalizeJobFilterParams(new URLSearchParams({skills:JSON.stringify(filters)}));
+  assert.equal(normalized.invalid,false);
+  assert.deepEqual(parseSkillFilters(jobSearchInput.parse(Object.fromEntries(normalized.params)).skills),filters);
+  assert.equal(jobDetailsInput.safeParse({skillRequirements:[{...filters[0],mode:'verified'}]}).success,false);
+  assert.equal(jobDetailsInput.safeParse({skillRequirements:[{skill:'PostgreSQL',mode:'declared_or_verified'}]}).success,true);
 });
 test('skill bounds and duplicate requirements cannot silently weaken an applied level',()=>{
   const maximum=Array.from({length:20},(_,i)=>({skill:`${i}`.padEnd(60,'x'),level:'Senior'}));

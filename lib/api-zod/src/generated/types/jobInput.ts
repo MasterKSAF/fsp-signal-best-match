@@ -9,8 +9,15 @@ import type { JobInputGrade } from './jobInputGrade';
 import type { JobInputSalaryPeriod } from './jobInputSalaryPeriod';
 import type { JobInputSalaryType } from './jobInputSalaryType';
 import type { JobInputWorkFormat } from './jobInputWorkFormat';
+import type { RecruitingSkillRequirement } from './recruitingSkillRequirement';
+import type { RequirementMode } from './requirementMode';
 
 export interface JobInput {
+  /** @maxLength 160 */
+  location?: string;
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160

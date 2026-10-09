@@ -9,8 +9,13 @@ import type { EmployerNeedInputGrade } from './employerNeedInputGrade';
 import type { EmployerNeedInputRequiredSkillLevels } from './employerNeedInputRequiredSkillLevels';
 import type { EmployerNeedInputSalaryPeriod } from './employerNeedInputSalaryPeriod';
 import type { EmployerNeedInputSalaryType } from './employerNeedInputSalaryType';
+import type { RecruitingSkillRequirement } from './recruitingSkillRequirement';
+import type { RequirementMode } from './requirementMode';
 
 export interface EmployerNeedInput {
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
   /**
      * @minLength 3
      * @maxLength 160

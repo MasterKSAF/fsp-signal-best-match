@@ -51,3 +51,8 @@
     --workspace-sidebar-width:218px;
   }
 }
+.topbar-context{min-width:0;flex-shrink:1;max-width:calc(100% - 24px)}
+.topbar-role-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-company{font-weight:650}
+.topbar-context .role-dot{flex-shrink:0}
+@media(max-width:700px){.topbar-context{max-width:min(39vw,220px)}.topbar-role-label{font-size:.72rem}}

@@ -5,11 +5,22 @@
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
  * OpenAPI spec version: 0.7.0
  */
+import type { InvitationCompany } from './invitationCompany';
+import type { InvitationContext } from './invitationContext';
+import type { InvitationContextSnapshot } from './invitationContextSnapshot';
 import type { InvitationStatus } from './invitationStatus';
 
 export interface Invitation {
   id: number;
-  needId: number;
+  /** @nullable */
+  needId: number | null;
+  /** @nullable */
+  jobId?: number | null;
+  /** @nullable */
+  contextVersion?: number | null;
+  context?: InvitationContext;
+  contextSnapshot?: InvitationContextSnapshot | null;
+  company?: InvitationCompany | null;
   candidateId: number;
   candidateAlias: string;
   companyName: string;

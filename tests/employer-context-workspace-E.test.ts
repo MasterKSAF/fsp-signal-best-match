@@ -49,10 +49,11 @@ test('job and need with equal numeric ID remain distinct, and absent legacy leve
   assert.equal(selectionContextActive(b),true);
 });
 
-test('invitations require exactly one typed source and a current job version, preserve legacy need bodies',()=>{
+test('invitations require exactly one typed source and a current version for jobs and private needs',()=>{
   const body={candidateId:9,resumeId:11,title:'Backend-разработчик',message:'Приглашаем обсудить условия',reason:'Подходит подтверждённый опыт',
     salaryMin:200000,salaryMax:300000,salaryPeriod:'month',salaryType:'gross',workFormat:'Удалённо'};
-  assert.equal(ContextCreateInvitationBody.safeParse({...body,needId:5}).success,true);
+  assert.equal(ContextCreateInvitationBody.safeParse({...body,needId:5,contextVersion:3}).success,true);
+  assert.equal(ContextCreateInvitationBody.safeParse({...body,needId:5}).success,false);
   assert.equal(ContextCreateInvitationBody.safeParse({...body,jobId:5,contextVersion:4,resumeRevision:2}).success,true);
   assert.equal(ContextCreateInvitationBody.safeParse({...body,jobId:5}).success,false);
   assert.equal(ContextCreateInvitationBody.safeParse({...body,jobId:5,needId:5,contextVersion:4}).success,false);

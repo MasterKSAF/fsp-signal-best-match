@@ -2,6 +2,7 @@ import { canonicalSkillKey, canonicalSkillLabels, resolveSkill } from './skill-c
 import { hasMeaningfulRequiredSkills } from './employer-required-skills';
 import { compactFspSignal, emptyFspSignal, fspBonusForSignal, type FspRankingFacts } from './fsp-results';
 import type { SkillCategorySnapshot } from '@workspace/db';
+import { evaluateGradeRequirement, evaluateSkillRequirement, interpretSkillRequirements, type RequirementMode, type SkillRequirement } from './recruiting-requirements';
 export type SignalGrade = "Junior" | "Middle" | "Senior";
 export type SalaryPeriod = "month" | "year";
 export type SalaryType = "gross" | "net";
@@ -9,6 +10,8 @@ export type SalaryType = "gross" | "net";
 export type MatchNeed = {
   specialization: string;
   grade: SignalGrade;
+  gradeMode?: RequirementMode;
+  skillRequirements?: readonly SkillRequirement[];
   requiredSkills: readonly string[];
   /** Canonical skill keys only; missing values are historical requirements without a minimum level. */
   requiredSkillLevels?: Readonly<Record<string, SignalGrade>>;
@@ -25,6 +28,7 @@ export type MatchCandidate = {
   alias: string;
   specialization: string;
   verifiedGrade: SignalGrade | null;
+  assumedGrade?: SignalGrade | null;
   verifiedScore: number | null;
   verifiedSkills: readonly string[];
   stack: readonly string[];
@@ -84,6 +88,9 @@ export type MatchEvidence = {
   source: string;
   date: string | null;
   status: "verified" | "stated" | "unchecked" | "not_fit";
+  requirementMode?: RequirementMode;
+  satisfied?: boolean;
+  reason?: string | null;
 };
 
 export type MatchFactor = {
@@ -112,7 +119,7 @@ export type MatchEvaluation = {
   salaryCompatibility: SalaryCompatibility;
 };
 
-export const MATCH_ALGORITHM_VERSION = "fsp-signal-match-v6";
+export const MATCH_ALGORITHM_VERSION = "fsp-signal-match-v7";
 export const gradeRank: Record<SignalGrade, number> = {
   Junior: 1,
   Middle: 2,
@@ -311,12 +318,10 @@ export function evaluateMatch(
     ...requiredSkills,
     ...need.desirableSkills,
   ]);
-  const verified = new Set(candidate.verifiedSkills.map(canonicalSkillKey));
-  const coversRequirement = (skill: string) => {
-    const key = canonicalSkillKey(skill); const minimum = need.requiredSkillLevels?.[key];
-    if (!minimum) return verified.has(key);
-    return (candidate.skillEvidence ?? []).some(e => e.sourceType === 'signal_skill_module' && canonicalSkillKey(e.skill) === key && e.level && gradeRank[e.level] >= gradeRank[minimum]);
-  };
+  const requirements = interpretSkillRequirements(requiredSkills, need.skillRequirements, need.requiredSkillLevels);
+  const coverage = new Map(allRequirements.map(skill => [canonicalSkillKey(skill), evaluateSkillRequirement(requirements.find(item => canonicalSkillKey(item.skill) === canonicalSkillKey(skill)) ?? {skill,mode:'verified'},candidate)]));
+  const coversRequirement = (skill: string) => coverage.get(canonicalSkillKey(skill))!.verified;
+  const satisfiesRequirement = (skill: string) => coverage.get(canonicalSkillKey(skill))!.covered;
   const stated = new Set([...candidate.statedSkills, ...candidate.stack].map(canonicalSkillKey));
   const ineligibilityReasons: MatchEligibilityReason[] = [];
   const ranking = rankingEvidence(candidate, need);
@@ -327,13 +332,10 @@ export function evaluateMatch(
   if (candidate.specialization !== need.specialization) {
     ineligibilityReasons.push("specialization");
   }
-  if (
-    !candidate.verifiedGrade || ranking.qualityStatus === 'revoked' ||
-    gradeRank[candidate.verifiedGrade] < gradeRank[need.grade]
-  ) {
+  if (!evaluateGradeRequirement(need.grade,need.gradeMode,candidate).satisfied) {
     ineligibilityReasons.push("grade");
   }
-  if (!hasMeaningfulRequiredSkills(need.requiredSkills) || !requiredSkills.every(coversRequirement)) {
+  if (!hasMeaningfulRequiredSkills(need.requiredSkills) || !requiredSkills.every(satisfiesRequirement)) {
     ineligibilityReasons.push("required_skills");
   }
 
@@ -380,7 +382,8 @@ export function evaluateMatch(
   const evidence: MatchEvidence[] = allRequirements.map((requirement) => {
     const confirmed = coversRequirement(requirement);
     const selfReported = stated.has(canonicalSkillKey(requirement));
-    const provenance = confirmed ? candidate.skillEvidence?.find(item => canonicalSkillKey(item.skill) === canonicalSkillKey(requirement)) ?? null : null;
+    const result = coverage.get(canonicalSkillKey(requirement))!;
+    const provenance = result.provenance;
     const source = confirmed
       ? provenance?.sourceType === 'signal_skill_module' ? `Проверка ${provenance.skill} · ${provenance.level ?? ''}` : provenance?.sourceType === "signal_assessment" ? "Проверка навыков Signal"
         : provenance?.sourceType === "demo_example" || candidate.demoMode ? "Demo · синтетический пример"
@@ -394,15 +397,16 @@ export function evaluateMatch(
       source, provenance,
       date: confirmed ? provenance?.date ?? (candidate.latestAssessmentAt && Number.isFinite(candidate.latestAssessmentAt.getTime()) ? candidate.latestAssessmentAt.toISOString() : null) : null,
       status: confirmed ? "verified" : selfReported ? "stated" : "unchecked",
+      requirementMode: result.mode, satisfied: result.covered, reason: result.reason,
     };
   });
   const strengths = allRequirements.filter(coversRequirement);
   const gaps = [
     ...allRequirements.filter(
-      (skill) => !coversRequirement(skill) && !stated.has(canonicalSkillKey(skill)),
+      (skill) => !satisfiesRequirement(skill) && !stated.has(canonicalSkillKey(skill)),
     ),
     ...allRequirements
-      .filter((skill) => !coversRequirement(skill) && stated.has(canonicalSkillKey(skill)))
+      .filter((skill) => !satisfiesRequirement(skill) && stated.has(canonicalSkillKey(skill)))
       .map((skill) => `${skill} (указан кандидатом, не подтверждён)`),
     ...(salaryCompatibility === "incompatible"
       ? ["Зарплатные ожидания могут не совпасть"]

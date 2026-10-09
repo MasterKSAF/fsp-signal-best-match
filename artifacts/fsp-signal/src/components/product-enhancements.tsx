@@ -157,7 +157,7 @@ export function CompanyPage() {
   const [industry, setIndustry] = useState<string | null>(null);
   const [inn,setInn]=useState<string|null>(null);
   const [innError,setInnError]=useState<string|null>(null);
-  const save = useMutation({ mutationFn: (data: Omit<Company, 'id'>) => api<{ company: Company }>('/api/employer/company', { method: 'PUT', body: JSON.stringify(data) }), onSuccess: data => { qc.setQueryData(['employer-company'], data.company);setInn(data.company.inn);setInnError(null);setNotice('Профиль компании сохранён.'); } });
+  const save = useMutation({ mutationFn: (data: Omit<Company, 'id'>) => api<{ company: Company }>('/api/employer/company', { method: 'PUT', body: JSON.stringify(data) }), onSuccess: data => { qc.setQueryData(['employer-company'], data.company);void qc.invalidateQueries({queryKey:['employer-company']});setInn(data.company.inn);setInnError(null);setNotice('Профиль компании сохранён.'); } });
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); setNotice('');
     const data = new FormData(event.currentTarget); const get = (key: string) => String(data.get(key) || '').trim();

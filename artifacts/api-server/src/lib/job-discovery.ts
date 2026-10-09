@@ -1,10 +1,14 @@
 import { z } from 'zod';
 import type { JobSkillRequirement } from '../../../../lib/db/src/schema/signal-job-discovery';
+import { RecruitingSkillRequirementSchema, interpretSkillRequirements } from './recruiting-requirements';
 
 const optionalText = z.string().trim().max(160).optional().default('');
 const queryBoolean = z.enum(['true', 'false']).optional().default('false').transform(value => value === 'true');
 const grade = z.enum(['Junior', 'Middle', 'Senior']);
-export const skillRequirementInput = z.object({ skill: z.string().trim().min(1).max(60), level: grade.optional() }).strict();
+export const skillRequirementInput = RecruitingSkillRequirementSchema;
+// A search describes records to find, including historical/custom levels. It
+// does not create an employer requirement or promise a current examination.
+const skillSearchInput = z.object({skill:z.string().trim().min(1).max(60),level:grade.optional()}).strict();
 export const jobDetailsInput = z.object({
   location: z.string().trim().max(160).optional(),
   skillRequirements: z.array(skillRequirementInput).max(20).optional(),
@@ -25,7 +29,7 @@ const queryShape = {
 };
 export const jobSearchInput = z.object(queryShape).passthrough().superRefine((value, context) => {
   try {
-    const result = z.array(skillRequirementInput).max(20).safeParse(JSON.parse(value.skills));
+    const result = z.array(skillSearchInput).max(20).safeParse(JSON.parse(value.skills));
     if (!result.success) throw new Error();
   } catch { context.addIssue({ code: 'custom', path: ['skills'], message: 'Проверьте фильтр навыков.' }); }
   if (value.salaryMin !== undefined && value.salaryMax !== undefined && value.salaryMin > value.salaryMax) {
@@ -47,14 +51,14 @@ export const JOB_EXPORT_LIMIT = 10000;
 export const JOB_EXPORT_COLUMNS = ['Компания', 'Должность', 'Специализация', 'Общий грейд', 'Навыки и уровни', 'Зарплата от', 'Зарплата до', 'Валюта', 'Период', 'Налоги', 'Формат', 'Локация', 'Дата публикации', 'Ссылка'] as const;
 export type ExportableJob = {
   id: number; companyName: string; title: string; specialization: string; grade: string; skills: string[];
-  skillRequirements?: JobSkillRequirement[]; salaryMin: number; salaryMax: number; salaryPeriod: string;
+  skillRequirements?: JobSkillRequirement[]; gradeMode?: 'verified'|'declared_or_verified'; salaryMin: number; salaryMax: number; salaryPeriod: string;
   salaryType: string; workFormat: string; location?: string; publishedAt: Date | string | null;
 };
 export function jobExportCells(job: ExportableJob, baseUrl: string) {
   const explicit = new Map((job.skillRequirements ?? []).map(item => [item.skill.toLowerCase(), item]));
   const skills = [...new Set([...job.skills, ...(job.skillRequirements ?? []).map(item => item.skill)])];
-  return [job.companyName, job.title, job.specialization, job.grade,
-    skills.map(skill => { const item = explicit.get(skill.toLowerCase()); return `${skill}${item?.level ? ` — ${item.level}` : ' — уровень не указан'}`; }).join('; '),
+  return [job.companyName, job.title, job.specialization, `${job.grade} — ${job.gradeMode==='declared_or_verified'?'достаточно заявленного':'требуется подтверждение'}`,
+    interpretSkillRequirements(skills,job.skillRequirements).map(item=>`${item.skill} — ${item.mode==='declared_or_verified'?'достаточно заявленного':`${item.level??'уровень не указан'} · требуется подтверждение`}`).join('; '),
     String(job.salaryMin), String(job.salaryMax), 'RUB', job.salaryPeriod === 'year' ? 'год' : 'месяц',
     job.salaryType === 'net' ? 'на руки' : 'до налогов', job.workFormat, job.location || 'Не указана',
     job.publishedAt ? new Date(job.publishedAt).toISOString() : '', `${baseUrl.replace(/\/$/, '')}/jobs?job=${job.id}`];

@@ -130,6 +130,8 @@ export const signalNeedsTable = pgTable("signal_needs", {
   specialization: text("specialization").notNull(),
   grade: text("grade", { enum: ["Junior", "Middle", "Senior"] }).notNull(),
   requiredSkills: text("required_skills").array().notNull(),
+  gradeMode: text('grade_mode', { enum: ['verified','declared_or_verified'] }).notNull().default('verified'),
+  skillRequirements: jsonb('skill_requirements').$type<{skill:string;mode?:'verified'|'declared_or_verified';level?:'Junior'|'Middle'|'Senior'}[]>().notNull().default([]),
   desirableSkills: text("desirable_skills").array().notNull().default([]),
   description: text("description").notNull(),
   workFormat: text("work_format").notNull(),
@@ -142,7 +144,7 @@ export const signalNeedsTable = pgTable("signal_needs", {
   status: text("status", { enum: ["active", "archived"] }).notNull().default("active"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
-});
+},t=>[check('signal_needs_grade_mode_check',sql`${t.gradeMode} IN ('verified','declared_or_verified')`),check('signal_needs_skill_requirements_check',sql`signal_valid_skill_requirements(${t.skillRequirements})`)]);
 
 export const signalAssessmentAttemptsTable = pgTable("signal_assessment_attempts", {
   id: serial("id").primaryKey(),

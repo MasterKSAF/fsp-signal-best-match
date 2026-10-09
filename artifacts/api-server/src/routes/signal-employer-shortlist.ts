@@ -10,6 +10,7 @@ import { listOwnedSelectionContexts, loadOwnedSelectionContext } from '../lib/si
 import { loadAccessibleShortlistCandidates, loadOwnedShortlistLinks, safeShortlistCandidate } from '../lib/shortlist-access';
 import { evaluateMatch } from '../lib/signal-matching';
 import { freshSelectionIds, freshSelectionIdentity } from '../lib/employer-selection-service';
+import { shortlistReview } from '../lib/shortlist-review';
 
 const router:IRouter=Router();
 const queryInput=z.object({contextType:z.enum(['need','job']),contextId:postgresIntIdInputSchema}).strict();
@@ -35,8 +36,8 @@ router.get('/employer/shortlist',async(req,res)=>{
     const candidate=original?freshSelectionIdentity({...original,location:'',updatedAt:new Date()},fresh):null;
     const evaluation=candidate?evaluateMatch(selected.matchNeed,candidate,actor.demoMode):null;
     return {candidateId:link.candidateUserId,resumeId:link.resumeId,contextVersion:link.contextVersion,
-      available:Boolean(candidate),needsReview:link.contextVersion!==selected.context.version||Boolean(evaluation&&!evaluation.eligible),
-      candidate:candidate?safeShortlistCandidate(candidate):null,match:evaluation?{eligible:evaluation.eligible,score:evaluation.rankingScore}:null};
+      available:Boolean(candidate),...shortlistReview(link.contextVersion,selected.context.version,evaluation),
+      candidate:candidate?safeShortlistCandidate(candidate):null};
   });
   res.setHeader('Cache-Control','no-store');res.json({context:selected.context,items,total:items.length});
 });
@@ -58,7 +59,9 @@ router.put('/employer/shortlist',async(req,res)=>{
       candidateUserId:input.candidateId,resumeId:input.resumeId,contextVersion:selected.context.version};
     const [item]=await tx.insert(shortlist).values(values).onConflictDoUpdate({target:[shortlist.companyId,shortlist.contextType,shortlist.contextId,shortlist.candidateUserId],
       set:{resumeId:input.resumeId,contextVersion:selected.context.version,updatedAt:new Date()}}).returning();
-    return {item:{candidateId:item.candidateUserId,resumeId:item.resumeId,contextVersion:item.contextVersion,available:true,needsReview:false},
+    const candidate=accessible.get(input.resumeId)!;
+    const evaluation=evaluateMatch(selected.matchNeed,candidate,actor.demoMode);
+    return {item:{candidateId:item.candidateUserId,resumeId:item.resumeId,contextVersion:item.contextVersion,available:true,candidate:safeShortlistCandidate(candidate),...shortlistReview(item.contextVersion,selected.context.version,evaluation)},
       shortlistCount:await shortlistCount(actor.company!.id,input.context,tx)};
   });
   if(!result.item){res.status(result.code!).json({error:result.error,code:result.code===409?'VERSION_CONFLICT':'CANDIDATE_OR_CONTEXT_UNAVAILABLE'});return;}
