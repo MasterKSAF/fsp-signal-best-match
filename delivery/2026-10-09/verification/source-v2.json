@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "passed": true,
+  "file": "Signal-Source-v2.zip",
+  "bytes": 4469648,
+  "sha256": "3345af3d3f26fb6901c939a2820eb46cf337b8939fc25faa84c6f6b8524a2a24",
+  "root": "Signal/",
+  "memberCount": 1513,
+  "baseCommit": "2ea1f4dd5ea8c674190a603c2a9eda777c63ad1c",
+  "baseArchiveSha256": "469d5d2cb7c57e3e7c4a0d519be2242b4e81a0772ccc06f1df884ea0c57131da",
+  "changedProductFiles": [
+    {
+      "path": "artifacts/fsp-signal/src/components/my-resumes.tsx",
+      "beforeSha256": "fb48373eb02a08a29518391c0f40370c70196ac5775866d933d56367cd233a2a",
+      "afterSha256": "bb3323c99c93fd2e69d9008058285bea58b3ee2aa76eb20e00849077db82c21e"
+    }
+  ],
+  "addedDocumentation": [
+    "docs/source-v2-2026-10-09.md"
+  ],
+  "fullTestsRerun": false,
+  "crcVerified": true,
+  "memberHashesVerified": true,
+  "privacy": {
+    "reviewedV1Base": true,
+    "forbiddenPaths": [],
+    "privateSyntheticCredentialMatches": 0,
+    "privateValuesExported": false,
+    "workingEnvIncluded": false,
+    "envExampleOnly": true,
+    "rawContestDatasetIncluded": false,
+    "syntheticValidationFixturesRetained": true
+  },
+  "packageRevision": "v2-final",
+  "updatedDocumentation": [
+    "README.md",
+    "docs/delivery-2026-10-09.md",
+    "docs/source-v2-2026-10-09.md"
+  ],
+  "repositoryBytesMatch": true
+}

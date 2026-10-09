@@ -102,8 +102,11 @@ export function MyResumesPage({renderEditor}:{renderEditor:(resumeId:number)=>Re
   const savePending=saving||currentSections.some(section=>section.pending);
   const saveBlocked=changedSections.some(section=>section.blocked);
   const saveAll=async()=>{
-    if(editing===null||savePending||saveBlocked||currentSections.length<3||!changedSections.length)return;
-    const sections=changedSections.sort((a,b)=>a.order-b.order);
+    // Edits refresh registered callbacks without necessarily rerendering this
+    // parent. Read the registry at click time so every section saves its latest draft.
+    const activeSections=[...saveSections.current.values()].filter(section=>section.resumeId===editing);
+    const sections=activeSections.filter(section=>section.dirty).sort((a,b)=>a.order-b.order);
+    if(editing===null||saving||activeSections.some(section=>section.pending)||sections.some(section=>section.blocked)||activeSections.length<3||!sections.length)return;
     setSaveStatus('');
     for(const section of sections)if(!section.validate()){setSaveStatus('Проверьте поля выделенного раздела. Изменения пока не отправлены.');return;}
     setSaving(true);let completed=0;

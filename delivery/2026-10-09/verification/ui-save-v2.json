@@ -1,0 +1,11 @@
+{
+  "file": "artifacts/fsp-signal/src/components/my-resumes.tsx",
+  "sha256": "bb3323c99c93fd2e69d9008058285bea58b3ee2aa76eb20e00849077db82c21e",
+  "status": "PASS",
+  "validation": [
+    "Frontend TypeScript check after prerequisite library declarations",
+    "Actual browser save of multiple successive fields, visibility and consent settings"
+  ],
+  "baseTestCount": 582,
+  "fullTestsRerunAfterUiFix": false
+}

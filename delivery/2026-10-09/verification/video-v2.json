@@ -1,0 +1,30 @@
+{
+  "file": "Signal-Demo-v2.mp4",
+  "bytes": 19117545,
+  "sha256": "ae3a29a696defafba07f7607910b8f569f28c5d6f638d84c0b8670ab972d2053",
+  "durationSeconds": 417.533333,
+  "dimensions": [
+    1600,
+    900
+  ],
+  "frameRate": "30/1",
+  "codec": "h264",
+  "audioCodec": "aac",
+  "sampleRate": 48000,
+  "voice": "ru-RU-DmitryNeural",
+  "speechRate": "+0%",
+  "timeStretch": 1.0,
+  "sections": 35,
+  "spokenCues": 35,
+  "openingSeconds": 3.0,
+  "endingSeconds": 3.0,
+  "fullDecodePassed": true,
+  "textHashesMatchFinalScript": true,
+  "allCueMastersFitTheirSections": true,
+  "overlappingSpokenWords": false,
+  "finalAacLoudness": {
+    "integratedLufs": -16.02,
+    "truePeakDbtp": -1.42,
+    "loudnessRangeLu": 3.9
+  }
+}

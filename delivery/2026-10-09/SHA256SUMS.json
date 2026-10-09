@@ -1,38 +1,65 @@
 {
-  "format": 1,
-  "algorithm": "SHA-256",
-  "files": {
-    "Signal-Demo.mp4": {
-      "sha256": "1942868ebe2eb348f52133358e92b6e2a0e9f38d6075b702b638114f5a6f61e4",
-      "bytes": 6305420
+  "packageRevision": "v2-final",
+  "files": [
+    {
+      "file": "Signal-Demo-v2.mp4",
+      "bytes": 19117545,
+      "sha256": "ae3a29a696defafba07f7607910b8f569f28c5d6f638d84c0b8670ab972d2053"
     },
-    "Signal-Presentation.pptx": {
-      "sha256": "b1acb1fe7fe2754faac3c736618dc269f983b285193fc4c86fe2cc8ee1119b35",
-      "bytes": 12597203
+    {
+      "file": "Signal-Demo-v2.srt",
+      "bytes": 11891,
+      "sha256": "d7cd4baa3950b35536065e998f149ac6bb89c6d9d1bea4e503e2f89e41720121"
     },
-    "Signal-Technical-Description.pdf": {
-      "sha256": "057a60710274de821674b663a1b4983274b91d0e9e3b3498accbb399b1760e36",
-      "bytes": 130210
+    {
+      "file": "Signal-Presentation-12-slides.pptx",
+      "bytes": 12524056,
+      "sha256": "faa2a7d906e663effb85718d02cb4d2b4d85bc424cab0bdcd12099992a5d309b"
     },
-    "Signal-Source.zip": {
-      "sha256": "469d5d2cb7c57e3e7c4a0d519be2242b4e81a0772ccc06f1df884ea0c57131da",
-      "bytes": 4466659
+    {
+      "file": "Signal-Presentation-12-slides.pdf",
+      "bytes": 15880408,
+      "sha256": "0fc9971fd8db35aafb690d9bc9407bdbc5771d6288a593ccbf82f932ea870b31"
     },
-    "README-FIRST.md": {
-      "sha256": "f27b6732c626cba11ff9cfa08c9aafc06c23e9a5c943a29e9ae9d25ca7960b01",
-      "bytes": 2872
+    {
+      "file": "Signal-Source-v2.zip",
+      "bytes": 4469648,
+      "sha256": "3345af3d3f26fb6901c939a2820eb46cf337b8939fc25faa84c6f6b8524a2a24"
     },
-    "Signal-Presentation.pdf": {
-      "sha256": "59e8d45473180f9e5d2d3d10745f5db93745ff51e027897b40f6e6dfe12ac28d",
-      "bytes": 19721267
+    {
+      "file": "Signal-Source-v2.manifest.json",
+      "bytes": 290481,
+      "sha256": "ff372e9cf3f505c08a36f13bb52c41298f70bc3bc9c015e7d9b9c298e49636aa"
     },
-    "Signal-Demo.srt": {
-      "sha256": "2d87975f58cb5f58ac5f23fa3dd10533a342812a5ebb35e10aa2d306b02a6c31",
-      "bytes": 4342
+    {
+      "file": "Signal-Technical-Description.pdf",
+      "bytes": 130210,
+      "sha256": "057a60710274de821674b663a1b4983274b91d0e9e3b3498accbb399b1760e36"
     },
-    "Signal-Source.manifest.json": {
-      "sha256": "334cfd1d31e1d53387924696657f70863e85c377d93ac92af9df65b14e96c3e8",
-      "bytes": 296958
+    {
+      "file": "README-FIRST.md",
+      "bytes": 4577,
+      "sha256": "537b0d087b276ec9b8085164441728f370a06f469d5980ef3578978ef231e247"
+    },
+    {
+      "file": "verification/presentation-v2.json",
+      "bytes": 399,
+      "sha256": "cea91583fb9fe76a60af3dc375d5c05648f94e58312312a26cdf6c55157ffaba"
+    },
+    {
+      "file": "verification/source-v2.json",
+      "bytes": 1298,
+      "sha256": "762eefe5b1f4f1d64f2c2c5df2e940ba47e5d689e2c8ced03e2f9322795a2827"
+    },
+    {
+      "file": "verification/ui-save-v2.json",
+      "bytes": 413,
+      "sha256": "4059edcb445abb6451ce562fe7df148ffe49af95331855fa03a051c8142f1d59"
+    },
+    {
+      "file": "verification/video-v2.json",
+      "bytes": 718,
+      "sha256": "e198668b74aa64b1063163ac16c79a143284fc5dc70c129aaa6a3229890c3134"
     }
-  }
+  ]
 }
