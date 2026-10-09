@@ -139,3 +139,20 @@
 .skill-attempt-context .input { width:100%; }
 @media(max-width:520px) { .skill-context-filter { margin-left:0; width:100%; } .skill-context-filter .input { width:100%; max-width:none; } .skill-next-level { flex-basis:100%; margin-left:0; } }
 @media(prefers-reduced-motion:reduce) { .skill-history-chevron { transition:none; } }
+
+/* One owner passport. CV filtering changes affiliation, never ownership of proof. */
+.skill-passport-toolbar { display:flex;align-items:center;gap:4px;justify-content:flex-end;min-width:0; }
+.skill-passport-toolbar .skill-context-filter { display:flex;gap:10px;align-items:center;margin-left:0;font-size:13px;min-width:0; }
+.skill-passport-toolbar .input { width:280px;max-width:100%;font-size:13px; }
+.skill-passport-stats { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-bottom:18px;border-bottom:1px solid hsl(var(--border)); }
+.skill-passport-stats>div { display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;font-size:12px; }
+.skill-passport-stats strong { color:hsl(var(--foreground));font-size:24px;font-weight:650;line-height:1.2; }
+.skill-passport-stats .is-verified>svg,.skill-passport-group.is-verified>h2>svg { color:hsl(var(--tone-employer)); }
+.skill-passport-stats .is-declared>svg,.skill-passport-group.is-declared>h2>svg { color:hsl(var(--muted-foreground)); }
+.skill-passport-stats .is-recommended>svg,.skill-passport-group.is-recommended>h2>svg { color:hsl(var(--tone-skills)); }
+.skill-passport-group { min-width:0;padding-top:18px; }
+.skill-passport-group>h2 { font-size:14px;line-height:1.4;margin-bottom:10px; }
+.skill-passport .skill-passport-grid { gap:24px;margin-top:6px;border-top:1px solid hsl(var(--border)); }
+.skill-passport-empty { font-size:13px;line-height:1.6;margin:0; }
+.skill-passport .skill-stated { margin:0; }
+@media(max-width:600px) { .skill-passport-toolbar { justify-content:stretch; }.skill-passport-toolbar .skill-context-filter { flex:1;display:grid;gap:5px;width:100%; }.skill-passport-toolbar .input { width:100%; }.skill-passport-stats { gap:10px; }.skill-passport-stats>div { gap:5px; }.skill-passport-stats span { flex-basis:100%;font-size:11px; }.skill-passport-stats strong { font-size:22px; } }

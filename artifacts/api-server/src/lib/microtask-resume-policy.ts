@@ -2,17 +2,18 @@ import { z } from "zod";
 import type { MicroResumeContext } from "@workspace/db";
 import { microInput } from "./opportunity-rules";
 import { sameSignalPool, type SignalScopedAccount } from "./signal-pool-scope";
+import { postgresIntIdSchema } from './postgres-id';
 
 export const microSpecializationInput = z.enum(["Backend / Python", "Frontend / TypeScript"]);
 // Keep the existing strict teaching/rubric rules; only the target category is new.
-export const microTemplateInput = z.object({ specialization: microSpecializationInput }).passthrough()
-  .transform(({ specialization, ...rest }, context) => {
+export const microTemplateInput = z.object({ specialization: microSpecializationInput, jobId: postgresIntIdSchema }).passthrough()
+  .transform(({ specialization, jobId, ...rest }, context) => {
     const base = microInput.safeParse(rest);
     if (!base.success) {
       for (const issue of base.error.issues) context.addIssue(issue);
       return z.NEVER;
     }
-    return { ...base.data, specialization };
+    return { ...base.data, specialization, jobId };
   });
 
 export type MicroLiveResume = {

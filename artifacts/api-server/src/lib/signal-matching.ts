@@ -320,7 +320,7 @@ export function evaluateMatch(
   ]);
   const requirements = interpretSkillRequirements(requiredSkills, need.skillRequirements, need.requiredSkillLevels);
   const coverage = new Map(allRequirements.map(skill => [canonicalSkillKey(skill), evaluateSkillRequirement(requirements.find(item => canonicalSkillKey(item.skill) === canonicalSkillKey(skill)) ?? {skill,mode:'verified'},candidate)]));
-  const coversRequirement = (skill: string) => coverage.get(canonicalSkillKey(skill))!.verified;
+  const coversRequirement = (skill: string) => coverage.get(canonicalSkillKey(skill))!.verifiedSufficient;
   const satisfiesRequirement = (skill: string) => coverage.get(canonicalSkillKey(skill))!.covered;
   const stated = new Set([...candidate.statedSkills, ...candidate.stack].map(canonicalSkillKey));
   const ineligibilityReasons: MatchEligibilityReason[] = [];
@@ -380,9 +380,9 @@ export function evaluateMatch(
   const fspBonus = fspBonusForSignal(candidate.fspSignal, candidate.demoMode);
   const fspSignal = compactFspSignal(fspBonus ? candidate.fspSignal! : candidate.fspSignal?.historyStatus === 'unresolved_results' ? candidate.fspSignal : emptyFspSignal(candidate.hasFspHistory || candidate.fspSignal?.historyStatus === 'unverified'));
   const evidence: MatchEvidence[] = allRequirements.map((requirement) => {
-    const confirmed = coversRequirement(requirement);
-    const selfReported = stated.has(canonicalSkillKey(requirement));
     const result = coverage.get(canonicalSkillKey(requirement))!;
+    const confirmed = result.verified;
+    const selfReported = stated.has(canonicalSkillKey(requirement));
     const provenance = result.provenance;
     const source = confirmed
       ? provenance?.sourceType === 'signal_skill_module' ? `Проверка ${provenance.skill} · ${provenance.level ?? ''}` : provenance?.sourceType === "signal_assessment" ? "Проверка навыков Signal"
@@ -393,7 +393,7 @@ export function evaluateMatch(
       : selfReported ? "Самоописание кандидата" : "Нет источника";
     return {
       requirement, skillId: resolveSkill(requirement).id,
-      evidence: confirmed ? `Подтверждённый навык: ${requirement}` : selfReported ? "Навык указан кандидатом, но не подтверждён" : "Данных для проверки пока нет",
+      evidence: confirmed ? `Подтверждённый навык: ${requirement}${result.verifiedLevel?` · ${result.verifiedLevel}`:''}` : selfReported ? "Навык указан кандидатом, но не подтверждён" : "Данных для проверки пока нет",
       source, provenance,
       date: confirmed ? provenance?.date ?? (candidate.latestAssessmentAt && Number.isFinite(candidate.latestAssessmentAt.getTime()) ? candidate.latestAssessmentAt.toISOString() : null) : null,
       status: confirmed ? "verified" : selfReported ? "stated" : "unchecked",
@@ -402,12 +402,12 @@ export function evaluateMatch(
   });
   const strengths = allRequirements.filter(coversRequirement);
   const gaps = [
-    ...allRequirements.filter(
-      (skill) => !satisfiesRequirement(skill) && !stated.has(canonicalSkillKey(skill)),
-    ),
-    ...allRequirements
-      .filter((skill) => !satisfiesRequirement(skill) && stated.has(canonicalSkillKey(skill)))
-      .map((skill) => `${skill} (указан кандидатом, не подтверждён)`),
+    ...allRequirements.filter(skill=>!satisfiesRequirement(skill)&&coverage.get(canonicalSkillKey(skill))!.verified).map(skill=>{
+      const result=coverage.get(canonicalSkillKey(skill))!;
+      return `${skill}: ${result.reason}`;
+    }),
+    ...allRequirements.filter(skill=>!satisfiesRequirement(skill)&&!coverage.get(canonicalSkillKey(skill))!.verified&&!stated.has(canonicalSkillKey(skill))),
+    ...allRequirements.filter(skill=>!satisfiesRequirement(skill)&&!coverage.get(canonicalSkillKey(skill))!.verified&&stated.has(canonicalSkillKey(skill))).map(skill=>`${skill} (указан кандидатом, не подтверждён)`),
     ...(salaryCompatibility === "incompatible"
       ? ["Зарплатные ожидания могут не совпасть"]
       : salaryCompatibility === "unknown"

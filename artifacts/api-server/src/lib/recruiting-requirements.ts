@@ -59,13 +59,19 @@ export function evaluateSkillRequirement(requirement:SkillRequirement,candidate:
   const key=canonicalSkillKey(requirement.skill),mode=requirement.mode??'verified';
   const stated=[...candidate.stack,...candidate.statedSkills].some(skill=>canonicalSkillKey(skill)===key);
   const revoked=currentAssessmentRevoked(candidate);
-  const proof=candidate.skillEvidence?.find(item=>item.candidateId===candidate.userId&&(!revoked||item.sourceType==='signal_skill_module')&&canonicalSkillKey(item.skill)===key&&(!requirement.level||(item.sourceType==='signal_skill_module'&&item.level&&ranks[item.level]>=ranks[requirement.level])));
+  const proofs=(candidate.skillEvidence??[]).filter(item=>item.candidateId===candidate.userId&&(!revoked||item.sourceType==='signal_skill_module')&&canonicalSkillKey(item.skill)===key);
+  const moduleProof=proofs.filter(item=>item.sourceType==='signal_skill_module'&&item.level).reduce<typeof proofs[number]|undefined>((best,item)=>!best||ranks[item.level!]>ranks[best.level!]?item:best,undefined);
+  const proof=moduleProof??proofs[0];
+  const verifiedLevel=moduleProof?.level??null;
   const listed=!revoked&&candidate.verifiedSkills.some(skill=>canonicalSkillKey(skill)===key);
-  const verified=Boolean(proof||listed&&(!requirement.level||options.preliminary));
-  const covered=verified||(mode==='declared_or_verified'&&stated);
+  // A current Junior proof stays a proof even when a Middle requirement is not
+  // met. Matching credit is a separate fact from existence/source of evidence.
+  const verified=Boolean(proof||listed);
+  const verifiedSufficient=verified&&(!requirement.level||!!verifiedLevel&&ranks[verifiedLevel]>=ranks[requirement.level]||!!options.preliminary&&candidate.skillEvidence===undefined&&listed);
+  const covered=verifiedSufficient||(mode==='declared_or_verified'&&stated);
   const source=verified?'verified' as const:stated?'declared' as const:'missing' as const;
-  const reason=covered?null:mode==='declared_or_verified'?'Обязательный навык не заявлен и не подтверждён.':requirement.level?`Нужно подтверждение ${requirement.level} или выше.`:'Нужно подтверждение навыка.';
-  return {...requirement,mode,covered,verified,source,reason,provenance:verified?proof??null:null};
+  const reason=covered?null:verified&&requirement.level?verifiedLevel?`Подтверждён ${verifiedLevel}; требуется ${requirement.level} или выше.`:`Навык подтверждён без отдельного уровня; требуется подтверждение ${requirement.level} или выше.`:mode==='declared_or_verified'?'Обязательный навык не заявлен и не подтверждён.':requirement.level?`Нужно подтверждение ${requirement.level} или выше.`:'Нужно подтверждение навыка.';
+  return {...requirement,mode,covered,verified,verifiedLevel,verifiedSufficient,source,reason,provenance:verified?proof??null:null};
 }
 export function evaluateGradeRequirement(required:SignalGrade,mode:RequirementMode|undefined,candidate:GradeCandidate) {
   const acceptedMode=mode??'verified',verified=currentAssessmentRevoked(candidate)?null:candidate.verifiedGrade,declared=candidate.assumedGrade??null;

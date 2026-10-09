@@ -55,6 +55,31 @@ test('higher verified grade satisfies either mode; declared grade never supplies
  assert.equal(evaluateGradeRequirement('Middle','verified',revoked).satisfied,false);
  assert.equal(evaluateGradeRequirement('Middle','declared_or_verified',revoked).source,'declared');
 });
+test('a real below-minimum proof retains its source and level without passing admission or earning requirement coverage credit',()=>{
+ const mixed:MatchNeed={...declared,skillRequirements:[{skill:'Python',mode:'verified',level:'Middle'},{skill:'Docker',mode:'declared_or_verified'}]};
+ const person={...candidate,verifiedSkills:['Python'],skillEvidence:[{...proof,level:'Junior' as const}]};
+ const coverage=evaluateSkillRequirement(mixed.skillRequirements![0],person);
+ assert.equal(coverage.verified,true);assert.equal(coverage.verifiedLevel,'Junior');assert.equal(coverage.source,'verified');assert.equal(coverage.provenance!.attemptId,proof.attemptId);
+ assert.equal(coverage.covered,false);assert.equal(coverage.verifiedSufficient,false);assert.match(coverage.reason!,/Junior.*Middle/);
+ assert.equal(evaluateSkillRequirement(mixed.skillRequirements![0],person,{preliminary:true}).covered,false,'known insufficient proof is never ignored by preliminary admission');
+ const result=evaluateMatch(mixed,person,false);
+ assert.equal(result.eligible,false);assert.equal(preparePoolAdmission(mixed,false)(person),false);
+ assert.equal(result.evidence[0].status,'verified');assert.equal(result.evidence[0].satisfied,false);assert.equal(result.evidence[0].provenance!.level,'Junior');
+ assert.match(result.evidence[0].source,/Проверка Python.*Junior/);assert.doesNotMatch(result.evidence[0].evidence,/не подтверждён/);
+ assert.ok(result.gaps.some(gap=>/Python.*Junior.*Middle/.test(gap)));assert.deepEqual(result.strengths,[]);
+ assert.equal(result.factors.find(item=>item.name==='Подтверждённое покрытие навыков')!.score,0);
+ const flexible=evaluateSkillRequirement({skill:'Python',mode:'declared_or_verified'},person);assert.equal(flexible.covered,true);assert.equal(flexible.source,'verified');
+ const sufficient=evaluateSkillRequirement({skill:'Python',mode:'verified',level:'Junior'},person);assert.equal(sufficient.covered,true);assert.equal(sufficient.verifiedSufficient,true);
+});
+test('unlevelled historical proof stays verified, and the highest real module determines level coverage without mutating evidence',()=>{
+ const old={...proof,sourceType:'signal_assessment' as const,level:undefined};
+ const historical=evaluateSkillRequirement({skill:'Python',level:'Middle'},{...candidate,verifiedSkills:['Python'],skillEvidence:[old]});
+ assert.equal(historical.source,'verified');assert.equal(historical.verifiedLevel,null);assert.equal(historical.covered,false);assert.match(historical.reason!,/без отдельного уровня/);
+ const records=[{...proof,level:'Junior' as const},old,{...proof,level:'Senior' as const}];const before=structuredClone(records);
+ const result=evaluateSkillRequirement({skill:'Python',level:'Middle'},{...candidate,skillEvidence:records});
+ assert.equal(result.verifiedLevel,'Senior');assert.equal(result.verifiedSufficient,true);assert.deepEqual(records,before);
+ const foreign=evaluateSkillRequirement({skill:'Python',level:'Middle'},{...candidate,skillEvidence:[{...proof,candidateId:12}]});assert.equal(foreign.verified,false);assert.equal(foreign.covered,false);
+});
 test('strict validation rejects unknown modes, duplicates, conflict and unsupported level',()=>{
  for(const value of [[{skill:'Python',mode:'optional'}],[{skill:'Python',mode:'declared_or_verified',level:'Middle'}],[{skill:'Docker',mode:'verified',level:'Middle'}],[{skill:'Python'},{skill:'py'}],[]]) {
   assert.equal(validateRecruitingRequirements(value[0]?.skill==='Docker'?['Docker']:['Python'],value,undefined).success,false);

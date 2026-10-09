@@ -127,6 +127,20 @@
       "when": 1791504000017,
       "tag": "0017_recruiting_requirements",
       "breakpoints": true
+    },
+    {
+      "version": "7",
+      "breakpoints": true,
+      "when": 1791504000018,
+      "idx": 18,
+      "tag": "0018_microtask_job_context"
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791504000019,
+      "tag": "0019_service_complaints",
+      "breakpoints": true
     }
   ]
 }

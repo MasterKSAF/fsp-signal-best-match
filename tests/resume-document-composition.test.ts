@@ -34,7 +34,7 @@ test('all 1024 field combinations are projections, preserve the CV exactly, and 
     for(const secret of [profile.contactEmail,profile.phone,'polprivate','https://example.test/private-candidate','Полякова','Ирина','Сергеевна'])assert.ok(!JSON.stringify(restricted).includes(secret),`mask ${mask}: ${secret}`);
     const titles=owner.sections.map(section=>section.title);
     for(const [field,title] of [['salary','Зарплатные ожидания'],['conditions','Условия работы'],['summary','О себе'],['skills','Навыки'],['experience','Опыт работы'],['projects','Проект'],['education','Образование'],['softSkills','Личные навыки']] as [ResumeDocumentField,string][])assert.equal(titles.includes(title),fields.includes(field),`${mask}: ${field}`);
-    assert.ok(JSON.stringify(owner).includes('Грейд: Middle · по экзамену'));assert.equal(owner.title,'Авторская должность');
+    assert.ok(JSON.stringify(owner).includes('Подтверждённый грейд: Middle · по комплексному экзамену'));assert.equal(owner.title,'Авторская должность');
   }
   assert.equal(hash(input),before);
 });
@@ -44,7 +44,7 @@ test('owner and granted employer can opt out of contacts everywhere without losi
     const model=projectResumeDocument({...input,audience,fields:resumeDocumentFields.filter(field=>field!=='contacts')});
     const json=JSON.stringify(model);assert.equal(model.name,profile.displayName);assert.equal(model.contactsPermitted,true);assert.equal(model.contactsAllowed,false);
     for(const secret of [profile.contactEmail,profile.phone,'polprivate','https://example.test/private-candidate'])assert.ok(!json.includes(secret));
-    assert.ok(json.includes('от 1200000 до 1800000 ₽ / год'));assert.ok(json.includes('Грейд: Middle · по экзамену'));assert.ok(json.includes('06.10.2026'));
+    assert.ok(json.includes('от 1200000 до 1800000 ₽ / год'));assert.ok(json.includes('Подтверждённый грейд: Middle · по комплексному экзамену'));assert.ok(json.includes('06.10.2026'));
   }
 });
 
@@ -59,10 +59,10 @@ test('one exact skills list deduplicates aliases, preserves actual Junior, and d
 test('grade presentation keeps valid complex Middle separate from zero individual proofs and never invents a numeric grade',()=>{
   const historical={...qualification,skills:[]};const before=hash(historical);
   const document=projectResumeDocument({...input,qualification:historical});
-  assert.equal(qualificationGradeLabel(historical),'Грейд: Middle · по экзамену');assert.equal(qualificationSourceLabel(historical),'По экзамену');
-  assert.equal(qualificationGradeLabel({...historical,verifiedGrade:null}),'Грейд не подтверждён');
-  assert.equal(qualificationGradeLabel({...historical,source:'legacy'}),'Грейд: Middle · по сохранённому результату');
-  assert.ok(JSON.stringify(document).includes('Грейд: Middle · по экзамену'));assert.equal(historical.skills.length,0);assert.equal(hash(historical),before);
+  assert.equal(qualificationGradeLabel(historical),'Подтверждённый грейд: Middle');assert.equal(qualificationSourceLabel(historical),'По комплексному экзамену');
+  assert.equal(qualificationGradeLabel({...historical,verifiedGrade:null}),'Грейд не указан');
+  assert.equal(qualificationGradeLabel({...historical,source:'legacy'}),'Подтверждённый грейд: Middle');
+  assert.ok(JSON.stringify(document).includes('Подтверждённый грейд: Middle · по комплексному экзамену'));assert.equal(historical.skills.length,0);assert.equal(hash(historical),before);
 });
 
 test('saved PDF/DOCX use the selected projection, fixed metadata, and no contact or hyperlink residue',async()=>{
@@ -72,7 +72,7 @@ test('saved PDF/DOCX use the selected projection, fixed metadata, and no contact
   const req=createRequire(new URL('../artifacts/api-server/package.json',import.meta.url));const inner=createRequire(req.resolve('docx'));const zip=await inner('jszip').loadAsync(docx);
   const xml=(await Promise.all(Object.values(zip.files).filter((file:any)=>file.name.endsWith('.xml')||file.name.endsWith('.rels')).map((file:any)=>file.async('string')))).join('\n');
   for(const secret of [profile.contactEmail,profile.phone,'polprivate','private-candidate','ОпытТолько','ОбразованиеТолько','ЛокацияТолько'])assert.ok(!xml.includes(secret),secret);
-  assert.ok(xml.includes('от 1200000 до 1800000'));assert.ok(xml.includes('Грейд: Middle'));assert.ok(xml.includes('Авторская должность'));assert.ok(!xml.includes('Target="https://'));
+  assert.ok(xml.includes('от 1200000 до 1800000'));assert.ok(xml.includes('Подтверждённый грейд: Middle'));assert.ok(xml.includes('Авторская должность'));assert.ok(!xml.includes('Target="https://'));
   assert.equal(pdf.subarray(0,5).toString(),'%PDF-');
   const directory=path.resolve(process.env.SIGNAL_COMPOSITION_PROOFS??'outputs/verification/ui-refinement-20261008/documents-composition');await mkdir(directory,{recursive:true});
   await Promise.all([writeFile(path.join(directory,'selected-no-contacts.docx'),docx),writeFile(path.join(directory,'selected-no-contacts.pdf'),pdf),writeFile(path.join(directory,'selected-no-contacts.json'),JSON.stringify(document,null,2))]);

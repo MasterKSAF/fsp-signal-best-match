@@ -7,8 +7,9 @@ import { assertCompanyActionAllowed } from './signal-trust';
 import type { MicrotaskResumeWriter } from './microtask-resume';
 
 type MicroOffer = typeof offers.$inferSelect;
+export type CompanyMicroAccessSubject = Pick<MicroOffer,'id'|'companyId'|'candidateUserId'|'consentRevokedAt'|'acceptedAt'|'result'|'resumeId'|'resumeRevision'|'resumeContext'|'resumeProvenance'>;
 /** ACL is read afresh once per list request; the map never survives the request. */
-export async function loadCompanyOfferAccess(companyId:number, rows:readonly MicroOffer[], reader:MicrotaskResumeWriter = db) {
+export async function loadCompanyOfferAccess(companyId:number, rows:readonly CompanyMicroAccessSubject[], reader:MicrotaskResumeWriter = db) {
   const access = new Map<number,{readable:boolean;candidateIdentity:ReturnType<typeof microOfferCandidateIdentity>}>(rows.map(row=>[row.id,{readable:false,candidateIdentity:null}]));
   const current = rows.filter(row=>row.companyId === companyId && !row.consentRevokedAt);
   if (!current.length || !(await assertCompanyActionAllowed(companyId,undefined,reader,'contacts')).allowed) return access;

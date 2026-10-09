@@ -23,7 +23,7 @@ test('grant is explicit projection input, owner and permitted employer receive o
   const owner=projectResumeDocument({resumeId:42,revision:3,profile,content,audience:'owner',contactsAllowed:false,publicIdentity:false,qualification,preferences});assert.equal(owner.contactsAllowed,true);assert.equal(owner.name,profile.displayName);
 });
 test('individual Python Junior evidence cannot become total Middle or fabricate React evidence',()=>{
-  const encoded=JSON.stringify(model());assert.ok(encoded.includes('Python - Junior'));assert.ok(encoded.includes('Грейд не подтверждён'));assert.ok(!encoded.includes('React'));
+  const encoded=JSON.stringify(model());assert.ok(encoded.includes('Python - Junior'));assert.ok(encoded.includes('Заявленный грейд: Middle'));assert.ok(!encoded.includes('Подтверждённый грейд: Middle'));assert.ok(!encoded.includes('React'));
 });
 test('normalization removes zero width contacts and unicode compatibility characters',()=>{
   assert.ok(!restrictedDocumentText('private@\u200bexample.test +７ ９９９ １２３ ４５ ６７',profile,true).includes('example.test'));

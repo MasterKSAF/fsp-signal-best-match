@@ -2,12 +2,14 @@ import { exactDictionaryOption, normalizeDictionaryText, type DictionaryOption }
 
 export type RequirementMode = 'verified' | 'declared_or_verified';
 export type RequirementLevel = 'Junior' | 'Middle' | 'Senior';
-const levelledSkillIds = new Set(['python','sql','typescript','react','backend-engineering','frontend-engineering']);
-export function supportsRequirementLevel(skill:string,dictionary:readonly DictionaryOption[]=[]):boolean {
-  const raw=skill.replace(/^(skill|raw):/,'');
-  const option=exactDictionaryOption(dictionary,raw);
-  const key=normalizeDictionaryText(option?.id ?? option?.value ?? raw).replace(/ /g,'-');
-  return levelledSkillIds.has(key==='py'?'python':key==='ts'?'typescript':key);
+const levelledSkills = new Set(['python','sql','typescript','react','backend engineering','frontend engineering']);
+const builtInAliases: Record<string,string> = {py:'Python',ts:'TypeScript'};
+const builtInSkillLabel = (value: string) => builtInAliases[normalizeDictionaryText(value)] ?? value;
+export function requirementSkillLabel(skill: string, dictionary: readonly DictionaryOption[] = []): string {
+  return exactDictionaryOption(dictionary, skill)?.value ?? builtInSkillLabel(skill);
+}
+export function supportsRequirementLevel(skill: string, dictionary: readonly DictionaryOption[] = []): boolean {
+  return levelledSkills.has(normalizeDictionaryText(requirementSkillLabel(skill,dictionary)));
 }
 export type SkillRequirement = { skill: string; mode?: RequirementMode; level?: RequirementLevel };
 export type RequirementContext = {
@@ -21,13 +23,13 @@ export function editorRequirements(skills: readonly string[], source: Requiremen
     const prefix = value.startsWith('skill:') ? 'skill:' : value.startsWith('raw:') ? 'raw:' : '';
     const raw = prefix ? value.slice(prefix.length) : value;
     const option = exactDictionaryOption(dictionary, raw);
-    return option?.id ? `skill:${option.id}` : normalizeDictionaryText(prefix === 'skill:' ? raw.replace(/-/g, ' ') : raw);
+    return normalizeDictionaryText(requirementSkillLabel(option?.value ?? raw,dictionary));
   };
   return skills.map(skill => {
     const existing = source.skillRequirements?.find(item => identity(item.skill) === identity(skill));
     const level = existing?.level ?? Object.entries(source.requiredSkillLevels ?? {}).find(([key]) => identity(key) === identity(skill))?.[1];
     const mode = existing?.mode ?? 'verified';
-    return { skill, mode, ...(mode === 'verified' && level ? { level } : {}) };
+    return { skill: requirementSkillLabel(skill,dictionary), mode, ...(mode === 'verified' && level ? { level } : {}) };
   });
 }
 export function contextRequirements(context: RequirementContext): SkillRequirement[] {

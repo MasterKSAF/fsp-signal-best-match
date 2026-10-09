@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { boolean, index, integer, jsonb, pgTable, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { signalCompaniesTable, signalUsersTable } from "./fsp-signal";
 
@@ -16,15 +17,15 @@ export const signalCompanyBlocksTable = pgTable("signal_company_blocks", {
 }, t => [uniqueIndex("signal_company_block_unique").on(t.candidateUserId, t.companyId)]);
 export const signalComplaintsTable = pgTable("signal_complaints", {
   id: serial("id").primaryKey(), reporterUserId: integer("reporter_user_id").notNull().references(() => signalUsersTable.id, { onDelete: "cascade" }),
-  companyId: integer("company_id").notNull().references(() => signalCompaniesTable.id, { onDelete: "cascade" }),
-  objectType: text("object_type", { enum: ["company", "job", "invitation"] }).notNull(), objectId: integer("object_id").notNull(),
-  category: text("category", { enum: ["spam", "misleading", "discrimination", "inappropriate", "privacy", "other"] }).notNull(),
+  companyId: integer("company_id").references(() => signalCompaniesTable.id, { onDelete: "cascade" }),
+  objectType: text("object_type", { enum: ["company", "job", "invitation", "service"] }).notNull(), objectId: integer("object_id").notNull(),
+  category: text("category", { enum: ["spam", "misleading", "discrimination", "inappropriate", "privacy", "other", "question", "technical"] }).notNull(),
   explanation: text("explanation").notNull().default(""),
-  status: text("status", { enum: ["submitted", "in_review", "dismissed", "upheld"] }).notNull().default("submitted"),
+  status: text("status", { enum: ["submitted", "in_review", "dismissed", "upheld", "resolved"] }).notNull().default("submitted"),
   decisionReason: text("decision_reason"), moderatorUserId: integer("moderator_user_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-}, t => [uniqueIndex("signal_complaint_case_unique").on(t.reporterUserId, t.objectType, t.objectId, t.category), index("signal_complaint_queue_idx").on(t.status, t.createdAt)]);
+}, t => [uniqueIndex("signal_complaint_case_unique").on(t.reporterUserId, t.objectType, t.objectId, t.category).where(sql`${t.objectType} <> 'service'`), index("signal_complaint_queue_idx").on(t.status, t.createdAt)]);
 export const signalComplaintRequestsTable = pgTable("signal_complaint_requests", {
   id: serial("id").primaryKey(), reporterUserId: integer("reporter_user_id").notNull().references(() => signalUsersTable.id, { onDelete: "cascade" }),
   requestKey: text("request_key").notNull(), bodyHash: text("body_hash").notNull(),

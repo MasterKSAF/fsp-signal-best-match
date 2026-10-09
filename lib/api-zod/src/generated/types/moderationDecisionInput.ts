@@ -9,6 +9,9 @@ import type { ModerationDecisionInputAction } from './moderationDecisionInputAct
 import type { ModerationDecisionInputPublicReasonCode } from './moderationDecisionInputPublicReasonCode';
 import type { ModerationDecisionInputScope } from './moderationDecisionInputScope';
 
+/**
+ * resolve is service-only; restrict is forbidden for service complaints.
+ */
 export interface ModerationDecisionInput {
   action: ModerationDecisionInputAction;
   /**

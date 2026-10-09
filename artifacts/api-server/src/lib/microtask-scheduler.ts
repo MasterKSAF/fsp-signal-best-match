@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, inArray, lte, or } from "drizzle-orm";
+import { and, desc, eq, gt, inArray, lte, or, sql } from "drizzle-orm";
 import {
   db,
   signalMicroSubscriptionsTable as subscriptions,
@@ -20,6 +20,8 @@ import { logger } from "./logger";
 import { assertCompanyActionAllowed } from "./signal-trust";
 import { captureMicroResume, microBindingAccessible } from "./microtask-resume-policy";
 import { microBindingAvailable, reconcileMicrotaskResume, lockMicrotaskOwner } from "./microtask-resume";
+import {loadMicroJob} from './microtask-job-context';
+import {microJobAvailable,capturedMicroJob} from './microtask-job-policy';
 
 /** Injected clock is a local test hook, never accepted from an HTTP request. */
 export async function runMicrotaskScheduler(
@@ -42,7 +44,7 @@ export async function runMicrotaskScheduler(
     );
   let created = 0;
   let checked = 0;
-  let after: { id: number; nextDueAt: Date } | null = null;
+  let after: { id: number; cursorTime: string } | null = null;
   // Page over the due-date/ID key, including ineligible rows. Blocked first pages
   // cannot starve later candidates; the oldest due program gets the weekly slot.
   while (true) {
@@ -51,6 +53,9 @@ export async function runMicrotaskScheduler(
         id: subscriptions.id,
         userId: subscriptions.candidateUserId,
         nextDueAt: subscriptions.nextDueAt,
+        // PostgreSQL keeps microseconds; a JS Date would round the key down and
+        // repeat an ineligible last row forever. Round-trip the exact DB value.
+        cursorTime: sql<string>`${subscriptions.nextDueAt}::text`,
       })
       .from(subscriptions)
       .where(
@@ -58,9 +63,9 @@ export async function runMicrotaskScheduler(
           eq(subscriptions.active, true),
           after
             ? or(
-                gt(subscriptions.nextDueAt, after.nextDueAt),
+                gt(subscriptions.nextDueAt, sql`${after.cursorTime}::timestamptz`),
                 and(
-                  eq(subscriptions.nextDueAt, after.nextDueAt),
+                  eq(subscriptions.nextDueAt, sql`${after.cursorTime}::timestamptz`),
                   gt(subscriptions.id, after.id),
                 ),
               )
@@ -95,6 +100,8 @@ export async function runMicrotaskScheduler(
           .where(eq(templates.id, sub.templateId))
           .for("share");
         if (!template?.active) return 0;
+        const job=await loadMicroJob(template,tx,true);
+        if(!microJobAvailable(job,template))return 0;
         const [pref] = await tx
           .select()
           .from(preferences)
@@ -163,6 +170,7 @@ export async function runMicrotaskScheduler(
             candidateUserId: item.userId,
             ...captureMicroResume(resume, candidate.alias),
             snapshot: {
+              job:capturedMicroJob(job!),
               title: template.title,
               competency: template.competency,
               scenario: template.scenario,

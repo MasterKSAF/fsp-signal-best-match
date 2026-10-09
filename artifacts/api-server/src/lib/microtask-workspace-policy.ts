@@ -15,6 +15,21 @@ export const microOfferQuery = z.object({
 export function microAnswerSubmitted(offer:{status:string;answer:string|null}) {
   return ['submitted','evaluated'].includes(offer.status) && !!offer.answer?.trim();
 }
+export const microWorkspacePageQuery = z.object({
+  filter:z.enum(['all','new','evaluated']).optional().default('all'),
+  page:z.coerce.number().int().min(1).max(100000).optional().default(1),
+  pageSize:z.coerce.number().int().min(1).max(100).optional().default(20),
+}).strict();
+export function microAnswerMatches(offer:{status:string;answer:string|null},filter:'all'|'new'|'evaluated') {
+  return microAnswerSubmitted(offer) && (filter==='all'||offer.status===(filter==='new'?'submitted':'evaluated'));
+}
+export function microAnswerCounters(rows:readonly {status:string;answer:string|null}[]) {
+  return {answerCount:rows.filter(row=>microAnswerMatches(row,'all')).length,newAnswerCount:rows.filter(row=>microAnswerMatches(row,'new')).length,evaluatedAnswerCount:rows.filter(row=>microAnswerMatches(row,'evaluated')).length};
+}
+export function microWorkspacePage<T>(rows:readonly T[],input:{page:number;pageSize:number}) {
+  const total=rows.length,pageCount=Math.ceil(total/input.pageSize),page=Math.min(input.page,Math.max(1,pageCount));
+  return {items:rows.slice((page-1)*input.pageSize,page*input.pageSize),total,page,pageSize:input.pageSize,pageCount};
+}
 
 type CompanyOffer = MicroResumeBinding & {companyId:number;candidateUserId:number;consentRevokedAt:Date|null;acceptedAt:Date|null;result:unknown};
 type Company = SignalScopedAccount & {id:number;role:string};

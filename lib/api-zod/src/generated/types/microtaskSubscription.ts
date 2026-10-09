@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { MicroResumeContext } from './microResumeContext';
+import type { MicrotaskJobContext } from './microtaskJobContext';
 import type { MicrotaskSubscriptionResumeProvenance } from './microtaskSubscriptionResumeProvenance';
 
 export interface MicrotaskSubscription {
@@ -30,4 +31,6 @@ export interface MicrotaskSubscription {
   nextDueAt: Date;
   title?: string;
   companyName?: string;
+  job?: MicrotaskJobContext | null;
+  assignmentAvailable?: boolean;
 }

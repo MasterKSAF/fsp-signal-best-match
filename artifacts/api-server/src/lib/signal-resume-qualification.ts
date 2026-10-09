@@ -115,7 +115,9 @@ export function getResumeQualification(target: ResumeQualificationTarget, attemp
   }
   if (legacyApplicable && (!best || gradeLevel[legacy!.grade!] > gradeLevel[best.attempt.grade])) {
     return { verifiedGrade: legacy!.grade, verifiedScore: legacy!.score,
-      verifiedSkills: canonicalSkillLabels([...legacy!.skills, ...safeEvidence.map(item => item.skill)]),
+      // A retained aggregate preserves the overall grade, not individual proof.
+      // Its old skill names stay in the immutable legacy snapshot/history only.
+      verifiedSkills: safeEvidence.map(item => item.skill),
       latestAssessmentAt: legacy!.assessedAt ? new Date(legacy!.assessedAt) : null,
       qualificationAttemptId: legacy!.attemptId, programVersion: null, source: "legacy",
       limitation: legacy!.limitation, evidence: safeEvidence, applicability };

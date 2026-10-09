@@ -34,16 +34,18 @@
 .employer-response-counts b{color:hsl(var(--foreground));margin-left:4px}
 .employer-sort{display:flex;align-items:center;gap:12px;font-size:13px;color:hsl(var(--muted-foreground))}
 .employer-sort .input{width:auto;max-width:220px;font-size:13px;min-height:42px}
-.employer-application-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:16px;align-items:start;min-width:0}
+.employer-application-layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px;align-items:start;min-width:0;container:employer-applications / inline-size}
 .employer-application-layout:not(:has(.employer-application-detail)){grid-template-columns:1fr}
-.employer-application-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;min-width:0}
-.employer-application-row>div:first-child{min-width:0}
+.employer-application-row{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px;min-width:0}
+.employer-application-row>div:first-child{flex:1 1 220px;min-width:0}
+.employer-application-row>.employer-row-actions{flex-direction:row;align-items:center;flex-wrap:wrap;max-width:100%}
 .employer-application-row.selected{border-color:hsl(var(--primary)/.65);background:hsl(var(--primary)/.035)}
 .employer-application-row small,.employer-application-row time,.employer-application-row p{font-size:12px;color:hsl(var(--muted-foreground));line-height:1.6;overflow-wrap:anywhere}
 .employer-application-row p{margin:5px 0}
 .employer-row-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end;flex:none}
 .employer-application-detail{display:grid;gap:14px;padding:20px;min-width:0;position:sticky;top:86px}
 .employer-application-detail p{margin:0;line-height:1.6;font-size:13px;overflow-wrap:anywhere}
+@container employer-applications (max-width:735.98px){.employer-application-detail{position:static}}
 .employer-pagination{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px}
 .employer-task-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:18px;align-items:center;padding:16px 20px;min-width:0}
 .employer-task-open{display:grid;gap:5px;min-width:0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer;padding:0}
@@ -60,12 +62,13 @@
 @media(max-width:1360px){.employer-application-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.employer-application-filters>.button{justify-self:start}}
 @media(max-width:1250px){.employer-task-row{grid-template-columns:minmax(0,1fr) auto}.employer-task-counters{grid-column:1/-1}}
 @media(max-width:820px){.employer-context-row,.employer-application-layout{grid-template-columns:minmax(0,1fr)}.employer-context-side{justify-items:start}.employer-context-side .opportunity-salary{text-align:left}.employer-context-side .opportunity-actions{justify-content:flex-start}.employer-application-detail{position:static}.employer-task-detail .micro-recipient-search{grid-template-columns:1fr}}
-@media(max-width:580px){.employer-workspace .page-title{align-items:flex-start;flex-direction:column}.employer-context-row,.employer-task-row{padding:16px;gap:14px}.employer-application-filters{grid-template-columns:minmax(0,1fr)}.employer-application-filters .input{font-size:16px}.employer-context-side .button{font-size:13px}.employer-application-row{align-items:flex-start;flex-direction:column}.employer-row-actions{flex-direction:row;align-items:center;flex-wrap:wrap}.employer-task-row{grid-template-columns:minmax(0,1fr)}.employer-sort{flex-wrap:wrap}.employer-task-counters .employer-counter{min-height:42px}.employer-task-detail{padding:16px}}
+@media(max-width:580px){.employer-workspace .page-title{align-items:flex-start;flex-direction:column}.employer-context-row,.employer-task-row{padding:16px;gap:14px}.employer-application-filters{grid-template-columns:minmax(0,1fr)}.employer-application-filters .input{font-size:16px}.employer-context-side .button{font-size:13px}.employer-application-row{flex-direction:row}.employer-row-actions{flex-direction:row;align-items:center;flex-wrap:wrap}.employer-task-row{grid-template-columns:minmax(0,1fr)}.employer-sort{flex-wrap:wrap}.employer-task-counters .employer-counter{min-height:42px}.employer-task-detail{padding:16px}}
 .employer-requirement-info{display:flex;align-items:center;margin:8px 0 16px;color:hsl(var(--muted-foreground));font-size:12px}
 
 /* My vacancies: compact actions and independent tab filters. */
 .employer-context-tabs .button{min-width:132px;background:transparent;color:hsl(var(--muted-foreground));border-color:hsl(var(--border));box-shadow:none}
-.employer-context-tabs .button[aria-selected=true]{background:hsl(var(--primary));color:hsl(var(--primary-foreground));border-color:hsl(var(--primary));font-weight:800}
+.employer-context-tabs .button[aria-selected=true],
+.employer-context-tabs .button[aria-selected=true]:is(:hover,:focus-visible,:active):not(:disabled){background:hsl(var(--primary));color:hsl(var(--primary-foreground));border-color:hsl(var(--primary));font-weight:800}
 .employer-context-tabs .button[aria-selected=false]:hover{color:hsl(var(--foreground));background:hsl(var(--muted))}
 .employer-context-panel{display:grid;gap:16px;min-width:0}
 .employer-context-filters{display:grid;grid-template-columns:minmax(180px,1fr) minmax(200px,.65fr) auto;align-items:end;gap:12px 16px;min-width:0}

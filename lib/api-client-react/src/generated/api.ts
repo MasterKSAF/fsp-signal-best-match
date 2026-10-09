@@ -82,6 +82,7 @@ import type {
   GetMatchesParams,
   GetModerationAudit200,
   GetModerationQueue200,
+  GetMyComplaint200,
   GetMySkillEvidence200,
   GetNeedMatchingStatus200,
   GetResearchAccess200,
@@ -109,10 +110,13 @@ import type {
   LiftEmployerRestriction200,
   LiftEmployerRestrictionBody,
   ListCompanyBlocks200,
+  ListCompanyMicrotaskAnswersParams,
+  ListCompanyMicrotaskRecipientsParams,
   ListContactPermissions200Item,
   ListEmployerRestrictions200,
   ListMicrotaskEligibleCandidatesParams,
   ListMyMicrotasks200,
+  ListMyMicrotasksParams,
   ListOwnComplaints200,
   ListResearchStudies200,
   ListSharedMicrotaskEvidence200Item,
@@ -121,9 +125,12 @@ import type {
   MatchCandidate,
   MatchExplanation,
   Message,
+  MicrotaskAnswerPage,
+  MicrotaskEditInput,
   MicrotaskEligibleResumePage,
   MicrotaskInput,
   MicrotaskOffer,
+  MicrotaskRecipientPage,
   MicrotaskSubscription,
   MicrotaskTemplate,
   ModerationDecisionInput,
@@ -5258,7 +5265,7 @@ export const getEditMicrotaskUrl = (id: number,) => {
  * @summary Create new template version; issued snapshots remain unchanged
  */
 export const editMicrotask = async (id: number,
-    microtaskInput: MicrotaskInput, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskTemplate> => {
+    microtaskEditInput: MicrotaskEditInput, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskTemplate> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -5279,7 +5286,7 @@ return customFetch<MicrotaskTemplate>(getEditMicrotaskUrl(id),
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(microtaskInput)
+    body: JSON.stringify(microtaskEditInput)
   }
 );}
 
@@ -5317,9 +5324,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type EditMicrotaskMutationResult = NonNullable<Awaited<ReturnType<typeof editMicrotask>>>
-    export type EditMicrotaskMutationBody = BodyType<MicrotaskInput>
+    export type EditMicrotaskMutationBody = BodyType<MicrotaskEditInput>
     export type EditMicrotaskMutationError = ErrorType<OpportunityError>
-    export type EditMicrotaskMutationVariables = {id: number;data: BodyType<MicrotaskInput>}
+    export type EditMicrotaskMutationVariables = {id: number;data: BodyType<MicrotaskEditInput>}
 
     /**
  * @summary Create new template version; issued snapshots remain unchanged
@@ -5597,20 +5604,27 @@ export const useSubscribeCandidateMicrotask = <TError = ErrorType<OpportunityErr
       return useMutation(getSubscribeCandidateMicrotaskMutationOptions(options));
     }
 
-export const getListMyMicrotasksUrl = () => {
+export const getListMyMicrotasksUrl = (params?: ListMyMicrotasksParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/me/microtasks`
+  return stringifiedParams.length > 0 ? `/api/me/microtasks?${stringifiedParams}` : `/api/me/microtasks`
 }
 
 /**
  * @summary Own offers, results, subscriptions and preference
  */
-export const listMyMicrotasks = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListMyMicrotasks200> => {
+export const listMyMicrotasks = async (params?: ListMyMicrotasksParams, options?: Parameters<typeof customFetch>[1]): Promise<ListMyMicrotasks200> => {
 
-  return customFetch<ListMyMicrotasks200>(getListMyMicrotasksUrl(),
+  return customFetch<ListMyMicrotasks200>(getListMyMicrotasksUrl(params),
   {
     ...options,
     method: 'GET'
@@ -5623,23 +5637,23 @@ export const listMyMicrotasks = async ( options?: Parameters<typeof customFetch>
 
 
 
-export const getListMyMicrotasksQueryKey = () => {
+export const getListMyMicrotasksQueryKey = (params?: ListMyMicrotasksParams,) => {
     return [
-    `/api/me/microtasks`
+    `/api/me/microtasks`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getListMyMicrotasksQueryOptions = <TData = Awaited<ReturnType<typeof listMyMicrotasks>>, TError = ErrorType<OpportunityError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyMicrotasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListMyMicrotasksQueryOptions = <TData = Awaited<ReturnType<typeof listMyMicrotasks>>, TError = ErrorType<OpportunityError>>(params?: ListMyMicrotasksParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyMicrotasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListMyMicrotasksQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getListMyMicrotasksQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyMicrotasks>>> = ({ signal }) => listMyMicrotasks({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyMicrotasks>>> = ({ signal }) => listMyMicrotasks(params, { signal, ...requestOptions });
 
 
 
@@ -5657,11 +5671,11 @@ export type ListMyMicrotasksQueryError = ErrorType<OpportunityError>
  */
 
 export function useListMyMicrotasks<TData = Awaited<ReturnType<typeof listMyMicrotasks>>, TError = ErrorType<OpportunityError>>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyMicrotasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+ params?: ListMyMicrotasksParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyMicrotasks>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getListMyMicrotasksQueryOptions(options)
+  const queryOptions = getListMyMicrotasksQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -11628,4 +11642,244 @@ export const useRequestFspImport = <TError = ErrorType<void | ApiError | Unified
       > => {
       return useMutation(getRequestFspImportMutationOptions(options));
     }
+
+export const getListCompanyMicrotaskAnswersUrl = (id: number,
+    params?: ListCompanyMicrotaskAnswersParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/microtasks/${id}/answers?${stringifiedParams}` : `/api/employer/microtasks/${id}/answers`
+}
+
+export const listCompanyMicrotaskAnswers = async (id: number,
+    params?: ListCompanyMicrotaskAnswersParams, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskAnswerPage> => {
+
+  return customFetch<MicrotaskAnswerPage>(getListCompanyMicrotaskAnswersUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListCompanyMicrotaskAnswersQueryKey = (id: number,
+    params?: ListCompanyMicrotaskAnswersParams,) => {
+    return [
+    `/api/employer/microtasks/${id}/answers`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListCompanyMicrotaskAnswersQueryOptions = <TData = Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number,
+    params?: ListCompanyMicrotaskAnswersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListCompanyMicrotaskAnswersQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>> = ({ signal }) => listCompanyMicrotaskAnswers(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListCompanyMicrotaskAnswersQueryResult = NonNullable<Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>>
+export type ListCompanyMicrotaskAnswersQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useListCompanyMicrotaskAnswers<TData = Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number,
+    params?: ListCompanyMicrotaskAnswersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskAnswers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListCompanyMicrotaskAnswersQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListCompanyMicrotaskRecipientsUrl = (id: number,
+    params?: ListCompanyMicrotaskRecipientsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/microtasks/${id}/recipients?${stringifiedParams}` : `/api/employer/microtasks/${id}/recipients`
+}
+
+export const listCompanyMicrotaskRecipients = async (id: number,
+    params?: ListCompanyMicrotaskRecipientsParams, options?: Parameters<typeof customFetch>[1]): Promise<MicrotaskRecipientPage> => {
+
+  return customFetch<MicrotaskRecipientPage>(getListCompanyMicrotaskRecipientsUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListCompanyMicrotaskRecipientsQueryKey = (id: number,
+    params?: ListCompanyMicrotaskRecipientsParams,) => {
+    return [
+    `/api/employer/microtasks/${id}/recipients`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListCompanyMicrotaskRecipientsQueryOptions = <TData = Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number,
+    params?: ListCompanyMicrotaskRecipientsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListCompanyMicrotaskRecipientsQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>> = ({ signal }) => listCompanyMicrotaskRecipients(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListCompanyMicrotaskRecipientsQueryResult = NonNullable<Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>>
+export type ListCompanyMicrotaskRecipientsQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useListCompanyMicrotaskRecipients<TData = Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number,
+    params?: ListCompanyMicrotaskRecipientsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listCompanyMicrotaskRecipients>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListCompanyMicrotaskRecipientsQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetMyComplaintUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/complaints/${id}`
+}
+
+/**
+ * Own reporter only, both roles. Foreign or missing ID is unavailable.
+ */
+export const getMyComplaint = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<GetMyComplaint200> => {
+
+  return customFetch<GetMyComplaint200>(getGetMyComplaintUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetMyComplaintQueryKey = (id: number,) => {
+    return [
+    `/api/me/complaints/${id}`
+    ] as const;
+    }
+
+
+export const getGetMyComplaintQueryOptions = <TData = Awaited<ReturnType<typeof getMyComplaint>>, TError = ErrorType<UnifiedErrorResponseResponse>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyComplaint>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMyComplaintQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyComplaint>>> = ({ signal }) => getMyComplaint(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMyComplaint>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMyComplaintQueryResult = NonNullable<Awaited<ReturnType<typeof getMyComplaint>>>
+export type GetMyComplaintQueryError = ErrorType<UnifiedErrorResponseResponse>
+
+
+
+export function useGetMyComplaint<TData = Awaited<ReturnType<typeof getMyComplaint>>, TError = ErrorType<UnifiedErrorResponseResponse>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMyComplaint>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMyComplaintQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 

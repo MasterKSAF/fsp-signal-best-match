@@ -46,4 +46,10 @@ export interface MicrotaskInput {
      * @maxItems 6
      */
   rubric: MicrotaskInputRubricItem[];
+  /**
+     * Required owned non-deleted draft/published job. Immutable once template is created; specialization must match.
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  jobId: number;
 }

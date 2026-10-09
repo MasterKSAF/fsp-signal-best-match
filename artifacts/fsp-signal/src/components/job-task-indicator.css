@@ -1,0 +1,4 @@
+.job-task-indicator{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:4px 7px;border:1px solid hsl(var(--border));border-radius:7px;background:hsl(var(--primary-soft));color:hsl(var(--primary));font-size:12px;line-height:1.4;font-weight:650;text-decoration:none}
+.job-task-indicator svg{flex:none}.job-task-indicator span{overflow-wrap:anywhere}
+a.job-task-indicator:hover{text-decoration:underline;text-underline-offset:3px}
+a.job-task-indicator:focus-visible{outline:3px solid hsl(var(--ring));outline-offset:3px}

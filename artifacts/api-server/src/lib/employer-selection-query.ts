@@ -84,7 +84,7 @@ export function sortSelection(people:SelectionPerson[],input:Pick<SelectionQuery
 export function selectionMatchSummary(evaluation:MatchEvaluation) {
   return {eligible:evaluation.eligible,score:evaluation.eligible?evaluation.ranking.businessFitScore:null,
     ineligibilityReasons:evaluation.ineligibilityReasons,gaps:evaluation.gaps,evidence:evaluation.evidence,
-    summary:evaluation.eligible?'Соответствие требованиям выбранной вакансии или запроса с учётом подтверждённых навыков и условий.':'Текущие требования не совпадают с выбранным резюме.',
+    summary:evaluation.eligible?'Соответствие выбранным требованиям к навыкам, грейду и условиям вакансии или запроса.':'Текущие требования не совпадают с выбранным резюме.',
     salaryNote:evaluation.salaryCompatibility==='unknown'?'Недостаточно сопоставимых данных о периоде или расчёте зарплаты.':null};
 }
 /** Public employer projection deliberately excludes exam answers, provenance

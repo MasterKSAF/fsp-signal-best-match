@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { Router, type IRouter, type Request, type Response } from "express";
-import { and, asc, desc, eq, gt, isNull, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, isNull, ne, or, sql } from "drizzle-orm";
 import { db, signalApplicationsTable, signalCompaniesTable, signalCompanyBlocksTable, signalComplaintRequestsTable, signalComplaintsTable, signalContactGrantsTable, signalEmployerRestrictionsTable, signalInvitationsTable, signalJobsTable, signalMicroOffersTable, signalRestrictionAppealsTable, signalTrustAuditTable, signalUsersTable } from "@workspace/db";
 import { getSessionUser, type AuthenticatedSignalSession } from "../lib/signal-auth";
 import { isSignalModerator } from "../lib/signal-trust";
@@ -89,14 +89,21 @@ router.put("/me/companies/:id/block", async (req, res): Promise<void> => {
   if (!result) { missing(res); return; } res.json({ companyId: result.companyId, blocked: result.active, blockedAt: result.blockedAt, unblockedAt: result.unblockedAt });
 });
 router.get("/me/complaints", async (req, res): Promise<void> => {
-  const session = await actor(req, res, "candidate"); if (!session) return;
+  const session = await actor(req, res); if (!session) return;
   const rows = await db.select().from(signalComplaintsTable).where(eq(signalComplaintsTable.reporterUserId, session.user.id)).orderBy(desc(signalComplaintsTable.createdAt));
   res.json({ complaints: rows.map(complaintDto) });
 });
+router.get("/me/complaints/:id", async (req, res): Promise<void> => {
+  const session = await actor(req, res); if (!session) return;
+  const id = paramId(req); if (!id) { missing(res); return; }
+  const [row] = await db.select().from(signalComplaintsTable).where(and(eq(signalComplaintsTable.id,id),eq(signalComplaintsTable.reporterUserId,session.user.id))).limit(1);
+  if (!row) { missing(res); return; } res.json({complaint:complaintDto(row)});
+});
 router.post("/me/complaints", async (req, res): Promise<void> => {
-  const session = await actor(req, res, "candidate"); if (!session) return;
+  const session = await actor(req, res); if (!session) return;
   const parsed = SubmitComplaintSchema.safeParse(req.body); if (!parsed.success) { invalid(res); return; }
   const { idempotencyKey, ...body } = parsed.data;
+  if (body.objectType === "service" ? body.objectId !== session.user.id : session.user.role !== "candidate") { missing(res); return; }
   const bodyHash = createHash("sha256").update(JSON.stringify(body)).digest("hex");
   const result = await db.transaction(async tx => {
     await tx.execute(sql`SELECT pg_advisory_xact_lock(4307,${session.user.id})`);
@@ -106,8 +113,8 @@ router.post("/me/complaints", async (req, res): Promise<void> => {
       const [complaint] = await tx.select().from(signalComplaintsTable).where(and(eq(signalComplaintsTable.id, receipt.complaintId), eq(signalComplaintsTable.reporterUserId, session.user.id))).limit(1);
       return { kind: "saved" as const, complaint: complaint!, replayed: true };
     }
-    const company = await complaintCompany(body, session, tx); if (!company) return { kind: "missing" as const };
-    const [duplicate] = await tx.select().from(signalComplaintsTable).where(and(eq(signalComplaintsTable.reporterUserId, session.user.id), eq(signalComplaintsTable.objectType, body.objectType), eq(signalComplaintsTable.objectId, body.objectId), eq(signalComplaintsTable.category, body.category))).limit(1);
+    const company = body.objectType === "service" ? null : await complaintCompany(body, session, tx); if (body.objectType !== "service" && !company) return { kind: "missing" as const };
+    const [duplicate] = await tx.select().from(signalComplaintsTable).where(and(eq(signalComplaintsTable.reporterUserId, session.user.id), eq(signalComplaintsTable.objectType, body.objectType), eq(signalComplaintsTable.objectId, body.objectId), eq(signalComplaintsTable.category, body.category), body.objectType === "service" ? and(eq(signalComplaintsTable.explanation, body.explanation), gt(signalComplaintsTable.createdAt, new Date(Date.now()-300_000))) : undefined)).limit(1);
     if (duplicate) {
       await tx.insert(signalComplaintRequestsTable).values({ reporterUserId: session.user.id, requestKey: idempotencyKey, bodyHash, complaintId: duplicate.id });
       return { kind: "saved" as const, complaint: duplicate, replayed: true };
@@ -115,9 +122,9 @@ router.post("/me/complaints", async (req, res): Promise<void> => {
     const since = new Date(Date.now() - TRUST_WINDOW_MS);
     const recent = await tx.select({ createdAt: signalComplaintsTable.createdAt }).from(signalComplaintsTable).where(and(eq(signalComplaintsTable.reporterUserId, session.user.id), gt(signalComplaintsTable.createdAt, since))).orderBy(asc(signalComplaintsTable.createdAt));
     if (recent.length >= COMPLAINT_LIMIT_PER_24H) return { kind: "rate" as const, retryAt: new Date(recent[0]!.createdAt.getTime() + TRUST_WINDOW_MS).toISOString() };
-    const [complaint] = await tx.insert(signalComplaintsTable).values({ ...body, reporterUserId: session.user.id, companyId: company.id }).returning();
+    const [complaint] = await tx.insert(signalComplaintsTable).values({ ...body, reporterUserId: session.user.id, companyId: company?.id ?? null }).returning();
     await tx.insert(signalComplaintRequestsTable).values({ reporterUserId: session.user.id, requestKey: idempotencyKey, bodyHash, complaintId: complaint!.id });
-    await audit(tx, session.user.id, "complaint_submitted", "complaint", complaint!.id, company.id, "Обращение сохранено; это не решение о нарушении.", { category: body.category, objectType: body.objectType, objectId: body.objectId });
+    await audit(tx, session.user.id, "complaint_submitted", "complaint", complaint!.id, company?.id ?? null, "Обращение сохранено; это не решение о нарушении.", { category: body.category, objectType: body.objectType, objectId: body.objectId });
     return { kind: "saved" as const, complaint: complaint!, replayed: false };
   });
   if (result.kind === "conflict") { conflict(res, "Ключ обращения уже использован с другим содержимым."); return; }
@@ -154,7 +161,7 @@ router.post("/employer/restrictions/:id/appeals", async (req, res): Promise<void
 });
 router.get("/moderation/queue", async (req, res): Promise<void> => {
   const session = await actor(req, res, "moderator"); if (!session) return;
-  const complaints = await db.select({ complaint: signalComplaintsTable, companyName: signalCompaniesTable.name }).from(signalComplaintsTable).innerJoin(signalCompaniesTable, eq(signalComplaintsTable.companyId, signalCompaniesTable.id)).innerJoin(signalUsersTable, eq(signalUsersTable.id, signalComplaintsTable.reporterUserId)).where(and(signalPoolPredicate(signalUsersTable, session.user), ne(signalCompaniesTable.ownerUserId, session.user.id))).orderBy(asc(signalComplaintsTable.createdAt));
+  const complaints = await db.select({ complaint: signalComplaintsTable, companyName: signalCompaniesTable.name }).from(signalComplaintsTable).leftJoin(signalCompaniesTable, eq(signalComplaintsTable.companyId, signalCompaniesTable.id)).innerJoin(signalUsersTable, eq(signalUsersTable.id, signalComplaintsTable.reporterUserId)).where(and(signalPoolPredicate(signalUsersTable, session.user), or(isNull(signalComplaintsTable.companyId), ne(signalCompaniesTable.ownerUserId, session.user.id)))).orderBy(asc(signalComplaintsTable.createdAt));
   const appeals = await db.select({ appeal: signalRestrictionAppealsTable, restriction: signalEmployerRestrictionsTable, companyName: signalCompaniesTable.name }).from(signalRestrictionAppealsTable).innerJoin(signalEmployerRestrictionsTable, eq(signalRestrictionAppealsTable.restrictionId, signalEmployerRestrictionsTable.id)).innerJoin(signalCompaniesTable, eq(signalCompaniesTable.id, signalRestrictionAppealsTable.companyId)).innerJoin(signalUsersTable, eq(signalUsersTable.id, signalCompaniesTable.ownerUserId)).where(and(signalPoolPredicate(signalUsersTable, session.user), ne(signalCompaniesTable.ownerUserId, session.user.id))).orderBy(asc(signalRestrictionAppealsTable.createdAt));
   res.json({ complaints: complaints.map(row => ({ ...complaintDto(row.complaint), companyName: row.companyName })), appeals: appeals.map(row => ({ ...row.appeal, restriction: row.restriction, companyName: row.companyName })) });
 });
@@ -163,6 +170,21 @@ router.post("/moderation/complaints/:id/decision", async (req, res): Promise<voi
   const id = paramId(req); const parsed = ComplaintDecisionSchema.safeParse(req.body); if (!id || !parsed.success) { invalid(res); return; }
   const result = await db.transaction(async tx => {
     const [initial] = await tx.select().from(signalComplaintsTable).where(eq(signalComplaintsTable.id, id)).limit(1); if (!initial) return { kind: "missing" as const };
+    if (initial.objectType === "service") {
+      await tx.execute(sql`SELECT id FROM signal_complaints WHERE id=${id} FOR UPDATE`);
+      const [complaint] = await tx.select().from(signalComplaintsTable).where(eq(signalComplaintsTable.id,id)).limit(1);
+      const [reporter] = await tx.select({id:signalUsersTable.id}).from(signalUsersTable).where(and(eq(signalUsersTable.id,initial.reporterUserId),signalPoolPredicate(signalUsersTable,session.user))).limit(1);
+      if (!reporter) return {kind:"missing" as const};
+      if (initial.reporterUserId === session.user.id) return {kind:"self" as const};
+      if (parsed.data.action === "restrict") return {kind:"conflict" as const};
+      const status = parsed.data.action === "resolve" ? "resolved" : parsed.data.action === "dismiss" ? "dismissed" : "in_review";
+      if (complaint!.status === status && complaint!.decisionReason === parsed.data.reason) return {kind:"saved" as const,complaint:complaint!,replayed:true};
+      if (!complaintTransitionAllowed(complaint!.status,parsed.data.action)) return {kind:"conflict" as const};
+      const [changed] = await tx.update(signalComplaintsTable).set({status,decisionReason:parsed.data.reason,moderatorUserId:session.user.id,updatedAt:new Date()}).where(eq(signalComplaintsTable.id,id)).returning();
+      await audit(tx,session.user.id,`complaint_${status}`,"complaint",id,null,parsed.data.reason);
+      return {kind:"saved" as const,complaint:changed!,replayed:false};
+    }
+    if (!initial.companyId || parsed.data.action === "resolve") return {kind:"conflict" as const};
     await lockCompany(initial.companyId, tx);
     const company = await companyForSession(initial.companyId, session, tx); if (!company) return { kind: "missing" as const };
     if (company.ownerUserId === session.user.id || initial.reporterUserId === session.user.id) return { kind: "self" as const };
@@ -234,6 +256,11 @@ router.get("/moderation/audit", async (req, res): Promise<void> => {
   const session = await actor(req, res, "moderator"); if (!session) return;
   // A moderator sees events from their pool only; audit has no contacts or raw complaints.
   const events = await db.select({ event: signalTrustAuditTable }).from(signalTrustAuditTable).innerJoin(signalCompaniesTable, eq(signalTrustAuditTable.companyId, signalCompaniesTable.id)).innerJoin(signalUsersTable, eq(signalCompaniesTable.ownerUserId, signalUsersTable.id)).where(and(signalPoolPredicate(signalUsersTable, session.user), ne(signalCompaniesTable.ownerUserId, session.user.id))).orderBy(desc(signalTrustAuditTable.createdAt)).limit(200);
-  res.json({ events: events.map(row => row.event) });
+  const serviceEvents = await db.select({ event: signalTrustAuditTable }).from(signalTrustAuditTable)
+    .innerJoin(signalComplaintsTable, and(eq(signalTrustAuditTable.objectType, "complaint"), eq(signalTrustAuditTable.objectId, signalComplaintsTable.id), eq(signalComplaintsTable.objectType, "service")))
+    .innerJoin(signalUsersTable, eq(signalUsersTable.id, signalComplaintsTable.reporterUserId))
+    .where(and(isNull(signalTrustAuditTable.companyId), signalPoolPredicate(signalUsersTable, session.user)))
+    .orderBy(desc(signalTrustAuditTable.createdAt)).limit(200);
+  res.json({ events: [...events, ...serviceEvents].map(row => row.event).sort((a,b) => b.createdAt.getTime()-a.createdAt.getTime()).slice(0,200) });
 });
 export default router;

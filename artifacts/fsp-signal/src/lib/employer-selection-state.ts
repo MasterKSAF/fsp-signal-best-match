@@ -12,6 +12,7 @@ export const emptySelectionFilters: SelectionFilters = {
 };
 export type SelectionState = {
   context: SelectionContext; mode?: 'catalog'; filters: SelectionFilters; applied: boolean;
+  returnContext?: Exclude<SelectionContext, null>;
   page: number; pageSize: number; view: 'all' | 'shortlisted'; sort: string; direction: 'asc' | 'desc';
   resumeId: number | null; candidateId: number | null; invite: boolean;
   invalidContext: boolean;
@@ -29,6 +30,7 @@ export function readSelectionState(search: string, pathname = '/employer/selecti
     (params.has('need') || params.has('needId')) && !legacyNeed || (params.has('job') || params.has('jobId')) && !legacyJob;
   const context: SelectionContext = typedId && (kind === 'need' || kind === 'job') ? { type: kind, id: typedId }
     : legacyJob ? { type: 'job', id: legacyJob } : legacyNeed ? { type: 'need', id: legacyNeed } : null;
+  const returnId = positiveId(params.get('returnContextId')), returnType = params.get('returnContextType');
   const filters = { ...emptySelectionFilters };
   for (const key of Object.keys(filters) as (keyof SelectionFilters)[]) {
     if (params.has(key)) filters[key] = params.get(key) ?? '';
@@ -38,7 +40,8 @@ export function readSelectionState(search: string, pathname = '/employer/selecti
   const legacyCatalog = pathname === '/employer/candidates' && !!legacyNeed;
   const sort = params.get('sort') ?? (context ? 'recommended' : 'grade');
   return {
-    context, ...(params.get('mode') === 'catalog' || legacyCatalog ? { mode: 'catalog' as const } : {}), filters,
+    context, ...(returnId && (returnType === 'job' || returnType === 'need') ? { returnContext: { type: returnType, id: returnId } } : {}),
+    ...(params.get('mode') === 'catalog' || legacyCatalog ? { mode: 'catalog' as const } : {}), filters,
     applied: params.get('applied') === '1' || (pathname === '/employer/matches' && !!context) ||
       (pathname === '/employer/candidates' && [...params.keys()].some(key => !['resume', 'resumeId'].includes(key))),
     page: positiveId(params.get('page')) ?? 1, pageSize: Math.min(50, positiveId(params.get('pageSize')) ?? 20),
@@ -53,6 +56,7 @@ export function readSelectionState(search: string, pathname = '/employer/selecti
 export function selectionParams(state: SelectionState, forApi = false): URLSearchParams {
   const params = new URLSearchParams();
   if (state.context) { params.set('contextType', state.context.type); params.set('contextId', String(state.context.id)); }
+  if (!forApi && state.returnContext) { params.set('returnContextType', state.returnContext.type); params.set('returnContextId', String(state.returnContext.id)); }
   if (state.mode) params.set('mode', state.mode);
   if (!forApi && state.applied) params.set('applied', '1');
   for (const key of Object.keys(state.filters) as (keyof SelectionFilters)[]) {
@@ -71,6 +75,22 @@ export function selectionParams(state: SelectionState, forApi = false): URLSearc
   return params;
 }
 export function selectionHref(state: SelectionState) { return `/employer/selection?${selectionParams(state)}`; }
+
+export function selectionViewState(state: SelectionState, shortlisted: boolean): SelectionState {
+  return { ...state, view: state.context && shortlisted ? 'shortlisted' : 'all',
+    ...(state.context && shortlisted ? { returnContext: state.context, mode: undefined } : {}),
+    applied: true, page: 1, resumeId: null, candidateId: null, invite: false };
+}
+
+export function selectionScopeState(state: SelectionState, context: SelectionContext, readOnly = false): SelectionState {
+  const returnContext = state.context && state.view === 'shortlisted' ? state.context : state.returnContext;
+  const returning = !!context && selectionContextKey(context) === selectionContextKey(returnContext ?? null);
+  const shortlisted = !!context && (readOnly || state.view === 'shortlisted' || returning);
+  return { ...state, context, ...(returnContext ? { returnContext } : {}), mode: undefined, invalidContext: false,
+    filters: shortlisted ? { ...emptySelectionFilters } : state.filters,
+    applied: shortlisted, view: shortlisted ? 'shortlisted' : 'all', sort: context ? 'recommended' : 'grade',
+    page: 1, resumeId: null, candidateId: null, invite: false };
+}
 export function selectionDraftKey(state: Pick<SelectionState, 'context' | 'mode' | 'filters'>) {
   return JSON.stringify([selectionContextKey(state.context), state.mode ?? '', state.filters]);
 }

@@ -6,3 +6,13 @@
 .env.*
 output
 outputs
+delivery
+local-backup
+**/.load-runtime
+**/.cache
+**/.vite
+**/coverage
+**/*.log
+**/__pycache__
+**/*.pyc
+**/*.pyo

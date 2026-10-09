@@ -22,8 +22,9 @@ export interface TrustComplaint {
   /**
      * @minimum 1
      * @maximum 2147483647
+     * @nullable
      */
-  companyId: number;
+  companyId: number | null;
   category: TrustComplaintCategory;
   explanation?: string;
   status: string;

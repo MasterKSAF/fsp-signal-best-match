@@ -8,3 +8,5 @@
   min-width: 0;
   margin: 0;
 }
+
+.trust-section-heading {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}.trust-section-heading h2{margin:0}.trust-message {white-space:pre-wrap;overflow-wrap:anywhere}

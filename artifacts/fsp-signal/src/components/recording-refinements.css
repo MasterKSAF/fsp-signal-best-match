@@ -1,0 +1,12 @@
+.settings-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 20px; }
+.settings-tabs [role=tab] { min-height:40px; }
+.settings-company .page-title { display:none; }
+.settings-company .company-form { margin-top:0; }
+.outgoing-candidate-name { display:block; font-size:16px; font-weight:700; line-height:1.45; overflow-wrap:anywhere; }
+.outgoing-controls .contact-release b { font-size:15px; }
+.about-role-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+.about-role-grid ol { padding-left:20px; margin-bottom:0; line-height:1.65; }
+.about-role-grid li+li { margin-top:10px; }
+.workspace-history .app-back-button { width:40px; height:40px; flex-basis:40px; }
+.workspace-history .app-back-button svg { width:19px; height:19px; stroke-width:2; }
+@media(max-width:700px) { .about-role-grid { grid-template-columns:1fr; } }

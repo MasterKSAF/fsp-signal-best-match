@@ -14,6 +14,7 @@ import {
   signalCandidateResumesTable as resumes,
   signalCompanyBlocksTable as blocks,
   signalEmployerRestrictionsTable as restrictions,
+  signalJobsTable as jobs,
 } from "@workspace/db";
 import { MICRO_LIMITS } from "../lib/opportunity-rules";
 import { opportunityActor, positiveId } from "../lib/opportunity-auth";
@@ -26,7 +27,10 @@ import { runMicrotaskScheduler } from "../lib/microtask-scheduler";
 import { captureMicroResume, microTemplateInput, MICRO_LEGACY_LIMITATION, MICRO_RESUME_UNAVAILABLE } from "../lib/microtask-resume-policy";
 import { microBindingAvailable, revokeMicrotasksForResume, lockMicrotaskOwner, type MicrotaskResumeWriter } from "../lib/microtask-resume";
 import { companyOfferReadable, loadCompanyOfferAccess, loadCompanyOfferReadability } from "../lib/microtask-company-read";
-import { microAnswerSubmitted, microOfferQuery, microTemplateUpdateInput } from "../lib/microtask-workspace-policy";
+import { microAnswerSubmitted, microOfferQuery, microTemplateUpdateInput, microWorkspacePageQuery, microAnswerMatches, microAnswerCounters, microWorkspacePage } from "../lib/microtask-workspace-policy";
+import {readCompanyMicroAnswers,readCompanyMicroRecipients} from '../lib/microtask-workspace-read';
+import {loadMicroJob,offerMicroJob} from '../lib/microtask-job-context';
+import {microJobAvailable,microJobProjection,MICRO_JOB_UNAVAILABLE,MICRO_JOB_LEGACY} from '../lib/microtask-job-policy';
 export { companyOfferReadable } from "../lib/microtask-company-read";
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
@@ -44,34 +48,36 @@ async function guardOfferResume(tx: ContactTransaction, offer: MicroOffer, res: 
   res.status(409).json({ error: offer.resumeProvenance === "legacy_unbound" ? MICRO_LEGACY_LIMITATION : MICRO_RESUME_UNAVAILABLE, code: "practice_resume_unavailable" });
   return false;
 }
+async function guardOfferAssignment(tx:ContactTransaction,offer:MicroOffer,res:Response) {
+  const job=await offerMicroJob(offer,tx,true);
+  if(!job?.available){res.status(409).json({error:job?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY,code:'practice_job_unavailable'});return false;}
+  return guardOfferResume(tx,offer,res);
+}
+async function templateResponse(template:typeof templates.$inferSelect) {
+  const job=await loadMicroJob(template);
+  return {...template,job:microJobProjection(job,template),assignmentAvailable:template.active&&microJobAvailable(job,template)};
+}
 router.get("/employer/microtasks", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
   if (!actor?.company) return;
   const companyId = actor.company.id;
-  const [list, answerRows, recipients] = await Promise.all([
+  const [list, answers, recipients] = await Promise.all([
     db.select().from(templates).where(eq(templates.companyId, companyId)).orderBy(desc(templates.createdAt), desc(templates.id)),
-    db.select({ offer: offers, templateId: subscriptions.templateId }).from(offers)
-      .innerJoin(subscriptions, eq(subscriptions.id, offers.subscriptionId))
-      .innerJoin(users, eq(users.id, offers.candidateUserId))
-      .where(and(eq(offers.companyId, companyId), signalPoolPredicate(users, actor),
-        inArray(offers.status, ["submitted", "evaluated"]), isNull(offers.consentRevokedAt))),
-    db.select({ templateId: subscriptions.templateId, total: count() }).from(subscriptions)
-      .innerJoin(templates, eq(templates.id, subscriptions.templateId)).innerJoin(users, eq(users.id, subscriptions.candidateUserId))
-      .where(and(eq(templates.companyId, companyId), signalPoolPredicate(users, actor))).groupBy(subscriptions.templateId),
+    readCompanyMicroAnswers(companyId,actor),
+    readCompanyMicroRecipients(companyId,actor),
   ]);
-  const access = await loadCompanyOfferReadability(companyId, answerRows.map(row => row.offer));
-  const counters = new Map<number, { answerCount:number; newAnswerCount:number; evaluatedAnswerCount:number }>();
-  for (const {offer, templateId} of answerRows) {
-    if (!access.get(offer.id) || !microAnswerSubmitted(offer)) continue;
-    const value = counters.get(templateId) ?? {answerCount:0,newAnswerCount:0,evaluatedAnswerCount:0};
-    value.answerCount += 1;
-    if (offer.status === 'submitted') value.newAnswerCount += 1;
-    else value.evaluatedAnswerCount += 1;
-    counters.set(templateId, value);
-  }
-  const recipientCounts = new Map(recipients.map(row => [row.templateId,row.total]));
   res.setHeader('Cache-Control','no-store, private');
-  res.json(list.map(template => ({...template, ...(counters.get(template.id) ?? {answerCount:0,newAnswerCount:0,evaluatedAnswerCount:0}), recipientCount:recipientCounts.get(template.id) ?? 0})));
+  res.json(await Promise.all(list.map(async template => ({...await templateResponse(template),...microAnswerCounters(answers.filter(row=>row.templateId===template.id)),recipientCount:recipients.filter(row=>row.templateId===template.id).length}))));
+});
+for(const kind of ['answers','recipients'] as const)router.get(`/employer/microtasks/:id/${kind}`,async(req,res)=>{
+  const actor=await opportunityActor(req,res,'employer');if(!actor?.company)return;
+  const input=microWorkspacePageQuery.safeParse(req.query);if(!input.success){res.status(400).json({error:'Проверьте фильтр и страницу.'});return;}
+  const id=positiveId(req.params.id),[template]=await db.select({id:templates.id}).from(templates).where(and(eq(templates.id,id),eq(templates.companyId,actor.company.id))).limit(1);
+  if(!template){res.status(404).json({error:'Задание не найдено.'});return;}
+  res.setHeader('Cache-Control','no-store, private');
+  if(kind==='recipients'){res.json(microWorkspacePage(await readCompanyMicroRecipients(actor.company.id,actor,id),input.data));return;}
+  const answers=await readCompanyMicroAnswers(actor.company.id,actor,id);
+  res.json({...microWorkspacePage(answers.filter(row=>microAnswerMatches(row,input.data.filter)),input.data),filter:input.data.filter,counters:microAnswerCounters(answers)});
 });
 router.post("/employer/microtasks", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -80,17 +86,19 @@ router.post("/employer/microtasks", async (req, res) => {
   if (!input.success) {
     res.status(400).json({
       error:
-        "Укажите учебную ситуацию, компетенцию, критерии, 5–45 минут и период не менее 7 дней. Подтвердите отсутствие производственной работы.",
+        "Выберите вакансию, укажите учебную ситуацию, компетенцию, критерии, 5–45 минут и период не менее 7 дней.",fieldErrors:input.error.flatten().fieldErrors,
     });
     return;
   }
   const row = await db.transaction(async tx => {
     if (!await guardCompany(tx, actor.company!.id, res, "publishing")) return null;
+    const target={...input.data,companyId:actor.company!.id};
+    if(!microJobAvailable(await loadMicroJob(target,tx,true),target,'prepare')){res.status(400).json({error:MICRO_JOB_UNAVAILABLE,fieldErrors:{jobId:['Выберите свою действующую вакансию того же направления.']}});return null;}
     const [created] = await tx.insert(templates).values({ ...input.data, companyId: actor.company!.id }).returning();
     return created;
   });
   if (!row) return;
-  res.status(201).json(row);
+  res.status(201).json(await templateResponse(row));
 });
 router.put("/employer/microtasks/:id", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -114,6 +122,9 @@ router.put("/employer/microtasks/:id", async (req, res) => {
       .for("update");
     if (!old) return null;
     if (old.version !== input.data.version) { res.status(409).json({code:"VERSION_CONFLICT",error:"Задание уже изменено. Загрузите актуальную редакцию перед сохранением."}); return null; }
+    if(!old.jobId||old.jobId!==input.data.jobId){res.status(409).json({error:old.jobId?'Вакансия задания неизменяема. Создайте новое задание для другой вакансии.':MICRO_JOB_LEGACY,code:'practice_context_immutable'});return null;}
+    const target={...input.data,companyId:actor.company!.id};
+    if(!microJobAvailable(await loadMicroJob(target,tx,true),target,'prepare')){res.status(409).json({error:MICRO_JOB_UNAVAILABLE});return null;}
     const {version:expectedVersion,...changes} = input.data;
     const [updated] = await tx
       .update(templates)
@@ -127,7 +138,7 @@ router.put("/employer/microtasks/:id", async (req, res) => {
     res.status(404).json({ error: "Задание не найдено." });
     return;
   }
-  res.json(row);
+  res.json(await templateResponse(row));
 });
 router.post("/employer/microtasks/:id/availability", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -139,6 +150,9 @@ router.post("/employer/microtasks/:id/availability", async (req, res) => {
   }
   const row = await db.transaction(async tx => {
     if (input.data.active && !await guardCompany(tx, actor.company!.id, res, "publishing")) return null;
+    const [old]=await tx.select().from(templates).where(and(eq(templates.id,positiveId(req.params.id)),eq(templates.companyId,actor.company!.id))).for('update');
+    if(!old)return null;
+    if(input.data.active&&!microJobAvailable(await loadMicroJob(old,tx,true),old,'prepare')){res.status(409).json({error:old.jobId?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY});return null;}
     const [updated] = await tx.update(templates).set(input.data).where(and(eq(templates.id, positiveId(req.params.id)), eq(templates.companyId, actor.company!.id))).returning();
     return updated;
   });
@@ -147,7 +161,7 @@ router.post("/employer/microtasks/:id/availability", async (req, res) => {
     res.status(404).json({ error: "Задание не найдено." });
     return;
   }
-  res.json(row);
+  res.json(await templateResponse(row));
 });
 router.get("/employer/microtasks/eligible/candidates", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -162,6 +176,7 @@ router.get("/employer/microtasks/eligible/candidates", async (req, res) => {
   if (input.templateId !== undefined) {
     const [template] = await db.select().from(templates).where(and(eq(templates.id, input.templateId), eq(templates.companyId, actor.company.id), eq(templates.active, true)));
     if (!template) { res.status(404).json({ error: "Задание недоступно." }); return; }
+    if(!microJobAvailable(await loadMicroJob(template),template)){res.status(409).json({error:template.jobId?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY});return;}
     if (!template.specialization) { res.json({ items: [], nextCursor: null }); return; }
     specialization = template.specialization;
   }
@@ -204,6 +219,7 @@ router.post("/employer/microtasks/:id/subscriptions", async (req, res) => {
     await lockMicrotaskOwner(tx, input.data.candidateId);
     const [template] = await tx.select().from(templates).where(and(eq(templates.id, positiveId(req.params.id)), eq(templates.companyId, actor.company!.id), eq(templates.active, true))).for("share");
     if (!template?.specialization) return null;
+    if(!microJobAvailable(await loadMicroJob(template,tx,true),template)){res.status(409).json({error:template.jobId?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY});return null;}
     const [candidate] = await tx.select({ resume: resumes, alias: profiles.professionalAlias }).from(resumes)
       .innerJoin(users, eq(users.id, resumes.userId)).innerJoin(profiles, eq(profiles.userId, resumes.userId))
       .innerJoin(preferences, eq(preferences.candidateUserId, resumes.userId))
@@ -236,6 +252,8 @@ router.post("/employer/microtasks/:id/subscriptions", async (req, res) => {
 router.get("/me/microtasks", async (req, res) => {
   const actor = await opportunityActor(req, res, "candidate");
   if (!actor) return;
+  const filter=z.object({jobId:z.coerce.number().int().positive().max(2147483647).optional()}).strict().safeParse(req.query);
+  if(!filter.success){res.status(400).json({error:'Некорректная вакансия.'});return;}
   const [pref] = await db
     .select()
     .from(preferences)
@@ -255,6 +273,7 @@ router.get("/me/microtasks", async (req, res) => {
       resumeContext: subscriptions.resumeContext,
       resumeProvenance: subscriptions.resumeProvenance,
       specialization: templates.specialization,
+      jobId:templates.jobId,
       title: templates.title,
       companyName: companies.name,
       companyId: companies.id,
@@ -265,16 +284,20 @@ router.get("/me/microtasks", async (req, res) => {
     .where(eq(subscriptions.candidateUserId, actor.userId));
   res.json({
     enabled: pref?.enabled ?? false,
-    offers: await Promise.all(rows.map(async row => {
+    offers: await Promise.all(rows.filter(row=>!filter.data.jobId||row.snapshot.job?.id===filter.data.jobId).map(async row => {
       const resumeAvailable = !row.consentRevokedAt && row.resumeProvenance === "captured" && await microBindingAvailable(db, row, row.candidateUserId, row.companyId);
-      return { ...row, resumeAvailable,
+      const job=await offerMicroJob(row);
+      return { ...row, resumeAvailable,job,assignmentAvailable:resumeAvailable&&!!job?.available,
+        assignmentLimitation:job?.available?null:job?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY,
         resumeLimitation: resumeAvailable ? null : row.resumeProvenance === "legacy_unbound" ? MICRO_LEGACY_LIMITATION : MICRO_RESUME_UNAVAILABLE,
         status: ["offered", "accepted"].includes(row.status) && row.dueAt <= new Date() ? "expired" : row.status };
     })),
-    subscriptions: await Promise.all(subs.map(async sub => {
+    subscriptions: await Promise.all(subs.filter(sub=>!filter.data.jobId||sub.jobId===filter.data.jobId).map(async sub => {
       const resumeAvailable = sub.specialization !== null && sub.resumeContext?.specialization === sub.specialization &&
         await microBindingAvailable(db, sub, actor.userId, sub.companyId);
-      return { ...sub, resumeAvailable,
+      const current=await loadMicroJob(sub),available=microJobAvailable(current,sub);
+      const job=current?{id:current.id,title:available?current.title:'Вакансия недоступна',available}:null;
+      return { ...sub, resumeAvailable,job,assignmentAvailable:resumeAvailable&&available,
         resumeLimitation: resumeAvailable ? null : sub.resumeProvenance === "legacy_unbound" ? MICRO_LEGACY_LIMITATION : MICRO_RESUME_UNAVAILABLE };
     })),
     limits: MICRO_LIMITS,
@@ -334,6 +357,7 @@ router.post("/me/microtasks/subscriptions/:id", async (req, res) => {
       .innerJoin(templates, eq(templates.id, subscriptions.templateId))
       .where(and(eq(subscriptions.id, positiveId(req.params.id)), eq(subscriptions.candidateUserId, actor.userId)));
     if (!bound) return null;
+    if(input.data.active&&!microJobAvailable(await loadMicroJob(bound.template,tx,true),bound.template)){res.status(409).json({error:bound.template.jobId?MICRO_JOB_UNAVAILABLE:MICRO_JOB_LEGACY});return null;}
     if (input.data.active && (!bound.template.active || !bound.template.specialization ||
       bound.subscription.resumeContext?.specialization !== bound.template.specialization ||
       !await microBindingAvailable(tx, bound.subscription, actor.userId, bound.template.companyId))) {
@@ -407,7 +431,7 @@ router.post("/me/microtasks/:id/decision", async (req, res) => {
       )
       .for("update");
     if (!old || old.consentRevokedAt) return null;
-    if (target === "accepted" && !await guardOfferResume(tx, old, res)) return null;
+    if (target === "accepted" && !await guardOfferAssignment(tx, old, res)) return null;
     if (old.status === target) return old;
     if (old.status !== "offered" || old.dueAt <= new Date()) return null;
     const [updated] = await tx
@@ -459,7 +483,7 @@ router.post("/me/microtasks/:id/submit", async (req, res) => {
     if (!old || old.consentRevokedAt) return null;
     if (["submitted", "evaluated"].includes(old.status))
       return old.answer === input.data.answer ? old : null;
-    if (!await guardOfferResume(tx, old, res)) return null;
+    if (!await guardOfferAssignment(tx, old, res)) return null;
     if (old.status !== "accepted" || old.dueAt <= new Date()) return null;
     const [updated] = await tx
       .update(offers)

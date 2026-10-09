@@ -4,6 +4,12 @@ export function professionLabel(value?: string | null) {
   return value || 'Должность не указана';
 }
 
+export function catalogContextCaption(type?: 'job' | 'need') {
+  if (type === 'job') return 'Каталог с требованиями выбранной вакансии.';
+  if (type === 'need') return 'Каталог с требованиями выбранного запроса.';
+  return null;
+}
+
 export function selectionHref(type: 'job' | 'need', id: number, shortlisted = false) {
   const params = new URLSearchParams({ contextType: type, contextId: String(id), applied: '1' });
   if (shortlisted) params.set('view', 'shortlisted');

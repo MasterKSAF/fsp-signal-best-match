@@ -8,6 +8,9 @@
 import type { ComplaintInputCategory } from './complaintInputCategory';
 import type { ComplaintInputObjectType } from './complaintInputObjectType';
 
+/**
+ * Service complaints may be created by either role, require own session userId as objectId and trimmed explanation of 10–2000 characters. Existing company/job/invitation complaints remain candidate-only and use existing ACL.
+ */
 export interface ComplaintInput {
   objectType: ComplaintInputObjectType;
   /**

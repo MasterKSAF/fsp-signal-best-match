@@ -1,3 +1,4 @@
+import type { RequirementMode, SkillRequirement } from '../lib/context-requirements';
 import { evidenceNoteForDisplay } from '../lib/qualification-presentation';
 import { useQuery } from '@tanstack/react-query';
 import { BadgeCheck, CircleHelp, Trophy } from 'lucide-react';
@@ -28,13 +29,13 @@ export function RequirementCoverage({ requirements, specialization }: { requirem
 }
 export const SkillCoverage = RequirementCoverage;
 
-type SearchStatus = Coverage & { eligibleCount: number; status: 'available' | 'unsupported_requirements' | 'no_verified_candidates' | 'invalid_requirements'; minimumGrade: string; note: string };
+type SearchStatus = Coverage & { eligibleCount: number; status: 'available' | 'unsupported_requirements' | 'no_matching_candidates' | 'no_verified_candidates' | 'invalid_requirements'; minimumGrade: string; gradeMode?: RequirementMode; skillRequirements?: SkillRequirement[]; note: string };
 export function MatchSearchState({ needId, totalMatches, filteredCount, resetFilters }: { needId: number; totalMatches: number; filteredCount: number; resetFilters: () => void }) {
   const query = useQuery({ queryKey: ['matching-status', needId, totalMatches], queryFn: () => api<SearchStatus>(`/api/employer/needs/${needId}/matching-status`) });
   if (totalMatches > 0) return filteredCount ? null : <div className="empty-state"><h3>Кандидаты скрыты фильтрами</h3><p>В исходном подборе {totalMatches} профилей. Условия потребности сохранены.</p><button className="button secondary" onClick={resetFilters}>Сбросить фильтры</button></div>;
   if (query.isPending) return <p role="status">Проверяем причину пустого подбора…</p>;
   if (query.isError) return <div role="alert"><p>Не удалось загрузить покрытие требований.</p><button className="button secondary" onClick={() => query.refetch()}>Повторить</button></div>;
   const unsupported = query.data?.coverage.filter(x => !x.supported) ?? [];
-  if (query.data?.status === 'invalid_requirements') return <div className="empty-state" role="alert"><CircleHelp size={26}/><h3>Уточните обязательные навыки</h3><p>{query.data.note}</p><Link className="button secondary" href="/employer">Создать запрос</Link></div>;
-  return <div className="empty-state"><CircleHelp size={26}/><h3>{unsupported.length ? 'Для части требований пока нет проверки' : 'Нет кандидатов со всеми подтверждениями'} <InlineInfo label="О требованиях запроса">Неподтверждённые навыки не заменяют обязательные. Можно создать новый запрос с другим списком требований; текущий останется в истории.</InlineInfo></h3><p>{unsupported.length ? unsupported.map(x => `${x.label}: ${x.evidence}`).join('. ') : `Нужны подтверждённые обязательные навыки и категория не ниже ${query.data?.minimumGrade}.`}</p><Link className="button secondary" href="/employer">К запросам на подбор</Link></div>;
+  if (query.data?.status === 'invalid_requirements') return <div className="empty-state" role="alert"><CircleHelp size={26}/><h3>Уточните обязательные навыки</h3><p>{query.data.note}</p><Link className="button secondary" href="/employer/jobs?tab=needs&create=1">Создать запрос</Link></div>;
+  return <div className="empty-state"><CircleHelp size={26}/><h3>{unsupported.length ? 'Для части требований пока нет проверки' : 'Нет кандидатов по условиям запроса'}</h3><p>{query.data?.note || 'Проверьте требования к навыкам, грейду и условиям работы.'}</p>{unsupported.length > 0 && <p>{unsupported.map(item => `${item.label}: ${item.evidence}`).join('. ')}</p>}<Link className="button secondary" href="/employer/jobs?tab=needs">К запросам на подбор</Link></div>;
 }

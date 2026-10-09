@@ -16,4 +16,6 @@ export const TrustComplaintCategory = {
   inappropriate: 'inappropriate',
   privacy: 'privacy',
   other: 'other',
+  question: 'question',
+  technical: 'technical',
 } as const;

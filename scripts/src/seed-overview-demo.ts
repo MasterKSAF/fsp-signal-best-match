@@ -2,10 +2,11 @@ import { randomBytes, scryptSync } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { db, signalUsersTable as users, signalCandidateProfilesTable as profiles,
-  signalCandidateResumesTable as resumes, signalCompaniesTable as companies, signalDemoSeedTable as markers,
+  signalCandidateResumesTable as resumes, signalCompaniesTable as companies, signalDemoSeedTable as markers, signalJobsTable as jobs, signalJobRequirementsTable as jobRequirements,
   signalMicroPreferencesTable as preferences, signalMicroTemplatesTable as templates,
   signalMicroSubscriptionsTable as subscriptions, signalMicroOffersTable as offers } from "@workspace/db";
 import { captureMicroResume } from "../../artifacts/api-server/src/lib/microtask-resume-policy";
+import { capturedMicroJob } from "../../artifacts/api-server/src/lib/microtask-job-policy";
 import { MICRO_LIMITS } from "../../artifacts/api-server/src/lib/opportunity-rules";
 import { validateAvatarDataUrl } from "../../artifacts/api-server/src/lib/signal-avatar";
 
@@ -81,7 +82,13 @@ export async function seedOverviewDemo() {
     const rubric = [{ id: "repeat", label: "Правило повторного идентификатора", maxPoints: 4 },
       { id: "atomic", label: "Согласованность результата при сбое", maxPoints: 3 },
       { id: "tests", label: "Два тестовых сценария", maxPoints: 3 }];
-    const [template] = await tx.insert(templates).values({ companyId: employer.company.id,
+    const [practiceJob] = await tx.insert(jobs).values({ companyId: employer.company.id,
+      title: "Backend-разработчик учебного сервиса · Demo", description: "Синтетическая обзорная вакансия для демонстрации учебной практики и обратной связи компании.",
+      specialization: "Backend / Python", grade: "Middle", gradeMode: "declared_or_verified", skills: ["Python", "SQL"],
+      workFormat: "Удалённо", salaryMin: 180000, salaryMax: 240000, salaryPeriod: "month", salaryType: "gross",
+      status: "published", publishedAt: fixedDate, createdAt: fixedDate, updatedAt: fixedDate }).returning();
+    await tx.insert(jobRequirements).values({jobId:practiceJob!.id,location:"",skillRequirements:[{skill:"Python",mode:"declared_or_verified"},{skill:"SQL",mode:"declared_or_verified"}]});
+    const [template] = await tx.insert(templates).values({ companyId: employer.company.id, jobId: practiceJob!.id,
       title: "Учебный счётчик библиотеки · Demo", specialization: "Backend / Python", competency: "Idempotency",
       scenario: "Синтетическая практика. Вымышленная библиотека считает посещения. Объясните повтор запроса, атомарную запись и два теста. Производственный код и доступ к инфраструктуре не нужны.",
       expectedMinutes: 20, intervalDays: 7, deadlineDays: 3, rubric, educationalOnly: true, active: true, createdAt: fixedDate }).returning();
@@ -90,7 +97,7 @@ export async function seedOverviewDemo() {
     const [subscription] = await tx.insert(subscriptions).values({ ...binding, candidateUserId: person.userId, templateId: template!.id,
       active: false, nextDueAt: new Date("2026-10-08T09:00:00Z"), lastOfferedAt: fixedDate, createdAt: fixedDate }).returning();
     await tx.insert(offers).values({ ...binding, subscriptionId: subscription!.id, companyId: employer.company.id,
-      candidateUserId: person.userId, snapshot: { title: template!.title, competency: template!.competency,
+      candidateUserId: person.userId, snapshot: { job:capturedMicroJob(practiceJob!), title: template!.title, competency: template!.competency,
         scenario: template!.scenario, expectedMinutes: template!.expectedMinutes, rubric, version: template!.version,
         companyName: employer.company.name, limits: MICRO_LIMITS }, status: "evaluated", scheduledFor: fixedDate,
       dueAt: new Date("2026-10-04T09:00:00Z"), createdAt: fixedDate, acceptedAt: fixedDate,
@@ -102,6 +109,6 @@ export async function seedOverviewDemo() {
           { criterionId: "tests", points: 2, comment: "Два базовых сценария; можно добавить конкурентный повтор." }],
         total: 8, max: 10, feedback: "Синтетический пример оценки компании. 8/10 за учебное рассуждение; грейд и экзамен Signal не изменяются." } });
     await tx.insert(markers).values({ key: OVERVIEW_DEMO_MARKER, version: "six-people-eight-resumes-one-program-v1" });
-    return { created: true, marker: OVERVIEW_DEMO_MARKER, people: people.length, resumes: 8, templates: 1, offers: 1 };
+    return { created: true, marker: OVERVIEW_DEMO_MARKER, people: people.length, resumes: 8, jobs: 1, templates: 1, offers: 1 };
   });
 }

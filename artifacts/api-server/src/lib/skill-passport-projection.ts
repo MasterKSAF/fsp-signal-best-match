@@ -1,12 +1,18 @@
 import { canonicalSkillKey, resolveSkill } from './skill-catalog';
 import { skillModuleRegistry } from './skill-module-bank';
 import { getSkillQualification, skillLevelRank, type SkillEvidenceProjection, type SkillQualificationInputs, type SkillQualificationTarget } from './skill-module-qualification';
+import { resumeAffiliatedSkillIds, resumeSkillModule as moduleFor } from './resume-skill-affiliation';
 
 export type PassportResumeContext = SkillQualificationTarget & { id: number; title: string };
 export type PassportSkillContext = { resumeId: number; state: 'declared' | 'recommended'; targetLevel: 'Junior' | 'Middle' | 'Senior' | null; reason: string | null };
 export type PassportAccountSkill = { skillId: string | null; label: string; state: 'declared' | 'recommended'; resumeIds: number[]; contexts: PassportSkillContext[]; targetLevel: 'Junior' | 'Middle' | 'Senior' | null; verifiedLevel: 'Junior' | 'Middle' | 'Senior' | null };
-const moduleFor = (raw: string) => skillModuleRegistry.find(m => m.id === resolveSkill(raw).id || m.id === raw.trim().toLowerCase() || m.title.toLowerCase() === raw.trim().toLowerCase());
 const keyFor = (raw: string) => { const module = moduleFor(raw); return module ? `skill:${module.id}` : canonicalSkillKey(raw); };
+
+/** Owner display affiliation only. Never narrows/revokes the account's proofs,
+ * or changes employer matching and exact-CV access. */
+export function passportRelatedSkillIds(resume: PassportResumeContext, inputs: SkillQualificationInputs): string[] {
+  return resumeAffiliatedSkillIds(resume, getSkillQualification(resume, inputs).coverage);
+}
 
 /** Account projections never turn a neighbouring technology into a proof, or CV tags into category requirements. */
 export function projectPassportAccountSkills(contexts: readonly PassportResumeContext[], inputs: SkillQualificationInputs, proofs: readonly SkillEvidenceProjection[]): PassportAccountSkill[] {

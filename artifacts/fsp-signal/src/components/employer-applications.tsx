@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getGetCurrentUserQueryKey, useGetCurrentUser } from '@workspace/api-client-react';
 import { Link, useLocation, useSearch } from 'wouter';
 import { ChevronLeft, ChevronRight, Eye, Search, X } from 'lucide-react';
 import { FormField } from './form-field';
@@ -7,6 +8,7 @@ import { InlineInfo } from './inline-info';
 import { OpportunityFeedback, OpportunityStatus, Salary, opportunityApi, useOpportunityAction } from './opportunity-ui';
 import { professionLabel, selectionHref } from '@/lib/employer-workspace-navigation';
 import { SkillChips, SkillLegend, type SkillChipItem } from './skill-chip';
+import { markApplicationViewedMutationOptions, type ApplicationViewedResponse } from '@/lib/mark-application-viewed';
 import './employer-workspace.css';
 
 type Filters = {jobId:string;status:string;q:string;dateFrom:string;dateTo:string;sort:string;page:number;pageSize:number};
@@ -27,14 +29,16 @@ export function EmployerApplicationsPage() {
   useEffect(() => setDraft(parseFilters(search)),[search]);
   const query = useQuery({queryKey:['employer-applications',params.toString()],queryFn:()=>opportunityApi<Result>(`/employer/applications?${params}`),staleTime:0,gcTime:0,refetchInterval:30000,refetchOnWindowFocus:'always'});
   const jobs = useQuery({queryKey:['employer-jobs'],queryFn:()=>opportunityApi<{id:number;title:string}[]>('/employer/jobs')});
-  const action = useOpportunityAction(['employer-applications','employer-application-detail','employer-jobs']);
+  const qc = useQueryClient(), session = useGetCurrentUser();
+  const action = useMutation(markApplicationViewedMutationOptions(qc, getGetCurrentUserQueryKey(), session.data?.user.id ?? 0,
+    applicationId => opportunityApi<ApplicationViewedResponse>(`/employer/applications/${applicationId}/status`, 'POST', {status:'viewed'})));
   const selectedId = Number(new URLSearchParams(search).get('application'));
   const hasSelected = Number.isSafeInteger(selectedId) && selectedId > 0;
   const detail = useQuery({queryKey:['employer-application-detail',selectedId],queryFn:()=>opportunityApi<Application>(`/employer/applications/${selectedId}`),enabled:hasSelected,staleTime:0,gcTime:0,refetchInterval:30000,refetchOnWindowFocus:'always'});
   const apply = (value:Filters,keepSelected=true) => {const next=filterParams(value);if(keepSelected && hasSelected)next.set('application',String(selectedId));navigate(`/employer/applications?${next}`);};
   const open = (item:Application) => {
     const next = filterParams(filters); next.set('application',String(item.id)); navigate(`/employer/applications?${next}`);
-    if (item.status === 'sent') action.mutate({path:`/employer/applications/${item.id}/status`,body:{status:'viewed'}});
+    if (item.status === 'sent') action.mutate(item.id);
   };
   return <div className="opportunity-page employer-workspace">
     <header className="page-title"><h1>Отклики<InlineInfo>Здесь отклики кандидатов на опубликованные вакансии. Списки отобранных специалистов находятся в подборе.</InlineInfo></h1></header>
@@ -54,9 +58,9 @@ export function EmployerApplicationsPage() {
     </>}
     <div className="employer-application-layout"><div className="employer-application-list">
       {!query.isFetching && !query.isError && query.data && (query.data.items.length === 0 ? <section className="panel opportunity-empty">По выбранным условиям откликов нет.</section> : query.data.items.map(item=> <article className={`panel employer-application-row${selectedId === item.id ? ' selected' : ''}`} key={item.id}>
-        <div><small>{item.snapshot.title}</small><h2>{item.candidate?.publicName || item.candidate?.alias || 'Доступ к данным отозван'}</h2>{item.candidate && <p>{item.resumeSnapshot?.title || professionLabel(item.candidate.specialization)} · {item.candidate.verifiedGrade || 'Грейд не подтверждён'}</p>}<time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString('ru-RU')}</time></div><div className="employer-row-actions"><OpportunityStatus status={item.status}/><button className="button secondary" onClick={()=>open(item)} disabled={query.isFetching}><Eye size={16}/>Открыть</button></div>
+        <div><small>{item.snapshot.title}</small><h2>{item.candidate?.publicName || item.candidate?.alias || 'Доступ к данным отозван'}</h2>{item.candidate && <p>{item.resumeSnapshot?.title || professionLabel(item.candidate.specialization)} · {item.candidate.verifiedGrade || 'Грейд не подтверждён'}</p>}<time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString('ru-RU')}</time></div><div className="employer-row-actions"><OpportunityStatus status={item.status}/><button className="button secondary" onClick={()=>open(item)} disabled={query.isFetching || (action.isPending && action.variables === item.id)}><Eye size={16}/>Открыть</button></div>
       </article>))}
-    </div>{hasSelected && (detail.isLoading || detail.isFetching ? <aside className="panel employer-application-detail" role="status">Проверяем доступ к выбранному отклику…</aside> : detail.isError ? <aside className="panel employer-application-detail" role="alert"><p>{detail.error.message}</p><button className="button secondary" onClick={()=>detail.refetch()}>Повторить</button><button className="button secondary" onClick={()=>apply(filters,false)}>Закрыть отклик</button></aside> : detail.data && <ApplicationDetail key={detail.data.id} application={detail.data} close={()=>apply(filters,false)}/>)}</div>
+    </div>{hasSelected && (detail.isLoading || detail.isFetching || (action.isPending && action.variables === selectedId) ? <aside className="panel employer-application-detail" role="status">Проверяем доступ к выбранному отклику…</aside> : detail.isError ? <aside className="panel employer-application-detail" role="alert"><p>{detail.error.message}</p><button className="button secondary" onClick={()=>detail.refetch()}>Повторить</button><button className="button secondary" onClick={()=>apply(filters,false)}>Закрыть отклик</button></aside> : detail.data && <ApplicationDetail key={detail.data.id} application={detail.data} close={()=>apply(filters,false)}/>)}</div>
     {!query.isFetching && !query.isError && query.data && query.data.total > query.data.pageSize && <div className="employer-pagination"><button className="button secondary" disabled={query.data.page <= 1} onClick={()=>apply({...filters,page:query.data!.page-1})}><ChevronLeft size={16}/>Назад</button><span>Страница {query.data.page} из {Math.ceil(query.data.total/query.data.pageSize)}</span><button className="button secondary" disabled={query.data.page*query.data.pageSize >= query.data.total} onClick={()=>apply({...filters,page:query.data!.page+1})}>Далее<ChevronRight size={16}/></button></div>}
   </div>;
 }

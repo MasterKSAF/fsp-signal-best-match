@@ -7,13 +7,12 @@ export function evidenceNoteForDisplay(note: string | null | undefined): string 
 export function qualificationSourceLabel(qualification: { verifiedGrade: string | null; source?: string; category?: unknown }): string | null {
   if (!qualification.verifiedGrade) return null;
   if (qualification.source === 'skill_matrix' || (!qualification.source && qualification.category)) return 'По матрице навыков';
-  if (qualification.source === 'assessment') return 'По экзамену';
-  if (qualification.source === 'legacy') return 'По сохранённому результату';
+  if (qualification.source === 'assessment') return 'По комплексному экзамену';
+  if (qualification.source === 'legacy') return 'Исторический общий грейд';
   return 'Подтверждённая квалификация';
 }
 
-export function qualificationGradeLabel(qualification: {verifiedGrade:string|null;source?:string;category?:unknown}): string {
-  if (!qualification.verifiedGrade) return 'Грейд не подтверждён';
-  const source=qualificationSourceLabel(qualification);
-  return `Грейд: ${qualification.verifiedGrade}${source?` · ${source.toLocaleLowerCase('ru-RU')}`:''}`;
+export function qualificationGradeLabel(qualification: {verifiedGrade:string|null;assumedGrade?:string|null;source?:string;category?:unknown}): string {
+  if (qualification.verifiedGrade) return `Подтверждённый грейд: ${qualification.verifiedGrade}`;
+  return qualification.assumedGrade ? `Заявленный грейд: ${qualification.assumedGrade}` : 'Грейд не указан';
 }

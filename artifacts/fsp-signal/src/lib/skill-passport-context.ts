@@ -3,9 +3,22 @@ export type PassportSkillContext = { resumeId: number; state: 'declared' | 'reco
 export type PassportAccountSkill = { skillId: string | null; label: string; state: 'declared' | 'recommended'; resumeIds: number[]; contexts: PassportSkillContext[]; targetLevel: PassportLevel | null; verifiedLevel: PassportLevel | null };
 export type BoundPassportSkill = PassportAccountSkill & { resumeId: number; reason: string | null };
 const rank = { Junior: 1, Middle: 2, Senior: 3 };
+export type PassportMode = 'all' | 'none' | `${number}`;
+/** URL state belongs to this owner view, never to the global exact-CV selection. */
+export function passportMode(raw: string | null, resumeIds: readonly number[]): PassportMode {
+  if (raw === 'none') return 'none';
+  if (raw && /^[1-9]\d*$/.test(raw) && resumeIds.includes(Number(raw))) return raw as `${number}`;
+  return 'all';
+}
+export function passportProofs<T extends {skillId:string}>(proofs: readonly T[], mode: PassportMode, contexts: readonly {id:number;relatedSkillIds:string[]}[]): T[] {
+  if (mode === 'all' || mode === 'none') return [...proofs];
+  const related = new Set(contexts.find(context => String(context.id) === mode)?.relatedSkillIds ?? []);
+  return proofs.filter(proof => related.has(proof.skillId));
+}
 
 /** Resolve displayed target and launch CV together. An active CV cannot override an explicit filter. */
 export function bindPassportSkill(skill: PassportAccountSkill, filter: string, activeResumeId: number | null): BoundPassportSkill | null {
+  if (filter === 'none') return null;
   const contexts = skill.contexts ?? [];
   if (filter !== 'all') {
     const selected = contexts.find(c => String(c.resumeId) === filter);

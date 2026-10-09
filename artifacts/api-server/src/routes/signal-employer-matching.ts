@@ -254,7 +254,9 @@ router.get(
       res.status(404).json({ error: "Потребность не найдена." });
       return;
     }
-    const coverage = await activeSkillCoverage(need.requiredSkills);
+    const interpreted = await needForMatch(need);
+    const requirementItems=interpretSkillRequirements(need.requiredSkills,interpreted.skillRequirements,interpreted.requiredSkillLevels);
+    const coverage = await activeSkillCoverage(requirementItems.filter(item=>item.mode==='verified').map(item=>item.skill));
     const matches = (await rankedNeedPool(need, context)).length;
     res.setHeader("Cache-Control", "no-store");
     res.json({
@@ -267,10 +269,11 @@ router.get(
         ? "available"
         : coverage.some((item) => !item.supported)
           ? "unsupported_requirements"
-          : "no_verified_candidates",
+          : "no_matching_candidates",
       minimumGrade: need.grade,
+      gradeMode:need.gradeMode,skillRequirements:requirementItems,requirementsVersion:REQUIREMENTS_VERSION,
       note: hasMeaningfulRequiredSkills(need.requiredSkills)
-        ? "Обязательные требования сохраняются. Измените условия явно в новой потребности; неподтверждённые навыки не дают допуска."
+        ? `Нужны все обязательные навыки в выбранном режиме и общий грейд не ниже ${need.grade} (${need.gradeMode==='declared_or_verified'?'достаточно заявленного в выбранном резюме или подтверждённого':'требуется подтверждение'}). ${requirementItems.some(item=>item.mode==='declared_or_verified')?'Заявленные навыки учитываются только там, где это разрешено в требованиях. Совпадение не подтверждает навык.':'Все обязательные навыки требуют подтверждения.'}`
         : "В сохранённой потребности есть пустые обязательные навыки. Подбор приостановлен. Создайте потребность с содержательными требованиями; эта запись сохранится в истории.",
     });
   },

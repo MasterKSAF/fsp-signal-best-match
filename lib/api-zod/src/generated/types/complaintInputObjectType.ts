@@ -13,4 +13,5 @@ export const ComplaintInputObjectType = {
   company: 'company',
   job: 'job',
   invitation: 'invitation',
+  service: 'service',
 } as const;

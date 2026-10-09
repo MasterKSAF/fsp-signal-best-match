@@ -38,6 +38,7 @@ import {
   matchesCatalogFilters,
   prepareCatalogFilters,
   orderCatalog,
+  isCatalogConfirmed,
   safeCatalogResume,
   selectMatchingResumes,
   type CatalogResume,
@@ -208,8 +209,8 @@ router.get("/employer/candidates", async (req, res): Promise<void> => {
     order,
     orderNote,
     confirmedOrder: input.needId ? 'need-fit' : computation.confirmedOrder,
-    confirmedTotal: input.needId ? people.length : computation.confirmedTotal,
-    unconfirmedTotal: input.needId ? 0 : computation.unconfirmedTotal,
+    confirmedTotal: input.needId ? people.filter(person=>isCatalogConfirmed(person.selected)).length : computation.confirmedTotal,
+    unconfirmedTotal: input.needId ? people.filter(person=>!isCatalogConfirmed(person.selected)).length : computation.unconfirmedTotal,
     specializations: computation.specializations,
   });
 });

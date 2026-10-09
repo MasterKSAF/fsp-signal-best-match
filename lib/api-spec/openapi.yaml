@@ -2120,63 +2120,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/MicrotaskInput"
-  /employer/microtasks/{id}:
-    put:
-      operationId: editMicrotask
-      summary: Create new template version; issued snapshots remain unchanged
-      tags:
-        - Opportunities
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MicrotaskTemplate"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "404":
-          description: Not found in current pool
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "409":
-          description: State or version conflict
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            maximum: 2147483647
-            minimum: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/MicrotaskInput"
+  /employer/microtasks/{id}: {"put":{"operationId":"editMicrotask","summary":"Create new template version; issued snapshots remain unchanged","tags":["Opportunities"],"responses":{"200":{"description":"Success","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MicrotaskTemplate"}}}},"400":{"description":"Invalid input","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"401":{"description":"Authentication required","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"403":{"description":"Forbidden","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"404":{"description":"Not found in current pool","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"409":{"description":"State or version conflict","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}}},"parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","maximum":2147483647,"minimum":1}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/MicrotaskEditInput"}}}}}}
   /employer/microtasks/{id}/availability:
     post:
       operationId: setMicrotaskAvailability
@@ -2368,67 +2312,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/SubscribeCandidateMicrotaskInput"
-  /me/microtasks:
-    get:
-      operationId: listMyMicrotasks
-      summary: Own offers, results, subscriptions and preference
-      tags:
-        - Opportunities
-      responses:
-        "200":
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  enabled:
-                    type: boolean
-                  offers:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/MicrotaskOffer"
-                  subscriptions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/MicrotaskSubscription"
-                  limits:
-                    type: string
-                required:
-                  - enabled
-                  - offers
-                  - subscriptions
-                  - limits
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "401":
-          description: Authentication required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "404":
-          description: Not found in current pool
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
-        "409":
-          description: State or version conflict
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OpportunityError"
+  /me/microtasks: {"get":{"operationId":"listMyMicrotasks","summary":"Own offers, results, subscriptions and preference","tags":["Opportunities"],"responses":{"200":{"description":"Success","content":{"application/json":{"schema":{"type":"object","properties":{"enabled":{"type":"boolean"},"offers":{"type":"array","items":{"$ref":"#/components/schemas/MicrotaskOffer"}},"subscriptions":{"type":"array","items":{"$ref":"#/components/schemas/MicrotaskSubscription"}},"limits":{"type":"string"}},"required":["enabled","offers","subscriptions","limits"]}}}},"400":{"description":"Invalid input","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"401":{"description":"Authentication required","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"403":{"description":"Forbidden","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"404":{"description":"Not found in current pool","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}},"409":{"description":"State or version conflict","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OpportunityError"}}}}},"parameters":[{"name":"jobId","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":2147483647}}]}}
   /me/microtasks/preferences:
     put:
       operationId: setMicrotaskPreference
@@ -4951,11 +4835,11 @@ paths:
   /me/resumes/{id}/work-preferences: {"patch": {"operationId": "saveResumeWorkPreferences", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "properties": {"revision": {"type": "integer"}, "location": {"type": "string"}, "schedule": {"type": "string"}, "employment": {"type": "string"}, "relocation": {"type": "boolean"}, "startAvailability": {"type": "string"}}, "required": ["revision"]}}}}}}
   /me/invitations/search: {"get": {"operationId": "searchCandidateInvitations", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
   /me/applications/search: {"get": {"operationId": "searchCandidateApplications", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "status", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
-  /public/jobs/search: {"get": {"operationId": "searchAccessibleJobs", "tags": ["profile"], "description": "Filters the full accessible published pool before pagination. Skills is JSON array of {skill,level?}; legacy requirements have no implicit level.", "parameters": [{"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "specialization", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "grade", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "skills", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryMin", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryMax", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "workFormat", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "location", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "page", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "pageSize", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryPeriod", "in": "query", "required": false, "schema": {"type": "string", "enum": ["month", "year"], "default": "month"}}, {"name": "hideApplied", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.", "schema": {"type": "boolean", "default": false}}, {"name": "hideBlocked", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.", "schema": {"type": "boolean", "default": false}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/WorkspaceSearchPage"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /public/jobs/search: {"get":{"operationId":"searchAccessibleJobs","tags":["profile"],"description":"Filters the full accessible published pool before pagination. Skills is JSON array of {skill,level?}; legacy requirements have no implicit level.","parameters":[{"name":"q","in":"query","required":false,"schema":{"type":"string"}},{"name":"specialization","in":"query","required":false,"schema":{"type":"string"}},{"name":"grade","in":"query","required":false,"schema":{"type":"string"}},{"name":"skills","in":"query","required":false,"schema":{"type":"string"}},{"name":"salaryMin","in":"query","required":false,"schema":{"type":"integer"}},{"name":"salaryMax","in":"query","required":false,"schema":{"type":"integer"}},{"name":"workFormat","in":"query","required":false,"schema":{"type":"string"}},{"name":"location","in":"query","required":false,"schema":{"type":"string"}},{"name":"sort","in":"query","required":false,"schema":{"type":"string"}},{"name":"page","in":"query","required":false,"schema":{"type":"integer"}},{"name":"pageSize","in":"query","required":false,"schema":{"type":"integer"}},{"name":"resumeId","in":"query","required":false,"schema":{"type":"integer"}},{"name":"salaryPeriod","in":"query","required":false,"schema":{"type":"string","enum":["month","year"],"default":"month"}},{"name":"hideApplied","in":"query","required":false,"description":"For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.","schema":{"type":"boolean","default":false}},{"name":"hideBlocked","in":"query","required":false,"description":"For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.","schema":{"type":"boolean","default":false}},{"name":"hasTask","in":"query","required":false,"schema":{"type":"boolean","default":false},"description":"Only published jobs with active linked tasks. Does not reveal task content or assign a candidate."}],"responses":{"200":{"description":"Successful authorized result","content":{"application/json":{"schema":{"$ref":"#/components/schemas/WorkspaceSearchPage"}}}},"default":{"$ref":"#/components/responses/UnifiedErrorResponse"}}}}
   /resumes/{id}/document.docx: {"get": {"operationId": "getResumeDocumentdocx", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}, {"name": "fields", "in": "query", "required": false, "schema": {"type": "string"}, "description": "Whitelist of optional file fields; empty selects no optional sections. ACL always applies."}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/vnd.openxmlformats-officedocument.wordprocessingml.document": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
   /resumes/{id}/document.pdf: {"get": {"operationId": "getResumeDocumentpdf", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}, {"name": "fields", "in": "query", "required": false, "schema": {"type": "string"}, "description": "Whitelist of optional file fields; empty selects no optional sections. ACL always applies."}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/pdf": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
   /resumes/{id}/preview.pdf: {"get": {"operationId": "getResumePreviewpdf", "tags": ["profile"], "description": "Requires authenticated ownership and current per-resume permissions.", "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 1}}], "responses": {"200": {"description": "Successful authorized result", "content": {"application/pdf": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
-  /public/jobs/export: {"get": {"operationId": "exportAccessibleJobs", "tags": ["profile"], "description": "Exports every accessible filtered row in the same order. Explicit limit 10000; excess rejected without silent truncation. No private needs or personal contacts. CSV UTF8 BOM and spreadsheet formula neutralization.", "parameters": [{"name": "format", "in": "query", "required": true, "schema": {"type": "string", "enum": ["csv", "xlsx"]}}, {"name": "q", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "specialization", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "grade", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "skills", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryMin", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "salaryMax", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "workFormat", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "location", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "sort", "in": "query", "required": false, "schema": {"type": "string"}}, {"name": "salaryPeriod", "in": "query", "required": false, "schema": {"type": "string", "enum": ["month", "year"], "default": "month"}}, {"name": "resumeId", "in": "query", "required": false, "schema": {"type": "integer"}}, {"name": "hideApplied", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.", "schema": {"type": "boolean", "default": false}}, {"name": "hideBlocked", "in": "query", "required": false, "description": "For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.", "schema": {"type": "boolean", "default": false}}], "responses": {"200": {"description": "Successful authorized result", "content": {"text/csv": {"schema": {"type": "string", "format": "binary"}}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {"schema": {"type": "string", "format": "binary"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}}
+  /public/jobs/export: {"get":{"operationId":"exportAccessibleJobs","tags":["profile"],"description":"Exports every accessible filtered row in the same order. Explicit limit 10000; excess rejected without silent truncation. No private needs or personal contacts. CSV UTF8 BOM and spreadsheet formula neutralization.","parameters":[{"name":"format","in":"query","required":true,"schema":{"type":"string","enum":["csv","xlsx"]}},{"name":"q","in":"query","required":false,"schema":{"type":"string"}},{"name":"specialization","in":"query","required":false,"schema":{"type":"string"}},{"name":"grade","in":"query","required":false,"schema":{"type":"string"}},{"name":"skills","in":"query","required":false,"schema":{"type":"string"}},{"name":"salaryMin","in":"query","required":false,"schema":{"type":"integer"}},{"name":"salaryMax","in":"query","required":false,"schema":{"type":"integer"}},{"name":"workFormat","in":"query","required":false,"schema":{"type":"string"}},{"name":"location","in":"query","required":false,"schema":{"type":"string"}},{"name":"sort","in":"query","required":false,"schema":{"type":"string"}},{"name":"salaryPeriod","in":"query","required":false,"schema":{"type":"string","enum":["month","year"],"default":"month"}},{"name":"resumeId","in":"query","required":false,"schema":{"type":"integer"}},{"name":"hideApplied","in":"query","required":false,"description":"For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.","schema":{"type":"boolean","default":false}},{"name":"hideBlocked","in":"query","required":false,"description":"For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.","schema":{"type":"boolean","default":false}},{"name":"hasTask","in":"query","required":false,"schema":{"type":"boolean","default":false},"description":"Only published jobs with active linked tasks. Does not reveal task content or assign a candidate."}],"responses":{"200":{"description":"Successful authorized result","content":{"text/csv":{"schema":{"type":"string","format":"binary"}},"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":{"schema":{"type":"string","format":"binary"}}}},"default":{"$ref":"#/components/responses/UnifiedErrorResponse"}}}}
   /me/account: {"get": {"operationId": "getOwnedAccount", "tags": ["auth"], "responses": {"200": {"description": "Owner account", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/OwnedAccount"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}}, "patch": {"operationId": "updateOwnedAccount", "tags": ["auth"], "responses": {"200": {"description": "Owner account", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/OwnedAccount"}}}}, "default": {"$ref": "#/components/responses/UnifiedErrorResponse"}}, "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "properties": {"displayName": {"type": "string", "minLength": 2, "maxLength": 120}, "expectedDisplayName": {"type": "string"}, "professionalAlias": {"type": "string", "minLength": 2, "maxLength": 120}, "expectedProfessionalAlias": {"type": "string"}}, "required": ["displayName", "expectedDisplayName"]}}}}}}
   /me/fsp-connection/import:
     post:
@@ -4991,6 +4875,9 @@ paths:
               example: {code: registry_not_configured, error: 'Реестр ФСП ещё не подключён. ID сохранён без подтверждения и импорта.'}
         default:
           $ref: '#/components/responses/UnifiedErrorResponse'
+  /employer/microtasks/{id}/answers: {"get":{"operationId":"listCompanyMicrotaskAnswers","tags":["opportunities"],"parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","minimum":1,"maximum":2147483647}},{"name":"filter","in":"query","schema":{"type":"string","enum":["all","new","evaluated"],"default":"all"}},{"name":"page","in":"query","schema":{"type":"integer","minimum":1,"default":1}},{"name":"pageSize","in":"query","schema":{"type":"integer","minimum":1,"maximum":100,"default":20}}],"responses":{"200":{"description":"Fresh authorized records only; filtering and pagination follow ACL.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MicrotaskAnswerPage"}}}},"default":{"$ref":"#/components/responses/UnifiedErrorResponse"}}}}
+  /employer/microtasks/{id}/recipients: {"get":{"operationId":"listCompanyMicrotaskRecipients","tags":["opportunities"],"parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","minimum":1,"maximum":2147483647}},{"name":"filter","in":"query","schema":{"type":"string","enum":["all","new","evaluated"],"default":"all"}},{"name":"page","in":"query","schema":{"type":"integer","minimum":1,"default":1}},{"name":"pageSize","in":"query","schema":{"type":"integer","minimum":1,"maximum":100,"default":20}}],"responses":{"200":{"description":"Fresh authorized records only; filtering and pagination follow ACL.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MicrotaskRecipientPage"}}}},"default":{"$ref":"#/components/responses/UnifiedErrorResponse"}}}}
+  /me/complaints/{id}: {"get":{"operationId":"getMyComplaint","tags":["trust"],"description":"Own reporter only, both roles. Foreign or missing ID is unavailable.","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","minimum":1,"maximum":2147483647}}],"responses":{"200":{"description":"Own complaint","content":{"application/json":{"schema":{"type":"object","properties":{"complaint":{"$ref":"#/components/schemas/TrustComplaint"}},"required":["complaint"]}}}},"default":{"$ref":"#/components/responses/UnifiedErrorResponse"}}}}
 components:
   parameters:
     Id:
@@ -8115,99 +8002,7 @@ components:
         - salaryMax
         - salaryPeriod
         - salaryType
-    JobPublication:
-      type: object
-      properties:
-        location:
-          type: string
-          maxLength: 160
-        requirementsVersion:
-          type: string
-          enum: [signal-requirements-v1]
-        gradeMode:
-          $ref: "#/components/schemas/RequirementMode"
-        skillRequirements:
-          type: array
-          maxItems: 40
-          items:
-            $ref: "#/components/schemas/RecruitingSkillRequirement"
-        title:
-          type: string
-          minLength: 3
-          maxLength: 160
-        description:
-          type: string
-          minLength: 30
-          maxLength: 6000
-        specialization:
-          type: string
-        grade:
-          type: string
-          enum:
-            - Junior
-            - Middle
-            - Senior
-        skills:
-          type: array
-          items:
-            type: string
-        workFormat:
-          type: string
-          enum:
-            - Удалённо
-            - Офис
-            - Гибрид
-        salaryMin:
-          type: integer
-          minimum: 1
-        salaryMax:
-          type: integer
-          minimum: 1
-        salaryPeriod:
-          type: string
-          enum:
-            - month
-            - year
-        salaryType:
-          type: string
-          enum:
-            - gross
-            - net
-        id:
-          type: integer
-        companyId:
-          type: integer
-        companyName:
-          type: string
-        version:
-          type: integer
-        status:
-          type: string
-          enum:
-            - draft
-            - published
-            - closed
-            - archived
-        publishedAt:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-        - id
-        - companyId
-        - companyName
-        - version
-        - status
-        - title
-        - description
-        - specialization
-        - grade
-        - skills
-        - workFormat
-        - salaryMin
-        - salaryMax
-        - salaryPeriod
-        - salaryType
+    JobPublication: {"type":"object","properties":{"location":{"type":"string","maxLength":160},"requirementsVersion":{"type":"string","enum":["signal-requirements-v1"]},"gradeMode":{"$ref":"#/components/schemas/RequirementMode"},"skillRequirements":{"type":"array","maxItems":40,"items":{"$ref":"#/components/schemas/RecruitingSkillRequirement"}},"title":{"type":"string","minLength":3,"maxLength":160},"description":{"type":"string","minLength":30,"maxLength":6000},"specialization":{"type":"string"},"grade":{"type":"string","enum":["Junior","Middle","Senior"]},"skills":{"type":"array","items":{"type":"string"}},"workFormat":{"type":"string","enum":["Удалённо","Офис","Гибрид"]},"salaryMin":{"type":"integer","minimum":1},"salaryMax":{"type":"integer","minimum":1},"salaryPeriod":{"type":"string","enum":["month","year"]},"salaryType":{"type":"string","enum":["gross","net"]},"id":{"type":"integer"},"companyId":{"type":"integer"},"companyName":{"type":"string"},"version":{"type":"integer"},"status":{"type":"string","enum":["draft","published","closed","archived"]},"publishedAt":{"type":"string","format":"date-time","nullable":true},"hasTask":{"type":"boolean"},"taskCount":{"type":"integer","minimum":0},"taskHref":{"type":["string","null"],"description":"Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself."}},"required":["id","companyId","companyName","version","status","title","description","specialization","grade","skills","workFormat","salaryMin","salaryMax","salaryPeriod","salaryType","hasTask","taskCount","taskHref"]}
     JobApplication:
       type: object
       properties:
@@ -8267,150 +8062,8 @@ components:
         - companyId
         - snapshot
         - status
-    MicrotaskInput:
-      type: object
-      additionalProperties: false
-      properties:
-        specialization:
-          type: string
-          enum:
-            - Backend / Python
-            - Frontend / TypeScript
-        title:
-          type: string
-          minLength: 3
-          maxLength: 160
-        competency:
-          type: string
-          minLength: 2
-          maxLength: 100
-        scenario:
-          type: string
-          minLength: 50
-          maxLength: 6000
-        expectedMinutes:
-          type: integer
-          minimum: 5
-          maximum: 45
-        intervalDays:
-          type: integer
-          minimum: 7
-          maximum: 90
-        deadlineDays:
-          type: integer
-          minimum: 1
-          maximum: 7
-        educationalOnly:
-          type: boolean
-          enum:
-            - true
-        rubric:
-          type: array
-          minItems: 1
-          maxItems: 6
-          items:
-            type: object
-            additionalProperties: false
-            properties:
-              id:
-                type: string
-                pattern: "^[a-z0-9-]{1,40}$"
-              label:
-                type: string
-                minLength: 3
-                maxLength: 200
-              maxPoints:
-                type: integer
-                minimum: 1
-                maximum: 10
-            required:
-              - id
-              - label
-              - maxPoints
-      required:
-        - specialization
-        - title
-        - competency
-        - scenario
-        - expectedMinutes
-        - intervalDays
-        - deadlineDays
-        - educationalOnly
-        - rubric
-    MicrotaskTemplate:
-      type: object
-      properties:
-        specialization:
-          type: string
-          nullable: true
-          enum:
-            - Backend / Python
-            - Frontend / TypeScript
-          description: Null only for a legacy template; explicit selection is required before new subscriptions or offers.
-        title:
-          type: string
-        competency:
-          type: string
-        scenario:
-          type: string
-          minLength: 50
-          maxLength: 6000
-        expectedMinutes:
-          type: integer
-          minimum: 5
-          maximum: 45
-        intervalDays:
-          type: integer
-          minimum: 7
-          maximum: 90
-        deadlineDays:
-          type: integer
-          minimum: 1
-          maximum: 7
-        educationalOnly:
-          type: boolean
-          enum:
-            - true
-        rubric:
-          type: array
-          minItems: 1
-          maxItems: 6
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              label:
-                type: string
-              maxPoints:
-                type: integer
-                minimum: 1
-                maximum: 10
-            required:
-              - id
-              - label
-              - maxPoints
-        id:
-          type: integer
-        companyId:
-          type: integer
-        version:
-          type: integer
-        active:
-          type: boolean
-      required:
-        - id
-        - version
-        - active
-        - specialization
-        - title
-        - competency
-        - scenario
-        - expectedMinutes
-        - intervalDays
-        - deadlineDays
-        - educationalOnly
-        - rubric
+    MicrotaskInput: {"type":"object","additionalProperties":false,"properties":{"specialization":{"type":"string","enum":["Backend / Python","Frontend / TypeScript"]},"title":{"type":"string","minLength":3,"maxLength":160},"competency":{"type":"string","minLength":2,"maxLength":100},"scenario":{"type":"string","minLength":50,"maxLength":6000},"expectedMinutes":{"type":"integer","minimum":5,"maximum":45},"intervalDays":{"type":"integer","minimum":7,"maximum":90},"deadlineDays":{"type":"integer","minimum":1,"maximum":7},"educationalOnly":{"type":"boolean","enum":[true]},"rubric":{"type":"array","minItems":1,"maxItems":6,"items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","pattern":"^[a-z0-9-]{1,40}$"},"label":{"type":"string","minLength":3,"maxLength":200},"maxPoints":{"type":"integer","minimum":1,"maximum":10}},"required":["id","label","maxPoints"]}},"jobId":{"type":"integer","minimum":1,"maximum":2147483647,"description":"Required owned non-deleted draft/published job. Immutable once template is created; specialization must match."}},"required":["specialization","title","competency","scenario","expectedMinutes","intervalDays","deadlineDays","educationalOnly","rubric","jobId"]}
+    MicrotaskTemplate: {"type":"object","properties":{"specialization":{"type":"string","nullable":true,"enum":["Backend / Python","Frontend / TypeScript"],"description":"Null only for a legacy template; explicit selection is required before new subscriptions or offers."},"title":{"type":"string"},"competency":{"type":"string"},"scenario":{"type":"string","minLength":50,"maxLength":6000},"expectedMinutes":{"type":"integer","minimum":5,"maximum":45},"intervalDays":{"type":"integer","minimum":7,"maximum":90},"deadlineDays":{"type":"integer","minimum":1,"maximum":7},"educationalOnly":{"type":"boolean","enum":[true]},"rubric":{"type":"array","minItems":1,"maxItems":6,"items":{"type":"object","properties":{"id":{"type":"string"},"label":{"type":"string"},"maxPoints":{"type":"integer","minimum":1,"maximum":10}},"required":["id","label","maxPoints"]}},"id":{"type":"integer"},"companyId":{"type":"integer"},"version":{"type":"integer"},"active":{"type":"boolean"},"jobId":{"type":["integer","null"]},"job":{"oneOf":[{"$ref":"#/components/schemas/MicrotaskJobContext"},{"type":"null"}]},"assignmentAvailable":{"type":"boolean"},"answerCount":{"type":"integer","minimum":0},"newAnswerCount":{"type":"integer","minimum":0},"evaluatedAnswerCount":{"type":"integer","minimum":0},"recipientCount":{"type":"integer","minimum":0}},"required":["id","version","active","specialization","title","competency","scenario","expectedMinutes","intervalDays","deadlineDays","educationalOnly","rubric","jobId","job","assignmentAvailable"]}
     MicrotaskEligibleResumePage:
       type: object
       required: [items, nextCursor]
@@ -8501,55 +8154,7 @@ components:
         - verifiedGrade
         - verifiedSkills
         - professionalAlias
-    MicrotaskSnapshot:
-      type: object
-      properties:
-        title:
-          type: string
-        competency:
-          type: string
-        scenario:
-          type: string
-          minLength: 50
-          maxLength: 6000
-        expectedMinutes:
-          type: integer
-          minimum: 5
-          maximum: 45
-        rubric:
-          type: array
-          minItems: 1
-          maxItems: 6
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              label:
-                type: string
-              maxPoints:
-                type: integer
-                minimum: 1
-                maximum: 10
-            required:
-              - id
-              - label
-              - maxPoints
-        companyName:
-          type: string
-        version:
-          type: integer
-        limits:
-          type: string
-      required:
-        - title
-        - competency
-        - scenario
-        - expectedMinutes
-        - rubric
-        - version
-        - companyName
-        - limits
+    MicrotaskSnapshot: {"type":"object","properties":{"title":{"type":"string"},"competency":{"type":"string"},"scenario":{"type":"string","minLength":50,"maxLength":6000},"expectedMinutes":{"type":"integer","minimum":5,"maximum":45},"rubric":{"type":"array","minItems":1,"maxItems":6,"items":{"type":"object","properties":{"id":{"type":"string"},"label":{"type":"string"},"maxPoints":{"type":"integer","minimum":1,"maximum":10}},"required":["id","label","maxPoints"]}},"companyName":{"type":"string"},"version":{"type":"integer"},"limits":{"type":"string"},"job":{"$ref":"#/components/schemas/MicrotaskCapturedJob"}},"required":["title","competency","scenario","expectedMinutes","rubric","version","companyName","limits"]}
     MicrotaskResult:
       type: object
       properties:
@@ -8596,91 +8201,7 @@ components:
           type: string
           enum:
             - none
-    MicrotaskOffer:
-      type: object
-      properties:
-        id:
-          type: integer
-        subscriptionId:
-          type: integer
-        companyId:
-          type: integer
-        candidateUserId:
-          type: integer
-        resumeId:
-          type: integer
-          minimum: 1
-          maximum: 2147483647
-          nullable: true
-          description: Immutable selected resume. Null for legacy_unbound history or an employer response with revoked access.
-        resumeRevision:
-          type: integer
-          minimum: 1
-          nullable: true
-        resumeContext:
-          allOf:
-            - $ref: "#/components/schemas/MicroResumeContext"
-          nullable: true
-        resumeProvenance:
-          type: string
-          enum:
-            - captured
-            - legacy_unbound
-        resumeAvailable:
-          type: boolean
-          description: Fresh access check on list responses; a stored context does not grant current company access.
-        resumeLimitation:
-          type: string
-          nullable: true
-        alias:
-          type: string
-          nullable: true
-          description: Employer list uses the original captured alias when readable; otherwise a revoked-access label.
-        snapshot:
-          $ref: "#/components/schemas/MicrotaskSnapshot"
-        status:
-          type: string
-          enum:
-            - offered
-            - accepted
-            - declined
-            - submitted
-            - evaluated
-            - expired
-            - withdrawn
-        dueAt:
-          type: string
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-        answer:
-          type: string
-          nullable: true
-        result:
-          allOf:
-            - $ref: "#/components/schemas/MicrotaskResult"
-          nullable: true
-        shareResult:
-          type: boolean
-        consentRevokedAt:
-          type: string
-          format: date-time
-          nullable: true
-        purpose:
-          type: string
-          enum:
-            - company_task
-      required:
-        - id
-        - resumeId
-        - resumeRevision
-        - resumeContext
-        - resumeProvenance
-        - snapshot
-        - status
-        - dueAt
-        - shareResult
+    MicrotaskOffer: {"type":"object","properties":{"id":{"type":"integer"},"subscriptionId":{"type":"integer"},"companyId":{"type":"integer"},"candidateUserId":{"type":"integer"},"resumeId":{"type":"integer","minimum":1,"maximum":2147483647,"nullable":true,"description":"Immutable selected resume. Null for legacy_unbound history or an employer response with revoked access."},"resumeRevision":{"type":"integer","minimum":1,"nullable":true},"resumeContext":{"allOf":[{"$ref":"#/components/schemas/MicroResumeContext"}],"nullable":true},"resumeProvenance":{"type":"string","enum":["captured","legacy_unbound"]},"resumeAvailable":{"type":"boolean","description":"Fresh access check on list responses; a stored context does not grant current company access."},"resumeLimitation":{"type":"string","nullable":true},"alias":{"type":"string","nullable":true,"description":"Employer list uses the original captured alias when readable; otherwise a revoked-access label."},"snapshot":{"$ref":"#/components/schemas/MicrotaskSnapshot"},"status":{"type":"string","enum":["offered","accepted","declined","submitted","evaluated","expired","withdrawn"]},"dueAt":{"type":"string","format":"date-time"},"createdAt":{"type":"string","format":"date-time"},"answer":{"type":"string","nullable":true},"result":{"allOf":[{"$ref":"#/components/schemas/MicrotaskResult"}],"nullable":true},"shareResult":{"type":"boolean"},"consentRevokedAt":{"type":"string","format":"date-time","nullable":true},"purpose":{"type":"string","enum":["company_task"]},"job":{"oneOf":[{"$ref":"#/components/schemas/MicrotaskJobContext"},{"type":"null"}]},"assignmentAvailable":{"type":"boolean"},"assignmentLimitation":{"type":["string","null"]}},"required":["id","resumeId","resumeRevision","resumeContext","resumeProvenance","snapshot","status","dueAt","shareResult"]}
     OpportunityError:
       type: object
       properties:
@@ -8695,61 +8216,7 @@ components:
           type: string
       required:
         - message
-    MicrotaskSubscription:
-      type: object
-      properties:
-        id:
-          type: integer
-        templateId:
-          type: integer
-        candidateUserId:
-          type: integer
-        companyId:
-          type: integer
-        specialization:
-          type: string
-          nullable: true
-        resumeId:
-          type: integer
-          minimum: 1
-          maximum: 2147483647
-          nullable: true
-          description: Current selected binding; changing it does not rewrite previous offer snapshots or reset person-wide limits.
-        resumeRevision:
-          type: integer
-          minimum: 1
-          nullable: true
-        resumeContext:
-          allOf:
-            - $ref: "#/components/schemas/MicroResumeContext"
-          nullable: true
-        resumeProvenance:
-          type: string
-          enum:
-            - captured
-            - legacy_unbound
-        resumeAvailable:
-          type: boolean
-        resumeLimitation:
-          type: string
-          nullable: true
-        active:
-          type: boolean
-        nextDueAt:
-          type: string
-          format: date-time
-        title:
-          type: string
-        companyName:
-          type: string
-      required:
-        - id
-        - active
-        - nextDueAt
-        - resumeId
-        - resumeRevision
-        - resumeContext
-        - resumeProvenance
+    MicrotaskSubscription: {"type":"object","properties":{"id":{"type":"integer"},"templateId":{"type":"integer"},"candidateUserId":{"type":"integer"},"companyId":{"type":"integer"},"specialization":{"type":"string","nullable":true},"resumeId":{"type":"integer","minimum":1,"maximum":2147483647,"nullable":true,"description":"Current selected binding; changing it does not rewrite previous offer snapshots or reset person-wide limits."},"resumeRevision":{"type":"integer","minimum":1,"nullable":true},"resumeContext":{"allOf":[{"$ref":"#/components/schemas/MicroResumeContext"}],"nullable":true},"resumeProvenance":{"type":"string","enum":["captured","legacy_unbound"]},"resumeAvailable":{"type":"boolean"},"resumeLimitation":{"type":"string","nullable":true},"active":{"type":"boolean"},"nextDueAt":{"type":"string","format":"date-time"},"title":{"type":"string"},"companyName":{"type":"string"},"job":{"oneOf":[{"$ref":"#/components/schemas/MicrotaskJobContext"},{"type":"null"}]},"assignmentAvailable":{"type":"boolean"}},"required":["id","active","nextDueAt","resumeId","resumeRevision","resumeContext","resumeProvenance"]}
     AddressedContact:
       type: object
       properties:
@@ -9606,77 +9073,8 @@ components:
         - resumes
         - count
         - limit
-    ComplaintInput:
-      type: object
-      properties:
-        objectType:
-          type: string
-          enum:
-            - company
-            - job
-            - invitation
-        objectId:
-          type: integer
-          minimum: 1
-          maximum: 2147483647
-        category:
-          type: string
-          enum:
-            - spam
-            - misleading
-            - discrimination
-            - inappropriate
-            - privacy
-            - other
-        explanation:
-          type: string
-          maxLength: 2000
-        idempotencyKey:
-          type: string
-          minLength: 8
-          maxLength: 128
-      required:
-        - objectType
-        - objectId
-        - category
-        - idempotencyKey
-    TrustComplaint:
-      type: object
-      properties:
-        id: &a27
-          type: integer
-          minimum: 1
-          maximum: 2147483647
-        objectType:
-          type: string
-        objectId: *a27
-        companyId: *a27
-        category:
-          type: string
-          enum:
-            - spam
-            - misleading
-            - discrimination
-            - inappropriate
-            - privacy
-            - other
-        explanation:
-          type: string
-        status:
-          type: string
-        decisionReason:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - objectType
-        - objectId
-        - companyId
-        - category
-        - status
+    ComplaintInput: {"type":"object","properties":{"objectType":{"type":"string","enum":["company","job","invitation","service"]},"objectId":{"type":"integer","minimum":1,"maximum":2147483647},"category":{"type":"string","enum":["spam","misleading","discrimination","inappropriate","privacy","other","question","technical"]},"explanation":{"type":"string","maxLength":2000},"idempotencyKey":{"type":"string","minLength":8,"maxLength":128}},"required":["objectType","objectId","category","idempotencyKey"],"description":"Service complaints may be created by either role, require own session userId as objectId and trimmed explanation of 10–2000 characters. Existing company/job/invitation complaints remain candidate-only and use existing ACL."}
+    TrustComplaint: {"type":"object","properties":{"id":{"type":"integer","minimum":1,"maximum":2147483647},"objectType":{"type":"string"},"objectId":{"type":"integer","minimum":1,"maximum":2147483647},"companyId":{"type":["integer","null"],"minimum":1,"maximum":2147483647},"category":{"type":"string","enum":["spam","misleading","discrimination","inappropriate","privacy","other","question","technical"]},"explanation":{"type":"string"},"status":{"type":"string"},"decisionReason":{"type":"string","nullable":true},"createdAt":{"type":"string","format":"date-time"}},"required":["id","objectType","objectId","companyId","category","status"]}
     EmployerRestriction:
       type: object
       properties:
@@ -9708,42 +9106,7 @@ components:
         - scope
         - publicReason
         - expiresAt
-    ModerationDecisionInput:
-      type: object
-      properties:
-        action:
-          type: string
-          enum:
-            - review
-            - dismiss
-            - restrict
-        reason:
-          type: string
-          minLength: 5
-          maxLength: 2000
-        scope:
-          type: string
-          enum:
-            - invitations
-            - contacts
-            - publishing
-            - all
-        durationHours:
-          type: integer
-          minimum: 1
-          maximum: 720
-        publicReasonCode:
-          type: string
-          enum:
-            - spam
-            - misleading
-            - discrimination
-            - inappropriate
-            - privacy
-            - other
-      required:
-        - action
-        - reason
+    ModerationDecisionInput: {"type":"object","properties":{"action":{"type":"string","enum":["review","dismiss","restrict","resolve"]},"reason":{"type":"string","minLength":5,"maxLength":2000},"scope":{"type":"string","enum":["invitations","contacts","publishing","all"]},"durationHours":{"type":"integer","minimum":1,"maximum":720},"publicReasonCode":{"type":"string","enum":["spam","misleading","discrimination","inappropriate","privacy","other"]}},"required":["action","reason"],"description":"resolve is service-only; restrict is forbidden for service complaints."}
     ResumeAlternative:
       type: object
       properties:
@@ -10307,10 +9670,21 @@ components:
 
     SkillModuleAnswersInput: {"type": "object", "properties": {"revision": {"type": "integer"}, "answers": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 2000}}}, "required": ["revision", "answers"]}
 
-    SkillModuleMatrix: {"type": "object", "properties": {"bankVersion": {"type": "string"}, "policy": {"type": "object", "additionalProperties": true}, "resume": {"type": ["object", "null"], "properties": {"id": {"type": "integer"}, "title": {"type": "string"}, "specialization": {"type": "string"}, "targetGrade": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "statedSkills": {"type": "array", "items": {"type": "string"}}, "revision": {"type": "integer", "minimum": 1}}}, "modules": {"type": "array", "items": {"type": "object", "additionalProperties": true, "properties": {"levels": {"type": "array", "items": {"type": "object", "properties": {"level": {"type": "string", "enum": ["Junior", "Middle", "Senior"]}, "available": {"type": "boolean"}, "reason": {"type": ["string", "null"]}, "availabilityCode": {"type": ["string", "null"], "enum": ["unsupported_skill_level", "skill_bank_unavailable", null]}, "activeAttemptId": {"type": ["integer", "null"]}}, "required": ["level", "available", "reason", "availabilityCode", "activeAttemptId"], "additionalProperties": true}}}}}, "qualification": {"oneOf": [{"$ref": "#/components/schemas/SkillModuleQualification"}, {"type": "null"}]}, "accountEvidence": {"type": "array", "items": {"$ref": "#/components/schemas/SkillModuleEvidenceRecord"}}, "history": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "historicalQualification": {"type": ["object", "null"], "additionalProperties": true}, "historicalAttempts": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "skillContexts": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "accountSkills": {"type": "array", "items": {"type": "object", "properties": {"skillId": {"type": ["string", "null"]}, "label": {"type": "string"}, "state": {"type": "string", "enum": ["declared", "recommended"]}, "resumeIds": {"type": "array", "items": {"type": "integer"}}, "contexts": {"type": "array", "items": {"type": "object", "properties": {"resumeId": {"type": "integer"}, "state": {"type": "string", "enum": ["declared", "recommended"]}, "targetLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}, "reason": {"type": ["string", "null"]}}, "required": ["resumeId", "state", "targetLevel", "reason"]}}, "targetLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}, "verifiedLevel": {"oneOf": [{"type": "string", "enum": ["Junior", "Middle", "Senior"]}, {"type": "null"}]}}, "required": ["skillId", "label", "state", "resumeIds", "contexts", "targetLevel", "verifiedLevel"]}}}, "required": ["bankVersion", "resume", "modules", "qualification", "accountEvidence"]}
-
+    SkillModuleMatrix: {"type":"object","properties":{"bankVersion":{"type":"string"},"policy":{"type":"object","additionalProperties":true},"resume":{"type":["object","null"],"properties":{"id":{"type":"integer"},"title":{"type":"string"},"specialization":{"type":"string"},"targetGrade":{"type":"string","enum":["Junior","Middle","Senior"]},"statedSkills":{"type":"array","items":{"type":"string"}},"revision":{"type":"integer","minimum":1}}},"modules":{"type":"array","items":{"type":"object","additionalProperties":true,"properties":{"levels":{"type":"array","items":{"type":"object","properties":{"level":{"type":"string","enum":["Junior","Middle","Senior"]},"available":{"type":"boolean"},"reason":{"type":["string","null"]},"availabilityCode":{"type":["string","null"],"enum":["unsupported_skill_level","skill_bank_unavailable",null]},"activeAttemptId":{"type":["integer","null"]}},"required":["level","available","reason","availabilityCode","activeAttemptId"],"additionalProperties":true}}}}},"qualification":{"oneOf":[{"$ref":"#/components/schemas/SkillModuleQualification"},{"type":"null"}]},"accountEvidence":{"type":"array","items":{"$ref":"#/components/schemas/SkillModuleEvidenceRecord"}},"history":{"type":"array","items":{"type":"object","additionalProperties":true}},"historicalQualification":{"type":["object","null"],"additionalProperties":true},"historicalAttempts":{"type":"array","items":{"type":"object","additionalProperties":true}},"skillContexts":{"type":"array","items":{"type":"object","additionalProperties":true,"properties":{"relatedSkillIds":{"type":"array","items":{"type":"string"},"description":"Canonical module IDs associated with this exact CV, via explicit declarations or required role competencies; does not create proof."}},"required":["relatedSkillIds"]}},"accountSkills":{"type":"array","items":{"type":"object","properties":{"skillId":{"type":["string","null"]},"label":{"type":"string"},"state":{"type":"string","enum":["declared","recommended"]},"resumeIds":{"type":"array","items":{"type":"integer"}},"contexts":{"type":"array","items":{"type":"object","properties":{"resumeId":{"type":"integer"},"state":{"type":"string","enum":["declared","recommended"]},"targetLevel":{"oneOf":[{"type":"string","enum":["Junior","Middle","Senior"]},{"type":"null"}]},"reason":{"type":["string","null"]}},"required":["resumeId","state","targetLevel","reason"]}},"targetLevel":{"oneOf":[{"type":"string","enum":["Junior","Middle","Senior"]},{"type":"null"}]},"verifiedLevel":{"oneOf":[{"type":"string","enum":["Junior","Middle","Senior"]},{"type":"null"}]}},"required":["skillId","label","state","resumeIds","contexts","targetLevel","verifiedLevel"]}}},"required":["bankVersion","resume","modules","qualification","accountEvidence"]}
     WorkspaceSearchPage: {"type": "object", "properties": {"items": {"type": "array", "items": {"type": "object", "additionalProperties": true}}, "total": {"type": "integer"}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "pageCount": {"type": "integer"}, "exportLimit": {"type": "integer"}}, "required": ["items", "total", "page", "pageSize", "pageCount"]}
 
     ResumeDocumentPreview: {"type": "object", "properties": {"resumeId": {"type": "integer"}, "revision": {"type": "integer"}, "name": {"type": "string"}, "title": {"type": "string"}, "specialization": {"type": "string"}, "audience": {"type": "string", "enum": ["owner", "employer"]}, "contactsAllowed": {"type": "boolean"}, "sections": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "paragraphs": {"type": "array", "items": {"type": "object", "properties": {"text": {"type": "string"}, "link": {"type": "string"}}, "required": ["text"]}}}, "required": ["title", "paragraphs"]}}, "composition": {"type": "array", "items": {"type": "string"}}, "contactsPermitted": {"type": "boolean"}, "projectionVersion": {"type": "string", "pattern": "^signal-document-v1:[a-f0-9]{64}$", "description": "Stable opaque fingerprint of the effective authorised document, including identity, qualification and included skill evidence. No volatile generation time."}}, "required": ["resumeId", "name", "title", "audience", "contactsAllowed", "sections", "projectionVersion"]}
 
     ResumeWorkPreferences: {"type": "object", "properties": {"location": {"type": "string"}, "schedule": {"type": "string"}, "employment": {"type": "string"}, "relocation": {"type": "boolean"}, "startAvailability": {"type": "string"}}, "required": ["location", "schedule", "employment", "relocation", "startAvailability"]}
+
+    MicrotaskEditInput: {"type":"object","additionalProperties":false,"properties":{"specialization":{"type":"string","enum":["Backend / Python","Frontend / TypeScript"]},"title":{"type":"string","minLength":3,"maxLength":160},"competency":{"type":"string","minLength":2,"maxLength":100},"scenario":{"type":"string","minLength":50,"maxLength":6000},"expectedMinutes":{"type":"integer","minimum":5,"maximum":45},"intervalDays":{"type":"integer","minimum":7,"maximum":90},"deadlineDays":{"type":"integer","minimum":1,"maximum":7},"educationalOnly":{"type":"boolean","enum":[true]},"rubric":{"type":"array","minItems":1,"maxItems":6,"items":{"type":"object","additionalProperties":false,"properties":{"id":{"type":"string","pattern":"^[a-z0-9-]{1,40}$"},"label":{"type":"string","minLength":3,"maxLength":200},"maxPoints":{"type":"integer","minimum":1,"maximum":10}},"required":["id","label","maxPoints"]}},"jobId":{"type":"integer","minimum":1,"maximum":2147483647,"description":"Required owned non-deleted draft/published job. Immutable once template is created; specialization must match."},"version":{"type":"integer","minimum":1,"maximum":2147483647}},"required":["specialization","title","competency","scenario","expectedMinutes","intervalDays","deadlineDays","educationalOnly","rubric","jobId","version"]}
+
+    MicrotaskJobContext: {"type":"object","properties":{"id":{"type":"integer","minimum":1,"maximum":2147483647},"title":{"type":"string"},"version":{"type":"integer","minimum":1,"maximum":2147483647},"status":{"type":"string"},"available":{"type":"boolean"}},"required":["id","title","version","available"]}
+
+    MicrotaskCapturedJob: {"type":"object","properties":{"id":{"type":"integer","minimum":1,"maximum":2147483647},"title":{"type":"string"},"version":{"type":"integer","minimum":1,"maximum":2147483647},"specialization":{"type":"string"}},"required":["id","title","version","specialization"]}
+
+    MicrotaskRecipient: {"type":"object","properties":{"id":{"type":"integer","minimum":1,"maximum":2147483647},"templateId":{"type":"integer","minimum":1,"maximum":2147483647},"resumeId":{"type":["integer","null"]},"resumeTitle":{"type":"string"},"candidateIdentity":{"type":"object","properties":{"alias":{"type":"string"},"displayName":{"type":["string","null"]}},"required":["alias","displayName"]},"active":{"type":"boolean"},"nextDueAt":{"type":"string","format":"date-time"}},"required":["id","templateId","resumeId","resumeTitle","candidateIdentity","active","nextDueAt"]}
+
+    MicrotaskAnswerPage: {"type":"object","properties":{"items":{"type":"array","items":{"$ref":"#/components/schemas/MicrotaskOffer"}},"total":{"type":"integer"},"page":{"type":"integer"},"pageSize":{"type":"integer"},"pageCount":{"type":"integer"},"filter":{"type":"string","enum":["all","new","evaluated"]},"counters":{"type":"object","properties":{"answerCount":{"type":"integer"},"newAnswerCount":{"type":"integer"},"evaluatedAnswerCount":{"type":"integer"}},"required":["answerCount","newAnswerCount","evaluatedAnswerCount"]}},"required":["items","total","page","pageSize","pageCount","filter","counters"]}
+
+    MicrotaskRecipientPage: {"type":"object","properties":{"items":{"type":"array","items":{"$ref":"#/components/schemas/MicrotaskRecipient"}},"total":{"type":"integer"},"page":{"type":"integer"},"pageSize":{"type":"integer"},"pageCount":{"type":"integer"}},"required":["items","total","page","pageSize","pageCount"]}

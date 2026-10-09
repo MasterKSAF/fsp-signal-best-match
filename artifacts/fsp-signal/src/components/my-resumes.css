@@ -24,6 +24,8 @@
 .my-resumes .resume-progress { display:block; margin:0; }
 .my-resumes .my-resumes-heading { margin-bottom:0; }
 .my-resumes .my-resumes-heading { position:sticky;top:72px;z-index:15;align-self:start;padding-bottom:10px;background:hsl(var(--workspace-surface));border-bottom:1px solid hsl(var(--border)); }
+/* The sticky heading must not cover the sibling Back/Forward controls. */
+.workspace .page-wrap:has(.my-resumes) > .workspace-back-row { z-index:16; }
 .my-resumes-heading > .my-resumes-actions { justify-content:flex-end;flex-wrap:wrap;flex-shrink:0; }
 .my-resumes-actions .button { min-height:36px;font-size:12px;padding:8px 11px; }
 .my-resumes-save-status { margin:0;color:hsl(var(--muted-foreground));font-size:13px;line-height:1.5; }
@@ -41,3 +43,14 @@
 .resume-actions-menu { min-width:220px;border:2px solid hsl(var(--border));border-radius:12px;padding:6px; }.resume-actions-menu [role=menuitem] { min-height:36px;padding:8px 10px;font-size:13px;gap:8px;cursor:pointer; }
 .resume-file-composition { margin:0 0 16px;padding:10px 12px;border:1px solid hsl(var(--border));border-radius:12px;font-size:13px; }.resume-file-composition summary { display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:600; }.resume-file-composition summary::before { content:'›';transform:rotate(0deg);font-size:20px;line-height:14px; }.resume-file-composition[open] summary::before { transform:rotate(90deg); }.resume-file-composition>div { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px; }.resume-file-composition label { display:flex;align-items:center;gap:8px; }.resume-file-composition input { accent-color:hsl(var(--primary));width:15px;height:15px; }.resume-file-composition label:has(input:disabled) { color:hsl(var(--muted-foreground)); }
 @media(max-width:500px) { .resume-file-composition>div { grid-template-columns:minmax(0,1fr); }.resume-card-grades { font-size:11px; }.resume-actions-menu { max-width:calc(100vw - 32px); } }
+
+/* Overview contains only scanning information; full controls stay in the editor. */
+.resume-card { padding:14px; gap:9px; align-content:start; }
+.resume-card-progress { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px; }
+.resume-card-progress .resume-progress>div { flex-wrap:wrap;gap:3px 8px; }
+.resume-card-progress progress { height:5px;margin-top:5px; }
+.resume-card-footer { padding-top:4px;border-top:1px solid hsl(var(--border)); }
+.resume-editor-composition { margin-top:18px;padding-top:14px;border-top:1px solid hsl(var(--border));font-size:13px;line-height:1.6; }
+.resume-editor-composition summary { cursor:pointer;font-weight:600; }
+.resume-editor-composition ul { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;padding-left:18px; }
+@media(max-width:500px) { .resume-card-grades { font-size:12px; }.resume-card-progress { gap:12px; }.resume-editor-composition ul { grid-template-columns:1fr; } }

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { applicationSkillChips } from '../artifacts/api-server/src/lib/employer-application-display';
 import { skillModuleRegistry } from '../artifacts/api-server/src/lib/skill-module-bank';
-import type { SkillModuleEvidence, SkillQualificationTarget } from '../artifacts/api-server/src/lib/skill-module-qualification';
+import { getSkillQualification, type SkillModuleEvidence, type SkillQualificationTarget } from '../artifacts/api-server/src/lib/skill-module-qualification';
 const target:SkillQualificationTarget={userId:72,specialization:'Backend / Python',assumedGrade:'Middle',stack:['Python','SQL'],skills:['Postgres','FastAPI']};
 function proof(id:number,skillId:string,level:'Junior'|'Middle'='Junior',userId=72):SkillModuleEvidence {
   const competencies=skillModuleRegistry.find(module=>module.id===skillId)!.competencies;
@@ -14,11 +14,27 @@ test('Application chips use real module levels; legacy declarations and neighbou
   assert.deepEqual(items.filter(item=>item.status==='declared').map(item=>item.label),['PostgreSQL','FastAPI']);
   assert.ok(!JSON.stringify(items).includes('attemptId'));
 });
-test('An exact CV target never borrows another role CV and a fresh correction removes its proof',()=>{
-  const evidence=[proof(1,'python'),proof(2,'sql','Middle')];
+test('Own account proofs survive another role while declarations and overall category stay exact to its CV; corrections remove proof',()=>{
+  const evidence=[proof(1,'python'),proof(2,'sql','Middle'),proof(3,'react','Middle',99),proof(4,'typescript','Middle')];
+  const inputs={evidence,revokedIds:new Set([4])};
   const frontend={...target,specialization:'Frontend / TypeScript',stack:['TypeScript','React'],skills:[]};
-  assert.deepEqual(applicationSkillChips(frontend,{evidence,revokedIds:new Set()}),[{label:'TypeScript',status:'declared'},{label:'React',status:'declared'}]);
-  const corrected=applicationSkillChips(target,{evidence,revokedIds:new Set([1])});
+  assert.deepEqual(applicationSkillChips(frontend,inputs),[
+    {label:'Python',status:'verified',level:'Junior'},
+    {label:'SQL',status:'verified',level:'Middle'},
+    {label:'TypeScript',status:'declared'},
+    {label:'React',status:'declared'},
+  ],'account proofs keep real levels; foreign React and revoked TypeScript cannot verify declarations, and another CV cannot supply PostgreSQL/FastAPI');
+  const qualification=getSkillQualification(frontend,inputs);
+  assert.deepEqual(qualification.skills.map(item=>[item.skillId,item.level,item.evidenceId]),[['python','Junior',1],['sql','Middle',2]],'chips must come from these current owned evidence records');
+  assert.equal(qualification.verifiedGrade,null,'Python/SQL proof cannot complete the Frontend category');
+  assert.equal(qualification.category,null);
+  const correction={evidence,revokedIds:new Set([1,4])};
+  assert.deepEqual(applicationSkillChips(frontend,correction),[
+    {label:'SQL',status:'verified',level:'Middle'},
+    {label:'TypeScript',status:'declared'},
+    {label:'React',status:'declared'},
+  ],'corrected Python disappears when the selected CV never declared it');
+  const corrected=applicationSkillChips(target,correction);
   assert.deepEqual(corrected.find(item=>item.label==='Python'),{label:'Python',status:'declared'});
   assert.deepEqual(corrected.find(item=>item.label==='SQL'),{label:'SQL',status:'verified',level:'Middle'});
   assert.equal(applicationSkillChips(target,{evidence:[],revokedIds:new Set()}).every(item=>item.status==='declared'),true);

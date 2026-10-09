@@ -56,3 +56,20 @@
 .topbar-company{font-weight:650}
 .topbar-context .role-dot{flex-shrink:0}
 @media(max-width:700px){.topbar-context{max-width:min(39vw,220px)}.topbar-role-label{font-size:.72rem}}
+
+.topbar-own-name{display:none}
+@media(max-width:760px){
+  .app-shell>.topbar{height:84px;display:grid;grid-template-columns:32px minmax(0,1fr) auto;grid-template-rows:46px 22px;gap:0 8px;padding:4px 12px 10px}
+  .app-shell>.topbar>.mobile-menu{grid-column:1;grid-row:1}
+  .app-shell>.topbar>.header-brand-group{grid-column:2;grid-row:1;min-width:0}
+  .app-shell>.topbar>.topbar-context{grid-column:1/-1;grid-row:2;display:flex;max-width:100%;width:100%;margin:0;font-size:12px}
+  .app-shell>.topbar .topbar-own-name{display:inline}
+  .app-shell>.topbar .topbar-role-label{font-size:12px}
+  .app-shell>.topbar>.topbar-right{grid-column:3;grid-row:1;margin:0;gap:4px}
+  .app-shell>.topbar .signal-wordmark{font-size:25px}
+  .app-shell>.topbar .theme-menu>summary{padding:7px}
+  .app-shell>.topbar .theme-menu>summary>svg:last-child{display:none}
+  .app-shell>.workspace{min-height:calc(100dvh - 84px)}
+  .app-shell>.workspace>.sidebar{top:84px}
+  .app-shell>.workspace>.scrim{top:84px}
+}

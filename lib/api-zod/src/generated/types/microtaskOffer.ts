@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { MicroResumeContext } from './microResumeContext';
+import type { MicrotaskJobContext } from './microtaskJobContext';
 import type { MicrotaskOfferPurpose } from './microtaskOfferPurpose';
 import type { MicrotaskOfferResumeProvenance } from './microtaskOfferResumeProvenance';
 import type { MicrotaskOfferStatus } from './microtaskOfferStatus';
@@ -41,4 +42,8 @@ export interface MicrotaskOffer {
   shareResult: boolean;
   consentRevokedAt?: Date | null;
   purpose?: MicrotaskOfferPurpose;
+  job?: MicrotaskJobContext | null;
+  assignmentAvailable?: boolean;
+  /** @nullable */
+  assignmentLimitation?: string | null;
 }

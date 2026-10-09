@@ -6,4 +6,8 @@
  * OpenAPI spec version: 0.7.0
  */
 
-export type SkillModuleMatrixSkillContextsItem = { [key: string]: unknown };
+export type SkillModuleMatrixSkillContextsItem = {
+  /** Canonical module IDs associated with this exact CV, via explicit declarations or required role competencies; does not create proof. */
+  relatedSkillIds: string[];
+  [key: string]: unknown;
+ };

@@ -26,6 +26,7 @@ const queryShape = {
   resumeId: z.coerce.number().int().positive().max(2147483647).optional(),
   hideApplied: queryBoolean,
   hideBlocked: queryBoolean,
+  hasTask: queryBoolean,
 };
 export const jobSearchInput = z.object(queryShape).passthrough().superRefine((value, context) => {
   try {

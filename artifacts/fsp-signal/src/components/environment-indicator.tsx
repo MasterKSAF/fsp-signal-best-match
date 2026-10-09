@@ -23,10 +23,12 @@ export function EnvironmentIndicator({ isDemo, isReview = false }: { isDemo: boo
   const root = useRef<HTMLDivElement>(null);
   const tooltipId = useId();
   const unavailable = !online || health.isError;
-  const label = unavailable ? 'Нет связи с сервером' : isReview ? 'Самостоятельная проверка' : isDemo ? 'Demo' : 'Личный аккаунт';
+  const checking = !unavailable && !health.data;
+  const demo = isDemo || isReview;
+  const label = unavailable ? 'Нет связи с сервером' : checking ? 'Проверяем соединение' : demo ? 'Demo · сервер доступен' : 'Личный аккаунт · сервер доступен';
   const explanation = unavailable
     ? `Проверьте подключение. Последний режим: ${isDemo ? 'Demo' : 'личный аккаунт'}. Повторим проверку автоматически.`
-    : isReview
+    : checking ? 'Ожидаем ответ сервера. Режим аккаунта будет показан после проверки соединения.' : isReview
     ? 'Ваш отдельный проверочный аккаунт. Экзамен формируется и оценивается сервером; результаты и ограничения сохраняются только для вас. Данные вымышленные.'
     : isDemo
     ? 'Демонстрационный аккаунт с вымышленными данными для знакомства с сервисом.'
@@ -43,7 +45,7 @@ export function EnvironmentIndicator({ isDemo, isReview = false }: { isDemo: boo
     return () => { document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape); };
   }, [open]);
 
-  return <div ref={root} className={`environment-indicator ${unavailable ? 'environment-indicator--unavailable' : isDemo ? 'environment-indicator--demo' : 'environment-indicator--personal'}`}
+  return <div ref={root} className={`environment-indicator ${unavailable ? 'environment-indicator--unavailable' : checking ? 'environment-indicator--checking' : demo ? 'environment-indicator--demo' : 'environment-indicator--personal'}`}
     onPointerEnter={event => { if (event.pointerType !== 'touch') setOpen(true); }}
     onPointerLeave={event => { if (event.pointerType !== 'touch' && !root.current?.contains(document.activeElement)) setOpen(false); }}>
     <button type="button" className="environment-indicator__trigger" aria-label={`Режим аккаунта: ${label}`} aria-describedby={open ? tooltipId : undefined} aria-expanded={open} aria-controls={tooltipId}

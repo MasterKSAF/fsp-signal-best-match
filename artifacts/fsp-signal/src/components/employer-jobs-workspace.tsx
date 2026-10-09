@@ -8,6 +8,7 @@ import { professionLabel, selectionHref } from '@/lib/employer-workspace-navigat
 import { contextRequirements, editorRequirements, requirementLabel, requirementModeLabel, verifiedRequirementLevels, type RequirementMode, type SkillRequirement } from '@/lib/context-requirements';
 import { contextActions, contextListHref, contextListOptions, contextSortOptions, filterContextList, type ContextListOptions, type ContextListTab } from '@/lib/employer-context-list';
 import type { DictionaryOption } from '@/lib/professional-dictionaries';
+import { JobTaskIndicator, type JobTaskAvailability } from './job-task-indicator';
 import { SkillCoverage } from './matching-support';
 import { SkillRequirementEditor, type MinimumSkillLevels } from './skill-requirements';
 import { Dialog } from './product-enhancements';
@@ -16,7 +17,7 @@ import { InlineInfo } from './inline-info';
 import { OpportunityFeedback, OpportunityRequestError, OpportunityStatus, Salary, opportunityApi, useOpportunityAction } from './opportunity-ui';
 import './employer-workspace.css';
 
-type Context = {
+type Context = JobTaskAvailability & {
   id: number; title: string; specialization: string; description: string; grade: 'Junior' | 'Middle' | 'Senior';
   workFormat: string; salaryMin: number; salaryMax: number; salaryPeriod: 'month' | 'year'; salaryType: 'gross' | 'net';
   status?: string; version?: number; revision?: number; skills?: string[]; requiredSkills?: string[]; desirableSkills?: string[];
@@ -42,9 +43,9 @@ const initialDraft = (context?: Context): Draft => ({
 function contextPayload(draft: Draft, kind: Kind, dictionary: readonly DictionaryOption[] = []) {
   const { skills, skillRequirements, desirableSkills, location, ...conditions } = draft;
   const requirements = editorRequirements(skills,{skillRequirements},dictionary);
-  return kind === 'need' ? {...conditions, requiredSkills: skills, desirableSkills, skillRequirements:requirements,
+  return kind === 'need' ? {...conditions, requiredSkills: requirements.map(item=>item.skill), desirableSkills, skillRequirements:requirements,
     requiredSkillLevels: verifiedRequirementLevels(requirements)}
-    : {...conditions, skills, location, skillRequirements:requirements};
+    : {...conditions, skills:requirements.map(item=>item.skill), location, skillRequirements:requirements};
 }
 export function EmployerJobsPage({ initialTab }: { initialTab?: 'jobs' | 'needs' } = {}) {
   const search = useSearch();
@@ -111,7 +112,7 @@ export function EmployerJobsPage({ initialTab }: { initialTab?: 'jobs' | 'needs'
         const required = contextRequirements(context);
         return <article className="panel employer-context-row" id={`context-${kind}-${context.id}`} key={context.id} data-testid={`card-${kind}-${context.id}`}>
           <div className="employer-context-main"><div className="employer-context-heading"><h2>{professionLabel(context.title)}</h2>{kind === 'need' && !archived ? <span className="opportunity-status">Приватный запрос</span> : <OpportunityStatus status={status}/>}</div>
-            <div className="employer-context-meta"><span>{professionLabel(context.specialization)}</span><span>Грейд от {context.grade} · {requirementModeLabel(context.gradeMode).toLocaleLowerCase('ru-RU')}</span><span>{context.workFormat}</span>{context.location && <span>{context.location}</span>}</div>
+            <div className="employer-context-meta">{kind === 'job' && <JobTaskIndicator job={context}/>}<span>{professionLabel(context.specialization)}</span><span>Грейд от {context.grade} · {requirementModeLabel(context.gradeMode).toLocaleLowerCase('ru-RU')}</span><span>{context.workFormat}</span>{context.location && <span>{context.location}</span>}</div>
             <p className="employer-context-description">{context.description}</p><div className="employer-requirements" aria-label="Требования работодателя">{required.slice(0,6).map(item => <span className="employer-requirement-chip" key={item.skill}>{requirementLabel(item)}</span>)}{required.length > 6 && <span className="employer-requirement-chip">Ещё {required.length-6}</span>}</div>
           </div>
           <div className="employer-context-side"><Salary job={context}/><div className="employer-context-counters">

@@ -5,6 +5,7 @@
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
  * OpenAPI spec version: 0.7.0
  */
+import type { MicrotaskJobContext } from './microtaskJobContext';
 import type { MicrotaskTemplateRubricItem } from './microtaskTemplateRubricItem';
 import type { MicrotaskTemplateSpecialization } from './microtaskTemplateSpecialization';
 
@@ -43,4 +44,16 @@ export interface MicrotaskTemplate {
   companyId?: number;
   version: number;
   active: boolean;
+  /** @nullable */
+  jobId: number | null;
+  job: MicrotaskJobContext | null;
+  assignmentAvailable: boolean;
+  /** @minimum 0 */
+  answerCount?: number;
+  /** @minimum 0 */
+  newAnswerCount?: number;
+  /** @minimum 0 */
+  evaluatedAnswerCount?: number;
+  /** @minimum 0 */
+  recipientCount?: number;
 }

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useSearch } from 'wouter';
 import type { CandidateProfile } from '@workspace/api-client-react';
+import { professionLabel } from '../lib/employer-workspace-navigation';
 import { FormField } from './form-field';
 import './multi-resume.css';
 
@@ -73,7 +74,7 @@ export function CompactResumeContext() {
   if (loading) return <span role="status">Загружаем резюме…</span>;
   if (error) return <span role="alert">Не удалось загрузить резюме.</span>;
   if (!resumes.length) return null;
-  return <label className="compact-resume-context"><span>Резюме</span><select className="input" value={resumeId ?? ''} onChange={event => select(Number(event.target.value))} aria-label="Выбранное резюме" data-testid="select-active-resume">{resumes.map(row => <option key={row.id} value={row.id}>{row.title}{row.visibility === 'private' ? ' · скрытое' : ''}</option>)}</select></label>;
+  return <label className="compact-resume-context"><span>Резюме</span><select className="input" value={resumeId ?? ''} onChange={event => select(Number(event.target.value))} aria-label="Выбранное резюме" data-testid="select-active-resume">{resumes.map(row => <option key={row.id} value={row.id}>{professionLabel(row.title)}{row.visibility === 'private' ? ' · скрытое' : ''}</option>)}</select></label>;
 }
 export function CandidateAvatar({ profile, onSaved }: { profile: SelectedProfile; onSaved: () => void }) {
   const action = useMutation({ mutationFn: (dataUrl: string | null) => resumeRequest('/me/avatar', { method: dataUrl ? 'POST' : 'DELETE', body: dataUrl ? JSON.stringify({ dataUrl }) : undefined }), onSuccess: onSaved });

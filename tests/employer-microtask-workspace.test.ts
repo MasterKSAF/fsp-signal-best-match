@@ -51,7 +51,7 @@ test('Template-specific answer URLs reject ambiguous and invalid parameters',()=
   for (const query of [{templateId:'0'},{templateId:'1.5'},{templateId:'2147483648'},{templateId:['1','2']},{submittedOnly:'true'},{templateId:'2',companyId:'3'}]) assert.equal(microOfferQuery.safeParse(query).success,false);
 });
 test('Editing requires an explicit current version and retains strict teaching and rubric rules',()=>{
-  const template = {title:'Урок транзакции',competency:'SQL',specialization:'Backend / Python',scenario:'Опишите учебный подход к транзакции и восстановлению после сбоя на вымышленных данных.',expectedMinutes:20,intervalDays:7,deadlineDays:3,educationalOnly:true,rubric:[{id:'reason',label:'Понятный подход',maxPoints:5}]};
+  const template = {jobId:1,title:'Урок транзакции',competency:'SQL',specialization:'Backend / Python',scenario:'Опишите учебный подход к транзакции и восстановлению после сбоя на вымышленных данных.',expectedMinutes:20,intervalDays:7,deadlineDays:3,educationalOnly:true,rubric:[{id:'reason',label:'Понятный подход',maxPoints:5}]};
   assert.equal(microTemplateUpdateInput.parse({...template,version:3}).version,3);
   for (const patch of [{version:undefined},{version:0},{version:3.5},{version:3,expectedMinutes:90},{version:3,qualificationEffect:'Signal'},{version:3,rubric:[{id:'reason',label:'Понятный подход',maxPoints:5},{id:'reason',label:'Дубликат',maxPoints:5}]}]) assert.equal(microTemplateUpdateInput.safeParse({...template,...patch}).success,false);
 });

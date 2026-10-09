@@ -59,3 +59,17 @@ test('salary period and tax basis travel together with a salary range only', () 
   assert.equal(selectionParams(active, true).get('salaryPeriod'), 'year');
   assert.equal(selectionParams(active, true).get('salaryType'), 'net');
 });
+
+
+test('dismissing a linked invitation clears only its open intent and reload keeps the exact selection',()=>{
+  for(const type of ['job','need']){
+    const opened=readSelectionState(`contextType=${type}&contextId=51&applied=1&mode=catalog&resume=296&candidate=314&invite=1&q=RUI-20261009&page=2&declaredSkills=Docker`);
+    const href=selectionHref({...opened,invite:false});
+    const reloaded=readSelectionState(href.split('?')[1]);
+    assert.equal(new URLSearchParams(href.split('?')[1]).has('invite'),false);
+    assert.deepEqual(reloaded,{...opened,invite:false});
+    assert.deepEqual(reloaded.context,{type,id:51});
+    assert.equal(reloaded.resumeId,296);
+    assert.equal(reloaded.candidateId,314);
+  }
+});

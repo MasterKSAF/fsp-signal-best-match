@@ -18,3 +18,5 @@
 .employer-task-answer-section-body>.muted{font-size:12px}
 @media(max-width:580px){.employer-task-answer header{flex-wrap:wrap}.employer-task-answer-profile{min-height:44px}.opportunity-page .employer-task-answer-section>summary{padding:12px}.employer-task-answer-section-body{padding:12px}}
 @media(prefers-reduced-motion:reduce){.employer-task-answer-section>summary>svg{transition:none}}
+
+.micro-answer-filters,.micro-pagination{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin-block:1rem}.micro-recipient{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem;border:1px solid var(--border);border-radius:14px}.micro-recipient p{margin:.3rem 0 0}.micro-job-context{font-size:.88rem;color:var(--muted-foreground);margin:.45rem 0}.micro-pagination>small{margin-right:auto}

@@ -6,6 +6,9 @@
   flex-shrink:0;
 }
 .environment-indicator--demo { --environment-lamp:hsl(var(--demo-lamp)); --environment-glow:hsl(var(--demo-lamp) / .14); }
+.environment-indicator--checking { --environment-lamp:hsl(var(--muted-foreground)); --environment-glow:hsl(var(--muted-foreground) / .12); }
+.environment-indicator--personal { --environment-lamp:#16854e; --environment-glow:rgb(22 133 78 / .16); }
+html.dark .environment-indicator--personal { --environment-lamp:#65dfa0; --environment-glow:rgb(101 223 160 / .17); }
 
 
 .environment-indicator--unavailable { --environment-lamp:hsl(var(--destructive)); --environment-glow:hsl(var(--destructive) / .14); }
@@ -26,8 +29,8 @@
 .environment-indicator .environment-indicator__trigger[aria-expanded="true"] { background:hsl(var(--muted)); border-color:hsl(var(--border)); }
 .environment-indicator__lamp {
   display:block;
-  width:8px;
-  height:8px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:var(--environment-lamp);
   box-shadow:0 0 0 4px var(--environment-glow);

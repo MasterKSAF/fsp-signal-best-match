@@ -6,3 +6,9 @@
 .invitation-company-profile>div{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .invitation-company-profile p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.84rem;line-height:1.55}
 .invitation-company-contacts{font-size:.8rem;overflow-wrap:anywhere}
+
+.invitation-compact-main .invitation-compact-aside{justify-items:end;gap:7px;flex-shrink:0;max-width:45%;text-align:right}
+.invitation-created-date{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px;font-weight:700;color:hsl(var(--foreground));font-variant-numeric:tabular-nums}
+.invitation-created-date svg{color:hsl(var(--muted-foreground));flex:none}
+.invitation-compact-aside .opportunity-status{white-space:normal;text-align:right}
+@media(max-width:420px){.invitation-compact-main{gap:9px}.invitation-compact-main .invitation-compact-aside{max-width:48%}.invitation-created-date{font-size:12px;gap:4px}.invitation-created-date svg{width:12px;height:12px}}

@@ -119,6 +119,7 @@ export type MicroResumeContext = {
   professionalAlias: string;
 };
 export type MicroSnapshot = {
+  job?: { id: number; title: string; version: number; specialization: string };
   title: string;
   competency: string;
   scenario: string;
@@ -148,6 +149,8 @@ export const signalMicroTemplatesTable = pgTable(
     companyId: integer("company_id")
       .notNull()
       .references(() => signalCompaniesTable.id, { onDelete: "cascade" }),
+    // Null belongs to preserved legacy templates; new employer tasks require a job.
+    jobId: integer("job_id").references(() => signalJobsTable.id, { onDelete: "restrict" }),
     title: text("title").notNull(),
     competency: text("competency").notNull(),
     specialization: text("specialization", { enum: ["Backend / Python", "Frontend / TypeScript"] }),
@@ -164,6 +167,7 @@ export const signalMicroTemplatesTable = pgTable(
       .defaultNow(),
   },
   (t) => [
+    index("signal_micro_templates_job_idx").on(t.jobId, t.active),
     check(
       "signal_micro_frequency_check",
       sql`${t.intervalDays} >= 7 AND ${t.deadlineDays} BETWEEN 1 AND 7 AND ${t.expectedMinutes} BETWEEN 5 AND 45`,

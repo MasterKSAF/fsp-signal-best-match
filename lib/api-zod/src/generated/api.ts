@@ -3731,6 +3731,8 @@ export const listPublicJobsResponseDescriptionMax = 6000;
 
 
 
+export const listPublicJobsResponseTaskCountMin = 0;
+
 
 
 export const ListPublicJobsResponseItem = zod.object({
@@ -3757,7 +3759,10 @@ export const ListPublicJobsResponseItem = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(listPublicJobsResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 export const ListPublicJobsResponse = zod.array(ListPublicJobsResponseItem)
 
@@ -3787,6 +3792,8 @@ export const getPublicJobResponseDescriptionMax = 6000;
 
 
 
+export const getPublicJobResponseTaskCountMin = 0;
+
 
 
 export const GetPublicJobResponse = zod.object({
@@ -3813,7 +3820,10 @@ export const GetPublicJobResponse = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(getPublicJobResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 
 
@@ -3833,6 +3843,8 @@ export const listEmployerJobsResponseDescriptionMin = 30;
 export const listEmployerJobsResponseDescriptionMax = 6000;
 
 
+
+export const listEmployerJobsResponseTaskCountMin = 0;
 
 
 
@@ -3860,7 +3872,10 @@ export const ListEmployerJobsResponseItem = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(listEmployerJobsResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 export const ListEmployerJobsResponse = zod.array(ListEmployerJobsResponseItem)
 
@@ -3918,6 +3933,8 @@ export const createJobDraftResponseDescriptionMax = 6000;
 
 
 
+export const createJobDraftResponseTaskCountMin = 0;
+
 
 
 export const CreateJobDraftResponse = zod.object({
@@ -3944,7 +3961,10 @@ export const CreateJobDraftResponse = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(createJobDraftResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 
 
@@ -4009,6 +4029,8 @@ export const editJobResponseDescriptionMax = 6000;
 
 
 
+export const editJobResponseTaskCountMin = 0;
+
 
 
 export const EditJobResponse = zod.object({
@@ -4035,7 +4057,10 @@ export const EditJobResponse = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(editJobResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 
 
@@ -4068,6 +4093,8 @@ export const setJobStatusResponseDescriptionMax = 6000;
 
 
 
+export const setJobStatusResponseTaskCountMin = 0;
+
 
 
 export const SetJobStatusResponse = zod.object({
@@ -4094,7 +4121,10 @@ export const SetJobStatusResponse = zod.object({
   "companyName": zod.string(),
   "version": zod.number().int(),
   "status": zod.enum(['draft', 'published', 'closed', 'archived']),
-  "publishedAt": zod.coerce.date().nullish()
+  "publishedAt": zod.coerce.date().nullish(),
+  "hasTask": zod.boolean(),
+  "taskCount": zod.number().int().min(setJobStatusResponseTaskCountMin),
+  "taskHref": zod.string().nullable().describe('Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.')
 })
 
 
@@ -4435,6 +4465,18 @@ export const listCompanyMicrotasksResponseRubricItemMaxPointsMax = 10;
 
 export const listCompanyMicrotasksResponseRubricMax = 6;
 
+export const listCompanyMicrotasksResponseJobOneIdMax = 2147483647;
+
+export const listCompanyMicrotasksResponseJobOneVersionMax = 2147483647;
+
+export const listCompanyMicrotasksResponseAnswerCountMin = 0;
+
+export const listCompanyMicrotasksResponseNewAnswerCountMin = 0;
+
+export const listCompanyMicrotasksResponseEvaluatedAnswerCountMin = 0;
+
+export const listCompanyMicrotasksResponseRecipientCountMin = 0;
+
 
 
 export const ListCompanyMicrotasksResponseItem = zod.object({
@@ -4454,7 +4496,20 @@ export const ListCompanyMicrotasksResponseItem = zod.object({
   "id": zod.number().int(),
   "companyId": zod.number().int().optional(),
   "version": zod.number().int(),
-  "active": zod.boolean()
+  "active": zod.boolean(),
+  "jobId": zod.number().int().nullable(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotasksResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listCompanyMicrotasksResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]),
+  "assignmentAvailable": zod.boolean(),
+  "answerCount": zod.number().int().min(listCompanyMicrotasksResponseAnswerCountMin).optional(),
+  "newAnswerCount": zod.number().int().min(listCompanyMicrotasksResponseNewAnswerCountMin).optional(),
+  "evaluatedAnswerCount": zod.number().int().min(listCompanyMicrotasksResponseEvaluatedAnswerCountMin).optional(),
+  "recipientCount": zod.number().int().min(listCompanyMicrotasksResponseRecipientCountMin).optional()
 })
 export const ListCompanyMicrotasksResponse = zod.array(ListCompanyMicrotasksResponseItem)
 
@@ -4487,6 +4542,8 @@ export const createMicrotaskBodyRubricItemMaxPointsMax = 10;
 
 export const createMicrotaskBodyRubricMax = 6;
 
+export const createMicrotaskBodyJobIdMax = 2147483647;
+
 
 
 export const CreateMicrotaskBody = zod.object({
@@ -4502,7 +4559,8 @@ export const CreateMicrotaskBody = zod.object({
   "id": zod.string().regex(createMicrotaskBodyRubricItemIdRegExp),
   "label": zod.string().min(createMicrotaskBodyRubricItemLabelMin).max(createMicrotaskBodyRubricItemLabelMax),
   "maxPoints": zod.number().int().min(1).max(createMicrotaskBodyRubricItemMaxPointsMax)
-})).min(1).max(createMicrotaskBodyRubricMax)
+})).min(1).max(createMicrotaskBodyRubricMax),
+  "jobId": zod.number().int().min(1).max(createMicrotaskBodyJobIdMax).describe('Required owned non-deleted draft/published job. Immutable once template is created; specialization must match.')
 })
 
 export const createMicrotaskResponseScenarioMin = 50;
@@ -4519,6 +4577,18 @@ export const createMicrotaskResponseDeadlineDaysMax = 7;
 export const createMicrotaskResponseRubricItemMaxPointsMax = 10;
 
 export const createMicrotaskResponseRubricMax = 6;
+
+export const createMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const createMicrotaskResponseJobOneVersionMax = 2147483647;
+
+export const createMicrotaskResponseAnswerCountMin = 0;
+
+export const createMicrotaskResponseNewAnswerCountMin = 0;
+
+export const createMicrotaskResponseEvaluatedAnswerCountMin = 0;
+
+export const createMicrotaskResponseRecipientCountMin = 0;
 
 
 
@@ -4539,7 +4609,20 @@ export const CreateMicrotaskResponse = zod.object({
   "id": zod.number().int(),
   "companyId": zod.number().int().optional(),
   "version": zod.number().int(),
-  "active": zod.boolean()
+  "active": zod.boolean(),
+  "jobId": zod.number().int().nullable(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(createMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(createMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]),
+  "assignmentAvailable": zod.boolean(),
+  "answerCount": zod.number().int().min(createMicrotaskResponseAnswerCountMin).optional(),
+  "newAnswerCount": zod.number().int().min(createMicrotaskResponseNewAnswerCountMin).optional(),
+  "evaluatedAnswerCount": zod.number().int().min(createMicrotaskResponseEvaluatedAnswerCountMin).optional(),
+  "recipientCount": zod.number().int().min(createMicrotaskResponseRecipientCountMin).optional()
 })
 
 
@@ -4579,6 +4662,10 @@ export const editMicrotaskBodyRubricItemMaxPointsMax = 10;
 
 export const editMicrotaskBodyRubricMax = 6;
 
+export const editMicrotaskBodyJobIdMax = 2147483647;
+
+export const editMicrotaskBodyVersionMax = 2147483647;
+
 
 
 export const EditMicrotaskBody = zod.object({
@@ -4594,7 +4681,9 @@ export const EditMicrotaskBody = zod.object({
   "id": zod.string().regex(editMicrotaskBodyRubricItemIdRegExp),
   "label": zod.string().min(editMicrotaskBodyRubricItemLabelMin).max(editMicrotaskBodyRubricItemLabelMax),
   "maxPoints": zod.number().int().min(1).max(editMicrotaskBodyRubricItemMaxPointsMax)
-})).min(1).max(editMicrotaskBodyRubricMax)
+})).min(1).max(editMicrotaskBodyRubricMax),
+  "jobId": zod.number().int().min(1).max(editMicrotaskBodyJobIdMax).describe('Required owned non-deleted draft/published job. Immutable once template is created; specialization must match.'),
+  "version": zod.number().int().min(1).max(editMicrotaskBodyVersionMax)
 })
 
 export const editMicrotaskResponseScenarioMin = 50;
@@ -4611,6 +4700,18 @@ export const editMicrotaskResponseDeadlineDaysMax = 7;
 export const editMicrotaskResponseRubricItemMaxPointsMax = 10;
 
 export const editMicrotaskResponseRubricMax = 6;
+
+export const editMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const editMicrotaskResponseJobOneVersionMax = 2147483647;
+
+export const editMicrotaskResponseAnswerCountMin = 0;
+
+export const editMicrotaskResponseNewAnswerCountMin = 0;
+
+export const editMicrotaskResponseEvaluatedAnswerCountMin = 0;
+
+export const editMicrotaskResponseRecipientCountMin = 0;
 
 
 
@@ -4631,7 +4732,20 @@ export const EditMicrotaskResponse = zod.object({
   "id": zod.number().int(),
   "companyId": zod.number().int().optional(),
   "version": zod.number().int(),
-  "active": zod.boolean()
+  "active": zod.boolean(),
+  "jobId": zod.number().int().nullable(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(editMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(editMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]),
+  "assignmentAvailable": zod.boolean(),
+  "answerCount": zod.number().int().min(editMicrotaskResponseAnswerCountMin).optional(),
+  "newAnswerCount": zod.number().int().min(editMicrotaskResponseNewAnswerCountMin).optional(),
+  "evaluatedAnswerCount": zod.number().int().min(editMicrotaskResponseEvaluatedAnswerCountMin).optional(),
+  "recipientCount": zod.number().int().min(editMicrotaskResponseRecipientCountMin).optional()
 })
 
 
@@ -4665,6 +4779,18 @@ export const setMicrotaskAvailabilityResponseRubricItemMaxPointsMax = 10;
 
 export const setMicrotaskAvailabilityResponseRubricMax = 6;
 
+export const setMicrotaskAvailabilityResponseJobOneIdMax = 2147483647;
+
+export const setMicrotaskAvailabilityResponseJobOneVersionMax = 2147483647;
+
+export const setMicrotaskAvailabilityResponseAnswerCountMin = 0;
+
+export const setMicrotaskAvailabilityResponseNewAnswerCountMin = 0;
+
+export const setMicrotaskAvailabilityResponseEvaluatedAnswerCountMin = 0;
+
+export const setMicrotaskAvailabilityResponseRecipientCountMin = 0;
+
 
 
 export const SetMicrotaskAvailabilityResponse = zod.object({
@@ -4684,7 +4810,20 @@ export const SetMicrotaskAvailabilityResponse = zod.object({
   "id": zod.number().int(),
   "companyId": zod.number().int().optional(),
   "version": zod.number().int(),
-  "active": zod.boolean()
+  "active": zod.boolean(),
+  "jobId": zod.number().int().nullable(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(setMicrotaskAvailabilityResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(setMicrotaskAvailabilityResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]),
+  "assignmentAvailable": zod.boolean(),
+  "answerCount": zod.number().int().min(setMicrotaskAvailabilityResponseAnswerCountMin).optional(),
+  "newAnswerCount": zod.number().int().min(setMicrotaskAvailabilityResponseNewAnswerCountMin).optional(),
+  "evaluatedAnswerCount": zod.number().int().min(setMicrotaskAvailabilityResponseEvaluatedAnswerCountMin).optional(),
+  "recipientCount": zod.number().int().min(setMicrotaskAvailabilityResponseRecipientCountMin).optional()
 })
 
 
@@ -4763,6 +4902,10 @@ export const subscribeCandidateMicrotaskResponseResumeIdMax = 2147483647;
 export const subscribeCandidateMicrotaskResponseResumeContextOneResumeIdMax = 2147483647;
 
 
+export const subscribeCandidateMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const subscribeCandidateMicrotaskResponseJobOneVersionMax = 2147483647;
+
 
 
 export const SubscribeCandidateMicrotaskResponse = zod.object({
@@ -4788,13 +4931,29 @@ export const SubscribeCandidateMicrotaskResponse = zod.object({
   "active": zod.boolean(),
   "nextDueAt": zod.coerce.date(),
   "title": zod.string().optional(),
-  "companyName": zod.string().optional()
+  "companyName": zod.string().optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(subscribeCandidateMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(subscribeCandidateMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional()
 })
 
 
 /**
  * @summary Own offers, results, subscriptions and preference
  */
+export const listMyMicrotasksQueryJobIdMax = 2147483647;
+
+
+
+export const ListMyMicrotasksQueryParams = zod.object({
+  "jobId": zod.coerce.number().int().min(1).max(listMyMicrotasksQueryJobIdMax).optional()
+})
+
 export const listMyMicrotasksResponseOffersItemResumeIdMax = 2147483647;
 
 
@@ -4811,13 +4970,25 @@ export const listMyMicrotasksResponseOffersItemSnapshotRubricItemMaxPointsMax = 
 
 export const listMyMicrotasksResponseOffersItemSnapshotRubricMax = 6;
 
+export const listMyMicrotasksResponseOffersItemSnapshotJobIdMax = 2147483647;
+
+export const listMyMicrotasksResponseOffersItemSnapshotJobVersionMax = 2147483647;
+
 export const listMyMicrotasksResponseOffersItemResultOneScoresItemPointsMin = 0;
+
+export const listMyMicrotasksResponseOffersItemJobOneIdMax = 2147483647;
+
+export const listMyMicrotasksResponseOffersItemJobOneVersionMax = 2147483647;
 
 export const listMyMicrotasksResponseSubscriptionsItemResumeIdMax = 2147483647;
 
 
 export const listMyMicrotasksResponseSubscriptionsItemResumeContextOneResumeIdMax = 2147483647;
 
+
+export const listMyMicrotasksResponseSubscriptionsItemJobOneIdMax = 2147483647;
+
+export const listMyMicrotasksResponseSubscriptionsItemJobOneVersionMax = 2147483647;
 
 
 
@@ -4855,7 +5026,13 @@ export const ListMyMicrotasksResponse = zod.object({
 })).min(1).max(listMyMicrotasksResponseOffersItemSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(listMyMicrotasksResponseOffersItemSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listMyMicrotasksResponseOffersItemSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -4880,7 +5057,16 @@ export const ListMyMicrotasksResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(listMyMicrotasksResponseOffersItemJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listMyMicrotasksResponseOffersItemJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })),
   "subscriptions": zod.array(zod.object({
   "id": zod.number().int(),
@@ -4905,7 +5091,15 @@ export const ListMyMicrotasksResponse = zod.object({
   "active": zod.boolean(),
   "nextDueAt": zod.coerce.date(),
   "title": zod.string().optional(),
-  "companyName": zod.string().optional()
+  "companyName": zod.string().optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(listMyMicrotasksResponseSubscriptionsItemJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listMyMicrotasksResponseSubscriptionsItemJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional()
 })),
   "limits": zod.string()
 })
@@ -4944,6 +5138,10 @@ export const setMyMicrotaskSubscriptionResponseResumeIdMax = 2147483647;
 export const setMyMicrotaskSubscriptionResponseResumeContextOneResumeIdMax = 2147483647;
 
 
+export const setMyMicrotaskSubscriptionResponseJobOneIdMax = 2147483647;
+
+export const setMyMicrotaskSubscriptionResponseJobOneVersionMax = 2147483647;
+
 
 
 export const SetMyMicrotaskSubscriptionResponse = zod.object({
@@ -4969,7 +5167,15 @@ export const SetMyMicrotaskSubscriptionResponse = zod.object({
   "active": zod.boolean(),
   "nextDueAt": zod.coerce.date(),
   "title": zod.string().optional(),
-  "companyName": zod.string().optional()
+  "companyName": zod.string().optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(setMyMicrotaskSubscriptionResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(setMyMicrotaskSubscriptionResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional()
 })
 
 
@@ -5005,7 +5211,15 @@ export const decideMicrotaskResponseSnapshotRubricItemMaxPointsMax = 10;
 
 export const decideMicrotaskResponseSnapshotRubricMax = 6;
 
+export const decideMicrotaskResponseSnapshotJobIdMax = 2147483647;
+
+export const decideMicrotaskResponseSnapshotJobVersionMax = 2147483647;
+
 export const decideMicrotaskResponseResultOneScoresItemPointsMin = 0;
+
+export const decideMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const decideMicrotaskResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5041,7 +5255,13 @@ export const DecideMicrotaskResponse = zod.object({
 })).min(1).max(decideMicrotaskResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(decideMicrotaskResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(decideMicrotaskResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5066,7 +5286,16 @@ export const DecideMicrotaskResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(decideMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(decideMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 
 
@@ -5106,7 +5335,15 @@ export const submitMicrotaskResponseSnapshotRubricItemMaxPointsMax = 10;
 
 export const submitMicrotaskResponseSnapshotRubricMax = 6;
 
+export const submitMicrotaskResponseSnapshotJobIdMax = 2147483647;
+
+export const submitMicrotaskResponseSnapshotJobVersionMax = 2147483647;
+
 export const submitMicrotaskResponseResultOneScoresItemPointsMin = 0;
+
+export const submitMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const submitMicrotaskResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5142,7 +5379,13 @@ export const SubmitMicrotaskResponse = zod.object({
 })).min(1).max(submitMicrotaskResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(submitMicrotaskResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(submitMicrotaskResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5167,7 +5410,16 @@ export const SubmitMicrotaskResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(submitMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(submitMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 
 
@@ -5190,7 +5442,15 @@ export const listCompanyMicrotaskOffersResponseSnapshotRubricItemMaxPointsMax = 
 
 export const listCompanyMicrotaskOffersResponseSnapshotRubricMax = 6;
 
+export const listCompanyMicrotaskOffersResponseSnapshotJobIdMax = 2147483647;
+
+export const listCompanyMicrotaskOffersResponseSnapshotJobVersionMax = 2147483647;
+
 export const listCompanyMicrotaskOffersResponseResultOneScoresItemPointsMin = 0;
+
+export const listCompanyMicrotaskOffersResponseJobOneIdMax = 2147483647;
+
+export const listCompanyMicrotaskOffersResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5226,7 +5486,13 @@ export const ListCompanyMicrotaskOffersResponseItem = zod.object({
 })).min(1).max(listCompanyMicrotaskOffersResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotaskOffersResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listCompanyMicrotaskOffersResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5251,7 +5517,16 @@ export const ListCompanyMicrotaskOffersResponseItem = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotaskOffersResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listCompanyMicrotaskOffersResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 export const ListCompanyMicrotaskOffersResponse = zod.array(ListCompanyMicrotaskOffersResponseItem)
 
@@ -5299,7 +5574,15 @@ export const evaluateMicrotaskResponseSnapshotRubricItemMaxPointsMax = 10;
 
 export const evaluateMicrotaskResponseSnapshotRubricMax = 6;
 
+export const evaluateMicrotaskResponseSnapshotJobIdMax = 2147483647;
+
+export const evaluateMicrotaskResponseSnapshotJobVersionMax = 2147483647;
+
 export const evaluateMicrotaskResponseResultOneScoresItemPointsMin = 0;
+
+export const evaluateMicrotaskResponseJobOneIdMax = 2147483647;
+
+export const evaluateMicrotaskResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5335,7 +5618,13 @@ export const EvaluateMicrotaskResponse = zod.object({
 })).min(1).max(evaluateMicrotaskResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(evaluateMicrotaskResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(evaluateMicrotaskResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5360,7 +5649,16 @@ export const EvaluateMicrotaskResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(evaluateMicrotaskResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(evaluateMicrotaskResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 
 
@@ -5395,7 +5693,15 @@ export const shareMicrotaskResultResponseSnapshotRubricItemMaxPointsMax = 10;
 
 export const shareMicrotaskResultResponseSnapshotRubricMax = 6;
 
+export const shareMicrotaskResultResponseSnapshotJobIdMax = 2147483647;
+
+export const shareMicrotaskResultResponseSnapshotJobVersionMax = 2147483647;
+
 export const shareMicrotaskResultResponseResultOneScoresItemPointsMin = 0;
+
+export const shareMicrotaskResultResponseJobOneIdMax = 2147483647;
+
+export const shareMicrotaskResultResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5431,7 +5737,13 @@ export const ShareMicrotaskResultResponse = zod.object({
 })).min(1).max(shareMicrotaskResultResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(shareMicrotaskResultResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(shareMicrotaskResultResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5456,7 +5768,16 @@ export const ShareMicrotaskResultResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(shareMicrotaskResultResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(shareMicrotaskResultResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 
 
@@ -5487,7 +5808,15 @@ export const revokeMicrotaskConsentResponseSnapshotRubricItemMaxPointsMax = 10;
 
 export const revokeMicrotaskConsentResponseSnapshotRubricMax = 6;
 
+export const revokeMicrotaskConsentResponseSnapshotJobIdMax = 2147483647;
+
+export const revokeMicrotaskConsentResponseSnapshotJobVersionMax = 2147483647;
+
 export const revokeMicrotaskConsentResponseResultOneScoresItemPointsMin = 0;
+
+export const revokeMicrotaskConsentResponseJobOneIdMax = 2147483647;
+
+export const revokeMicrotaskConsentResponseJobOneVersionMax = 2147483647;
 
 
 
@@ -5523,7 +5852,13 @@ export const RevokeMicrotaskConsentResponse = zod.object({
 })).min(1).max(revokeMicrotaskConsentResponseSnapshotRubricMax),
   "companyName": zod.string(),
   "version": zod.number().int(),
-  "limits": zod.string()
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(revokeMicrotaskConsentResponseSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(revokeMicrotaskConsentResponseSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
 }),
   "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
   "dueAt": zod.coerce.date(),
@@ -5548,7 +5883,16 @@ export const RevokeMicrotaskConsentResponse = zod.object({
 }).nullish(),
   "shareResult": zod.boolean(),
   "consentRevokedAt": zod.coerce.date().nullish(),
-  "purpose": zod.enum(['company_task']).optional()
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(revokeMicrotaskConsentResponseJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(revokeMicrotaskConsentResponseJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
 })
 
 
@@ -8491,8 +8835,8 @@ export const ListOwnComplaintsResponse = zod.object({
   "id": zod.number().int().min(1).max(listOwnComplaintsResponseComplaintsItemIdMax),
   "objectType": zod.string(),
   "objectId": zod.number().int().min(1).max(listOwnComplaintsResponseComplaintsItemObjectIdMax),
-  "companyId": zod.number().int().min(1).max(listOwnComplaintsResponseComplaintsItemCompanyIdMax),
-  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other']),
+  "companyId": zod.number().int().min(1).max(listOwnComplaintsResponseComplaintsItemCompanyIdMax).nullable(),
+  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other', 'question', 'technical']),
   "explanation": zod.string().optional(),
   "status": zod.string(),
   "decisionReason": zod.string().nullish(),
@@ -8514,12 +8858,12 @@ export const submitComplaintBodyIdempotencyKeyMax = 128;
 
 
 export const SubmitComplaintBody = zod.object({
-  "objectType": zod.enum(['company', 'job', 'invitation']),
+  "objectType": zod.enum(['company', 'job', 'invitation', 'service']),
   "objectId": zod.number().int().min(1).max(submitComplaintBodyObjectIdMax),
-  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other']),
+  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other', 'question', 'technical']),
   "explanation": zod.string().max(submitComplaintBodyExplanationMax).optional(),
   "idempotencyKey": zod.string().min(submitComplaintBodyIdempotencyKeyMin).max(submitComplaintBodyIdempotencyKeyMax)
-})
+}).describe('Service complaints may be created by either role, require own session userId as objectId and trimmed explanation of 10–2000 characters. Existing company/job/invitation complaints remain candidate-only and use existing ACL.')
 
 export const submitComplaintResponseComplaintIdMax = 2147483647;
 
@@ -8534,8 +8878,8 @@ export const SubmitComplaintResponse = zod.object({
   "id": zod.number().int().min(1).max(submitComplaintResponseComplaintIdMax),
   "objectType": zod.string(),
   "objectId": zod.number().int().min(1).max(submitComplaintResponseComplaintObjectIdMax),
-  "companyId": zod.number().int().min(1).max(submitComplaintResponseComplaintCompanyIdMax),
-  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other']),
+  "companyId": zod.number().int().min(1).max(submitComplaintResponseComplaintCompanyIdMax).nullable(),
+  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other', 'question', 'technical']),
   "explanation": zod.string().optional(),
   "status": zod.string(),
   "decisionReason": zod.string().nullish(),
@@ -8605,8 +8949,8 @@ export const GetModerationQueueResponse = zod.object({
   "id": zod.number().int().min(1).max(getModerationQueueResponseComplaintsItemIdMax),
   "objectType": zod.string(),
   "objectId": zod.number().int().min(1).max(getModerationQueueResponseComplaintsItemObjectIdMax),
-  "companyId": zod.number().int().min(1).max(getModerationQueueResponseComplaintsItemCompanyIdMax),
-  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other']),
+  "companyId": zod.number().int().min(1).max(getModerationQueueResponseComplaintsItemCompanyIdMax).nullable(),
+  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other', 'question', 'technical']),
   "explanation": zod.string().optional(),
   "status": zod.string(),
   "decisionReason": zod.string().nullish(),
@@ -8635,12 +8979,12 @@ export const decideComplaintBodyDurationHoursMax = 720;
 
 
 export const DecideComplaintBody = zod.object({
-  "action": zod.enum(['review', 'dismiss', 'restrict']),
+  "action": zod.enum(['review', 'dismiss', 'restrict', 'resolve']),
   "reason": zod.string().min(decideComplaintBodyReasonMin).max(decideComplaintBodyReasonMax),
   "scope": zod.enum(['invitations', 'contacts', 'publishing', 'all']).optional(),
   "durationHours": zod.number().int().min(1).max(decideComplaintBodyDurationHoursMax).optional(),
   "publicReasonCode": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other']).optional()
-})
+}).describe('resolve is service-only; restrict is forbidden for service complaints.')
 
 export const DecideComplaintResponse = zod.object({
 
@@ -9185,7 +9529,9 @@ export const GetSkillModuleMatrixResponse = zod.object({
   "history": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
   "historicalQualification": zod.record(zod.string(), zod.unknown()).nullish(),
   "historicalAttempts": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
-  "skillContexts": zod.array(zod.record(zod.string(), zod.unknown())).optional(),
+  "skillContexts": zod.array(zod.object({
+  "relatedSkillIds": zod.array(zod.string()).describe('Canonical module IDs associated with this exact CV, via explicit declarations or required role competencies; does not create proof.')
+})).optional(),
   "accountSkills": zod.array(zod.object({
   "skillId": zod.string().nullable(),
   "label": zod.string(),
@@ -9687,6 +10033,7 @@ export const SearchCandidateApplicationsResponse = zod.object({
 export const searchAccessibleJobsQuerySalaryPeriodDefault = `month`;
 export const searchAccessibleJobsQueryHideAppliedDefault = false;
 export const searchAccessibleJobsQueryHideBlockedDefault = false;
+export const searchAccessibleJobsQueryHasTaskDefault = false;
 
 export const SearchAccessibleJobsQueryParams = zod.object({
   "q": zod.coerce.string().optional(),
@@ -9703,7 +10050,8 @@ export const SearchAccessibleJobsQueryParams = zod.object({
   "resumeId": zod.coerce.number().int().optional(),
   "salaryPeriod": zod.enum(['month', 'year']).default(searchAccessibleJobsQuerySalaryPeriodDefault),
   "hideApplied": zod.coerce.boolean().default(searchAccessibleJobsQueryHideAppliedDefault).describe('For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.'),
-  "hideBlocked": zod.coerce.boolean().default(searchAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.')
+  "hideBlocked": zod.coerce.boolean().default(searchAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.'),
+  "hasTask": zod.coerce.boolean().default(searchAccessibleJobsQueryHasTaskDefault).describe('Only published jobs with active linked tasks. Does not reveal task content or assign a candidate.')
 })
 
 export const SearchAccessibleJobsResponse = zod.object({
@@ -9769,6 +10117,7 @@ export const GetResumePreviewpdfResponse = zod.unknown()
 export const exportAccessibleJobsQuerySalaryPeriodDefault = `month`;
 export const exportAccessibleJobsQueryHideAppliedDefault = false;
 export const exportAccessibleJobsQueryHideBlockedDefault = false;
+export const exportAccessibleJobsQueryHasTaskDefault = false;
 
 export const ExportAccessibleJobsQueryParams = zod.object({
   "format": zod.enum(['csv', 'xlsx']),
@@ -9784,7 +10133,8 @@ export const ExportAccessibleJobsQueryParams = zod.object({
   "salaryPeriod": zod.enum(['month', 'year']).default(exportAccessibleJobsQuerySalaryPeriodDefault),
   "resumeId": zod.coerce.number().int().optional(),
   "hideApplied": zod.coerce.boolean().default(exportAccessibleJobsQueryHideAppliedDefault).describe('For authenticated candidates only: hide jobs with any application by this account, across all resumes and statuses, including withdrawn applications.'),
-  "hideBlocked": zod.coerce.boolean().default(exportAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.')
+  "hideBlocked": zod.coerce.boolean().default(exportAccessibleJobsQueryHideBlockedDefault).describe('For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.'),
+  "hasTask": zod.coerce.boolean().default(exportAccessibleJobsQueryHasTaskDefault).describe('Only published jobs with active linked tasks. Does not reveal task content or assign a candidate.')
 })
 
 export const ExportAccessibleJobsResponse = zod.unknown()
@@ -9840,5 +10190,225 @@ export const RequestFspImportBody = zod.object({
 })
 
 export const RequestFspImportResponse = zod.void()
+
+
+export const listCompanyMicrotaskAnswersPathIdMax = 2147483647;
+
+
+
+export const ListCompanyMicrotaskAnswersParams = zod.object({
+  "id": zod.coerce.number().int().min(1).max(listCompanyMicrotaskAnswersPathIdMax)
+})
+
+export const listCompanyMicrotaskAnswersQueryFilterDefault = `all`;
+export const listCompanyMicrotaskAnswersQueryPageDefault = 1;
+
+export const listCompanyMicrotaskAnswersQueryPageSizeDefault = 20;
+export const listCompanyMicrotaskAnswersQueryPageSizeMax = 100;
+
+
+
+export const ListCompanyMicrotaskAnswersQueryParams = zod.object({
+  "filter": zod.enum(['all', 'new', 'evaluated']).default(listCompanyMicrotaskAnswersQueryFilterDefault),
+  "page": zod.coerce.number().int().min(1).default(listCompanyMicrotaskAnswersQueryPageDefault),
+  "pageSize": zod.coerce.number().int().min(1).max(listCompanyMicrotaskAnswersQueryPageSizeMax).default(listCompanyMicrotaskAnswersQueryPageSizeDefault)
+})
+
+export const listCompanyMicrotaskAnswersResponseItemsItemResumeIdMax = 2147483647;
+
+
+export const listCompanyMicrotaskAnswersResponseItemsItemResumeContextOneResumeIdMax = 2147483647;
+
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotScenarioMin = 50;
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotScenarioMax = 6000;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotExpectedMinutesMin = 5;
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotExpectedMinutesMax = 45;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotRubricItemMaxPointsMax = 10;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotRubricMax = 6;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotJobIdMax = 2147483647;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemSnapshotJobVersionMax = 2147483647;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemResultOneScoresItemPointsMin = 0;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemJobOneIdMax = 2147483647;
+
+export const listCompanyMicrotaskAnswersResponseItemsItemJobOneVersionMax = 2147483647;
+
+
+
+export const ListCompanyMicrotaskAnswersResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number().int(),
+  "subscriptionId": zod.number().int().optional(),
+  "companyId": zod.number().int().optional(),
+  "candidateUserId": zod.number().int().optional(),
+  "resumeId": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemResumeIdMax).nullable().describe('Immutable selected resume. Null for legacy_unbound history or an employer response with revoked access.'),
+  "resumeRevision": zod.number().int().min(1).nullable(),
+  "resumeContext": zod.object({
+  "resumeId": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemResumeContextOneResumeIdMax),
+  "revision": zod.number().int().min(1),
+  "title": zod.string(),
+  "specialization": zod.enum(['Backend / Python', 'Frontend / TypeScript']),
+  "verifiedGrade": zod.enum(['Junior', 'Middle', 'Senior']),
+  "verifiedSkills": zod.array(zod.string()),
+  "professionalAlias": zod.string()
+}).describe('Immutable minimal professional snapshot at binding or offer creation; a later primary switch does not change it. It contains no contacts or answer keys.').nullable(),
+  "resumeProvenance": zod.enum(['captured', 'legacy_unbound']),
+  "resumeAvailable": zod.boolean().optional().describe('Fresh access check on list responses; a stored context does not grant current company access.'),
+  "resumeLimitation": zod.string().nullish(),
+  "alias": zod.string().nullish().describe('Employer list uses the original captured alias when readable; otherwise a revoked-access label.'),
+  "snapshot": zod.object({
+  "title": zod.string(),
+  "competency": zod.string(),
+  "scenario": zod.string().min(listCompanyMicrotaskAnswersResponseItemsItemSnapshotScenarioMin).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotScenarioMax),
+  "expectedMinutes": zod.number().int().min(listCompanyMicrotaskAnswersResponseItemsItemSnapshotExpectedMinutesMin).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotExpectedMinutesMax),
+  "rubric": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "maxPoints": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotRubricItemMaxPointsMax)
+})).min(1).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotRubricMax),
+  "companyName": zod.string(),
+  "version": zod.number().int(),
+  "limits": zod.string(),
+  "job": zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotJobIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemSnapshotJobVersionMax),
+  "specialization": zod.string()
+}).optional()
+}),
+  "status": zod.enum(['offered', 'accepted', 'declined', 'submitted', 'evaluated', 'expired', 'withdrawn']),
+  "dueAt": zod.coerce.date(),
+  "createdAt": zod.coerce.date().optional(),
+  "answer": zod.string().nullish(),
+  "result": zod.object({
+  "evaluatorUserId": zod.number().int().optional(),
+  "evaluatedAt": zod.coerce.date().optional(),
+  "scores": zod.array(zod.object({
+  "criterionId": zod.string(),
+  "points": zod.number().int().min(listCompanyMicrotaskAnswersResponseItemsItemResultOneScoresItemPointsMin),
+  "comment": zod.string()
+})).optional(),
+  "total": zod.number().int().optional(),
+  "max": zod.number().int().optional(),
+  "feedback": zod.string().optional(),
+  "source": zod.enum(['company_task']).optional(),
+  "competency": zod.string().optional(),
+  "templateVersion": zod.number().int().optional(),
+  "purpose": zod.enum(['company_task']).optional(),
+  "qualificationEffect": zod.enum(['none']).optional()
+}).nullish(),
+  "shareResult": zod.boolean(),
+  "consentRevokedAt": zod.coerce.date().nullish(),
+  "purpose": zod.enum(['company_task']).optional(),
+  "job": zod.union([zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemJobOneIdMax),
+  "title": zod.string(),
+  "version": zod.number().int().min(1).max(listCompanyMicrotaskAnswersResponseItemsItemJobOneVersionMax),
+  "status": zod.string().optional(),
+  "available": zod.boolean()
+}),zod.null()]).optional(),
+  "assignmentAvailable": zod.boolean().optional(),
+  "assignmentLimitation": zod.string().nullish()
+})),
+  "total": zod.number().int(),
+  "page": zod.number().int(),
+  "pageSize": zod.number().int(),
+  "pageCount": zod.number().int(),
+  "filter": zod.enum(['all', 'new', 'evaluated']),
+  "counters": zod.object({
+  "answerCount": zod.number().int(),
+  "newAnswerCount": zod.number().int(),
+  "evaluatedAnswerCount": zod.number().int()
+})
+})
+
+
+export const listCompanyMicrotaskRecipientsPathIdMax = 2147483647;
+
+
+
+export const ListCompanyMicrotaskRecipientsParams = zod.object({
+  "id": zod.coerce.number().int().min(1).max(listCompanyMicrotaskRecipientsPathIdMax)
+})
+
+export const listCompanyMicrotaskRecipientsQueryFilterDefault = `all`;
+export const listCompanyMicrotaskRecipientsQueryPageDefault = 1;
+
+export const listCompanyMicrotaskRecipientsQueryPageSizeDefault = 20;
+export const listCompanyMicrotaskRecipientsQueryPageSizeMax = 100;
+
+
+
+export const ListCompanyMicrotaskRecipientsQueryParams = zod.object({
+  "filter": zod.enum(['all', 'new', 'evaluated']).default(listCompanyMicrotaskRecipientsQueryFilterDefault),
+  "page": zod.coerce.number().int().min(1).default(listCompanyMicrotaskRecipientsQueryPageDefault),
+  "pageSize": zod.coerce.number().int().min(1).max(listCompanyMicrotaskRecipientsQueryPageSizeMax).default(listCompanyMicrotaskRecipientsQueryPageSizeDefault)
+})
+
+export const listCompanyMicrotaskRecipientsResponseItemsItemIdMax = 2147483647;
+
+export const listCompanyMicrotaskRecipientsResponseItemsItemTemplateIdMax = 2147483647;
+
+
+
+export const ListCompanyMicrotaskRecipientsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.number().int().min(1).max(listCompanyMicrotaskRecipientsResponseItemsItemIdMax),
+  "templateId": zod.number().int().min(1).max(listCompanyMicrotaskRecipientsResponseItemsItemTemplateIdMax),
+  "resumeId": zod.number().int().nullable(),
+  "resumeTitle": zod.string(),
+  "candidateIdentity": zod.object({
+  "alias": zod.string(),
+  "displayName": zod.string().nullable()
+}),
+  "active": zod.boolean(),
+  "nextDueAt": zod.coerce.date()
+})),
+  "total": zod.number().int(),
+  "page": zod.number().int(),
+  "pageSize": zod.number().int(),
+  "pageCount": zod.number().int()
+})
+
+
+/**
+ * Own reporter only, both roles. Foreign or missing ID is unavailable.
+ */
+export const getMyComplaintPathIdMax = 2147483647;
+
+
+
+export const GetMyComplaintParams = zod.object({
+  "id": zod.coerce.number().int().min(1).max(getMyComplaintPathIdMax)
+})
+
+export const getMyComplaintResponseComplaintIdMax = 2147483647;
+
+export const getMyComplaintResponseComplaintObjectIdMax = 2147483647;
+
+export const getMyComplaintResponseComplaintCompanyIdMax = 2147483647;
+
+
+
+export const GetMyComplaintResponse = zod.object({
+  "complaint": zod.object({
+  "id": zod.number().int().min(1).max(getMyComplaintResponseComplaintIdMax),
+  "objectType": zod.string(),
+  "objectId": zod.number().int().min(1).max(getMyComplaintResponseComplaintObjectIdMax),
+  "companyId": zod.number().int().min(1).max(getMyComplaintResponseComplaintCompanyIdMax).nullable(),
+  "category": zod.enum(['spam', 'misleading', 'discrimination', 'inappropriate', 'privacy', 'other', 'question', 'technical']),
+  "explanation": zod.string().optional(),
+  "status": zod.string(),
+  "decisionReason": zod.string().nullish(),
+  "createdAt": zod.coerce.date().optional()
+})
+})
 
 

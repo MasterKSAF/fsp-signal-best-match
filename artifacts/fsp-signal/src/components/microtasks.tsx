@@ -30,6 +30,7 @@ import {
 } from "./opportunity-ui";
 
 const example = {
+  jobId: 0,
   title: "Надёжный учебный счётчик",
   specialization: "Backend / Python",
   competency: "Обработка повторов",
@@ -62,6 +63,8 @@ const employerKeys = [
   "employer-microtasks",
   "employer-micro-offers",
   "micro-eligible",
+  "employer-micro-recipients",
+  "micro-job-options",
 ];
 function ResumeContext({ binding }: { binding: any }) {
   return <div className="opportunity-detail">
@@ -84,6 +87,8 @@ function Conditions({ offer }: { offer: any }) {
         </span>
         <span>Версия {offer.snapshot.version}</span>
       </div>
+      {(offer.job ?? offer.snapshot.job) && <p className="micro-job-context">Вакансия: <b>{(offer.job ?? offer.snapshot.job).title}</b></p>}
+      {offer.assignmentLimitation && <p className="muted" role="status">{offer.assignmentLimitation}</p>}
       <ResumeContext binding={offer} />
       <p className="opportunity-description">{offer.snapshot.scenario}</p>
       <ul className="opportunity-rubric">
@@ -133,9 +138,12 @@ function Result({ offer }: { offer: any }) {
 }
 
 export function CandidateMicrotasksPage() {
+  const params = new URLSearchParams(useSearch());
+  const jobId = Number(params.get("jobId")) || null;
+  const [, navigate] = useLocation();
   const query = useQuery({
-    queryKey: ["my-microtasks"],
-    queryFn: () => opportunityApi("/me/microtasks"),
+    queryKey: ["my-microtasks", jobId],
+    queryFn: () => opportunityApi(`/me/microtasks${jobId ? `?jobId=${jobId}` : ""}`),
     refetchInterval: 60000,
   });
   const act = useOpportunityAction(candidateKeys);
@@ -147,6 +155,7 @@ export function CandidateMicrotasksPage() {
 
         </div>
       </header>
+      {jobId && <button className="button secondary" onClick={() => navigate("/candidate/microtasks")}>Все задания</button>}
       {query.isLoading && <p role="status">Загружаем задания…</p>}
       {query.isError && (
         <div role="alert">
@@ -188,6 +197,7 @@ export function CandidateMicrotasksPage() {
                 <div className="opportunity-subscription" key={s.id}>
                   <div>
                     <b>{s.title}</b>
+                    {s.job && <p className="micro-job-context">Вакансия: {s.job.title}</p>}
                     <ResumeContext binding={s} />
                     <small>
                       {s.companyName} ·{" "}
@@ -199,7 +209,7 @@ export function CandidateMicrotasksPage() {
                   <button
                     className="button secondary"
                     disabled={
-                      act.isPending || (!s.active && (!query.data.enabled || !s.resumeAvailable))
+                      act.isPending || (!s.active && (!query.data.enabled || !s.resumeAvailable || !s.assignmentAvailable))
                     }
                     onClick={() =>
                       act.mutate({
@@ -268,7 +278,7 @@ function CandidateOffer({ offer }: { offer: any }) {
           <div className="opportunity-actions">
             <button
               className="button"
-              disabled={!consent || act.isPending || !offer.resumeAvailable}
+              disabled={!consent || act.isPending || !offer.assignmentAvailable}
               onClick={() =>
                 act.mutate({
                   path: `/me/microtasks/${offer.id}/decision`,
@@ -293,7 +303,7 @@ function CandidateOffer({ offer }: { offer: any }) {
           </div>
         </div>
       )}
-      {offer.status === "accepted" && offer.resumeAvailable && (
+      {offer.status === "accepted" && offer.assignmentAvailable && (
         <form
           className="opportunity-list"
           onSubmit={(event) => {
@@ -380,34 +390,50 @@ function CandidateOffer({ offer }: { offer: any }) {
 export function EmployerMicrotasksPage() {
   const templates = useQuery({ queryKey: ["employer-microtasks"], queryFn: () => opportunityApi<any[]>("/employer/microtasks"), staleTime: 0, refetchInterval: 30000 });
   const me = useQuery({ queryKey: ["opportunity-me"], queryFn: () => opportunityApi("/me") });
-  const search = useSearch(), params = new URLSearchParams(search), [,navigate] = useLocation();
-  const templateId = Number(params.get("task")), tab = params.get("tab") === "answers" ? "answers" : "task";
-  const profileOfferId = params.get('profile') === '1' ? Number(params.get('offer')) : null;
+  const params = new URLSearchParams(useSearch()), [,navigate] = useLocation();
+  const templateId = Number(params.get("task")), jobId = Number(params.get("jobId")) || null;
+  const tab = ["answers", "recipients"].includes(params.get("tab") ?? "") ? params.get("tab")! : "task";
+  const filter = ["new", "evaluated"].includes(params.get("filter") ?? "") ? params.get("filter")! : "all";
+  const page = Math.max(1, Number(params.get("page")) || 1);
+  const profileOfferId = params.get("profile") === "1" ? Number(params.get("offer")) : null;
   const selected = !templates.isError && templates.data?.find(item => item.id === templateId);
   const [edit,setEdit] = useState<any>(null);
-  const offers = useQuery({ queryKey: ["employer-micro-offers", templateId, "submitted"],
-    queryFn: () => opportunityApi<any[]>(`/employer/microtasks/offers?templateId=${templateId}&submittedOnly=1`),
-    enabled: !!selected && tab === "answers", staleTime: 0, gcTime: 0, retry: false, refetchInterval: 30000, refetchOnWindowFocus: 'always' });
-  const open = (id:number, nextTab="task") => { setEdit(null); navigate(`/employer/microtasks?task=${id}&tab=${nextTab}`); };
+  const list = useQuery({ queryKey: [tab === "recipients" ? "employer-micro-recipients" : "employer-micro-offers", templateId, filter, page],
+    queryFn: () => opportunityApi(`/employer/microtasks/${templateId}/${tab === "recipients" ? "recipients" : "answers"}?filter=${filter}&page=${page}&pageSize=20`),
+    enabled: !!selected && tab !== "task", staleTime: 0, gcTime: 0, retry: false, refetchInterval: 30000, refetchOnWindowFocus: "always" });
+  const open = (id:number, nextTab="task", nextFilter="all", nextPage=1) => {
+    setEdit(null); const next = new URLSearchParams({ task: String(id), tab: nextTab });
+    if (jobId) next.set("jobId", String(jobId));
+    if (nextTab === "answers" && nextFilter !== "all") next.set("filter", nextFilter);
+    if (nextPage > 1) next.set("page", String(nextPage));
+    navigate(`/employer/microtasks?${next}`);
+  };
+  const close = () => navigate(`/employer/microtasks${jobId ? `?jobId=${jobId}` : ""}`);
   useEffect(() => {setEdit(null);}, [templateId]);
-  const answers = offers.isError || offers.isFetching ? [] : offers.data?.filter(item => item.templateId === templateId && ["submitted", "evaluated"].includes(item.status) && !item.consentRevokedAt && item.resumeAvailable) ?? [];
+  const items: any[] = list.isError || list.isFetching ? [] : list.data?.items ?? [];
+  const visibleTemplates = templates.data?.filter(t => !jobId || t.jobId === jobId) ?? [];
+  const filterLabels: Record<string,string> = {all:"Все ответы",new:"Новые",evaluated:"Проверены"};
   return <div className="opportunity-page employer-workspace">
-    <header className="page-title"><h1>Задания кандидатам<InlineInfo label="Задания кандидатам: подробнее">Добровольная учебная практика с обратной связью компании. Результат задания не присваивает грейд Signal.</InlineInfo></h1><button className="button primary" onClick={()=>setEdit("new")}><Plus size={17}/>Создать задание</button></header>
-    {edit && me.data && <MicroEditor key={edit === "new" ? `new-${me.data.user.id}` : `${edit.id}-${edit.version}`} template={edit === "new" ? null : edit} ownerId={me.data.user.id} close={()=>{setEdit(null); void templates.refetch();}}/>}
+    <header className="page-title"><h1>Задания кандидатам<InlineInfo label="Задания кандидатам: подробнее">Добровольная учебная практика по вакансии с обратной связью компании. Результат задания не присваивает грейд Signal.</InlineInfo></h1><button className="button primary" onClick={()=>setEdit("new")}><Plus size={17}/>Создать задание</button></header>
+    {jobId && <button className="button secondary" onClick={()=>navigate("/employer/microtasks")}>Все вакансии</button>}
+    {edit && me.data && <MicroEditor key={edit === "new" ? `new-${me.data.user.id}-${jobId}` : `${edit.id}-${edit.version}`} template={edit === "new" ? null : edit} initialJobId={jobId} ownerId={me.data.user.id} close={()=>{setEdit(null); void templates.refetch();}}/>}
     {me.isError && edit && <p role="alert">Не удалось открыть редактор. <button className="button secondary" onClick={()=>me.refetch()}>Повторить</button></p>}
     {templates.isLoading ? <p role="status">Загружаем задания…</p> : templates.isError ? <div className="panel opportunity-empty" role="alert">Не удалось загрузить задания. <button className="button secondary" onClick={()=>templates.refetch()}>Повторить</button></div> : <>
-      {!templates.data?.length && <div className="panel opportunity-empty">Создайте учебное задание с понятными условиями и критериями оценки.</div>}
-      <div className="employer-task-list">{templates.data?.map(t=><article className="panel employer-task-row" key={t.id}>
-        <button className="employer-task-open" onClick={()=>open(t.id)}><h2>{t.title}</h2><p>{t.competency} · {professionLabel(t.specialization)} · {t.expectedMinutes} мин.</p></button>
+      {!visibleTemplates.length && <div className="panel opportunity-empty">Заданий пока нет. Выберите вакансию и создайте учебную ситуацию с критериями оценки.</div>}
+      <div className="employer-task-list">{visibleTemplates.map(t=><article className="panel employer-task-row" key={t.id}>
+        <button className="employer-task-open" onClick={()=>open(t.id)}><h2>{t.title}</h2><p>{t.competency} · {professionLabel(t.specialization)} · {t.expectedMinutes} мин.</p><small>{t.job ? `Вакансия: ${t.job.title}` : "История задания без вакансии"}</small></button>
         <span className="opportunity-status">{t.active ? "Активно" : "Приостановлено"}</span>
-        <div className="employer-task-counters"><button className="employer-counter" onClick={()=>open(t.id,"answers")}>Ответы <b>{t.answerCount ?? '—'}</b></button><button className="employer-counter applications" onClick={()=>open(t.id,"answers")}>Новые <b>{t.newAnswerCount ?? '—'}</b></button><button className="employer-counter shortlisted" onClick={()=>open(t.id,"answers")}>Проверены <b>{t.evaluatedAnswerCount ?? '—'}</b></button>{typeof t.recipientCount === 'number' && <span className="employer-counter">Адресаты <b>{t.recipientCount}</b></span>}</div>
+        <div className="employer-task-counters"><button className="employer-counter" onClick={()=>open(t.id,"answers","all")}>Ответы <b>{t.answerCount ?? 0}</b></button><button className="employer-counter applications" onClick={()=>open(t.id,"answers","new")}>Новые <b>{t.newAnswerCount ?? 0}</b></button><button className="employer-counter shortlisted" onClick={()=>open(t.id,"answers","evaluated")}>Проверены <b>{t.evaluatedAnswerCount ?? 0}</b></button><button className="employer-counter" onClick={()=>open(t.id,"recipients")}>Адресаты <b>{t.recipientCount ?? 0}</b></button></div>
       </article>)}</div>
-      {templateId && !selected ? <div className="panel opportunity-empty">Задание недоступно. <button className="button secondary" onClick={()=>navigate('/employer/microtasks')}>К заданиям</button></div> : null}
+      {templateId && !selected ? <div className="panel opportunity-empty">Задание недоступно. <button className="button secondary" onClick={close}>К заданиям</button></div> : null}
       {selected && <section className="panel employer-task-detail">
-        <div className="opportunity-form-title"><h2>{selected.title}</h2><button className="icon-button" aria-label="Закрыть задание" onClick={()=>navigate('/employer/microtasks')}><X size={18}/></button></div>
-        <div className="opportunity-tabs" role="tablist" aria-label="Содержание задания"><button role="tab" aria-selected={tab === "task"} className={`button ${tab === "task" ? '' : 'secondary'}`} onClick={()=>open(templateId,"task")}>Задание</button><button role="tab" aria-selected={tab === "answers"} className={`button ${tab === "answers" ? '' : 'secondary'}`} onClick={()=>open(templateId,"answers")}>Ответы · {selected.answerCount ?? '—'}</button></div>
-        {tab === "task" ? <EmployerTemplate key={`${selected.id}-${selected.version}`} template={selected} edit={()=>setEdit(selected)}/> : <>
-          {profileOfferId && !offers.isFetching && !offers.isError && offers.data && !answers.some(offer => offer.id === profileOfferId) && <p className="muted" role="status">Профиль кандидата сейчас недоступен для этого ответа.</p>}{offers.isLoading || offers.isFetching ? <p role="status">Загружаем ответы…</p> : offers.isError ? <p role="alert">Не удалось загрузить ответы. <button className="button secondary" onClick={()=>offers.refetch()}>Повторить</button></p> : !answers.length ? <div className="opportunity-empty">По этому заданию пока нет доступных отправленных ответов.</div> : <div className="opportunity-list">{answers.map(offer=><EmployerOffer key={offer.id} offer={offer} profileOpen={offer.id === profileOfferId}/>)}</div>}
+        <div className="opportunity-form-title"><h2>{selected.title}</h2><button className="icon-button" aria-label="Закрыть задание" onClick={close}><X size={18}/></button></div>
+        <div className="opportunity-tabs" role="tablist" aria-label="Содержание задания">{[["task","Задание"],["answers",`Ответы · ${selected.answerCount ?? 0}`],["recipients",`Адресаты · ${selected.recipientCount ?? 0}`]].map(([key,label])=><button key={key} role="tab" aria-selected={tab === key} className={`button ${tab === key ? "" : "secondary"}`} onClick={()=>open(templateId,key)}>{label}</button>)}</div>
+        {tab === "task" ? <EmployerTemplate key={`${selected.id}-${selected.version}`} template={selected} edit={()=>setEdit(selected.jobId ? selected : "new")}/> : <>
+          {tab === "answers" && <div className="micro-answer-filters" aria-label="Фильтр ответов">{Object.entries(filterLabels).map(([key,label])=><button key={key} className={`button ${filter === key ? "" : "secondary"}`} aria-pressed={filter === key} onClick={()=>open(templateId,"answers",key)}>{label}</button>)}</div>}
+          {profileOfferId && !list.isFetching && !list.isError && list.data && !items.some(item => item.id === profileOfferId) && <p className="muted" role="status">Ответ отсутствует на этой странице. Выберите «Все ответы» или другую страницу.</p>}
+          {list.isLoading || list.isFetching ? <p role="status">Загружаем {tab === "recipients" ? "адресатов" : "ответы"}…</p> : list.isError ? <p role="alert">Не удалось загрузить список. <button className="button secondary" onClick={()=>list.refetch()}>Повторить</button></p> : !items.length ? <div className="opportunity-empty">{tab === "recipients" ? "Нет доступных адресатов этого задания." : filter === "new" ? "Новых ответов нет." : filter === "evaluated" ? "Проверенных ответов нет." : "Отправленных ответов пока нет."}</div> : <div className="opportunity-list">{items.map(item=>tab === "answers" ? <EmployerOffer key={item.id} offer={item} profileOpen={item.id === profileOfferId}/> : <article className="micro-recipient" key={item.id}><div><b>{item.candidateIdentity?.displayName ?? item.candidateIdentity?.alias ?? "Кандидат"}</b><p>{item.resumeTitle}</p></div><span className="opportunity-status">{item.active ? "Подписка активна" : "Приостановлена"}</span></article>)}</div>}
+          {list.data && !list.isError && <div className="micro-pagination"><small>Всего: {list.data.total}</small>{list.data.pageCount > 1 && <><button className="button secondary" disabled={list.isFetching || list.data.page <= 1} onClick={()=>open(templateId,tab,filter,list.data.page-1)}>Назад</button><span>{list.data.page} / {list.data.pageCount}</span><button className="button secondary" disabled={list.isFetching || list.data.page >= list.data.pageCount} onClick={()=>open(templateId,tab,filter,list.data.page+1)}>Далее</button></>}</div>}
         </>}
       </section>}
     </>}
@@ -433,7 +459,7 @@ function EmployerTemplate({
       return opportunityApi<{ items: any[]; nextCursor: string | null }>(`/employer/microtasks/eligible/candidates?${params}`);
     },
     getNextPageParam: (page) => page.nextCursor,
-    enabled: t.active && Boolean(t.specialization), staleTime: 0 });
+    enabled: t.active && Boolean(t.specialization) && t.assignmentAvailable, staleTime: 0 });
   const candidates = eligible.data?.pages.flatMap(page => page.items) ?? [];
   const [resumeId, setResumeId] = useState("");
   const selected = candidates.find(candidate => candidate.resumeId === Number(resumeId));
@@ -448,6 +474,8 @@ function EmployerTemplate({
           {t.active ? "Активна" : "Приостановлена"}
         </span>
       </header>
+      <p className="micro-job-context">{t.job ? `Вакансия: ${t.job.title}` : "Сохранённое задание без привязки к вакансии. Для новых предложений создайте задание по вакансии."}</p>
+      {t.job && !t.assignmentAvailable && <p className="muted">Новые предложения доступны только по действующей опубликованной вакансии.</p>}
       <div className="opportunity-tags">
         <span>{t.competency}</span>
         <span>{professionLabel(t.specialization)}</span>
@@ -472,11 +500,11 @@ function EmployerTemplate({
       </details>
       <div className="opportunity-actions">
         <button className="button secondary" onClick={edit}>
-          Редактировать
+          {t.jobId ? "Редактировать" : "Создать для вакансии"}
         </button>
         <button
           className="button secondary"
-          disabled={act.isPending}
+          disabled={act.isPending || (!t.active && (!t.job || !["draft", "published"].includes(t.job.status)))}
           onClick={() =>
             act.mutate({
               path: `/employer/microtasks/${t.id}/availability`,
@@ -563,28 +591,35 @@ function EmployerTemplate({
 function MicroEditor({
   template,
   ownerId,
+  initialJobId,
   close,
 }: {
   template: any;
   ownerId: number;
+  initialJobId: number | null;
   close: () => void;
 }) {
   const skillDictionary = useSkillDictionary();
+  const jobs = useQuery({queryKey:["micro-job-options",ownerId],queryFn:()=>opportunityApi<any[]>("/employer/jobs")});
+  const jobOptions = jobs.data?.filter(job => ["draft","published"].includes(job.status) && !job.deletedAt) ?? [];
   const initial = template
     ? (Object.fromEntries(
         Object.keys(example).map((key) => [key, template[key] ?? (key === "specialization" ? "" : example[key as keyof typeof example])]),
       ) as typeof example)
     : {
         ...example,
+        jobId: initialJobId ?? 0,
         title: "",
         scenario: "",
         competency: "",
         educationalOnly: false as unknown as true,
       };
   const [draft, setDraft] = useOpportunityDraft(
-    `signal-micro-draft-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}`,
+    `signal-micro-draft-job-v1-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}-${initialJobId ?? 0}`,
     initial,
   );
+  const selectedJob = jobOptions.find(job=>job.id === draft.jobId);
+  useEffect(()=>{ if(selectedJob && draft.specialization !== selectedJob.specialization) setDraft(old=>({...old,specialization:selectedJob.specialization})); },[selectedJob?.id, selectedJob?.specialization, draft.specialization, setDraft]);
   const act = useOpportunityAction(employerKeys);
   const set = (key: keyof typeof draft, value: unknown) =>
     setDraft((old) => ({ ...old, [key]: value }));
@@ -604,7 +639,7 @@ function MicroEditor({
           {
             onSuccess: () => {
               sessionStorage.removeItem(
-                `signal-micro-draft-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}`,
+                `signal-micro-draft-job-v1-${ownerId}-${template?.id ?? "new"}-${template?.version ?? "new"}-${initialJobId ?? 0}`,
               );
               close();
             },
@@ -631,6 +666,8 @@ function MicroEditor({
             onClick={() =>
               setDraft({
                 ...example,
+                jobId: draft.jobId,
+                specialization: selectedJob?.specialization ?? draft.specialization,
                 educationalOnly: false as unknown as true,
               })
             }
@@ -638,13 +675,15 @@ function MicroEditor({
             <Lightbulb size={16} /> Взять учебный пример за основу
           </button>
         )}
-        <Field label="Направление практики">
-          <select className="input" required value={draft.specialization} onChange={event => set("specialization", event.target.value)}>
-            <option value="">Выберите направление</option>
-            <option value="Backend / Python">Backend-разработчик</option>
-            <option value="Frontend / TypeScript">Frontend-разработчик</option>
-          </select>
+        <Field label="Вакансия">
+          <select className="input" required disabled={!!template || jobs.isLoading} value={draft.jobId || ""} onChange={event=>{
+            const job = jobOptions.find(item=>item.id === Number(event.target.value));
+            setDraft(old=>({...old,jobId:job?.id ?? 0,specialization:job?.specialization ?? ""}));
+          }}><option value="">Выберите свою вакансию</option>{jobOptions.map(job=><option key={job.id} value={job.id}>{job.title} · {job.status === "draft" ? "черновик" : "опубликована"}</option>)}{template && !selectedJob && <option value={template.jobId}>{template.job?.title ?? "Вакансия недоступна"}</option>}</select>
         </Field>
+        {jobs.isError && <p role="alert">Не удалось загрузить вакансии. <button type="button" className="button secondary" onClick={()=>jobs.refetch()}>Повторить</button></p>}
+        {!jobs.isLoading && !jobs.isError && !jobOptions.length && <p>Сначала создайте вакансию в разделе «Вакансии и запросы».</p>}
+        {draft.jobId > 0 && <p className="muted">{professionLabel(draft.specialization)} · Новые предложения доступны после публикации вакансии.</p>}
         <div className="opportunity-form-grid">
           <Field label="Название">
             <input
@@ -762,7 +801,7 @@ function MicroEditor({
             компании и персональных данных.
           </span>
         </label>
-        <button className="button">
+        <button className="button" disabled={!selectedJob || act.isPending}>
           <Check size={17} />{" "}
           {act.isPending ? "Сохраняем…" : "Сохранить задание"}
         </button>
@@ -778,6 +817,12 @@ function MicroEditor({
 function EmployerOffer({ offer, profileOpen = false }: { offer: any; profileOpen?: boolean }) {
   const [, navigate] = useLocation();
   const view = employerTaskAnswerView(offer);
+  const currentParams = new URLSearchParams(useSearch());
+  const profileParams = new URLSearchParams(view.profileHref?.split("?")[1] ?? "");
+  for (const key of ["page", "filter", "jobId"]) {
+    const value = currentParams.get(key); if (value) profileParams.set(key, value);
+  }
+  const profileHref = view.profileHref ? `/employer/microtasks?${profileParams}` : null;
   const [overviewOpen, setOverviewOpen] = useState(profileOpen);
   const overview = useRef<HTMLDetailsElement>(null);
   useEffect(() => {
@@ -810,7 +855,7 @@ function EmployerOffer({ offer, profileOpen = false }: { offer: any; profileOpen
         </div>
         <OpportunityStatus status={offer.status} />
       </header>
-      {view.profileHref && <a className="employer-task-answer-profile text-link" href={view.profileHref} onClick={event => { if (!event.ctrlKey && !event.metaKey && !event.shiftKey && event.button === 0) { event.preventDefault(); setOverviewOpen(true); navigate(view.profileHref!); } }}>Профиль кандидата</a>}
+      {profileHref && <a className="employer-task-answer-profile text-link" href={profileHref} onClick={event => { if (!event.ctrlKey && !event.metaKey && !event.shiftKey && event.button === 0) { event.preventDefault(); setOverviewOpen(true); navigate(profileHref!); } }}>Профиль кандидата</a>}
       {view.readable && <details ref={overview} className="employer-task-answer-section employer-task-answer-overview" open={overviewOpen} onToggle={event => setOverviewOpen(event.currentTarget.open)}>
         <summary><ChevronDown size={16}/><span><b>Профиль кандидата</b><small>{view.resumeLabel}</small></span></summary>
         <div className="employer-task-answer-section-body"><h4>{view.name}</h4>{!view.pseudonymous && <p className="muted">Псевдоним: {view.alias}</p>}<ResumeContext binding={offer}/><p className="muted">Сохранённый контекст выбранного резюме на момент выдачи задания. Доступ проверяется по этому резюме. Результат практики не меняет грейд Signal.</p></div>

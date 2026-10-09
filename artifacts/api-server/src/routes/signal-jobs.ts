@@ -12,6 +12,8 @@ import {
   signalContactGrantsTable as grants,
   signalCandidateResumesTable as resumes,
   signalShortlistTable as shortlist,
+  signalMicroTemplatesTable as microTemplates,
+  signalMicroOffersTable as microOffers,
 } from "@workspace/db";
 import { JobPatchBody, JobDeleteBody, JobInputShape, contextBaseFields } from '../lib/employer-context-edit';
 import { mergePresentFields } from '../lib/selection-context-contract';
@@ -35,6 +37,7 @@ import type { SignalGrade } from '../lib/signal-matching';
 import { escapeLike, jobDetailsInput, jobSearchInput, parseSkillFilters, JOB_EXPORT_COLUMNS, JOB_EXPORT_LIMIT,
   jobExportCells, jobsCsv, type JobSearchFilters } from '../lib/job-discovery';
 import { personalJobFilterConditions } from '../lib/job-personal-filters';
+import {microBindingAvailable} from '../lib/microtask-resume';
 import {
   createContactPermission,
   lockContactOwner,
@@ -44,9 +47,15 @@ import {
 const router: IRouter = Router();
 router.param("id", postgresIntIdParam);
 const workspaceEnabled = () => process.env.SIGNAL_WORKSPACE_ENABLED === 'true';
+const taskCountExpression=()=>sql<number>`(select count(*)::int from ${microTemplates} mt where mt.job_id=${jobs.id} and mt.company_id=${jobs.companyId} and mt.active=true)`;
+async function readTaskCount(jobId:number,reader:Pick<typeof db,'select'>=db) {
+  if(!workspaceEnabled())return 0;
+  const [row]=await reader.select({total:count()}).from(microTemplates).where(and(eq(microTemplates.jobId,jobId),eq(microTemplates.active,true)));
+  return Number(row?.total??0);
+}
 const companyJoin = () => {
   const query = db
-    .select({ job: jobs, companyName: companies.name, location: workspaceEnabled() ? requirements.location : sql<string | null>`null`, skillRequirements: workspaceEnabled() ? requirements.skillRequirements : sql<typeof requirements.$inferSelect.skillRequirements | null>`null` })
+    .select({ job: jobs, companyName: companies.name, taskCount:workspaceEnabled()?taskCountExpression():sql<number>`0`, location: workspaceEnabled() ? requirements.location : sql<string | null>`null`, skillRequirements: workspaceEnabled() ? requirements.skillRequirements : sql<typeof requirements.$inferSelect.skillRequirements | null>`null` })
     .from(jobs)
     .innerJoin(companies, eq(jobs.companyId, companies.id))
     .innerJoin(users, eq(companies.ownerUserId, users.id)).$dynamic();
@@ -72,6 +81,8 @@ const publicJob = (row: {
   companyName: string;
   location?: string | null;
   skillRequirements?: typeof requirements.$inferSelect.skillRequirements | null;
+  taskCount?:number;
+  taskHref?:string|null;
 }) => ({
   id: row.job.id,
   companyId: row.job.companyId,
@@ -82,10 +93,22 @@ const publicJob = (row: {
   location: row.location ?? '',
   skillRequirements: interpretSkillRequirements(row.job.skills,row.skillRequirements??[]),requirementsVersion:REQUIREMENTS_VERSION,
   salaryCurrency: 'RUB',
+  hasTask:Number(row.taskCount??0)>0,taskCount:Number(row.taskCount??0),taskHref:row.taskHref??null,
 });
+async function candidateJobTaskLinks<T extends ReturnType<typeof publicJob>>(items:T[],actor?:{id:number;role:string}|null):Promise<T[]> {
+  if(!actor||actor.role!=='candidate'||!items.some(item=>item.hasTask))return items;
+  const ids=new Set(items.filter(item=>item.hasTask).map(item=>item.id));
+  const assigned=await db.select().from(microOffers).where(and(eq(microOffers.candidateUserId,actor.id),isNull(microOffers.consentRevokedAt)));
+  const accessible=new Set<number>();
+  for(const offer of assigned){const jobId=offer.snapshot.job?.id;if(!jobId||!ids.has(jobId)||accessible.has(jobId))continue;
+    if((await assertCompanyActionAllowed(offer.companyId,actor.id,db,'contacts')).allowed&&await microBindingAvailable(db,offer,actor.id,offer.companyId))accessible.add(jobId);
+  }
+  return items.map(item=>({...item,taskHref:accessible.has(item.id)?`/candidate/microtasks?jobId=${item.id}`:null}));
+}
 
 function jobFilterConditions(filters: JobSearchFilters, scope: ReturnType<typeof poolScopeForAccount>, actor?: { id: number; role: string } | null) {
-  const conditions: SQL[] = [eq(jobs.status, 'published'), signalPoolPredicate(users, scope), ...personalJobFilterConditions(filters, actor)];
+  const conditions: SQL[] = [eq(jobs.status, 'published'),isNull(jobs.deletedAt), signalPoolPredicate(users, scope), ...personalJobFilterConditions(filters, actor)];
+  if(filters.hasTask)conditions.push(sql`${taskCountExpression()}>0`);
   if (filters.q) conditions.push(or(ilike(jobs.title, `%${escapeLike(filters.q)}%`), ilike(companies.name, `%${escapeLike(filters.q)}%`))!);
   if (filters.specialization) conditions.push(eq(jobs.specialization, filters.specialization));
   if (filters.grade) conditions.push(eq(jobs.grade, filters.grade));
@@ -141,7 +164,7 @@ router.get('/public/jobs/search', async (req, res) => {
   const rows = await companyJoin().where(condition).orderBy(...jobSearchOrder(filters.sort)).limit(filters.pageSize).offset((page-1)*filters.pageSize);
   // Browsing and sending an explicitly consented application do not award a grade.
   res.setHeader('Cache-Control', 'no-store');
-  res.json({ items: rows.map(row=>withJobCoverage(publicJob(row),context)), total, page, pageSize: filters.pageSize, pageCount: Math.ceil(total/filters.pageSize), exportLimit: JOB_EXPORT_LIMIT,
+  res.json({ items: await candidateJobTaskLinks(rows.map(row=>withJobCoverage(publicJob(row),context)),session?.user), total, page, pageSize: filters.pageSize, pageCount: Math.ceil(total/filters.pageSize), exportLimit: JOB_EXPORT_LIMIT,
     applicationPolicy: 'Можно откликнуться с собственным резюме. Требования компании показываются отдельно; отклик не подтверждает квалификацию.' });
 });
 router.get('/public/jobs/export', async (req, res) => {
@@ -174,7 +197,7 @@ router.get("/public/jobs", async (req, res) => {
   const rows = await companyJoin()
     .where(and(eq(jobs.status, "published"), signalPoolPredicate(users, scope)))
     .orderBy(desc(jobs.publishedAt), desc(jobs.id)).limit(200);
-  res.json(rows.map(publicJob));
+  res.json(await candidateJobTaskLinks(rows.map(publicJob),session?.user));
 });
 router.get("/public/jobs/:id", async (req, res) => {
   const session = await getSessionUser(req);
@@ -191,7 +214,7 @@ router.get("/public/jobs/:id", async (req, res) => {
     res.status(404).json({ error: "Вакансия не найдена или закрыта." });
     return;
   }
-  res.json(publicJob(row));
+  res.json((await candidateJobTaskLinks([publicJob(row)],session?.user))[0]);
 });
 router.get("/employer/jobs", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -201,7 +224,7 @@ router.get("/employer/jobs", async (req, res) => {
     loadSelectionCounters(actor.company.id),
   ]);
   res.setHeader('Cache-Control','no-store');
-  res.json(rows.map(row=>({...publicJob(row),shortlistCount:counters.shortlist.get(`job:${row.job.id}`)??0,applicationCount:counters.applications.get(row.job.id)??0})));
+  res.json(rows.map(row=>({...publicJob({...row,taskHref:Number(row.taskCount)>0?`/employer/microtasks?jobId=${row.job.id}`:null}),shortlistCount:counters.shortlist.get(`job:${row.job.id}`)??0,applicationCount:counters.applications.get(row.job.id)??0})));
 });
 router.post("/employer/jobs", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -275,7 +298,8 @@ router.put("/employer/jobs/:id", async (req, res) => {
   }
   const job=result.job;
   const [jobDetails] = workspaceEnabled() ? await db.select().from(requirements).where(eq(requirements.jobId, job.id)).limit(1) : [];
-  res.json(publicJob({ job, companyName: actor.company.name, ...jobDetails }));
+  const taskCount=await readTaskCount(job.id);
+  res.json(publicJob({ job, companyName: actor.company.name, ...jobDetails,taskCount,taskHref:taskCount?`/employer/microtasks?jobId=${job.id}`:null }));
 });
 router.post("/employer/jobs/:id/status", async (req, res) => {
   const actor = await opportunityActor(req, res, "employer");
@@ -319,7 +343,9 @@ router.post("/employer/jobs/:id/status", async (req, res) => {
     }
     if (!jobTransitionAllowed(job.status, input.data.status))
       return { code: 409 as const };
-    if (job.status === input.data.status) return { job };
+    const [jobDetails] = workspaceEnabled() ? await tx.select().from(requirements).where(eq(requirements.jobId, job.id)).limit(1) : [];
+    const taskCount=await readTaskCount(job.id,tx);
+    if (job.status === input.data.status) return { job, jobDetails, taskCount };
     const [updated] = await tx
       .update(jobs)
       .set({
@@ -333,7 +359,7 @@ router.post("/employer/jobs/:id/status", async (req, res) => {
       .where(eq(jobs.id, job.id))
       .returning();
     if(input.data.status==='archived')await tx.delete(shortlist).where(and(eq(shortlist.companyId,actor.company!.id),eq(shortlist.contextType,'job'),eq(shortlist.contextId,job.id)));
-    return { job: updated };
+    return { job: updated, jobDetails,taskCount };
   });
   if (!result.job) {
     res.status(result.code!).json({
@@ -343,7 +369,7 @@ router.post("/employer/jobs/:id/status", async (req, res) => {
     });
     return;
   }
-  res.json(publicJob({ job: result.job, companyName: actor.company.name }));
+  res.json(publicJob({ job: result.job, companyName: actor.company.name, ...result.jobDetails,taskCount:result.taskCount,taskHref:result.taskCount?`/employer/microtasks?jobId=${result.job.id}`:null }));
 });
 
 router.post("/jobs/:id/applications", async (req, res) => {

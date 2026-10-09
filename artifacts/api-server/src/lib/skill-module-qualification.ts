@@ -34,12 +34,14 @@ export function skillRequirementCovered(requirement: { skill: string; level?: Sk
   const canonical = canonicalSkillKey(requirement.skill);
   return evidence.some(e => (canonicalSkillKey(e.label) === canonical || rawSkillId(requirement.skill) === e.skillId) && (!requirement.level || skillLevelRank[e.level] >= skillLevelRank[requirement.level]));
 }
-/** Mandatory role coverage is independent of arbitrary optional CV skills. */
+/** Individual proofs belong to the account; category coverage belongs to this
+ * exact CV's role, declared stack and target grade. Neither substitutes for the other. */
 export function getSkillQualification(target: SkillQualificationTarget, inputs: SkillQualificationInputs): SkillQualification {
   const allSkills = selectAccountSkillEvidence(target, inputs);
   const declared = new Set([...target.stack, ...target.skills].map(rawSkillId));
-  const roleModules = target.specialization === 'Backend / Python' ? ['sql', 'backend-engineering'] : target.specialization === 'Frontend / TypeScript' ? ['typescript', 'react', 'frontend-engineering'] : [];
-  const skills = allSkills.filter(e => declared.has(e.skillId) || roleModules.includes(e.skillId));
+  // Removing a CV tag or changing role does not revoke an account-owned proof.
+  // Only the requirements below use declarations to choose this CV's category.
+  const skills = allSkills;
   const empty = (reason: string): SkillQualification => ({ verifiedGrade: null, verifiedScore: null, verifiedSkills: skills.map(s => s.label), skills, coverage: [], missing: [reason], category: null, source: 'skill_matrix', limitation: reason, latestAssessmentAt: null });
   if (!supported(target.specialization)) return empty('Программа общей квалификации для этой специализации пока не подготовлена.');
   const requirements = (level: SkillLevel): { id: string; label: string; alternatives: string[] }[] => target.specialization === 'Backend / Python' ? [

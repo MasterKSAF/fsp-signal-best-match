@@ -9,7 +9,7 @@ import { buildSkillAttempt, changedConditionTraining, scoreSkillAttempt, skillMo
 import { findContinuableSkillAttempt, getSkillBankAvailability } from '../lib/skill-bank-availability';
 import { getSkillQualification, selectAccountSkillEvidence, skillLevelRank } from '../lib/skill-module-qualification';
 import { getCurrentResumeWorkspaceQualification, loadSkillQualificationInputs, skillModulesEnabled, skillAttemptRevocation } from '../lib/skill-module-service';
-import { projectPassportAccountSkills } from '../lib/skill-passport-projection';
+import { passportRelatedSkillIds, projectPassportAccountSkills } from '../lib/skill-passport-projection';
 import { postgresIntIdSchema, postgresIntIdTextSchema } from '../lib/postgres-id';
 import { skillIssueRestriction } from '../lib/skill-module-policy';
 const router: IRouter = Router();
@@ -54,7 +54,7 @@ router.get('/me/skill-matrix', async (req, res): Promise<void> => {
   const corrections = old.length ? await db.select({attemptId:oldCorrections.attemptId,reason:oldCorrections.reason}).from(oldCorrections).where(inArray(oldCorrections.attemptId,old.map(a=>a.id))) : [];
   res.json({ bankVersion: SKILL_BANK_VERSION, policy: skillModulePolicy,
     resume: resume ? { id: resume.id, revision: resume.revision, title: resume.title, specialization: resume.specialization, targetGrade: resume.assumedGrade, statedSkills: [...new Set([...resume.stack, ...resume.skills])] } : null,
-    skillContexts: contexts.map(c => ({ id: c.id, title: c.title, specialization: c.specialization, targetGrade: c.assumedGrade, statedSkills: [...new Set([...c.stack, ...c.skills])] })),
+    skillContexts: contexts.map(c => ({ id: c.id, title: c.title, specialization: c.specialization, targetGrade: c.assumedGrade, statedSkills: [...new Set([...c.stack, ...c.skills])], relatedSkillIds: passportRelatedSkillIds(c, inputs) })),
     accountSkills: projectPassportAccountSkills(contexts, inputs, accountEvidence),
     modules: skillModuleRegistry.map(module => ({ ...module, levels: (['Junior', 'Middle', 'Senior'] as const).map(level => {
       const active = findContinuableSkillAttempt(history, module.id, level, now);

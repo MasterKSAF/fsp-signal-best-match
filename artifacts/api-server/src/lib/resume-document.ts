@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import type { ResumeInput } from './signal-resume-contract';
 import { canonicalSkillKey, resolveSkill } from './skill-catalog';
+import { getSkillQualification } from './skill-module-qualification';
+import { resumeAffiliatedSkillKeys, resumeAffiliationKey, resumeSkillModule } from './resume-skill-affiliation';
 
 export type ResumeDocumentSection = { title: string; paragraphs: { text: string; link?: string }[] };
 export type ResumeDocument = {
@@ -40,8 +42,30 @@ export type DocumentProfile = {
   verifiedSkills: string[]; stack: string[]; skills: string[]; yearsExperience: number; workFormat: string;
   salaryMin: number|null; salaryMax: number|null; salaryPeriod: string; salaryType: string;
 };
-export type DocumentQualification = { verifiedGrade: string|null; skills: { label: string; level: string; programVersion: string; verifiedAt: string|Date; evidenceId?:number; attemptId?:number }[]; category: { matrixVersion: string;requirements?:{id:string;skillId:string;level:string;evidenceId:number;attemptId:number;programVersion:string;verifiedAt:string}[] }|null; source: string; limitation?: string|null; historical?:{date:string|null;programVersion:string|null;attemptId?:number|null} };
+export type DocumentQualification = { verifiedGrade: string|null; skills: { label: string; level: string; programVersion: string; verifiedAt: string|Date; evidenceId?:number; attemptId?:number }[]; coverage?: {skillId:string|null}[]; category: { matrixVersion: string;requirements?:{id:string;skillId:string;level:string;evidenceId:number;attemptId:number;programVersion:string;verifiedAt:string}[] }|null; source: string; limitation?: string|null; historical?:{date:string|null;programVersion:string|null;attemptId?:number|null} };
 export type DocumentPreferences = { location: string; schedule: string; employment: string; relocation: boolean; startAvailability: string };
+const professionLabel = (value:string) => value==='Backend / Python'?'Backend-разработчик':value==='Frontend / TypeScript'?'Frontend-разработчик':value;
+const skillLabel = (value:string) => resumeSkillModule(value)?.title ?? resolveSkill(value).label;
+/** Filter before prose, chips and source fingerprint, using exactly the CV's
+ * affiliation. A proof earned with another CV is still reusable when related. */
+export function documentSkillProofs(profile:Pick<DocumentProfile,'specialization'|'assumedGrade'|'stack'|'skills'>, qualification:DocumentQualification):DocumentQualification['skills'] {
+  const assumedGrade=profile.assumedGrade==='Middle'||profile.assumedGrade==='Senior'?profile.assumedGrade:'Junior';
+  const coverage=qualification.coverage??getSkillQualification({...profile,userId:0,assumedGrade},{evidence:[],revokedIds:new Set()}).coverage;
+  const related=new Set(resumeAffiliatedSkillKeys(profile,coverage));
+  const levels:Record<string,number>={Junior:1,Middle:2,Senior:3};
+  const proofs=new Map<string,DocumentQualification['skills'][number]>();
+  const date=(proof:DocumentQualification['skills'][number])=>new Date(proof.verifiedAt).valueOf()||0;
+  for(const proof of qualification.skills){
+    const key=resumeAffiliationKey(proof.label);
+    if(!related.has(key)||!['Junior','Middle','Senior'].includes(proof.level))continue;
+    const previous=proofs.get(key);
+    if(!previous||levels[proof.level]>levels[previous.level]||levels[proof.level]===levels[previous.level]&&
+      (date(proof)>date(previous)||date(proof)===date(previous)&&((proof.evidenceId??0)>(previous.evidenceId??0)||proof.evidenceId===previous.evidenceId&&(proof.attemptId??0)>(previous.attemptId??0)))){
+      proofs.set(key,{...proof,label:skillLabel(proof.label)});
+    }
+  }
+  return [...proofs.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([,proof])=>proof);
+}
 const clean = (value: string) => value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '').replace(/\t/g, '  ');
 const normalized = (value: string) => clean(value.normalize('NFKC')).replace(/[\u200b-\u200d\u2060\ufeff]/g,'');
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -66,7 +90,8 @@ export function projectResumeDocument(input: {
   qualification: DocumentQualification; preferences: DocumentPreferences;
   fields?: readonly ResumeDocumentField[];
 }): ResumeDocument {
-  const { profile: p, content: r, qualification: q, preferences: w } = input;
+  const { profile: p, content: r, preferences: w } = input;
+  const q={...input.qualification,skills:documentSkillProofs(p,input.qualification)};
   // The caller may narrow access; a selected field never grants access.
   const maySeeContacts = input.audience === 'owner' || input.contactsAllowed;
   const selected = parseResumeDocumentFields(input.fields?.join(','));
@@ -88,20 +113,20 @@ export function projectResumeDocument(input: {
     const values = paragraphs.map(value => {if(typeof value==='string')return{text:text(value)};const link=unrestricted&&value.link?safeDocumentLink(value.link):undefined;return{text:structured.has(value)?clean(value.text):text(value.text),...(link?{link}:{})};}).filter(value => value.text.trim());
     if (values.length) sections.push({title,paragraphs:values});
   };
-  const source = q.source === 'skill_matrix' || q.category ? 'по матрице навыков' : q.source==='assessment' ? 'по экзамену' : 'по сохранённому результату';
-  add('Профессиональный профиль', [`Специализация: ${p.specialization}`, q.verifiedGrade ? `Грейд: ${q.verifiedGrade} · ${source}` : 'Грейд не подтверждён', ...(q.category ? [`Матрица: ${q.category.matrixVersion}`] : []), ...(q.verifiedGrade&&q.source!=='skill_matrix'&&q.historical?.date ? [`Дата проверки: ${new Date(q.historical.date).toLocaleDateString('ru-RU',{timeZone:'Europe/Moscow'})}`] : []), ...(q.verifiedGrade&&q.source!=='skill_matrix'&&q.historical?.programVersion ? [`Программа: ${q.historical.programVersion}`] : [])]);
+  const source = q.source === 'skill_matrix' || q.category ? 'по матрице навыков' : q.source==='assessment' ? 'по комплексному экзамену' : 'исторический общий грейд';
+  add('Профессиональный профиль', [`Профессия: ${professionLabel(p.specialization)}`, q.verifiedGrade ? `Подтверждённый грейд: ${q.verifiedGrade} · ${source}` : p.assumedGrade ? `Заявленный грейд: ${p.assumedGrade}` : 'Грейд не указан', ...(q.category ? [`Матрица: ${q.category.matrixVersion}`] : []), ...(q.verifiedGrade&&q.source!=='skill_matrix'&&q.historical?.date ? [`Дата проверки: ${new Date(q.historical.date).toLocaleDateString('ru-RU',{timeZone:'Europe/Moscow'})}`] : []), ...(q.verifiedGrade&&q.source!=='skill_matrix'&&q.historical?.programVersion ? [`Программа: ${q.historical.programVersion}`] : [])]);
   let skillChips: ResumeDocument['skillChips'];
   if (includes('skills')) {
     // Canonical aliases only; a SQL result never proves PostgreSQL.
-    const proofs = new Map(q.skills.map(skill => [canonicalSkillKey(skill.label), skill]));
-    const labels = new Map([...p.stack, ...p.skills, ...q.skills.map(skill=>skill.label)].map(label => [canonicalSkillKey(label),resolveSkill(label).label]));
+    const proofs = new Map(q.skills.map(skill => [resumeAffiliationKey(skill.label), skill]));
+    const labels = new Map([...p.stack, ...p.skills, ...q.skills.map(skill=>skill.label)].map(label => [resumeAffiliationKey(label),skillLabel(label)]));
     add('Навыки', [...labels.entries()].map(([key,label]) => {const skill=proofs.get(key);return skill ? `${skill.label} - ${skill.level}. Проверка ${skill.programVersion}, ${new Date(skill.verifiedAt).toLocaleDateString('ru-RU',{timeZone:'Europe/Moscow'})}` : `${label} · заявлен`; }));
     // Only the caller's current individual module proofs provide a skill level.
     // An aggregate or historical grade never promotes stated technologies.
     const levels:Record<string,number>={Junior:1,Middle:2,Senior:3};
     const currentProofs=new Map<string,DocumentQualification['skills'][number]>();
     for(const proof of q.skills)if(['Junior','Middle','Senior'].includes(proof.level)){
-      const key=canonicalSkillKey(proof.label),previous=currentProofs.get(key);
+      const key=resumeAffiliationKey(proof.label),previous=currentProofs.get(key);
       if(!previous||levels[proof.level]>levels[previous.level])currentProofs.set(key,proof);
     }
     skillChips=[...labels.entries()].map(([key,label])=>{
@@ -119,7 +144,7 @@ export function projectResumeDocument(input: {
   if(includes('education')) for (const education of r.education) add('Образование', [education.institution, education.qualification, dateRange(education.start,education.end,'обучаюсь')]);
   if (unrestricted&&includes('portfolio')) add('Портфолио', r.portfolio.map(link => ({text:`${link.title}: ${link.url}`,link:link.url})));
   if(includes('softSkills')) add('Личные навыки', r.softSkills.length ? [r.softSkills.join(', ')] : []);
-  const projection={resumeId:input.resumeId, revision:input.revision, title:text(p.title), name:identityAllowed ? text(p.displayName) : text(p.professionalAlias) || 'Профессиональный профиль', specialization:text(p.specialization), contactsAllowed:unrestricted, contactsPermitted:maySeeContacts, audience:input.audience, composition, sections,...(skillChips?{skillChips}:{})};
+  const projection={resumeId:input.resumeId, revision:input.revision, title:text(p.title), name:identityAllowed ? text(p.displayName) : text(p.professionalAlias) || 'Профессиональный профиль', specialization:text(professionLabel(p.specialization)), contactsAllowed:unrestricted, contactsPermitted:maySeeContacts, audience:input.audience, composition, sections,...(skillChips?{skillChips}:{})};
   // Hash the effective permitted document, not the private input or a wall clock. Exact
   // source provenance also matters: same-day proof replacement/correction may leave
   // the displayed aggregate grade and CV revision unchanged. Only selected, exposed
@@ -135,7 +160,10 @@ export function projectResumeDocument(input: {
     historicalProgram:q.source!=='skill_matrix'&&q.historical?.programVersion?text(q.historical.programVersion):null,
     historicalAttempt:q.source!=='skill_matrix'&&Number.isSafeInteger(q.historical?.attemptId)?q.historical!.attemptId:null,
   }:null;
-  const projectionVersion=`signal-document-v1:${createHash('sha256').update(JSON.stringify({projection,qualification,evidence})).digest('hex')}`;
+  // The saved CV revision can advance when an unrelated account proof arrives.
+  // Keep it in the DTO and render guard, but hash only effective document content.
+  const {revision:_revision,...contentProjection}=projection;
+  const projectionVersion=`signal-document-v1:${createHash('sha256').update(JSON.stringify({projection:contentProjection,qualification,evidence})).digest('hex')}`;
   return {...projection,projectionVersion};
 }
 export async function renderResumeDocx(model: ResumeDocument): Promise<Buffer> {

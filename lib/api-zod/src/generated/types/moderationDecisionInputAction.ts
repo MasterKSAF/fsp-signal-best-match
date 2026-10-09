@@ -13,4 +13,5 @@ export const ModerationDecisionInputAction = {
   review: 'review',
   dismiss: 'dismiss',
   restrict: 'restrict',
+  resolve: 'resolve',
 } as const;

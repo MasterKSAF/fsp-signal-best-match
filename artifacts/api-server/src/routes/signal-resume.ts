@@ -5,6 +5,10 @@ import { ensureCandidateProfile, getSessionUser } from "../lib/signal-auth";
 import { appendResumeQuestionnaireHistory, CopyResumeSchema, CreateResumeSchema, emptyResume, recommendResumeGrade, resumeAnswerScale, resumeQuestions, frontendResumeQuestions, questionsForResume, ResumeMetadataSchema, SaveResumeSchema, VersionedSaveResumeSchema } from "../lib/signal-resume-contract";
 import { ensureCandidateResume, getResumeProfile, listCandidateResumes, loadCandidateQualificationInputs, professionalResumeFields, recomputeCandidateResumes, resolveCandidateResume, synchronizePrimaryResume, type CandidateResume } from "../lib/signal-resume";
 import { getResumeQualification } from "../lib/signal-resume-qualification";
+import { getSkillQualification } from '../lib/skill-module-qualification';
+import { loadSkillQualificationInputs, skillModulesEnabled } from '../lib/skill-module-service';
+import { resumeReadDerivedFields } from '../lib/resume-read-projection';
+import { resumeAffiliatedSkillKeys, resumeAffiliationKey } from '../lib/resume-skill-affiliation';
 import { validateAvatarDataUrl } from "../lib/signal-avatar";
 import { renderCandidateResumePdf } from "../lib/signal-resume-pdf";
 import { postgresIntIdParam, postgresIntIdTextSchema } from "../lib/postgres-id";
@@ -43,13 +47,20 @@ function responsePayload(row: CandidateResume) {
     recommendation: recommendResumeGrade(resumeContent(row).questionnaire), questions: questionsForResume(row.specialization),
     questionSets: { "Backend / Python": resumeQuestions, "Frontend / TypeScript": frontendResumeQuestions }, answerScale: resumeAnswerScale };
 }
+async function resumeReadInputs(userId:number) {
+  const [historical,modular]=await Promise.all([loadCandidateQualificationInputs([userId]),loadSkillQualificationInputs([userId])]);
+  return {...historical,modular};
+}
+function projectReadResume(row:CandidateResume,inputs:Awaited<ReturnType<typeof resumeReadInputs>>):CandidateResume {
+  return {...row,...resumeReadDerivedFields(getResumeQualification(row,inputs.attempts,inputs.correctedIds),getSkillQualification(row,inputs.modular),skillModulesEnabled())};
+}
 const notFound = (res: Response) => { res.status(404).json({ error: "Резюме не найдено или недоступно." }); };
 const badInput = (res: Response, issues?: { path: PropertyKey[]; message: string }[]) => res.status(400).json({ error: "Проверьте поля резюме.", details: issues?.map(issue => ({ path: issue.path.join("."), message: issue.message })) });
 
 router.get("/me/resumes", async (req, res): Promise<void> => {
   const user = await candidate(req, res); if (!user) return;
-  const resumes = await recomputeCandidateResumes(user.id);
-  const inputs = await loadCandidateQualificationInputs([user.id]);
+  const [savedResumes, inputs] = await Promise.all([listCandidateResumes(user.id), resumeReadInputs(user.id)]);
+  const resumes = savedResumes.map(row=>projectReadResume(row,inputs));
   if(!workspaceEnabled()){res.json({resumes:resumes.map(row=>({...responsePayload(row),qualification:getResumeQualification(row,inputs.attempts,inputs.correctedIds)})),count:resumes.length,limit:5});return;}
   const analytics=await workspaceAnalytics(resumes.map(row=>row.id));
   const preferences=await readWorkPreferences(resumes.map(row=>row.id));
@@ -173,9 +184,9 @@ router.get('/resumes/:id/preview.pdf',async(req,res):Promise<void>=>{
 async function readResume(req: Request, res: Response): Promise<void> {
   const user = await candidate(req, res); if (!user) return;
   const id = requestedId(req); if (id === null) { badInput(res); return; }
-  await recomputeCandidateResumes(user.id);
-  const row = await resolveCandidateResume(user.id, id); if (!row) { notFound(res); return; }
-  const inputs = await loadCandidateQualificationInputs([user.id]);
+  const saved = await resolveCandidateResume(user.id, id); if (!saved) { notFound(res); return; }
+  const inputs = await resumeReadInputs(user.id);
+  const row = projectReadResume(saved,inputs);
   const historical=getResumeQualification(row,inputs.attempts,inputs.correctedIds);
   res.json({ ...responsePayload(row), qualification:workspaceEnabled()?await workspaceQualification(row):historical,...(workspaceEnabled()?{legacyQualificationInfo:historical}:{}) });
 }
@@ -202,10 +213,11 @@ async function saveResume(req: Request, res: Response): Promise<void> {
 async function resumePdf(req: Request, res: Response): Promise<void> {
   const user = await candidate(req, res); if (!user) return;
   const id = requestedId(req); if (id === null) { badInput(res); return; }
-  await recomputeCandidateResumes(user.id);
-  const row = await resolveCandidateResume(user.id, id); const profile = row && await getResumeProfile(user.id, row.id);
-  if (!row || !profile) { notFound(res); return; }
-  const inputs = await loadCandidateQualificationInputs([user.id]);
+  const saved = await resolveCandidateResume(user.id, id); const savedProfile = saved && await getResumeProfile(user.id, saved.id);
+  if (!saved || !savedProfile) { notFound(res); return; }
+  const inputs = await resumeReadInputs(user.id);
+  const row = projectReadResume(saved,inputs);
+  const profile = {...savedProfile,...professionalResumeFields(row),qualificationAttemptId:row.qualificationAttemptId};
   const qualification = getResumeQualification(row, inputs.attempts, inputs.correctedIds);
   let bytes:Buffer|null,projectionVersion:string|undefined;
   if(workspaceEnabled()){
@@ -214,7 +226,10 @@ async function resumePdf(req: Request, res: Response): Promise<void> {
     const model=await projectCurrentDocument(access,fields);projectionVersion=model.projectionVersion;
     bytes=await finalDocumentProjection(res,{actorId:user.id,actor:user,fields,model,snapshot:documentAccessSnapshot(access,model)},()=>renderResumePdf(model));
     if(!bytes)return;
-  }else bytes=await renderCandidateResumePdf({ ...profile, displayName: user.displayName,qualificationSource: qualification.source, qualificationLimitation: qualification.limitation }, resumeContent(row));
+  }else {
+    const related=new Set(resumeAffiliatedSkillKeys(row,getSkillQualification(row,inputs.modular).coverage));
+    bytes=await renderCandidateResumePdf({ ...profile, verifiedSkills:profile.verifiedSkills.filter(label=>related.has(resumeAffiliationKey(label))), displayName: user.displayName,qualificationSource: qualification.source, qualificationLimitation: qualification.limitation }, resumeContent(row));
+  }
   res.set({ "Content-Type": "application/pdf", "Content-Disposition": `attachment; filename="Signal-Resume-${row.id}.pdf"`, "Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff", "Content-Length": String(bytes.length), "X-Signal-Resume-Id": String(row.id), "X-Signal-Resume-Revision": String(row.revision),...(projectionVersion?{'X-Signal-Document-Version':projectionVersion}:{}) });
   res.status(200).send(bytes);
 }

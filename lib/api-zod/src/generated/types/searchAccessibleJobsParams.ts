@@ -29,4 +29,8 @@ hideApplied?: boolean;
  * For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.
  */
 hideBlocked?: boolean;
+/**
+ * Only published jobs with active linked tasks. Does not reveal task content or assign a candidate.
+ */
+hasTask?: boolean;
 };

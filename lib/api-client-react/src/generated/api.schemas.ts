@@ -2760,6 +2760,14 @@ export interface JobPublication {
   version: number;
   status: JobPublicationStatus;
   publishedAt?: string | null;
+  hasTask: boolean;
+  /** @minimum 0 */
+  taskCount: number;
+  /**
+     * Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.
+     * @nullable
+     */
+  taskHref: string | null;
 }
 
 export type JobApplicationStatus = typeof JobApplicationStatus[keyof typeof JobApplicationStatus];
@@ -2928,6 +2936,12 @@ export interface MicrotaskInput {
      * @maxItems 6
      */
   rubric: MicrotaskInputRubricItem[];
+  /**
+     * Required owned non-deleted draft/published job. Immutable once template is created; specialization must match.
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  jobId: number;
 }
 
 /**
@@ -2950,6 +2964,22 @@ export type MicrotaskTemplateRubricItem = {
      */
   maxPoints: number;
 };
+
+export interface MicrotaskJobContext {
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  id: number;
+  title: string;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  version: number;
+  status?: string;
+  available: boolean;
+}
 
 export interface MicrotaskTemplate {
   /** Null only for a legacy template; explicit selection is required before new subscriptions or offers. */
@@ -2986,6 +3016,18 @@ export interface MicrotaskTemplate {
   companyId?: number;
   version: number;
   active: boolean;
+  /** @nullable */
+  jobId: number | null;
+  job: MicrotaskJobContext | null;
+  assignmentAvailable: boolean;
+  /** @minimum 0 */
+  answerCount?: number;
+  /** @minimum 0 */
+  newAnswerCount?: number;
+  /** @minimum 0 */
+  evaluatedAnswerCount?: number;
+  /** @minimum 0 */
+  recipientCount?: number;
 }
 
 export type MicrotaskEligibleResumeSpecialization = typeof MicrotaskEligibleResumeSpecialization[keyof typeof MicrotaskEligibleResumeSpecialization];
@@ -3077,6 +3119,21 @@ export type MicrotaskSnapshotRubricItem = {
   maxPoints: number;
 };
 
+export interface MicrotaskCapturedJob {
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  id: number;
+  title: string;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  version: number;
+  specialization: string;
+}
+
 export interface MicrotaskSnapshot {
   title: string;
   competency: string;
@@ -3098,6 +3155,7 @@ export interface MicrotaskSnapshot {
   companyName: string;
   version: number;
   limits: string;
+  job?: MicrotaskCapturedJob;
 }
 
 export type MicrotaskResultScoresItem = {
@@ -3199,6 +3257,10 @@ export interface MicrotaskOffer {
   shareResult: boolean;
   consentRevokedAt?: string | null;
   purpose?: MicrotaskOfferPurpose;
+  job?: MicrotaskJobContext | null;
+  assignmentAvailable?: boolean;
+  /** @nullable */
+  assignmentLimitation?: string | null;
 }
 
 export interface OpportunityError {
@@ -3239,6 +3301,8 @@ export interface MicrotaskSubscription {
   nextDueAt: string;
   title?: string;
   companyName?: string;
+  job?: MicrotaskJobContext | null;
+  assignmentAvailable?: boolean;
 }
 
 export interface AddressedContact {
@@ -3838,6 +3902,7 @@ export const ComplaintInputObjectType = {
   company: 'company',
   job: 'job',
   invitation: 'invitation',
+  service: 'service',
 } as const;
 
 export type ComplaintInputCategory = typeof ComplaintInputCategory[keyof typeof ComplaintInputCategory];
@@ -3850,8 +3915,13 @@ export const ComplaintInputCategory = {
   inappropriate: 'inappropriate',
   privacy: 'privacy',
   other: 'other',
+  question: 'question',
+  technical: 'technical',
 } as const;
 
+/**
+ * Service complaints may be created by either role, require own session userId as objectId and trimmed explanation of 10–2000 characters. Existing company/job/invitation complaints remain candidate-only and use existing ACL.
+ */
 export interface ComplaintInput {
   objectType: ComplaintInputObjectType;
   /**
@@ -3879,6 +3949,8 @@ export const TrustComplaintCategory = {
   inappropriate: 'inappropriate',
   privacy: 'privacy',
   other: 'other',
+  question: 'question',
+  technical: 'technical',
 } as const;
 
 export interface TrustComplaint {
@@ -3896,8 +3968,9 @@ export interface TrustComplaint {
   /**
      * @minimum 1
      * @maximum 2147483647
+     * @nullable
      */
-  companyId: number;
+  companyId: number | null;
   category: TrustComplaintCategory;
   explanation?: string;
   status: string;
@@ -3937,6 +4010,7 @@ export const ModerationDecisionInputAction = {
   review: 'review',
   dismiss: 'dismiss',
   restrict: 'restrict',
+  resolve: 'resolve',
 } as const;
 
 export type ModerationDecisionInputScope = typeof ModerationDecisionInputScope[keyof typeof ModerationDecisionInputScope];
@@ -3961,6 +4035,9 @@ export const ModerationDecisionInputPublicReasonCode = {
   other: 'other',
 } as const;
 
+/**
+ * resolve is service-only; restrict is forbidden for service complaints.
+ */
 export interface ModerationDecisionInput {
   action: ModerationDecisionInputAction;
   /**
@@ -4557,7 +4634,11 @@ export type SkillModuleMatrixHistoricalQualification = { [key: string]: unknown 
 
 export type SkillModuleMatrixHistoricalAttemptsItem = { [key: string]: unknown };
 
-export type SkillModuleMatrixSkillContextsItem = { [key: string]: unknown };
+export type SkillModuleMatrixSkillContextsItem = {
+  /** Canonical module IDs associated with this exact CV, via explicit declarations or required role competencies; does not create proof. */
+  relatedSkillIds: string[];
+  [key: string]: unknown;
+ };
 
 export type SkillModuleMatrixAccountSkillsItemState = typeof SkillModuleMatrixAccountSkillsItemState[keyof typeof SkillModuleMatrixAccountSkillsItemState];
 
@@ -4682,6 +4763,138 @@ export interface ResumeDocumentPreview {
      * @pattern ^signal-document-v1:[a-f0-9]{64}$
      */
   projectionVersion: string;
+}
+
+export type MicrotaskEditInputSpecialization = typeof MicrotaskEditInputSpecialization[keyof typeof MicrotaskEditInputSpecialization];
+
+
+export const MicrotaskEditInputSpecialization = {
+  'Backend_/_Python': 'Backend / Python',
+  'Frontend_/_TypeScript': 'Frontend / TypeScript',
+} as const;
+
+export type MicrotaskEditInputRubricItem = {
+  /** @pattern ^[a-z0-9-]{1,40}$ */
+  id: string;
+  /**
+     * @minLength 3
+     * @maxLength 200
+     */
+  label: string;
+  /**
+     * @minimum 1
+     * @maximum 10
+     */
+  maxPoints: number;
+};
+
+export interface MicrotaskEditInput {
+  specialization: MicrotaskEditInputSpecialization;
+  /**
+     * @minLength 3
+     * @maxLength 160
+     */
+  title: string;
+  /**
+     * @minLength 2
+     * @maxLength 100
+     */
+  competency: string;
+  /**
+     * @minLength 50
+     * @maxLength 6000
+     */
+  scenario: string;
+  /**
+     * @minimum 5
+     * @maximum 45
+     */
+  expectedMinutes: number;
+  /**
+     * @minimum 7
+     * @maximum 90
+     */
+  intervalDays: number;
+  /**
+     * @minimum 1
+     * @maximum 7
+     */
+  deadlineDays: number;
+  educationalOnly: true;
+  /**
+     * @minItems 1
+     * @maxItems 6
+     */
+  rubric: MicrotaskEditInputRubricItem[];
+  /**
+     * Required owned non-deleted draft/published job. Immutable once template is created; specialization must match.
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  jobId: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  version: number;
+}
+
+export type MicrotaskRecipientCandidateIdentity = {
+  alias: string;
+  /** @nullable */
+  displayName: string | null;
+};
+
+export interface MicrotaskRecipient {
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  id: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  templateId: number;
+  /** @nullable */
+  resumeId: number | null;
+  resumeTitle: string;
+  candidateIdentity: MicrotaskRecipientCandidateIdentity;
+  active: boolean;
+  nextDueAt: string;
+}
+
+export type MicrotaskAnswerPageFilter = typeof MicrotaskAnswerPageFilter[keyof typeof MicrotaskAnswerPageFilter];
+
+
+export const MicrotaskAnswerPageFilter = {
+  all: 'all',
+  new: 'new',
+  evaluated: 'evaluated',
+} as const;
+
+export type MicrotaskAnswerPageCounters = {
+  answerCount: number;
+  newAnswerCount: number;
+  evaluatedAnswerCount: number;
+};
+
+export interface MicrotaskAnswerPage {
+  items: MicrotaskOffer[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  filter: MicrotaskAnswerPageFilter;
+  counters: MicrotaskAnswerPageCounters;
+}
+
+export interface MicrotaskRecipientPage {
+  items: MicrotaskRecipient[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
 }
 
 /**
@@ -5032,6 +5245,14 @@ export const ListMicrotaskEligibleCandidatesGrade = {
   Middle: 'Middle',
   Senior: 'Senior',
 } as const;
+
+export type ListMyMicrotasksParams = {
+/**
+ * @minimum 1
+ * @maximum 2147483647
+ */
+jobId?: number;
+};
 
 export type ListMyMicrotasks200 = {
   enabled: boolean;
@@ -5465,6 +5686,10 @@ hideApplied?: boolean;
  * For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.
  */
 hideBlocked?: boolean;
+/**
+ * Only published jobs with active linked tasks. Does not reveal task content or assign a candidate.
+ */
+hasTask?: boolean;
 };
 
 export type SearchAccessibleJobsSalaryPeriod = typeof SearchAccessibleJobsSalaryPeriod[keyof typeof SearchAccessibleJobsSalaryPeriod];
@@ -5510,6 +5735,10 @@ hideApplied?: boolean;
  * For authenticated candidates only: hide jobs whose company has an active block by this account. This visibility filter does not grant contact or application permission.
  */
 hideBlocked?: boolean;
+/**
+ * Only published jobs with active linked tasks. Does not reveal task content or assign a candidate.
+ */
+hasTask?: boolean;
 };
 
 export type ExportAccessibleJobsFormat = typeof ExportAccessibleJobsFormat[keyof typeof ExportAccessibleJobsFormat];
@@ -5545,5 +5774,53 @@ export type UpdateOwnedAccountBody = {
 
 export type RequestFspImportBody = {
   consentImport: true;
+};
+
+export type ListCompanyMicrotaskAnswersParams = {
+filter?: ListCompanyMicrotaskAnswersFilter;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: number;
+};
+
+export type ListCompanyMicrotaskAnswersFilter = typeof ListCompanyMicrotaskAnswersFilter[keyof typeof ListCompanyMicrotaskAnswersFilter];
+
+
+export const ListCompanyMicrotaskAnswersFilter = {
+  all: 'all',
+  new: 'new',
+  evaluated: 'evaluated',
+} as const;
+
+export type ListCompanyMicrotaskRecipientsParams = {
+filter?: ListCompanyMicrotaskRecipientsFilter;
+/**
+ * @minimum 1
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 100
+ */
+pageSize?: number;
+};
+
+export type ListCompanyMicrotaskRecipientsFilter = typeof ListCompanyMicrotaskRecipientsFilter[keyof typeof ListCompanyMicrotaskRecipientsFilter];
+
+
+export const ListCompanyMicrotaskRecipientsFilter = {
+  all: 'all',
+  new: 'new',
+  evaluated: 'evaluated',
+} as const;
+
+export type GetMyComplaint200 = {
+  complaint: TrustComplaint;
 };
 

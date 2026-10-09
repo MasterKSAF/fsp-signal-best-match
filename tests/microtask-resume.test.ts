@@ -10,7 +10,7 @@ const scopeTwo = { demoMode: true, reviewScopeId: "22222222-2222-4222-8222-22222
 const base: MicroLiveResume = { id: 42, userId: 7, revision: 3, title: "Python: второе резюме",
   specialization: "Backend / Python", verifiedGrade: "Middle", verifiedSkills: ["Python", "SQL"],
   visibility: "pseudonymous", consentMatching: true, deletedAt: null };
-const template = { title: "Разбор транзакции", competency: "SQL", specialization: "Backend / Python",
+const template = { jobId:1, title: "Разбор транзакции", competency: "SQL", specialization: "Backend / Python",
   scenario: "Опишите учебный подход к транзакции и обработке сбоя, без выполнения производственной работы.",
   expectedMinutes: 20, intervalDays: 7, deadlineDays: 3, educationalOnly: true,
   rubric: [{ id: "reasoning", label: "Понятный подход", maxPoints: 5 }] };

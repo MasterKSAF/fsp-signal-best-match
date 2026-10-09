@@ -47,4 +47,12 @@ export interface JobPublication {
   version: number;
   status: JobPublicationStatus;
   publishedAt?: Date | null;
+  hasTask: boolean;
+  /** @minimum 0 */
+  taskCount: number;
+  /**
+     * Employer own workspace link or candidate link only for their currently authorized assignment. Never grants access by itself.
+     * @nullable
+     */
+  taskHref: string | null;
 }

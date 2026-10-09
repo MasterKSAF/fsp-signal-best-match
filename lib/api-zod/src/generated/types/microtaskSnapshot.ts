@@ -5,6 +5,7 @@
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
  * OpenAPI spec version: 0.7.0
  */
+import type { MicrotaskCapturedJob } from './microtaskCapturedJob';
 import type { MicrotaskSnapshotRubricItem } from './microtaskSnapshotRubricItem';
 
 export interface MicrotaskSnapshot {
@@ -28,4 +29,5 @@ export interface MicrotaskSnapshot {
   companyName: string;
   version: number;
   limits: string;
+  job?: MicrotaskCapturedJob;
 }
