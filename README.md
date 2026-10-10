@@ -17,20 +17,32 @@ Signal — сервис подбора ИТ-специалистов и подх
 
 Нужен запущенный **Docker Desktop в режиме Linux containers** либо Docker Engine с Compose. Для первой сборки нужен интернет. Порты `4450`, `55450` и `8050` должны быть свободны; Node.js и PostgreSQL на компьютер устанавливать не нужно.
 
-Скачайте [актуальную ветку исходников](https://github.com/MasterKSAF/fsp-signal-best-match/tree/codex/signal-delivery-20261009) через **Code → Download ZIP** и распакуйте её. В Windows используйте короткий путь к распакованной папке, например `C:\Signal`. Откройте терминал в папке, где лежат `compose.yaml` и `Dockerfile`.
+Скачайте [исходники ZIP с Google Drive](https://drive.google.com/file/d/1SgEiJjwBc_sOsU3xDT83kRO0z_8_tMRb/view?usp=drivesdk) и распакуйте архив. Альтернатива — [GitHub](https://github.com/MasterKSAF/fsp-signal-best-match/tree/codex/signal-delivery-20261009), но репозиторий пока приватный; без доступа используйте ZIP. В Windows выберите короткий путь, например `C:\Signal`. Откройте терминал в папке с `compose.yaml` и `Dockerfile`.
 
-Выполните по порядку в PowerShell 7, Bash или Zsh:
+В **Windows, PowerShell 7** выполните по порядку:
 
-```sh
+```powershell
 docker run --rm -v "${PWD}:/app" -w /app node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 node scripts/setup-env.mjs
 docker compose -p signal-release-n-final --profile full up -d --build --wait --wait-timeout 180
+```
+
+В **Linux, Bash** используйте владельца текущего пользователя для создаваемой `.env`:
+
+```bash
+signalNodeImage='node:24-bookworm-slim@sha256:'
+signalNodeImage+='0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6'
+docker run --rm --user "$(id -u):$(id -g)" \
+  -v "${PWD}:/app" -w /app "$signalNodeImage" \
+  node scripts/setup-env.mjs
+docker compose -p signal-release-n-final --profile full \
+  up -d --build --wait --wait-timeout 180
 ```
 
 Первая команда создаёт локальную `.env` со случайным секретом. Существующая `.env` сохраняется. Вторая собирает приложение, запускает базу и почтовый просмотрщик, автоматически применяет миграции **0000–0019** и подготавливает демонстрационные данные.
 
 Откройте **[Signal — localhost:4450](http://localhost:4450)**. Нажмите **«Войти»**, включите **Demo** и выберите **«Я кандидат»** или **«Я работодатель»**. Демонстрационные профили вымышленные.
 
-Обычную регистрацию можно проверить отдельно: код подтверждения приходит в локальный **[Mailpit — localhost:8050](http://localhost:8050)**. Письмо не отправляется на внешнюю почту. Для сквозного сценария используйте обе роли в одном режиме: Demo с Demo или два обычных аккаунта.
+Обычную регистрацию можно проверить отдельно: код подтверждения приходит в локальный **[Mailpit — localhost:8050](http://localhost:8050)**. Письмо не отправляется на внешнюю почту. Для сквозного сценария используйте обе роли в одном режиме: Demo с Demo или два обычных аккаунта. [Последовательность действий двух ролей](docs/expert-guide.md#4-сквозной-сценарий-двух-ролей) начинается с публикации вакансии.
 
 ## Остановка и повторный запуск
 
@@ -45,6 +57,9 @@ docker compose -p signal-release-n-final --profile full up -d --wait
 
 - [Видео, презентация PDF/PPTX и инструкция PDF](https://drive.google.com/drive/folders/1fCgfQIBzSvpCtiURdJdpXMRml3Wmxqgg).
 - [Инструкция эксперту: скачивание, запуск и сценарии двух ролей](docs/expert-guide.md).
+- [Технический паспорт: полный каталог, установка, архитектура, сценарии и материалы](docs/technical-passport.md).
+- [Отчёт проверки воспроизводимости 10 октября](docs/verification-2026-10-10.md) · [PDF](https://drive.google.com/file/d/1PfO3DjuY7mzxyf_L5DVE14uLGXPTqWLo/view?usp=drivesdk).
+- [Возможности Signal: подробный обзор функций кандидата и работодателя](docs/features.md).
 - [Техническое описание: архитектура, проверки, подбор, валидация, ФСП и версии](docs/technical-overview.md).
 - [OpenAPI 3.1 — запросы, ответы и ошибки](lib/api-spec/openapi.yaml); [спецификация работающего стенда](http://localhost:4450/api/openapi.yaml).
 

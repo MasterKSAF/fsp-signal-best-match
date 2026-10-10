@@ -94,7 +94,7 @@ MVP поддерживает Python, SQL, Backend engineering, TypeScript, React
 
 ## 8. Сборка, развёртывание и локальный запуск
 
-Рекомендуемый путь — [Docker-инструкция эксперту](expert-guide.md): скачать текущую ветку → создать `.env` контейнерной командой → `docker compose -p signal-release-n-final --profile full up -d --build --wait --wait-timeout 180` → открыть `http://localhost:4450`.
+Рекомендуемый путь — [Docker-инструкция эксперту](expert-guide.md): скачать выдаваемый ZIP → создать `.env` контейнерной командой для своей ОС → `docker compose -p signal-release-n-final --profile full up -d --build --wait --wait-timeout 180` → открыть `http://localhost:4450`.
 
 Сборка включает TypeScript-проверку, API и клиент. Контейнер автоматически применяет все 20 миграций **0000–0019** и создаёт Demo-данные, затем запускает API. Нужные функциональные флаги включены в Compose. PostgreSQL использует именованный том; обычная остановка и повторный запуск сохраняют записи. Хостовые Node.js, pnpm и внешние файлы рабочей среды не нужны.
 
