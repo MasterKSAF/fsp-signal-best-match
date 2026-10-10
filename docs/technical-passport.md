@@ -556,7 +556,7 @@ OpenAPI описывает методы, тела запросов, схемы �
 | `artifacts/api-server/src` | Маршруты API и бизнес-правила. |
 | `lib/db/src/schema` | Схема сущностей и связей. |
 | `lib/db/migrations` | Последовательность SQL-миграций и журнал. |
-| `lib/api-spec/openapi.yaml` | Полный контракт OpenAPI 3.1. |
+| `lib/api-spec/openapi.yaml` | Спецификация OpenAPI 3.1. |
 | `lib/api-client-react`, `lib/api-zod` | Клиент API и схемы данных. |
 | `tests`, `scripts` | Проверки правил и сценариев, сервисные команды. |
 | `docs` | Предметная документация и сохранённые материалы разработки. |
