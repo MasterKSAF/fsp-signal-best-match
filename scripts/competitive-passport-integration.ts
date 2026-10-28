@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {generateKeyPairSync,randomUUID,createHash} from 'node:crypto';
+import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {pool} from '../lib/db/src/index';
+import {assertOwnDatabase,qaUser} from './competitive-fixtures';
+import {buildSkillAttempt,scoreSkillAttempt} from '../artifacts/api-server/src/lib/skill-module-bank';
+import {signPassport,verifyPassportIntegrity} from '../artifacts/api-server/src/lib/passport-signature';
+assertOwnDatabase();process.env.DEMO_MODE='true';process.env.SIGNAL_SKILL_MODULES_ENABLED='true';
+const secretDir=mkdtempSync(path.join(tmpdir(),'signal-passport-qa-')),secretFile=path.join(secretDir,'private.pem'),pair=generateKeyPairSync('ed25519'),kid=`qa-${randomUUID()}`;
+writeFileSync(secretFile,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});process.env.SIGNAL_PASSPORT_SIGNING_KEY_FILE=secretFile;
+const {default:app}=await import('../artifacts/api-server/src/app');const server=app.listen(0,'127.0.0.1');await new Promise<void>(resolve=>server.once('listening',resolve));const port=(server.address() as {port:number}).port,issuer=`http://127.0.0.1:${port}`;process.env.SIGNAL_PASSPORT_ISSUER=issuer;
+const checks:string[]=[],pass=(s:string)=>{checks.push(s);console.log('PASS',s);};
+async function api(p:string,cookie?:string,body?:unknown){const r=await fetch(`${issuer}/api${p}`,{method:body===undefined?'GET':'POST',headers:{...(cookie?{Cookie:cookie}:{}),...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})});return {status:r.status,data:await r.json()};}
+try{
+ await pool.query('INSERT INTO signal_passport_keys(kid,issuer,public_key_pem,state) VALUES($1,$2,$3,\'active\')',[kid,issuer,pair.publicKey.export({type:'spki',format:'pem'}).toString()]);
+ const owner=await qaUser(),foreign=await qaUser(),f=buildSkillAttempt('python','Junior',randomUUID()),answers=Object.fromEntries(Object.entries(f.oracles).map(([id,o])=>[id,o.expected])),decision=scoreSkillAttempt(f.cases,f.oracles,answers,f.policy);
+ const attempt=(await pool.query(`INSERT INTO signal_skill_attempts(user_id,skill_id,level,program_version,status,cases,oracles,answers,policy,decision,expires_at,submitted_at) VALUES($1,'python','Junior',$2,'submitted',$3,$4,$5,$6,$7,now(),now()) RETURNING id`,[owner.id,f.programVersion,JSON.stringify(f.cases),JSON.stringify(f.oracles),JSON.stringify(answers),JSON.stringify(f.policy),JSON.stringify(decision)])).rows[0];
+ await pool.query(`INSERT INTO signal_skill_evidence(user_id,attempt_id,skill_id,level,program_version,competency_ids,verified_at,decision) VALUES($1,$2,'python','Junior',$3,$4,now(),$5)`,[owner.id,attempt.id,f.programVersion,decision.competencies.filter(c=>c.passed).map(c=>c.id),JSON.stringify(decision)]);
+ const preview=await api('/me/public-passports/preview',owner.cookie,{skillIds:['python']});assert.equal(preview.status,200,JSON.stringify(preview.data));
+ const body={previewId:preview.data.id,acceptPublication:true,days:30},issue=await api('/me/public-passports',owner.cookie,body);assert.equal(issue.status,201,JSON.stringify(issue.data));assert.equal((await api('/me/public-passports',owner.cookie,body)).data.id,issue.data.id);
+ assert.equal((await api('/me/public-passports',foreign.cookie,body)).status,404);
+ const active=(await api(`/public/passports/${issue.data.id}`)).data;assert.equal(active.status,'active');const doc=active.document;assert.equal(doc.body.claims.length,1);for(const k of ['email','phone','avatarDataUrl','summary','resumeId'])assert.ok(!JSON.stringify(doc).includes(`"${k}"`));pass('voluntary exact-claim preview, owner-only idempotent issue, trusted Ed25519 signature and minimal disclosure');
+ const qr=await fetch(`${issuer}/api/public/passports/${issue.data.id}/qr`);assert.equal(qr.status,200);assert.equal(qr.headers.get('content-type'),'image/png');assert.deepEqual([...Buffer.from(await qr.arrayBuffer()).subarray(0,8)],[137,80,78,71,13,10,26,10]);
+ assert.equal((await api('/me/public-passports',owner.cookie,{...body,days:60})).status,409);
+ const expiredId=randomUUID(),expired=signPassport({...doc.body,id:expiredId,issuedAt:new Date(Date.now()-172800000).toISOString(),expiresAt:new Date(Date.now()-86400000).toISOString()},pair.privateKey);
+ await pool.query('INSERT INTO signal_public_passports(id,user_id,document) VALUES($1,$2,$3)',[expiredId,owner.id,JSON.stringify(expired)]);const ended=(await api(`/public/passports/${expiredId}`)).data;assert.equal(ended.status,'expired');assert.equal(ended.document,undefined);pass('QR endpoint returns real PNG, repeated issue rejects changed parameters, online expiry discloses no claims');
+ const changed=structuredClone(doc);changed.body.claims[0].level='Senior';assert.equal((await api('/public/passports/verify',undefined,changed)).data.status,'invalid_signature');
+ const fakeIssuer=structuredClone(doc);fakeIssuer.body.issuer='https://attacker.example';assert.equal((await api('/public/passports/verify',undefined,fakeIssuer)).data.status,'untrusted_issuer_or_key');
+ const fakeKid=structuredClone(doc);fakeKid.body.kid='unknown-key';assert.equal((await api('/public/passports/verify',undefined,fakeKid)).data.status,'untrusted_issuer_or_key');
+ const trusted=(await api('/public/passport-keys')).data.keys.map((k:any)=>({...k,issuer}));assert.equal(verifyPassportIntegrity(doc,trusted,issuer,new Date(Date.now()+31*86400000)).status,'expired');pass('claim/issuer/kid tampering rejected; expiry and offline integrity versus current status distinct');
+ const rotated=generateKeyPairSync('ed25519'),kid2=`qa-${randomUUID()}`;await pool.query("UPDATE signal_passport_keys SET state='retired' WHERE kid=$1",[kid]);await pool.query("INSERT INTO signal_passport_keys(kid,issuer,public_key_pem,state) VALUES($1,$2,$3,'active')",[kid2,issuer,rotated.publicKey.export({format:'pem',type:'spki'}).toString()]);writeFileSync(secretFile,rotated.privateKey.export({format:'pem',type:'pkcs8'}),{mode:0o600});
+ assert.equal((await api(`/public/passports/${issue.data.id}`)).data.status,'active','Retired trusted key preserves old valid signatures');
+ const preview2=(await api('/me/public-passports/preview',owner.cookie,{skillIds:['python']})).data,newIssue=await api('/me/public-passports',owner.cookie,{previewId:preview2.id,acceptPublication:true,days:30,replaceId:issue.data.id});assert.equal(newIssue.status,201,JSON.stringify(newIssue.data));
+ const replaced=(await api(`/public/passports/${issue.data.id}`)).data;assert.equal(replaced.status,'replaced');assert.ok(!replaced.document);const newest=(await api(`/public/passports/${newIssue.data.id}`)).data;assert.equal(newest.document.body.kid,kid2);
+ await api(`/me/public-passports/${newIssue.data.id}/revoke`,owner.cookie,{});const revoked=(await api(`/public/passports/${newIssue.data.id}`)).data;assert.equal(revoked.status,'revoked');assert.ok(!revoked.document);assert.equal((await pool.query('select count(*)::int n from signal_passport_events where passport_id=any($1::uuid[])',[[issue.data.id,newIssue.data.id]])).rows[0].n,4);pass('rotation retains old trusted signatures; replacement/revocation append events and stop claim disclosure');
+ const p3=(await api('/me/public-passports/preview',owner.cookie,{skillIds:['python']})).data,third=(await api('/me/public-passports',owner.cookie,{previewId:p3.id,acceptPublication:true,days:30})).data;
+ await pool.query(`INSERT INTO signal_skill_corrections(evidence_id,reason,operator,original_decision) SELECT id,'QA review invalidation','own-qa',decision FROM signal_skill_evidence WHERE attempt_id=$1`,[attempt.id]);
+ const invalid=(await api(`/public/passports/${third.id}`)).data;assert.equal(invalid.status,'evidence_changed');assert.ok(!invalid.document);
+ await pool.query("UPDATE signal_passport_keys SET state='compromised' WHERE kid=$1",[kid2]);assert.equal((await api(`/public/passports/${third.id}`)).data.status,'compromised_key');
+ await assert.rejects(()=>pool.query(`UPDATE signal_skill_attempts SET answers='{}' WHERE id=$1`,[attempt.id]));pass('current proof invalidation/compromised key hide claims; migration0030 rejects original answer mutation');
+ writeFileSync('../passport-integration.json',JSON.stringify({status:'passed',synthetic:true,checks,at:new Date().toISOString()},null,2));
+}finally{await new Promise<void>(resolve=>server.close(()=>resolve()));await pool.end();if(path.dirname(secretFile)!==secretDir||!path.basename(secretDir).startsWith('signal-passport-qa-'))throw new Error('Secret cleanup boundary');rmSync(secretDir,{recursive:true,force:true});}

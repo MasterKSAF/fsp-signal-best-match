@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {writeFileSync} from 'node:fs';
+import {pool} from '../lib/db/src/index';
+import {assertOwnDatabase,qaUser,qaNeed,qaApi as api} from './competitive-fixtures';
+assertOwnDatabase();const checks:string[]=[],pass=(s:string)=>{checks.push(s);console.log('PASS',s);};
+try{
+ const owner=await qaUser('employer'),member=await qaUser('employer'),foreign=await qaUser('employer'),candidate=await qaUser(),other=await qaUser();const need=await qaNeed(owner.companyId!);
+ await pool.query(`INSERT INTO signal_shortlist(company_id,context_type,context_id,need_id,context_version,candidate_user_id,resume_id) VALUES($1,'need',$2,$2,1,$3,$4)`,[owner.companyId,need.id,candidate.id,candidate.resumeId]);
+ assert.equal((await api('/employer/shared-selection-members',owner.cookie,{userId:member.id,active:true},'PUT')).status,200);
+ const r=await api('/employer/shared-selections',owner.cookie,{context:{type:'need',id:need.id},publicPurpose:'Обсуждение навыков для проекта',memberIds:[member.id],guest:true,hours:1});assert.equal(r.status,201,JSON.stringify(r.data));const share=r.data,id=share.id;
+ assert.equal((await api(`/shared-selections/${id}`,foreign.cookie)).status,404);assert.equal((await api(`/shared-selections/${id}`,candidate.cookie)).status,403);
+ assert.equal((await api(`/shared-selections/${id}`,member.cookie)).data.items.length,1);
+ assert.equal((await api(`/guest/shared-selections/${id}/read`,undefined,{token:share.guestToken})).data.items.length,0,'Guest starts denied without separate candidate consent');
+ assert.equal((await api(`/candidate/guest-review-permissions/${candidate.resumeId}`,candidate.cookie,{allowed:true},'PUT')).status,200);
+ const guest=(await api(`/guest/shared-selections/${id}/read`,undefined,{token:share.guestToken})).data;assert.equal(guest.items.length,1);const serialized=JSON.stringify(guest);for(const secret of ['PRIVATE-TITLE','PRIVATE-DESCRIPTION','contactEmail','avatarDataUrl','professionalAlias','oracles'])assert.ok(!serialized.includes(secret),secret);
+ const stored=(await pool.query('select token_hash from signal_shared_selections where id=$1',[id])).rows[0];assert.ok(stored.token_hash!==share.guestToken&&stored.token_hash.length===64);pass('company membership, explicit guest consent and allowlist DTO; token stored only as hash');
+ const exact=guest.items[0],note={candidateId:exact.candidateId,resumeId:exact.resumeId,resumeRevision:exact.resumeRevision,reaction:'discuss',note:'INTERNAL NOTE'};
+ assert.equal((await api(`/shared-selections/${id}/comments`,member.cookie,note)).status,201);
+ assert.equal((await api(`/guest/shared-selections/${id}/comments`,undefined,{...note,token:share.guestToken,resumeId:other.resumeId})).status,404);
+ assert.ok(!JSON.stringify((await api(`/guest/shared-selections/${id}/read`,undefined,{token:share.guestToken})).data).includes('INTERNAL NOTE'));
+ assert.equal((await api(`/shared-selections/${id}`,candidate.cookie)).status,403);pass('exact CV substitution denied and company comments do not enter guest/candidate views');
+ const secondNeed=await qaNeed(owner.companyId!,'SECOND PRIVATE CONTEXT');
+ await pool.query(`INSERT INTO signal_shortlist(company_id,context_type,context_id,need_id,context_version,candidate_user_id,resume_id) VALUES($1,'need',$2,$2,1,$3,$4)`,[owner.companyId,secondNeed.id,candidate.id,candidate.resumeId]);
+ const second=await api('/employer/shared-selections',owner.cookie,{context:{type:'need',id:secondNeed.id},publicPurpose:'Обсуждение другой позиции',memberIds:[member.id],guest:false,hours:1});assert.equal(second.status,201,JSON.stringify(second.data));
+ assert.ok(!JSON.stringify((await api(`/shared-selections/${second.data.id}`,member.cookie)).data).includes('INTERNAL NOTE'));
+ const expiredId=randomUUID();await pool.query(`INSERT INTO signal_shared_selections(id,company_id,created_by,context_type,context_id,context_revision,public_purpose,items,member_ids,token_hash,expires_at) SELECT $2,company_id,created_by,context_type,context_id,context_revision,public_purpose,items,member_ids,token_hash,now()-interval '1 second' FROM signal_shared_selections WHERE id=$1`,[id,expiredId]);
+ assert.equal((await api(`/guest/shared-selections/${expiredId}/read`,undefined,{token:share.guestToken})).status,404);
+ await pool.query('UPDATE signal_needs SET revision=revision+1 WHERE id=$1',[secondNeed.id]);assert.equal((await api(`/shared-selections/${second.data.id}`,member.cookie)).status,409);
+ pass('candidate comments isolated across two contexts, expired token denied, changed context requires a new share');
+ await api(`/candidate/guest-review-permissions/${candidate.resumeId}`,candidate.cookie,{allowed:false},'PUT');assert.equal((await api(`/guest/shared-selections/${id}/read`,undefined,{token:share.guestToken})).data.items.length,0);
+ await api('/employer/shared-selection-members',owner.cookie,{userId:member.id,active:false,revision:1},'PUT');assert.equal((await api(`/shared-selections/${id}`,member.cookie)).status,404);
+ await pool.query('update signal_candidate_resumes set consent_matching=false,revision=revision+1 where id=$1',[candidate.resumeId]);assert.equal((await api(`/shared-selections/${id}`,owner.cookie)).data.items.length,0);
+ assert.equal((await pool.query('select jsonb_array_length(items)::int n from signal_shared_selections where id=$1',[id])).rows[0].n,1);pass('guest permission, company role and matching consent revocation take effect; historical composition retained');
+ await api(`/employer/shared-selections/${id}/revoke`,owner.cookie,{revision:1});assert.equal((await api(`/guest/shared-selections/${id}/read`,undefined,{token:share.guestToken})).status,404);
+ assert.equal((await api(`/guest/shared-selections/${id}/read`,undefined,{token:'x'.repeat(43)})).status,404);pass('revoked and incorrect guest links close');
+ writeFileSync('../shares-integration.json',JSON.stringify({status:'passed',synthetic:true,checks,at:new Date().toISOString()},null,2));
+}finally{await pool.end();}

@@ -1,0 +1,13 @@
+import {Router,type IRouter} from 'express';
+import {z} from 'zod';
+import {eq,desc,and} from 'drizzle-orm';
+import {db,signalAtsEndpointsTable as endpoints,signalOutboxDeliveriesTable as deliveries} from '@workspace/db';
+import {featureHandler as h,featureUser} from '../lib/competitive-http';
+import {companyOwner} from '../lib/shared-selection';
+import {registerAtsEndpoint,disableAtsEndpoint,retryOutboxDelivery} from '../lib/ats-outbox';
+const router:IRouter=Router();
+router.get('/employer/ats',h(async(req,res)=>{const user=await featureUser(req,'employer'),c=await companyOwner(user);const [endpoint]=await db.select({id:endpoints.id,url:endpoints.url,revision:endpoints.revision,active:endpoints.active}).from(endpoints).where(eq(endpoints.companyId,c.id));const rows=endpoint?await db.select({id:deliveries.id,eventId:deliveries.eventId,state:deliveries.state,attempts:deliveries.attempts,lastCode:deliveries.lastCode,nextAt:deliveries.nextAt,updatedAt:deliveries.updatedAt}).from(deliveries).where(eq(deliveries.endpointId,endpoint.id)).orderBy(desc(deliveries.updatedAt)).limit(100):[];res.json({endpoint:endpoint??null,deliveries:rows});}));
+router.put('/employer/ats',h(async(req,res)=>{const user=await featureUser(req,'employer'),input=z.object({url:z.string().url().max(1000),revision:z.number().int().positive().optional()}).strict().parse(req.body);res.json(await registerAtsEndpoint(user,input.url,input.revision));}));
+router.post('/employer/ats/:id/disable',h(async(req,res)=>{const user=await featureUser(req,'employer'),{revision}=z.object({revision:z.number().int().positive()}).strict().parse(req.body);res.json(await disableAtsEndpoint(user,z.string().uuid().parse(req.params.id),revision));}));
+router.post('/employer/ats/deliveries/:id/retry',h(async(req,res)=>{res.json(await retryOutboxDelivery(await featureUser(req,'employer'),z.string().uuid().parse(req.params.id)));}));
+export default router;

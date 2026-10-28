@@ -2,7 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { and, desc, eq, gte, inArray, sql } from 'drizzle-orm';
 import { Router, type IRouter, type Request, type Response } from 'express';
 import { z } from 'zod';
-import { db, signalSkillAttemptsTable as attempts, signalSkillEvidenceTable as evidence, signalSkillExposuresTable as exposures, signalBankTemplateOverridesTable as overrides, signalAssessmentAttemptsTable as oldAttempts, signalAssessmentCorrectionsTable as oldCorrections, signalCandidateResumesTable as resumes } from '@workspace/db';
+import { db, signalSkillAttemptsTable as attempts, signalSkillBankReleasesTable as releases, signalSkillEvidenceTable as evidence, signalSkillExposuresTable as exposures, signalBankTemplateOverridesTable as overrides, signalAssessmentAttemptsTable as oldAttempts, signalAssessmentCorrectionsTable as oldCorrections, signalCandidateResumesTable as resumes } from '@workspace/db';
+import { bankContentHash, currentBankBundle, SkillBankNotAttestedError } from '../lib/skill-bank-manifest';
 import { ensureCandidateProfile, getSessionUser } from '../lib/signal-auth';
 import { listCandidateResumes, recomputeCandidateResumes, resolveCandidateResume } from '../lib/signal-resume';
 import { buildSkillAttempt, changedConditionTraining, scoreSkillAttempt, skillModulePolicy, skillModuleRegistry, SkillBankUnavailableError, skillModuleTemplates, skillContentFamilyId, SKILL_BANK_VERSION } from '../lib/skill-module-bank';
@@ -33,6 +34,7 @@ function parseResume(req: Request, res: Response) {
 }
 export function publicSkillAttempt(row: Row, revocation: { reason: string; date: string } | null = null) {
   return { id: row.id, resumeId: row.resumeId, skillId: row.skillId, level: row.level, programVersion: row.programVersion, status: row.status,
+    provenance: row.provenance ? { status: 'complete', releaseId: row.provenance.releaseId, contentHash: row.provenance.contentHash, attestationHash: row.provenance.attestationHash } : { status: 'legacy_snapshot', releaseId: null, contentHash: null, attestationHash: null },
     cases: row.cases, answers: row.answers, revision: row.revision, policy: row.policy, revocation,
     startedAt: row.startedAt.toISOString(), expiresAt: row.expiresAt.toISOString(), submittedAt: row.submittedAt?.toISOString() ?? null, decision: row.decision,
     feedback: row.status === 'submitted' ? row.cases.map(c => ({ competencyId: c.competencyId, title: c.title, explanation: row.oracles[c.id]?.explanation ?? '', passed: row.decision?.competencies.find(v => v.id === c.competencyId)?.passed ?? false })) : [] };
@@ -115,10 +117,18 @@ router.post('/me/skill-attempts', async (req, res): Promise<void> => {
     const disabledIds = new Set(disabled.map(d => d.templateId));
     const availability = getSkillBankAvailability(module, input.level, { templates: skillModuleTemplates, personalExposures: personal, disabled: disabledIds, contentFamilyId: skillContentFamilyId });
     if (!availability.available) return { status: 503, body: { error: availability.reason!, code: 'skill_bank_unavailable' } };
+    let bank: ReturnType<typeof currentBankBundle>;
+    try { bank = currentBankBundle(); }
+    catch (error) { if (error instanceof SkillBankNotAttestedError) return { status: 503, body: { error: error.message, code: 'skill_bank_not_attested' } }; throw error; }
     let form: ReturnType<typeof buildSkillAttempt>;
-    try { form = buildSkillAttempt(input.skillId, input.level, randomUUID(), { personalExposures: personal, globalExposures: global, disabled: disabledIds }); }
+    const seed = randomUUID();
+    try { form = buildSkillAttempt(input.skillId, input.level, seed, { personalExposures: personal, globalExposures: global, disabled: disabledIds }); }
     catch (error) { if (error instanceof SkillBankUnavailableError) return { status: 503, body: { error: error.message, code: 'skill_bank_unavailable' } }; throw error; }
-    const [row] = await tx.insert(attempts).values({ userId: user.id, resumeId: resume.id, skillId: input.skillId, level: input.level, ...form, status: 'active', startedAt: now, expiresAt: new Date(+now + form.policy.durationMinutes * 60_000) }).returning();
+    const attestationHash = bankContentHash(bank.attestation);
+    await tx.insert(releases).values({ contentHash: bank.manifestHash, releaseId: bank.releaseId, programVersion: form.programVersion, manifest: bank.manifest, sources: bank.sources, attestation: bank.attestation, attestationHash }).onConflictDoNothing();
+    const [archive] = await tx.select().from(releases).where(eq(releases.contentHash, bank.manifestHash));
+    if (!archive || archive.attestationHash !== attestationHash || bankContentHash(archive.manifest) !== bank.manifestHash) throw new Error('Immutable bank archive conflict');
+    const [row] = await tx.insert(attempts).values({ userId: user.id, resumeId: resume.id, skillId: input.skillId, level: input.level, ...form, bankReleaseHash: bank.manifestHash, provenance: { status: 'complete', releaseId: bank.releaseId, contentHash: bank.manifestHash, attestationHash, seed, variantHash: bankContentHash({ cases: form.cases, oracles: form.oracles, policy: form.policy }) }, status: 'active', startedAt: now, expiresAt: new Date(+now + form.policy.durationMinutes * 60_000) }).returning();
     if (!row) throw new Error('Attempt could not be created');
     await tx.insert(exposures).values(row.cases.map(c => ({ userId: user.id, attemptId: row.id, templateId: c.templateId, issuedAt: now }))).onConflictDoNothing();
     return { status: 201, body: { attempt: publicSkillAttempt(row), resumed: false } };

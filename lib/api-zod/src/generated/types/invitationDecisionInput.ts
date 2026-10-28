@@ -6,7 +6,16 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { InvitationDecisionInputDecision } from './invitationDecisionInputDecision';
+import type { InvitationDecisionInputReason } from './invitationDecisionInputReason';
 
+/**
+ * Accept or decline. Optional revision is supported for backward compatibility. reason/note apply only to decline; accept with either is rejected. A different decline explanation is not an idempotent replay.
+ */
 export interface InvitationDecisionInput {
+  /** @minimum 1 */
+  revision?: number;
+  reason?: InvitationDecisionInputReason;
+  /** @maxLength 1000 */
+  note?: string;
   decision: InvitationDecisionInputDecision;
 }

@@ -9,6 +9,7 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { isTrustedBrowserOrigin } from "./lib/signal-runtime";
+import { pdfImportUploadRouter } from './routes/signal-pdf-import';
 
 const app: Express = express();
 // Honor forwarded client addresses only when the deployment explicitly says a
@@ -73,6 +74,7 @@ const originGuard: RequestHandler = (req, res, next) => {
 };
 app.use(originGuard);
 app.use(cookieParser());
+app.use('/api', pdfImportUploadRouter);
 // Only the bounded raster-avatar endpoint accepts a larger body.
 app.use('/api/me/avatar', express.json({ limit: '3mb' }));
 app.use(express.json({ limit: "100kb" }));
@@ -82,9 +84,10 @@ app.use("/api", router);
 
 const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   const malformedJson = error instanceof SyntaxError && "body" in error;
+  const tooLarge = error.type === 'entity.too.large';
   logger.warn({ errorType: error.name }, "API request failed before routing");
-  res.status(malformedJson ? 400 : 500).json({
-    error: malformedJson
+  res.status(tooLarge ? 413 : malformedJson ? 400 : 500).json({
+    error: tooLarge ? 'Размер запроса превышает допустимое ограничение.' : malformedJson
       ? "Некорректный JSON в запросе."
       : "Не удалось обработать запрос. Попробуйте позже.",
   });

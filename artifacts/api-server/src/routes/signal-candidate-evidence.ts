@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { and, eq, inArray } from "drizzle-orm";
-import { db, signalAssessmentAttemptsTable, signalAssessmentCorrectionsTable, signalCandidateResumesTable } from "@workspace/db";
+import { db, signalAssessmentAttemptsTable, signalAssessmentCorrectionsTable, signalCandidateResumesTable,signalAssessmentHeadsTable,signalAssessmentReviewDecisionsTable } from "@workspace/db";
 import { getSessionUser } from "../lib/signal-auth";
 import { buildCandidateEvidenceCatalog } from "../lib/signal-candidate-evidence";
 
@@ -25,7 +25,8 @@ router.get("/me/evidence/registry", async (req, res): Promise<void> => {
       reason: signalAssessmentCorrectionsTable.reason, createdAt: signalAssessmentCorrectionsTable.createdAt }).from(signalAssessmentCorrectionsTable)
       .innerJoin(signalAssessmentAttemptsTable, eq(signalAssessmentAttemptsTable.id, signalAssessmentCorrectionsTable.attemptId))
       .where(and(inArray(signalAssessmentCorrectionsTable.attemptId, correctionIds), eq(signalAssessmentAttemptsTable.userId, session.user.id))) : [];
-    return buildCandidateEvidenceCatalog(session.user.id, resumes, attempts, corrections);
+    const reviewed=await tx.select({attemptId:signalAssessmentHeadsTable.attemptId,reason:signalAssessmentReviewDecisionsTable.explanation,createdAt:signalAssessmentHeadsTable.updatedAt}).from(signalAssessmentHeadsTable).innerJoin(signalAssessmentReviewDecisionsTable,eq(signalAssessmentReviewDecisionsTable.id,signalAssessmentHeadsTable.decisionId)).where(and(eq(signalAssessmentHeadsTable.userId,session.user.id),eq(signalAssessmentHeadsTable.kind,'legacy'),eq(signalAssessmentHeadsTable.validity,'invalid')));
+    return buildCandidateEvidenceCatalog(session.user.id, resumes, attempts, [...corrections,...reviewed]);
   }, { isolationLevel: "repeatable read", accessMode: "read only" });
   res.json(catalog);
 });

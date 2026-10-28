@@ -15,7 +15,7 @@ export type SelectionContextDto = SelectionContextRef & {
   status: string; updatedAt: string; shortlistCount?: number; applicationCount?: number;
 };
 export function selectionMatchNeed(context: SelectionContextDto): MatchNeed {
-  return { specialization: context.specialization, grade: context.grade,
+  return { requirementsRevision: `${context.version}:${context.requirementsVersion ?? ''}`, specialization: context.specialization, grade: context.grade,
     gradeMode:context.gradeMode??'verified', skillRequirements:interpretSkillRequirements(context.requiredSkills,context.skillRequirements,context.requiredSkillLevels),
     requiredSkills: context.requiredSkills, requiredSkillLevels: retainedSkillLevelRequirements(context.requiredSkillLevels,context.requiredSkills),
     desirableSkills: context.desirableSkills, workFormat: context.workFormat,

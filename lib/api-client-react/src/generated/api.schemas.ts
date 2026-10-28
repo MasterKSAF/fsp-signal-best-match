@@ -1060,6 +1060,14 @@ export const EmployerNeedSalaryType = {
   net: 'net',
 } as const;
 
+export type EmployerNeedStatus = typeof EmployerNeedStatus[keyof typeof EmployerNeedStatus];
+
+
+export const EmployerNeedStatus = {
+  active: 'active',
+  archived: 'archived',
+} as const;
+
 export interface EmployerNeed {
   requirementsVersion?: EmployerNeedRequirementsVersion;
   gradeMode?: RequirementMode;
@@ -1080,6 +1088,9 @@ export interface EmployerNeed {
   salaryPeriod: EmployerNeedSalaryPeriod;
   salaryType: EmployerNeedSalaryType;
   createdAt: string;
+  /** @minimum 1 */
+  revision?: number;
+  status?: EmployerNeedStatus;
 }
 
 export type EmployerNeedInputGrade = typeof EmployerNeedInputGrade[keyof typeof EmployerNeedInputGrade];
@@ -1542,22 +1553,110 @@ export const MatchExplanationScoreScope = {
   shared_need_fit: 'shared_need_fit',
 } as const;
 
-export type MatchExplanationFactorsItemScope = typeof MatchExplanationFactorsItemScope[keyof typeof MatchExplanationFactorsItemScope];
+export type MatchingFactorScope = typeof MatchingFactorScope[keyof typeof MatchingFactorScope];
 
 
-export const MatchExplanationFactorsItemScope = {
+export const MatchingFactorScope = {
   shared_fit: 'shared_fit',
   within_comparable_group: 'within_comparable_group',
 } as const;
 
-export type MatchExplanationFactorsItem = {
+export type MatchingFactorState = typeof MatchingFactorState[keyof typeof MatchingFactorState];
+
+
+export const MatchingFactorState = {
+  known: 'known',
+  unknown: 'unknown',
+  not_applicable: 'not_applicable',
+} as const;
+
+export interface MatchingLedgerVersions {
+  algorithm: string;
+  contextRevision: string | number | null;
+  resumeId: number | null;
+  resumeRevision: number | null;
+  /** @pattern ^[0-9a-f]{64}$ */
+  evidenceFingerprint: string;
+}
+
+/**
+ * Unknown factors have zero weight/contribution; shared known weights normalize to 1. Comparable-group quality and FSP are excluded from common score. evidenceRefs are references, not source answers.
+ */
+export interface MatchingFactor {
+  factorId: string;
   name: string;
-  /** @nullable */
+  reason: string;
   score: number | null;
   weight: number;
-  effectiveWeight?: number;
-  scope?: MatchExplanationFactorsItemScope;
+  scope: MatchingFactorScope;
+  state: MatchingFactorState;
+  normalizedValue: number | null;
+  rawUnit: string;
+  baseWeight: number;
+  effectiveWeight: number;
+  contribution: number;
+  evidenceRefs: string[];
+  versions: MatchingLedgerVersions;
+}
+
+export type MatchingFactorLedgerState = typeof MatchingFactorLedgerState[keyof typeof MatchingFactorLedgerState];
+
+
+export const MatchingFactorLedgerState = {
+  insufficient_data: 'insufficient_data',
+  calculated: 'calculated',
+} as const;
+
+export type MatchingFactorLedgerRoundingPolicy = typeof MatchingFactorLedgerRoundingPolicy[keyof typeof MatchingFactorLedgerRoundingPolicy];
+
+
+export const MatchingFactorLedgerRoundingPolicy = {
+  'sum-exact-then-round-v1': 'sum-exact-then-round-v1',
+} as const;
+
+export type MatchingFactorLedgerRoundingInternalDecimals = typeof MatchingFactorLedgerRoundingInternalDecimals[keyof typeof MatchingFactorLedgerRoundingInternalDecimals];
+
+
+export const MatchingFactorLedgerRoundingInternalDecimals = {
+  NUMBER_10: 10,
+} as const;
+
+export type MatchingFactorLedgerRoundingDisplayDecimals = typeof MatchingFactorLedgerRoundingDisplayDecimals[keyof typeof MatchingFactorLedgerRoundingDisplayDecimals];
+
+
+export const MatchingFactorLedgerRoundingDisplayDecimals = {
+  NUMBER_0: 0,
+} as const;
+
+export type MatchingFactorLedgerRoundingFactorDisplayDecimals = typeof MatchingFactorLedgerRoundingFactorDisplayDecimals[keyof typeof MatchingFactorLedgerRoundingFactorDisplayDecimals];
+
+
+export const MatchingFactorLedgerRoundingFactorDisplayDecimals = {
+  NUMBER_1: 1,
+} as const;
+
+export type MatchingFactorLedgerTieBreakPolicy = typeof MatchingFactorLedgerTieBreakPolicy[keyof typeof MatchingFactorLedgerTieBreakPolicy];
+
+
+export const MatchingFactorLedgerTieBreakPolicy = {
+  'need-fit-proof-category-queues-v3': 'need-fit-proof-category-queues-v3',
+} as const;
+
+export type MatchingFactorLedgerRounding = {
+  policy: MatchingFactorLedgerRoundingPolicy;
+  internalDecimals: MatchingFactorLedgerRoundingInternalDecimals;
+  displayDecimals: MatchingFactorLedgerRoundingDisplayDecimals;
+  factorDisplayDecimals: MatchingFactorLedgerRoundingFactorDisplayDecimals;
 };
+
+export interface MatchingFactorLedger {
+  factors: MatchingFactor[];
+  exactScore: number | null;
+  state: MatchingFactorLedgerState;
+  rounding: MatchingFactorLedgerRounding;
+  tieBreakPolicy: MatchingFactorLedgerTieBreakPolicy;
+  fspIncluded: false;
+}
 
 export interface MatchExplanation {
   candidateId: number;
@@ -1578,7 +1677,7 @@ export interface MatchExplanation {
      */
   rankingScore?: number;
   algorithmVersion: string;
-  factors: MatchExplanationFactorsItem[];
+  factors: MatchingFactor[];
   evidence: MatchEvidence[];
   strengths: string[];
   gaps: string[];
@@ -1596,7 +1695,22 @@ export interface MatchExplanation {
      * @maximum 2147483647
      */
   resumeRevision: number;
+  factorLedger?: MatchingFactorLedger;
 }
+
+/**
+ * @nullable
+ */
+export type InvitationDeclineReason = typeof InvitationDeclineReason[keyof typeof InvitationDeclineReason] | null;
+
+
+export const InvitationDeclineReason = {
+  conditions: 'conditions',
+  format: 'format',
+  direction: 'direction',
+  timing: 'timing',
+  other: 'other',
+} as const;
 
 export type InvitationStatus = typeof InvitationStatus[keyof typeof InvitationStatus];
 
@@ -1611,6 +1725,17 @@ export const InvitationStatus = {
 } as const;
 
 export interface Invitation {
+  /** @minimum 1 */
+  revision?: number;
+  /** @nullable */
+  declineReason?: InvitationDeclineReason;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  declineNote?: string | null;
+  /** @nullable */
+  expiresAt?: string | null;
   id: number;
   /** @nullable */
   needId: number | null;
@@ -1664,6 +1789,9 @@ export const InvitationInputSalaryType = {
   net: 'net',
 } as const;
 
+/**
+ * Employer owner creates for one exact accessible CV. Exactly one of jobId OR needId is required (server XOR refinement); contextVersion required and optional resumeRevision reject stale context/CV. Same idempotency key replays only identical input.
+ */
 export interface InvitationInput {
   /**
      * @minimum 1
@@ -1718,11 +1846,23 @@ export interface InvitationInput {
      */
   resumeId: number;
   /**
-     * @minLength 8
+     * @minLength 1
      * @maxLength 128
+     * @pattern ^[A-Za-z0-9._:-]+$
      */
   idempotencyKey?: string;
 }
+
+export type InvitationDecisionInputReason = typeof InvitationDecisionInputReason[keyof typeof InvitationDecisionInputReason];
+
+
+export const InvitationDecisionInputReason = {
+  conditions: 'conditions',
+  format: 'format',
+  direction: 'direction',
+  timing: 'timing',
+  other: 'other',
+} as const;
 
 export type InvitationDecisionInputDecision = typeof InvitationDecisionInputDecision[keyof typeof InvitationDecisionInputDecision];
 
@@ -1732,7 +1872,15 @@ export const InvitationDecisionInputDecision = {
   decline: 'decline',
 } as const;
 
+/**
+ * Accept or decline. Optional revision is supported for backward compatibility. reason/note apply only to decline; accept with either is rejected. A different decline explanation is not an idempotent replay.
+ */
 export interface InvitationDecisionInput {
+  /** @minimum 1 */
+  revision?: number;
+  reason?: InvitationDecisionInputReason;
+  /** @maxLength 1000 */
+  note?: string;
   decision: InvitationDecisionInputDecision;
 }
 
@@ -1746,8 +1894,183 @@ export type InvitationDecisionResultDisclosedContacts = {
   phone?: string | null;
 } | null;
 
+/**
+ * @nullable
+ */
+export type CandidateInvitationDeclineReason = typeof CandidateInvitationDeclineReason[keyof typeof CandidateInvitationDeclineReason] | null;
+
+
+export const CandidateInvitationDeclineReason = {
+  conditions: 'conditions',
+  format: 'format',
+  direction: 'direction',
+  timing: 'timing',
+  other: 'other',
+} as const;
+
+export type CandidateInvitationContextType = typeof CandidateInvitationContextType[keyof typeof CandidateInvitationContextType];
+
+
+export const CandidateInvitationContextType = {
+  need: 'need',
+  job: 'job',
+} as const;
+
+export type CandidateInvitationContextSnapshotType = typeof CandidateInvitationContextSnapshotType[keyof typeof CandidateInvitationContextSnapshotType];
+
+
+export const CandidateInvitationContextSnapshotType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type CandidateInvitationStatus = typeof CandidateInvitationStatus[keyof typeof CandidateInvitationStatus];
+
+
+export const CandidateInvitationStatus = {
+  sent: 'sent',
+  viewed: 'viewed',
+  accepted: 'accepted',
+  declined: 'declined',
+  withdrawn: 'withdrawn',
+  expired: 'expired',
+} as const;
+
+export type InvitationResumeSnapshotSalaryPeriod = typeof InvitationResumeSnapshotSalaryPeriod[keyof typeof InvitationResumeSnapshotSalaryPeriod];
+
+
+export const InvitationResumeSnapshotSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type InvitationResumeSnapshotSalaryType = typeof InvitationResumeSnapshotSalaryType[keyof typeof InvitationResumeSnapshotSalaryType];
+
+
+export const InvitationResumeSnapshotSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type InvitationResumeSnapshotSummary = typeof InvitationResumeSnapshotSummary[keyof typeof InvitationResumeSnapshotSummary];
+
+
+export const InvitationResumeSnapshotSummary = {
+  '': '',
+} as const;
+
+export interface InvitationResumeSnapshot {
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  revision: number;
+  title: string;
+  specialization: string;
+  verifiedGrade: string | null;
+  verifiedScore: number | null;
+  verifiedSkills: string[];
+  stack: string[];
+  skills: string[];
+  /** @minimum 0 */
+  yearsExperience: number;
+  workFormat: string;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  salaryPeriod: InvitationResumeSnapshotSalaryPeriod;
+  salaryType: InvitationResumeSnapshotSalaryType;
+  updatedAt: string;
+  summary: InvitationResumeSnapshotSummary;
+}
+
+export type CandidateInvitationContext = {
+  type: CandidateInvitationContextType;
+  /** @nullable */
+  id: number | null;
+  /** @nullable */
+  version: number | null;
+  title: string;
+  available: boolean;
+};
+
+export type CandidateInvitationContextSnapshot = {
+  type: CandidateInvitationContextSnapshotType;
+  id: number | null;
+  version: number | null;
+  title: string;
+  invitationConditions: InvitationConditions;
+};
+
+/**
+ * @nullable
+ */
+export type CandidateInvitationCompany = {
+  id?: number;
+  name?: string;
+  description?: string;
+  industry?: string;
+  /** @nullable */
+  contactEmail?: string | null;
+  /** @nullable */
+  contactPhone?: string | null;
+  contactMethod?: string;
+} | null;
+
+/**
+ * Candidate recipient allowlist. Private need routing ID may remain, but title is generic and available=false; no need description or requirements. Historical professional CV snapshot has empty summary and no identity, contacts or answers.
+ */
+export interface CandidateInvitation {
+  /** @minimum 1 */
+  revision: number;
+  /** @nullable */
+  declineReason?: CandidateInvitationDeclineReason;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  declineNote?: string | null;
+  /** @nullable */
+  expiresAt?: string | null;
+  id: number;
+  /** @nullable */
+  needId: number | null;
+  /** @nullable */
+  jobId?: number | null;
+  /** @nullable */
+  contextVersion?: number | null;
+  context: CandidateInvitationContext;
+  contextSnapshot: CandidateInvitationContextSnapshot;
+  /** @nullable */
+  company: CandidateInvitationCompany;
+  candidateId: number;
+  candidateAlias: string;
+  companyName: string;
+  companyContact: string;
+  title: string;
+  message: string;
+  reason: string;
+  salaryMin: number;
+  salaryMax: number;
+  salaryPeriod: string;
+  salaryType: string;
+  workFormat: string;
+  status: CandidateInvitationStatus;
+  contactShared: boolean;
+  createdAt: string;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeId?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  companyId?: number;
+  resumeSnapshot: InvitationResumeSnapshot | null;
+}
+
 export interface InvitationDecisionResult {
-  invitation: Invitation;
+  invitation: CandidateInvitation;
   /** @nullable */
   disclosedContacts?: InvitationDecisionResultDisclosedContacts;
 }
@@ -4459,6 +4782,9 @@ export interface SkillModuleCase {
   /** @minimum 1 */
   templateVersion: number;
   seniorOutcome?: string;
+  contentFamilyId?: string;
+  middleOutcome?: string;
+  levelRequirementId?: string;
 }
 
 export type SkillModuleAttemptLevel = typeof SkillModuleAttemptLevel[keyof typeof SkillModuleAttemptLevel];
@@ -4490,11 +4816,6 @@ export type SkillModuleAttemptPolicy = {
   rubricVersion?: string;
 };
 
-/**
- * @nullable
- */
-export type SkillModuleAttemptDecision = { [key: string]: unknown } | null;
-
 export type SkillModuleAttemptFeedbackItem = {
   competencyId?: string;
   title?: string;
@@ -4509,6 +4830,41 @@ export type SkillModuleAttemptRevocation = {
   reason: string;
   date: string;
 } | null;
+
+export type SkillModuleAttemptProvenanceStatus = typeof SkillModuleAttemptProvenanceStatus[keyof typeof SkillModuleAttemptProvenanceStatus];
+
+
+export const SkillModuleAttemptProvenanceStatus = {
+  complete: 'complete',
+  legacy_snapshot: 'legacy_snapshot',
+} as const;
+
+export type SkillModuleAttemptProvenance = {
+  status: SkillModuleAttemptProvenanceStatus;
+  releaseId: string | null;
+  contentHash: string | null;
+  attestationHash: string | null;
+};
+
+export type SkillReviewDecisionBasisCompetenciesItem = {
+  id: string;
+  passed: boolean;
+  critical: boolean;
+};
+
+export type SkillReviewDecisionBasisLevelCoverageItem = {
+  requirementId: string;
+  passed: boolean;
+};
+
+export interface SkillReviewDecisionBasis {
+  score: number;
+  passed: boolean;
+  criticalComplete: boolean;
+  competencies: SkillReviewDecisionBasisCompetenciesItem[];
+  rubricVersion: string;
+  levelCoverage?: SkillReviewDecisionBasisLevelCoverageItem[];
+}
 
 export interface SkillModuleAttempt {
   id: number;
@@ -4526,11 +4882,11 @@ export interface SkillModuleAttempt {
   expiresAt: string;
   /** @nullable */
   submittedAt?: string | null;
-  /** @nullable */
-  decision?: SkillModuleAttemptDecision;
+  decision?: SkillReviewDecisionBasis | null;
   feedback?: SkillModuleAttemptFeedbackItem[];
   /** @nullable */
   revocation?: SkillModuleAttemptRevocation;
+  provenance?: SkillModuleAttemptProvenance;
 }
 
 export type SkillModuleStartInputLevel = typeof SkillModuleStartInputLevel[keyof typeof SkillModuleStartInputLevel];
@@ -4895,6 +5251,1540 @@ export interface MicrotaskRecipientPage {
   page: number;
   pageSize: number;
   pageCount: number;
+}
+
+export type CompetitiveApiErrorFieldErrors = {[key: string]: string | string[]};
+
+/**
+ * Human-readable error; code is present only when the implementation supplies it. Never infer a missing code.
+ */
+export interface CompetitiveApiError {
+  error: string;
+  code?: string;
+  fieldErrors?: CompetitiveApiErrorFieldErrors;
+}
+
+export type SelectionContextRefType = typeof SelectionContextRefType[keyof typeof SelectionContextRefType];
+
+
+export const SelectionContextRefType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+/**
+ * Exactly one owned job OR private need. IDs are not interchangeable; all reads and commands recheck company ownership and current access.
+ */
+export interface SelectionContextRef {
+  type: SelectionContextRefType;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  id: number;
+}
+
+export interface CompetitiveRevisionInput {
+  /** @minimum 1 */
+  revision: number;
+}
+
+export type RequirementPatchGrade = typeof RequirementPatchGrade[keyof typeof RequirementPatchGrade];
+
+
+export const RequirementPatchGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type RequirementPatchWorkFormat = typeof RequirementPatchWorkFormat[keyof typeof RequirementPatchWorkFormat];
+
+
+export const RequirementPatchWorkFormat = {
+  Удалённо: 'Удалённо',
+  Офис: 'Офис',
+  Гибрид: 'Гибрид',
+} as const;
+
+/**
+ * Only present fields are changed. Canonical catalog skills, unique after normalization. Invalid combinations are rejected.
+ */
+export interface RequirementPatch {
+  grade?: RequirementPatchGrade;
+  gradeMode?: RequirementMode;
+  /**
+     * @minItems 1
+     * @maxItems 20
+     * @items.minLength 1
+     * @items.maxLength 100
+     */
+  requiredSkills?: string[];
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
+  workFormat?: RequirementPatchWorkFormat;
+}
+
+export type RequirementPreviewDiffItemField = typeof RequirementPreviewDiffItemField[keyof typeof RequirementPreviewDiffItemField];
+
+
+export const RequirementPreviewDiffItemField = {
+  grade: 'grade',
+  gradeMode: 'gradeMode',
+  requiredSkills: 'requiredSkills',
+  skillRequirements: 'skillRequirements',
+  workFormat: 'workFormat',
+} as const;
+
+export type RequirementPreviewDiffItem = {
+  field: RequirementPreviewDiffItemField;
+  before: string | string[] | RecruitingSkillRequirement[] | null;
+  after: string | string[] | RecruitingSkillRequirement[] | null;
+};
+
+export type RequirementPreviewVersions = {
+  algorithm: string;
+  requirementsPolicy: string;
+  /** @minimum 1 */
+  contextRevision: number;
+};
+
+/**
+ * 10-minute preview. Counts are bands, including suppression below five; no candidate identities or hidden pool data. Applying rechecks all dependency versions.
+ */
+export interface RequirementPreview {
+  id: string;
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  baseRevision: number;
+  patch: RequirementPatch;
+  /** @pattern ^[0-9a-f]{64}$ */
+  patchHash: string;
+  expiresAt: string;
+  appliedRevision: number | null;
+  currentPool: string;
+  expectedPool: string;
+  smallGroupSuppressed: boolean;
+  emptyResult: boolean;
+  diff: RequirementPreviewDiffItem[];
+  versions: RequirementPreviewVersions;
+}
+
+export type SelectionFeedbackInputReason = typeof SelectionFeedbackInputReason[keyof typeof SelectionFeedbackInputReason];
+
+
+export const SelectionFeedbackInputReason = {
+  proof_required: 'proof_required',
+  level_required: 'level_required',
+  conditions: 'conditions',
+  reviewed: 'reviewed',
+  other: 'other',
+} as const;
+
+export type SelectionFeedbackInputTargetLevel = typeof SelectionFeedbackInputTargetLevel[keyof typeof SelectionFeedbackInputTargetLevel];
+
+
+export const SelectionFeedbackInputTargetLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export interface SelectionFeedbackInput {
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  contextRevision: number;
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  reason: SelectionFeedbackInputReason;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  skill?: string;
+  targetLevel?: SelectionFeedbackInputTargetLevel;
+  /** @maxLength 1500 */
+  note?: string;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+  manualPatch?: RequirementPatch;
+}
+
+export type SelectionWatchState = typeof SelectionWatchState[keyof typeof SelectionWatchState];
+
+
+export const SelectionWatchState = {
+  active: 'active',
+  paused: 'paused',
+} as const;
+
+export interface SelectionWatch {
+  id: string;
+  state: SelectionWatchState;
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  frequencyMinutes: number;
+}
+
+export type SelectionWatchReadEventsItemCandidate = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  title: string;
+  name: string;
+};
+
+export type SelectionWatchReadEventsItem = {
+  id: string;
+  reason: string;
+  candidate: SelectionWatchReadEventsItemCandidate;
+  createdAt: string;
+  deliveredAt: string;
+  href: string;
+};
+
+export interface SelectionWatchRead {
+  watch: SelectionWatch | null;
+  events: SelectionWatchReadEventsItem[];
+}
+
+export interface PdfImportFields {
+  summary: string;
+  skills: string[];
+}
+
+export interface PdfImportFragment {
+  /** @minimum 0 */
+  id: number;
+  /** @minimum 1 */
+  page: number;
+  text: string;
+  bbox: number[];
+}
+
+export type PdfImportDraftState = typeof PdfImportDraftState[keyof typeof PdfImportDraftState];
+
+
+export const PdfImportDraftState = {
+  draft: 'draft',
+  applied: 'applied',
+  cancelled: 'cancelled',
+} as const;
+
+export type PdfImportDraftProvenance = {
+  /** @items.minimum 0 */
+  summary: number[];
+  /** @items.minimum 0 */
+  skills: number[];
+};
+
+export type PdfImportDraftDiffItemField = typeof PdfImportDraftDiffItemField[keyof typeof PdfImportDraftDiffItemField];
+
+
+export const PdfImportDraftDiffItemField = {
+  summary: 'summary',
+  skills: 'skills',
+} as const;
+
+export type PdfImportDraftDiffItem = {
+  field: PdfImportDraftDiffItemField;
+  before: string | string[];
+  after: string | string[];
+};
+
+export interface PdfImportDraft {
+  id: string;
+  state: PdfImportDraftState;
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  resumeId: number;
+  resumeTitle: string;
+  /** @minimum 1 */
+  resumeRevision: number;
+  /** @minimum 1 */
+  currentResumeRevision: number;
+  conflict: boolean;
+  fields: PdfImportFields;
+  provenance: PdfImportDraftProvenance;
+  fragments: PdfImportFragment[];
+  warnings: string[];
+  expiresAt: string;
+  reviewToken: string | null;
+  diff: PdfImportDraftDiffItem[];
+}
+
+export interface OfferPreferences {
+  /**
+     * @maxItems 10
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  formats: string[];
+  /**
+     * @maxItems 10
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  locations: string[];
+  /**
+     * @maxItems 10
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  timeZones: string[];
+  /**
+     * @maxItems 10
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  employment: string[];
+}
+
+export interface OfferPreferencesRead {
+  /** @minimum 1 */
+  resumeId: number;
+  shared: boolean;
+  /** @minimum 0 */
+  revision: number;
+  preferences: OfferPreferences;
+}
+
+export interface OfferConditions {
+  location: string | null;
+  timeZone: string | null;
+  employment: string | null;
+}
+
+export type OfferCompatibilityPredictionReason = typeof OfferCompatibilityPredictionReason[keyof typeof OfferCompatibilityPredictionReason];
+
+
+export const OfferCompatibilityPredictionReason = {
+  no_independent_outcome_validation: 'no_independent_outcome_validation',
+} as const;
+
+export type OfferCompatibilityPrediction = {
+  available: false;
+  reason: OfferCompatibilityPredictionReason;
+};
+
+export type OfferCompatibilityFactorsItemId = typeof OfferCompatibilityFactorsItemId[keyof typeof OfferCompatibilityFactorsItemId];
+
+
+export const OfferCompatibilityFactorsItemId = {
+  format: 'format',
+  location: 'location',
+  time_zone: 'time_zone',
+  employment: 'employment',
+  direction: 'direction',
+  salary: 'salary',
+} as const;
+
+export type OfferCompatibilityFactorsItemState = typeof OfferCompatibilityFactorsItemState[keyof typeof OfferCompatibilityFactorsItemState];
+
+
+export const OfferCompatibilityFactorsItemState = {
+  match: 'match',
+  mismatch: 'mismatch',
+  unknown: 'unknown',
+} as const;
+
+export type OfferCompatibilityFactorsItem = {
+  id: OfferCompatibilityFactorsItemId;
+  label: string;
+  state: OfferCompatibilityFactorsItemState;
+};
+
+/**
+ * Condition factors are separate from professional eligibility and rank. No hiring probability. Salary always unknown; employer cannot query undisclosed personal preferences.
+ */
+export interface OfferCompatibility {
+  version: string;
+  prediction: OfferCompatibilityPrediction;
+  factors: OfferCompatibilityFactorsItem[];
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  /** @minimum 1 */
+  contextRevision: number;
+  professionallyEligible?: boolean;
+}
+
+export type AssessmentAppealKind = typeof AssessmentAppealKind[keyof typeof AssessmentAppealKind];
+
+
+export const AssessmentAppealKind = {
+  skill: 'skill',
+  legacy: 'legacy',
+} as const;
+
+export type AssessmentAppealStatus = typeof AssessmentAppealStatus[keyof typeof AssessmentAppealStatus];
+
+
+export const AssessmentAppealStatus = {
+  open: 'open',
+  in_review: 'in_review',
+  resolved: 'resolved',
+} as const;
+
+export interface AssessmentAppeal {
+  id: string;
+  /** @minimum 1 */
+  userId: number;
+  kind: AssessmentAppealKind;
+  /** @minimum 1 */
+  attemptId: number;
+  reason: string;
+  status: AssessmentAppealStatus;
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  cycle: number;
+  /** @items.pattern ^[0-9a-f]{64}$ */
+  groundsHashes: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CandidateAssessmentSourceKind = typeof CandidateAssessmentSourceKind[keyof typeof CandidateAssessmentSourceKind];
+
+
+export const CandidateAssessmentSourceKind = {
+  skill: 'skill',
+  legacy: 'legacy',
+} as const;
+
+export type CandidateAssessmentSourceAnswers = {[key: string]: string} | {
+  caseId: string;
+  answer: string;
+}[];
+
+export type CandidateAssessmentSourceDecision = SkillReviewDecisionBasis | {
+  score: number | null;
+  verified: boolean;
+};
+
+/**
+ * Only this candidate’s completed attempt. No answer oracle, scoring policy, seed, internal note or expert authority in this projection.
+ */
+export interface CandidateAssessmentSource {
+  kind: CandidateAssessmentSourceKind;
+  /** @minimum 1 */
+  attemptId: number;
+  cases: (SkillModuleCase | AssessmentCase)[];
+  answers: CandidateAssessmentSourceAnswers;
+  decision: CandidateAssessmentSourceDecision;
+  programVersion: string;
+  bankReleaseHash: string | null;
+}
+
+export type SkillAttemptProvenanceStatus = typeof SkillAttemptProvenanceStatus[keyof typeof SkillAttemptProvenanceStatus];
+
+
+export const SkillAttemptProvenanceStatus = {
+  complete: 'complete',
+} as const;
+
+export interface SkillAttemptProvenance {
+  status: SkillAttemptProvenanceStatus;
+  releaseId: string;
+  /** @pattern ^[0-9a-f]{64}$ */
+  contentHash: string;
+  /** @pattern ^[0-9a-f]{64}$ */
+  attestationHash: string;
+  seed: string;
+  /** @pattern ^[0-9a-f]{64}$ */
+  variantHash: string;
+}
+
+export type ExpertAssessmentSourceKind = typeof ExpertAssessmentSourceKind[keyof typeof ExpertAssessmentSourceKind];
+
+
+export const ExpertAssessmentSourceKind = {
+  skill: 'skill',
+  legacy: 'legacy',
+} as const;
+
+export type ExpertAssessmentSourceAnswers = {[key: string]: string} | {
+  caseId: string;
+  answer: string;
+}[];
+
+export type ExpertAssessmentSourceDecision = SkillReviewDecisionBasis | {
+  score: number | null;
+  verified: boolean;
+};
+
+export type ExpertAssessmentSourceOracles = {[key: string]: {
+  expected: string;
+  explanation: string;
+  rubricVersion: string;
+  points: number;
+  parts?: ({
+  expected: string;
+  responseType: 'integer' | 'text';
+})[];
+} | {
+  answer: string;
+  rubric?: string[];
+}};
+
+export type ExpertAssessmentSourcePolicy = {
+  durationMinutes: number;
+  retryHours: number;
+  maxDailyIssues: number;
+  maxModuleDailyIssues: number;
+  threshold: number;
+  rubricVersion: string;
+};
+
+export type ExpertAssessmentSourceLevel = typeof ExpertAssessmentSourceLevel[keyof typeof ExpertAssessmentSourceLevel];
+
+
+export const ExpertAssessmentSourceLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export interface ExpertAssessmentSource {
+  kind: ExpertAssessmentSourceKind;
+  /** @minimum 1 */
+  attemptId: number;
+  cases: (SkillModuleCase | AssessmentCase)[];
+  answers: ExpertAssessmentSourceAnswers;
+  decision: ExpertAssessmentSourceDecision;
+  programVersion: string;
+  bankReleaseHash: string | null;
+  /** @minimum 1 */
+  userId: number;
+  oracles: ExpertAssessmentSourceOracles;
+  policy?: ExpertAssessmentSourcePolicy;
+  provenance: SkillAttemptProvenance | null;
+  skillId: string | null;
+  level: ExpertAssessmentSourceLevel;
+  submittedAt: string | null;
+}
+
+export type CandidateAssessmentReviewAction = typeof CandidateAssessmentReviewAction[keyof typeof CandidateAssessmentReviewAction];
+
+
+export const CandidateAssessmentReviewAction = {
+  confirm: 'confirm',
+  correct: 'correct',
+  invalidate: 'invalidate',
+  new_check: 'new_check',
+} as const;
+
+export interface CandidateAssessmentReview {
+  id: string;
+  action: CandidateAssessmentReviewAction;
+  explanation: string;
+  supersedes: string | null;
+  /** @minimum 1 */
+  previousRevision: number;
+  /** @minimum 1 */
+  revision: number;
+  affectedSkills: string[];
+  createdAt: string;
+}
+
+export interface AssessmentCaseReview {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  caseId: string;
+  passed: boolean;
+  /**
+     * @minLength 12
+     * @maxLength 4000
+     */
+  basis: string;
+}
+
+export type ExpertAssessmentReviewAction = typeof ExpertAssessmentReviewAction[keyof typeof ExpertAssessmentReviewAction];
+
+
+export const ExpertAssessmentReviewAction = {
+  confirm: 'confirm',
+  correct: 'correct',
+  invalidate: 'invalidate',
+  new_check: 'new_check',
+} as const;
+
+export type ExpertAssessmentReviewSourceKind = typeof ExpertAssessmentReviewSourceKind[keyof typeof ExpertAssessmentReviewSourceKind];
+
+
+export const ExpertAssessmentReviewSourceKind = {
+  skill: 'skill',
+  legacy: 'legacy',
+} as const;
+
+export type ExpertAssessmentReviewSource = {
+  kind: ExpertAssessmentReviewSourceKind;
+  /** @minimum 1 */
+  attemptId: number;
+  /** @pattern ^[0-9a-f]{64}$ */
+  sourceHash: string;
+  bankReleaseHash: string | null;
+  programVersion: string;
+  provenance: SkillAttemptProvenance | null;
+  rubric: string | null;
+};
+
+export type ExpertAssessmentReviewProjectionValidity = typeof ExpertAssessmentReviewProjectionValidity[keyof typeof ExpertAssessmentReviewProjectionValidity];
+
+
+export const ExpertAssessmentReviewProjectionValidity = {
+  original: 'original',
+  valid: 'valid',
+  invalid: 'invalid',
+} as const;
+
+export type ExpertAssessmentReviewProjection = {
+  validity: ExpertAssessmentReviewProjectionValidity;
+  decision: SkillReviewDecisionBasis | null;
+  rule: string;
+  restoration: string;
+};
+
+export interface ExpertAssessmentReview {
+  id: string;
+  action: ExpertAssessmentReviewAction;
+  explanation: string;
+  supersedes: string | null;
+  /** @minimum 1 */
+  previousRevision: number;
+  /** @minimum 1 */
+  revision: number;
+  affectedSkills: string[];
+  createdAt: string;
+  appealId: string;
+  /** @minimum 1 */
+  actorId: number;
+  authorityId: string;
+  authority: string;
+  commandKey: string;
+  /** @pattern ^[0-9a-f]{64}$ */
+  payloadHash: string;
+  internalNote: string;
+  source: ExpertAssessmentReviewSource;
+  caseReviews: AssessmentCaseReview[];
+  projection: ExpertAssessmentReviewProjection;
+}
+
+export type AdaptiveSessionLevel = typeof AdaptiveSessionLevel[keyof typeof AdaptiveSessionLevel];
+
+
+export const AdaptiveSessionLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type AdaptiveSessionState = typeof AdaptiveSessionState[keyof typeof AdaptiveSessionState];
+
+
+export const AdaptiveSessionState = {
+  active: 'active',
+  finished: 'finished',
+  refined: 'refined',
+} as const;
+
+export type AdaptiveSessionCoverageItem = {
+  competencyId: string;
+  /** @minimum 0 */
+  observations: number;
+  /** @minimum 0 */
+  successes: number;
+  mastery: number | null;
+};
+
+export type AdaptiveSessionQuestionResponseType = typeof AdaptiveSessionQuestionResponseType[keyof typeof AdaptiveSessionQuestionResponseType];
+
+
+export const AdaptiveSessionQuestionResponseType = {
+  integer: 'integer',
+  text: 'text',
+  choice: 'choice',
+} as const;
+
+export type AdaptiveSessionQuestionOptionsItem = {
+  id: string;
+  text: string;
+};
+
+export type AdaptiveSessionQuestion = {
+  id: string;
+  competencyId: string;
+  title: string;
+  prompt: string;
+  responseType: AdaptiveSessionQuestionResponseType;
+  options?: AdaptiveSessionQuestionOptionsItem[];
+} | null;
+
+export type AdaptiveSessionSavedAnswersItem = {
+  itemId: string;
+  answer: string;
+  receivedAt: string;
+  skipped: boolean;
+};
+
+export interface AdaptiveSession {
+  id: string;
+  procedure: string;
+  experimental: true;
+  qualificationGranted: false;
+  skillId: string;
+  level: AdaptiveSessionLevel;
+  /** @minimum 1 */
+  revision: number;
+  state: AdaptiveSessionState;
+  outcome: string;
+  deadline: string;
+  parentId: string | null;
+  coverage: AdaptiveSessionCoverageItem[];
+  /** @minimum 0 */
+  answerCount: number;
+  analysisPending: boolean;
+  question: AdaptiveSessionQuestion;
+  savedAnswers: AdaptiveSessionSavedAnswersItem[];
+}
+
+export type CodePracticeTask = {
+  title: string;
+  language: string;
+  description: string;
+  sampleInput: (number | string)[];
+  sampleOutput: (number | string)[];
+  durationMinutes: number;
+};
+
+export type CodePracticeState = typeof CodePracticeState[keyof typeof CodePracticeState];
+
+
+export const CodePracticeState = {
+  draft: 'draft',
+  queued: 'queued',
+  running: 'running',
+  finished: 'finished',
+  cancelled: 'cancelled',
+} as const;
+
+export type CodePracticeHistoryItem = {
+  /** @minimum 0 */
+  fence: number;
+  status: string;
+  reason: string | null;
+  imageDigest: string | null;
+  runtimeVersion: string;
+  testVersion: string;
+  /** @minimum 0 */
+  passed: number;
+  /** @minimum 0 */
+  total: number;
+  finishedAt: string;
+};
+
+export interface CodePractice {
+  id: string;
+  task: CodePracticeTask;
+  taskVersion: string;
+  /** @minimum 1 */
+  revision: number;
+  state: CodePracticeState;
+  status: string | null;
+  deadline: string;
+  submittedAt: string | null;
+  source: string | null;
+  sourceHash: string | null;
+  history: CodePracticeHistoryItem[];
+  experimental: true;
+  qualificationGranted: false;
+}
+
+export type SharedSelectionCommentReaction = typeof SharedSelectionCommentReaction[keyof typeof SharedSelectionCommentReaction];
+
+
+export const SharedSelectionCommentReaction = {
+  consider: 'consider',
+  discuss: 'discuss',
+  pass: 'pass',
+} as const;
+
+export interface SharedSelectionComment {
+  id: string;
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  author: string;
+  reaction: SharedSelectionCommentReaction;
+  note: string;
+  /** @minimum 1 */
+  revision: number;
+  createdAt: string;
+}
+
+export type GuestSelectionCandidateVerifiedGrade = typeof GuestSelectionCandidateVerifiedGrade[keyof typeof GuestSelectionCandidateVerifiedGrade] | null;
+
+
+export const GuestSelectionCandidateVerifiedGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type GuestSelectionCandidateConfirmedSkillsItemLevel = typeof GuestSelectionCandidateConfirmedSkillsItemLevel[keyof typeof GuestSelectionCandidateConfirmedSkillsItemLevel] | null;
+
+
+export const GuestSelectionCandidateConfirmedSkillsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type GuestSelectionCandidateConfirmedSkillsItem = {
+  skill: string;
+  level: GuestSelectionCandidateConfirmedSkillsItemLevel;
+};
+
+/**
+ * Pseudonymous guest allowlist. No identity, photo, contact, exam answers, achievement history or private need content.
+ */
+export interface GuestSelectionCandidate {
+  label: string;
+  specialization: string;
+  verifiedGrade: GuestSelectionCandidateVerifiedGrade;
+  yearsExperience: number;
+  workFormat: string;
+  statedSkills: string[];
+  confirmedSkills: GuestSelectionCandidateConfirmedSkillsItem[];
+}
+
+export type EmployeeSharedCandidateSelectedResumeExperienceSource = typeof EmployeeSharedCandidateSelectedResumeExperienceSource[keyof typeof EmployeeSharedCandidateSelectedResumeExperienceSource];
+
+
+export const EmployeeSharedCandidateSelectedResumeExperienceSource = {
+  self_reported: 'self_reported',
+} as const;
+
+export type EmployeeSharedCandidateSelectedResumeSalaryPeriod = typeof EmployeeSharedCandidateSelectedResumeSalaryPeriod[keyof typeof EmployeeSharedCandidateSelectedResumeSalaryPeriod];
+
+
+export const EmployeeSharedCandidateSelectedResumeSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type EmployeeSharedCandidateSelectedResumeSalaryType = typeof EmployeeSharedCandidateSelectedResumeSalaryType[keyof typeof EmployeeSharedCandidateSelectedResumeSalaryType];
+
+
+export const EmployeeSharedCandidateSelectedResumeSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type EmployeeSharedCandidateSelectedResumeConfirmationStatus = typeof EmployeeSharedCandidateSelectedResumeConfirmationStatus[keyof typeof EmployeeSharedCandidateSelectedResumeConfirmationStatus];
+
+
+export const EmployeeSharedCandidateSelectedResumeConfirmationStatus = {
+  confirmed: 'confirmed',
+  unconfirmed: 'unconfirmed',
+} as const;
+
+export type EmployeeSharedCandidateSelectedResumeQualificationNextStepAction = typeof EmployeeSharedCandidateSelectedResumeQualificationNextStepAction[keyof typeof EmployeeSharedCandidateSelectedResumeQualificationNextStepAction];
+
+
+export const EmployeeSharedCandidateSelectedResumeQualificationNextStepAction = {
+  take_signal_qualification: 'take_signal_qualification',
+} as const;
+
+export type EmployeeSharedCandidateSelectedResumeQualificationNextStep = {
+  action: EmployeeSharedCandidateSelectedResumeQualificationNextStepAction;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeId: number;
+  specialization: string;
+} | null;
+
+export type EmployeeSharedCandidateSelectedResume = {
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeId: number;
+  /**
+     * @minimum 1
+     * @maximum 2147483647
+     */
+  resumeRevision: number;
+  title: string;
+  specialization: string;
+  verifiedGrade: string | null;
+  verifiedScore?: number | null;
+  verifiedSkills: string[];
+  stack?: string[];
+  yearsExperience?: number;
+  experienceSource?: EmployeeSharedCandidateSelectedResumeExperienceSource;
+  workFormat?: string;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  salaryPeriod?: EmployeeSharedCandidateSelectedResumeSalaryPeriod;
+  salaryType?: EmployeeSharedCandidateSelectedResumeSalaryType;
+  readyForOffers?: boolean;
+  confirmationStatus: EmployeeSharedCandidateSelectedResumeConfirmationStatus;
+  qualificationNextStep: EmployeeSharedCandidateSelectedResumeQualificationNextStep;
+  fspSignal: FspRankingSignal;
+  evidenceDate?: string | null;
+  categoryEvidence?: SkillCategoryCertificate | null;
+};
+
+export type EmployeeSharedCandidateSkillEvidenceItemLevel = typeof EmployeeSharedCandidateSkillEvidenceItemLevel[keyof typeof EmployeeSharedCandidateSkillEvidenceItemLevel] | null;
+
+
+export const EmployeeSharedCandidateSkillEvidenceItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployeeSharedCandidateSkillEvidenceItem = {
+  skill: string;
+  level: EmployeeSharedCandidateSkillEvidenceItemLevel;
+  sourceType: string | null;
+};
+
+export interface EmployeeSharedCandidate {
+  /** @minimum 1 */
+  candidateId: number;
+  alias: string;
+  publicName: string | null;
+  avatarDataUrl: string | null;
+  selectedResume: EmployeeSharedCandidateSelectedResume;
+  statedSkills: string[];
+  skillEvidence: EmployeeSharedCandidateSkillEvidenceItem[];
+}
+
+export type PublicPassportClaimLevel = typeof PublicPassportClaimLevel[keyof typeof PublicPassportClaimLevel];
+
+
+export const PublicPassportClaimLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type PublicPassportClaimSourceType = typeof PublicPassportClaimSourceType[keyof typeof PublicPassportClaimSourceType];
+
+
+export const PublicPassportClaimSourceType = {
+  signal_skill_assessment: 'signal_skill_assessment',
+} as const;
+
+export type PublicPassportClaimSource = {
+  type: PublicPassportClaimSourceType;
+  /** @minimum 1 */
+  attemptId: number;
+  /** @minimum 1 */
+  evidenceId: number;
+  bankReleaseHash: string | null;
+  /** @minimum 0 */
+  reviewRevision: number;
+};
+
+export interface PublicPassportClaim {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  skillId: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  label: string;
+  level: PublicPassportClaimLevel;
+  /** @maxLength 120 */
+  programVersion: string;
+  verifiedAt: string;
+  source: PublicPassportClaimSource;
+}
+
+export type SignedPassportBodySchema = typeof SignedPassportBodySchema[keyof typeof SignedPassportBodySchema];
+
+
+export const SignedPassportBodySchema = {
+  'signal-voluntary-passport-v1': 'signal-voluntary-passport-v1',
+} as const;
+
+export type SignedPassportBodyAlgorithm = typeof SignedPassportBodyAlgorithm[keyof typeof SignedPassportBodyAlgorithm];
+
+
+export const SignedPassportBodyAlgorithm = {
+  Ed25519: 'Ed25519',
+} as const;
+
+/**
+ * Random subject UUID, selected effective account skill claims only. Detached Ed25519 signature covers canonical JSON of this body. No resume/contact/name/answer fields.
+ */
+export interface SignedPassportBody {
+  schema: SignedPassportBodySchema;
+  algorithm: SignedPassportBodyAlgorithm;
+  issuer: string;
+  /**
+     * @minLength 3
+     * @maxLength 100
+     */
+  kid: string;
+  id: string;
+  subject: string;
+  issuedAt: string;
+  expiresAt: string;
+  /**
+     * @minItems 1
+     * @maxItems 12
+     */
+  claims: PublicPassportClaim[];
+}
+
+export interface SignedPassportDocument {
+  body: SignedPassportBody;
+  /** @pattern ^[A-Za-z0-9_-]{86}$ */
+  signature: string;
+}
+
+/**
+ * HTTP 200 reports current verification status. Signed claims returned only for active, valid, current evidence. Offline integrity alone does not prove current validity.
+ */
+export type PublicPassportVerification = {
+  id: string;
+  status: 'active';
+  integrity: 'verified';
+  currentStatusCheckedAt: string;
+  document: SignedPassportDocument;
+} | {
+  id: string;
+  status: 'not_found' | 'revoked' | 'replaced' | 'invalid_schema' | 'untrusted_issuer_or_key' | 'compromised_key' | 'invalid_signature' | 'invalid_dates' | 'expired' | 'document_mismatch' | 'evidence_changed';
+  replacementId?: string | null;
+};
+
+export type AtsEndpointActive = typeof AtsEndpointActive[keyof typeof AtsEndpointActive];
+
+
+export const AtsEndpointActive = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+} as const;
+
+export interface AtsEndpoint {
+  id: string;
+  url: string;
+  /** @minimum 1 */
+  revision: number;
+  active: AtsEndpointActive;
+}
+
+export type AtsDeliveryState = typeof AtsDeliveryState[keyof typeof AtsDeliveryState];
+
+
+export const AtsDeliveryState = {
+  queued: 'queued',
+  running: 'running',
+  delivered: 'delivered',
+  suppressed: 'suppressed',
+  dead: 'dead',
+} as const;
+
+export interface AtsDelivery {
+  id: string;
+  eventId: string;
+  state: AtsDeliveryState;
+  /** @minimum 0 */
+  attempts: number;
+  lastCode: string | null;
+  nextAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Outbound wire allowlist, canonical JSON. X-Signal-Id = event UUID; X-Signal-Timestamp = Unix seconds; X-Signal-Signature = lowercase hex HMAC-SHA256(secret, timestamp + "." + eventId + "." + raw body). Receiver helper enforces ±300 seconds and byte-identical UUID replay. No names, CVs, contacts, notes, exam answers or need descriptions. There is no public inbound webhook route in this app.
+ */
+export type AtsWebhookEvent = {
+  schema: 'signal-ats-event-v1';
+  id: string;
+  /** @minimum 1 */
+  tenant: number;
+  entity: {
+  type: 'application' | 'invitation' | 'cv';
+  /** @minimum 1 */
+  id: number;
+  /**
+     * Monotonic decimal sequence string; do not parse as JS floating point.
+     * @pattern ^[1-9]\d{0,25}$
+     */
+  version: string;
+};
+  occurredAt: string;
+  type: 'application.status_changed' | 'invitation.status_changed';
+  data: {
+  /**
+     * @minLength 1
+     * @maxLength 40
+     */
+  status: string;
+  contextType: 'job' | 'need';
+  /** @minimum 1 */
+  contextId: number;
+  /** @minimum 1 */
+  resumeId: number;
+};
+} | {
+  schema: 'signal-ats-event-v1';
+  id: string;
+  /** @minimum 1 */
+  tenant: number;
+  entity: {
+  type: 'application' | 'invitation' | 'cv';
+  /** @minimum 1 */
+  id: number;
+  /**
+     * Monotonic decimal sequence string; do not parse as JS floating point.
+     * @pattern ^[1-9]\d{0,25}$
+     */
+  version: string;
+};
+  occurredAt: string;
+  type: 'cv.access_revoked';
+  data: {
+  /** @minimum 1 */
+  resumeId: number;
+};
+};
+
+export type InvitationBudgetWindowHours = typeof InvitationBudgetWindowHours[keyof typeof InvitationBudgetWindowHours];
+
+
+export const InvitationBudgetWindowHours = {
+  NUMBER_24: 24,
+} as const;
+
+export interface InvitationBudget {
+  /** @minimum 0 */
+  limit: number;
+  /** @minimum 0 */
+  spent: number;
+  /** @minimum 0 */
+  remaining: number;
+  windowHours: InvitationBudgetWindowHours;
+  refundable: false;
+  configured: boolean;
+}
+
+export type EmployerSelectionContextType = typeof EmployerSelectionContextType[keyof typeof EmployerSelectionContextType];
+
+
+export const EmployerSelectionContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type EmployerSelectionContextGrade = typeof EmployerSelectionContextGrade[keyof typeof EmployerSelectionContextGrade];
+
+
+export const EmployerSelectionContextGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionContextRequiredSkillLevels = {[key: string]: 'Junior' | 'Middle' | 'Senior'};
+
+export type EmployerSelectionContextSalaryPeriod = typeof EmployerSelectionContextSalaryPeriod[keyof typeof EmployerSelectionContextSalaryPeriod];
+
+
+export const EmployerSelectionContextSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type EmployerSelectionContextSalaryType = typeof EmployerSelectionContextSalaryType[keyof typeof EmployerSelectionContextSalaryType];
+
+
+export const EmployerSelectionContextSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export interface EmployerSelectionContext {
+  type: EmployerSelectionContextType;
+  /** @minimum 1 */
+  id: number;
+  /** @minimum 1 */
+  version: number;
+  title: string;
+  specialization: string;
+  grade: EmployerSelectionContextGrade;
+  gradeMode?: RequirementMode;
+  skillRequirements?: RecruitingSkillRequirement[];
+  requirementsVersion?: string;
+  requiredSkills: string[];
+  requiredSkillLevels: EmployerSelectionContextRequiredSkillLevels;
+  desirableSkills: string[];
+  description: string;
+  workFormat: string;
+  salaryMin: number;
+  salaryMax: number;
+  salaryPeriod: EmployerSelectionContextSalaryPeriod;
+  salaryType: EmployerSelectionContextSalaryType;
+  status: string;
+  updatedAt: string;
+  /** @minimum 0 */
+  shortlistCount?: number;
+  /** @minimum 0 */
+  applicationCount?: number;
+  readOnly?: boolean;
+}
+
+export interface SelectionMatchSummary {
+  eligible: boolean;
+  score: number | null;
+  ineligibilityReasons: string[];
+  gaps: string[];
+  evidence: MatchEvidence[];
+  summary: string;
+  salaryNote: string | null;
+}
+
+export type EmployerSelectionCandidateVerifiedGrade = typeof EmployerSelectionCandidateVerifiedGrade[keyof typeof EmployerSelectionCandidateVerifiedGrade] | null;
+
+
+export const EmployerSelectionCandidateVerifiedGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionCandidateDeclaredGrade = typeof EmployerSelectionCandidateDeclaredGrade[keyof typeof EmployerSelectionCandidateDeclaredGrade] | null;
+
+
+export const EmployerSelectionCandidateDeclaredGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionCandidateSkillChipsItemStatus = typeof EmployerSelectionCandidateSkillChipsItemStatus[keyof typeof EmployerSelectionCandidateSkillChipsItemStatus];
+
+
+export const EmployerSelectionCandidateSkillChipsItemStatus = {
+  verified: 'verified',
+  declared: 'declared',
+} as const;
+
+export type EmployerSelectionCandidateSkillChipsItemLevel = typeof EmployerSelectionCandidateSkillChipsItemLevel[keyof typeof EmployerSelectionCandidateSkillChipsItemLevel];
+
+
+export const EmployerSelectionCandidateSkillChipsItemLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionCandidateSkillChipsItem = {
+  label: string;
+  status: EmployerSelectionCandidateSkillChipsItemStatus;
+  level?: EmployerSelectionCandidateSkillChipsItemLevel;
+};
+
+export type EmployerSelectionCandidateSalaryPeriod = typeof EmployerSelectionCandidateSalaryPeriod[keyof typeof EmployerSelectionCandidateSalaryPeriod] | null;
+
+
+export const EmployerSelectionCandidateSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type EmployerSelectionCandidateSalaryType = typeof EmployerSelectionCandidateSalaryType[keyof typeof EmployerSelectionCandidateSalaryType] | null;
+
+
+export const EmployerSelectionCandidateSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type EmployerSelectionCandidateAvailableResumesItemGrade = typeof EmployerSelectionCandidateAvailableResumesItemGrade[keyof typeof EmployerSelectionCandidateAvailableResumesItemGrade] | null;
+
+
+export const EmployerSelectionCandidateAvailableResumesItemGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionCandidateAvailableResumesItem = {
+  /** @minimum 1 */
+  id: number;
+  title: string;
+  specialization: string;
+  grade: EmployerSelectionCandidateAvailableResumesItemGrade;
+};
+
+export interface EmployerSelectionCandidate {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  title: string;
+  specialization: string;
+  alias: string;
+  publicName: string | null;
+  avatarDataUrl: string | null;
+  verifiedGrade: EmployerSelectionCandidateVerifiedGrade;
+  declaredGrade: EmployerSelectionCandidateDeclaredGrade;
+  skillChips: EmployerSelectionCandidateSkillChipsItem[];
+  stack: string[];
+  yearsExperience: number;
+  workFormat: string;
+  location: string;
+  salaryMin: number | null;
+  salaryMax: number | null;
+  salaryPeriod: EmployerSelectionCandidateSalaryPeriod;
+  salaryType: EmployerSelectionCandidateSalaryType;
+  fspHistory: boolean;
+  shortlisted: boolean;
+  needsReview: boolean;
+  availableResumes: EmployerSelectionCandidateAvailableResumesItem[];
+  match?: SelectionMatchSummary;
+  savedResumeId?: number | null;
+}
+
+export type EmployerSelectionFiltersContextType = typeof EmployerSelectionFiltersContextType[keyof typeof EmployerSelectionFiltersContextType];
+
+
+export const EmployerSelectionFiltersContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type EmployerSelectionFiltersMode = typeof EmployerSelectionFiltersMode[keyof typeof EmployerSelectionFiltersMode];
+
+
+export const EmployerSelectionFiltersMode = {
+  catalog: 'catalog',
+} as const;
+
+export type EmployerSelectionFiltersView = typeof EmployerSelectionFiltersView[keyof typeof EmployerSelectionFiltersView];
+
+
+export const EmployerSelectionFiltersView = {
+  all: 'all',
+  shortlisted: 'shortlisted',
+} as const;
+
+export type EmployerSelectionFiltersGrade = typeof EmployerSelectionFiltersGrade[keyof typeof EmployerSelectionFiltersGrade];
+
+
+export const EmployerSelectionFiltersGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+  unconfirmed: 'unconfirmed',
+} as const;
+
+export type EmployerSelectionFiltersVerifiedSkillsMode = typeof EmployerSelectionFiltersVerifiedSkillsMode[keyof typeof EmployerSelectionFiltersVerifiedSkillsMode];
+
+
+export const EmployerSelectionFiltersVerifiedSkillsMode = {
+  all: 'all',
+  any: 'any',
+} as const;
+
+export type EmployerSelectionFiltersVerifiedSkillLevel = typeof EmployerSelectionFiltersVerifiedSkillLevel[keyof typeof EmployerSelectionFiltersVerifiedSkillLevel];
+
+
+export const EmployerSelectionFiltersVerifiedSkillLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type EmployerSelectionFiltersDeclaredSkillsMode = typeof EmployerSelectionFiltersDeclaredSkillsMode[keyof typeof EmployerSelectionFiltersDeclaredSkillsMode];
+
+
+export const EmployerSelectionFiltersDeclaredSkillsMode = {
+  all: 'all',
+  any: 'any',
+} as const;
+
+export type EmployerSelectionFiltersSalaryPeriod = typeof EmployerSelectionFiltersSalaryPeriod[keyof typeof EmployerSelectionFiltersSalaryPeriod];
+
+
+export const EmployerSelectionFiltersSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type EmployerSelectionFiltersSalaryType = typeof EmployerSelectionFiltersSalaryType[keyof typeof EmployerSelectionFiltersSalaryType];
+
+
+export const EmployerSelectionFiltersSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type EmployerSelectionFiltersFsp = typeof EmployerSelectionFiltersFsp[keyof typeof EmployerSelectionFiltersFsp];
+
+
+export const EmployerSelectionFiltersFsp = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type EmployerSelectionFiltersHasPhoto = typeof EmployerSelectionFiltersHasPhoto[keyof typeof EmployerSelectionFiltersHasPhoto];
+
+
+export const EmployerSelectionFiltersHasPhoto = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type EmployerSelectionFiltersReadyForOffers = typeof EmployerSelectionFiltersReadyForOffers[keyof typeof EmployerSelectionFiltersReadyForOffers];
+
+
+export const EmployerSelectionFiltersReadyForOffers = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type EmployerSelectionFiltersSort = typeof EmployerSelectionFiltersSort[keyof typeof EmployerSelectionFiltersSort];
+
+
+export const EmployerSelectionFiltersSort = {
+  recommended: 'recommended',
+  grade: 'grade',
+  experience: 'experience',
+  salary: 'salary',
+  updated: 'updated',
+  name: 'name',
+} as const;
+
+export type EmployerSelectionFiltersDirection = typeof EmployerSelectionFiltersDirection[keyof typeof EmployerSelectionFiltersDirection];
+
+
+export const EmployerSelectionFiltersDirection = {
+  asc: 'asc',
+  desc: 'desc',
+} as const;
+
+export interface EmployerSelectionFilters {
+  contextType?: EmployerSelectionFiltersContextType;
+  /** @minimum 1 */
+  contextId?: number;
+  mode?: EmployerSelectionFiltersMode;
+  view: EmployerSelectionFiltersView;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  q?: string;
+  /**
+     * @minLength 1
+     * @maxLength 160
+     */
+  specialization?: string;
+  grade?: EmployerSelectionFiltersGrade;
+  /** @maxLength 1600 */
+  verifiedSkills?: string;
+  verifiedSkillsMode: EmployerSelectionFiltersVerifiedSkillsMode;
+  verifiedSkillLevel?: EmployerSelectionFiltersVerifiedSkillLevel;
+  /** @maxLength 1600 */
+  declaredSkills?: string;
+  declaredSkillsMode: EmployerSelectionFiltersDeclaredSkillsMode;
+  /**
+     * @minimum 0
+     * @maximum 80
+     */
+  experienceMin?: number;
+  /**
+     * @minimum 0
+     * @maximum 80
+     */
+  experienceMax?: number;
+  /** @maxLength 80 */
+  workFormat?: string;
+  /** @maxLength 160 */
+  location?: string;
+  /**
+     * @minimum 0
+     * @maximum 1000000000
+     */
+  salaryMin?: number;
+  /**
+     * @minimum 0
+     * @maximum 1000000000
+     */
+  salaryMax?: number;
+  salaryPeriod?: EmployerSelectionFiltersSalaryPeriod;
+  salaryType?: EmployerSelectionFiltersSalaryType;
+  fsp?: EmployerSelectionFiltersFsp;
+  hasPhoto?: EmployerSelectionFiltersHasPhoto;
+  readyForOffers?: EmployerSelectionFiltersReadyForOffers;
+  /**
+     * @minimum 0
+     * @maximum 3650
+     */
+  checkedWithinDays?: number;
+  /**
+     * @minimum 1
+     * @maximum 1000000
+     */
+  page: number;
+  /**
+     * @minimum 1
+     * @maximum 50
+     */
+  pageSize: number;
+  sort: EmployerSelectionFiltersSort;
+  direction: EmployerSelectionFiltersDirection;
+}
+
+export type EmployerShortlistItemMatch = {
+  eligible: boolean;
+  score: number;
+  ineligibilityReasons: string[];
+  gaps: string[];
+  evidence: MatchEvidence[];
+} | null;
+
+export interface EmployerShortlistItem {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  contextVersion: number;
+  available: boolean;
+  needsReview: boolean;
+  candidate: EmployeeSharedCandidate | null;
+  match?: EmployerShortlistItemMatch;
 }
 
 /**
@@ -5655,6 +7545,18 @@ pageSize?: number;
 sort?: string;
 };
 
+export type SearchCandidateInvitations200 = {
+  items: CandidateInvitation[];
+  /** @minimum 0 */
+  total: number;
+  /** @minimum 1 */
+  page: number;
+  /** @minimum 1 */
+  pageSize: number;
+  /** @minimum 0 */
+  pageCount: number;
+};
+
 export type SearchCandidateApplicationsParams = {
 q?: string;
 status?: string;
@@ -5822,5 +7724,1822 @@ export const ListCompanyMicrotaskRecipientsFilter = {
 
 export type GetMyComplaint200 = {
   complaint: TrustComplaint;
+};
+
+export type PreviewRequirementsBody = {
+  context: SelectionContextRef;
+  patch: RequirementPatch;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+};
+
+export type ApplyRequirementPreviewBody = {
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+};
+
+export type ApplyRequirementPreview200 = {
+  /** @minimum 1 */
+  appliedRevision: number;
+  /** @minimum 1 */
+  parentRevision: number;
+  replayed: boolean;
+};
+
+export type ApplyRequirementPreview409 = {
+  code: string;
+  error: string;
+  preview?: RequirementPreview;
+};
+
+export type ProposeSelectionRefinement200Reason = typeof ProposeSelectionRefinement200Reason[keyof typeof ProposeSelectionRefinement200Reason];
+
+
+export const ProposeSelectionRefinement200Reason = {
+  proof_required: 'proof_required',
+  level_required: 'level_required',
+  conditions: 'conditions',
+  reviewed: 'reviewed',
+  other: 'other',
+} as const;
+
+export type ProposeSelectionRefinement200ProposedExclusionsItem = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+};
+
+export type ProposeSelectionRefinement200 = {
+  id: string;
+  /** @minimum 1 */
+  parentRevision: number;
+  sourceFeedbackIds: string[];
+  reason: ProposeSelectionRefinement200Reason;
+  proposedExclusions: ProposeSelectionRefinement200ProposedExclusionsItem[];
+  preview: RequirementPreview;
+};
+
+export type ReadRequirementHistoryBody = {
+  context: SelectionContextRef;
+};
+
+export type ReadRequirementHistory200RevisionsItemBeforeGrade = typeof ReadRequirementHistory200RevisionsItemBeforeGrade[keyof typeof ReadRequirementHistory200RevisionsItemBeforeGrade];
+
+
+export const ReadRequirementHistory200RevisionsItemBeforeGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type ReadRequirementHistory200RevisionsItemBefore = {
+  grade: ReadRequirementHistory200RevisionsItemBeforeGrade;
+  gradeMode?: RequirementMode;
+  requiredSkills: string[];
+  skillRequirements?: RecruitingSkillRequirement[];
+  workFormat: string;
+};
+
+export type ReadRequirementHistory200RevisionsItemAfterGrade = typeof ReadRequirementHistory200RevisionsItemAfterGrade[keyof typeof ReadRequirementHistory200RevisionsItemAfterGrade];
+
+
+export const ReadRequirementHistory200RevisionsItemAfterGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type ReadRequirementHistory200RevisionsItemAfter = {
+  grade: ReadRequirementHistory200RevisionsItemAfterGrade;
+  gradeMode?: RequirementMode;
+  requiredSkills: string[];
+  skillRequirements?: RecruitingSkillRequirement[];
+  workFormat: string;
+};
+
+export type ReadRequirementHistory200RevisionsItem = {
+  id: string;
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  parentRevision: number;
+  before: ReadRequirementHistory200RevisionsItemBefore;
+  after: ReadRequirementHistory200RevisionsItemAfter;
+  createdAt: string;
+};
+
+export type ReadRequirementHistory200 = {
+  revisions: ReadRequirementHistory200RevisionsItem[];
+};
+
+export type PreviewRequirementRestoreBody = {
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+};
+
+export type ReadSelectionExclusionsBody = {
+  context: SelectionContextRef;
+};
+
+export type ReadSelectionExclusions200ExclusionsItem = {
+  id: string;
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  contextRevision: number;
+  createdAt: string;
+};
+
+export type ReadSelectionExclusions200 = {
+  exclusions: ReadSelectionExclusions200ExclusionsItem[];
+};
+
+export type UndoSelectionExclusionBody = {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+};
+
+export type UndoSelectionExclusion200 = {
+  /** @minimum 1 */
+  revision: number;
+  active: false;
+};
+
+export type ReadSelectionWatchBody = {
+  context: SelectionContextRef;
+};
+
+export type ConfigureSelectionWatchBodyFrequencyMinutes = typeof ConfigureSelectionWatchBodyFrequencyMinutes[keyof typeof ConfigureSelectionWatchBodyFrequencyMinutes];
+
+
+export const ConfigureSelectionWatchBodyFrequencyMinutes = {
+  NUMBER_15: 15,
+  NUMBER_60: 60,
+  NUMBER_1440: 1440,
+} as const;
+
+export type ConfigureSelectionWatchBody = {
+  context: SelectionContextRef;
+  enabled: boolean;
+  /** @minimum 1 */
+  revision?: number;
+  frequencyMinutes: ConfigureSelectionWatchBodyFrequencyMinutes;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  commandKey: string;
+};
+
+export type ConfigureSelectionWatch200State = typeof ConfigureSelectionWatch200State[keyof typeof ConfigureSelectionWatch200State];
+
+
+export const ConfigureSelectionWatch200State = {
+  active: 'active',
+  paused: 'paused',
+} as const;
+
+export type ConfigureSelectionWatch200 = {
+  id: string;
+  /** @minimum 1 */
+  revision: number;
+  state: ConfigureSelectionWatch200State;
+  /** @minimum 1 */
+  frequencyMinutes: number;
+  /** @minimum 1 */
+  contextRevision: number;
+};
+
+export type UploadResumePdfBody = {
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * Standard base64 of PDF bytes (not data URL), maximum decoded size 5,242,880 bytes.
+     * @maxLength 6990508
+     */
+  data: string;
+};
+
+export type UploadResumePdf201State = typeof UploadResumePdf201State[keyof typeof UploadResumePdf201State];
+
+
+export const UploadResumePdf201State = {
+  draft: 'draft',
+} as const;
+
+export type UploadResumePdf201 = {
+  id: string;
+  state: UploadResumePdf201State;
+  requiresReview: true;
+};
+
+export type CancelPdfImport200 = {
+  cancelled: true;
+};
+
+export type ApplyPdfImportBodyFieldsItem = typeof ApplyPdfImportBodyFieldsItem[keyof typeof ApplyPdfImportBodyFieldsItem];
+
+
+export const ApplyPdfImportBodyFieldsItem = {
+  summary: 'summary',
+  skills: 'skills',
+} as const;
+
+export type ApplyPdfImportBody = {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * @minLength 32
+     * @maxLength 80
+     */
+  reviewToken: string;
+  /**
+     * @minItems 1
+     * @maxItems 2
+     */
+  fields: ApplyPdfImportBodyFieldsItem[];
+};
+
+export type ApplyPdfImport200 = {
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  revision: number;
+  replayed: boolean;
+};
+
+export type RefreshPdfImport200 = {
+  requiresReview: true;
+};
+
+export type SaveOwnOfferPreferencesBody = {
+  shared: boolean;
+  /** @minimum 0 */
+  revision: number;
+  preferences: OfferPreferences;
+};
+
+export type SaveOwnOfferPreferences200 = {
+  shared: boolean;
+  /** @minimum 0 */
+  revision: number;
+  preferences: OfferPreferences;
+};
+
+export type ReadOwnedOfferConditionsBody = {
+  context: SelectionContextRef;
+};
+
+export type ReadOwnedOfferConditions200ContextType = typeof ReadOwnedOfferConditions200ContextType[keyof typeof ReadOwnedOfferConditions200ContextType];
+
+
+export const ReadOwnedOfferConditions200ContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type ReadOwnedOfferConditions200 = {
+  /** @minimum 0 */
+  revision: number;
+  conditions: OfferConditions;
+  /** @minimum 1 */
+  companyId?: number;
+  contextType?: ReadOwnedOfferConditions200ContextType;
+  /** @minimum 1 */
+  contextId?: number;
+};
+
+export type SaveOwnedOfferConditionsBody = {
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  contextRevision: number;
+  /** @minimum 0 */
+  revision: number;
+  conditions: OfferConditions;
+};
+
+export type SaveOwnedOfferConditions200 = {
+  /** @minimum 1 */
+  revision: number;
+  /** @minimum 1 */
+  contextRevision: number;
+};
+
+export type CompareOwnedOfferCompatibilityBody = {
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+};
+
+export type CompareOwnOfferCompatibilityBody = {
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  jobId: number;
+};
+
+export type ReadExpertAuthority200 = {
+  canReview: boolean;
+};
+
+export type ListOwnAssessmentAppeals200 = {
+  items: AssessmentAppeal[];
+};
+
+export type OpenOwnAssessmentAppealBodyKind = typeof OpenOwnAssessmentAppealBodyKind[keyof typeof OpenOwnAssessmentAppealBodyKind];
+
+
+export const OpenOwnAssessmentAppealBodyKind = {
+  skill: 'skill',
+  legacy: 'legacy',
+} as const;
+
+export type OpenOwnAssessmentAppealBody = {
+  kind: OpenOwnAssessmentAppealBodyKind;
+  /** @minimum 1 */
+  attemptId: number;
+  /**
+     * @minLength 12
+     * @maxLength 4000
+     */
+  reason: string;
+  /** @minimum 1 */
+  revision?: number;
+};
+
+export type ReadOwnAssessmentAppeal200MessagesItemAuthor = typeof ReadOwnAssessmentAppeal200MessagesItemAuthor[keyof typeof ReadOwnAssessmentAppeal200MessagesItemAuthor];
+
+
+export const ReadOwnAssessmentAppeal200MessagesItemAuthor = {
+  candidate: 'candidate',
+  expert: 'expert',
+} as const;
+
+export type ReadOwnAssessmentAppeal200MessagesItemVisibility = typeof ReadOwnAssessmentAppeal200MessagesItemVisibility[keyof typeof ReadOwnAssessmentAppeal200MessagesItemVisibility];
+
+
+export const ReadOwnAssessmentAppeal200MessagesItemVisibility = {
+  candidate: 'candidate',
+} as const;
+
+export type ReadOwnAssessmentAppeal200MessagesItem = {
+  id: string;
+  author: ReadOwnAssessmentAppeal200MessagesItemAuthor;
+  visibility: ReadOwnAssessmentAppeal200MessagesItemVisibility;
+  body: string;
+  createdAt: string;
+};
+
+export type ReadOwnAssessmentAppeal200 = {
+  appeal: AssessmentAppeal;
+  /** @minimum 1 */
+  headRevision: number;
+  headDecisionId: string | null;
+  source: CandidateAssessmentSource;
+  messages: ReadOwnAssessmentAppeal200MessagesItem[];
+  decisions: CandidateAssessmentReview[];
+};
+
+export type ListExpertAssessmentAppealsParams = {
+/**
+ * Default open.
+ */
+status?: ListExpertAssessmentAppealsStatus;
+};
+
+export type ListExpertAssessmentAppealsStatus = typeof ListExpertAssessmentAppealsStatus[keyof typeof ListExpertAssessmentAppealsStatus];
+
+
+export const ListExpertAssessmentAppealsStatus = {
+  open: 'open',
+  in_review: 'in_review',
+  resolved: 'resolved',
+} as const;
+
+export type ListExpertAssessmentAppeals200 = {
+  items: AssessmentAppeal[];
+};
+
+export type ReadExpertAssessmentAppeal200MessagesItemAuthor = typeof ReadExpertAssessmentAppeal200MessagesItemAuthor[keyof typeof ReadExpertAssessmentAppeal200MessagesItemAuthor];
+
+
+export const ReadExpertAssessmentAppeal200MessagesItemAuthor = {
+  candidate: 'candidate',
+  expert: 'expert',
+} as const;
+
+export type ReadExpertAssessmentAppeal200MessagesItemVisibility = typeof ReadExpertAssessmentAppeal200MessagesItemVisibility[keyof typeof ReadExpertAssessmentAppeal200MessagesItemVisibility];
+
+
+export const ReadExpertAssessmentAppeal200MessagesItemVisibility = {
+  candidate: 'candidate',
+  internal: 'internal',
+} as const;
+
+export type ReadExpertAssessmentAppeal200MessagesItem = {
+  id: string;
+  author: ReadExpertAssessmentAppeal200MessagesItemAuthor;
+  visibility: ReadExpertAssessmentAppeal200MessagesItemVisibility;
+  body: string;
+  createdAt: string;
+};
+
+export type ReadExpertAssessmentAppeal200 = {
+  appeal: AssessmentAppeal;
+  /** @minimum 1 */
+  headRevision: number;
+  headDecisionId: string | null;
+  source: ExpertAssessmentSource;
+  messages: ReadExpertAssessmentAppeal200MessagesItem[];
+  decisions: ExpertAssessmentReview[];
+};
+
+export type ResolveExpertAssessmentReviewBodyAction = typeof ResolveExpertAssessmentReviewBodyAction[keyof typeof ResolveExpertAssessmentReviewBodyAction];
+
+
+export const ResolveExpertAssessmentReviewBodyAction = {
+  confirm: 'confirm',
+  correct: 'correct',
+  invalidate: 'invalidate',
+  new_check: 'new_check',
+} as const;
+
+export type ResolveExpertAssessmentReviewBody = {
+  commandKey: string;
+  /** @minimum 1 */
+  appealRevision: number;
+  /** @minimum 1 */
+  decisionRevision: number;
+  action: ResolveExpertAssessmentReviewBodyAction;
+  /**
+     * @minLength 12
+     * @maxLength 4000
+     */
+  explanation: string;
+  /** @maxLength 4000 */
+  internalNote?: string;
+  /** @maxItems 6 */
+  caseReviews?: AssessmentCaseReview[];
+};
+
+export type ResolveExpertAssessmentReview200 = {
+  decisionId: string;
+  /** @minimum 1 */
+  revision: number;
+  replayed: boolean;
+};
+
+export type MessageOwnAssessmentAppealBody = {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * @minLength 12
+     * @maxLength 4000
+     */
+  body: string;
+  internal?: boolean;
+};
+
+export type MessageOwnAssessmentAppeal200 = {
+  saved: true;
+};
+
+export type MessageExpertAssessmentAppealBody = {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * @minLength 12
+     * @maxLength 4000
+     */
+  body: string;
+  internal?: boolean;
+};
+
+export type MessageExpertAssessmentAppeal200 = {
+  saved: true;
+};
+
+export type ReadAdaptiveConfiguration200 = {
+  enabled: boolean;
+  experimental: true;
+  qualificationGranted: false;
+};
+
+export type CreateAdaptiveExperimentBodyLevel = typeof CreateAdaptiveExperimentBodyLevel[keyof typeof CreateAdaptiveExperimentBodyLevel];
+
+
+export const CreateAdaptiveExperimentBodyLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type CreateAdaptiveExperimentBody = {
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  skillId: string;
+  level: CreateAdaptiveExperimentBodyLevel;
+  parentId?: string;
+  acceptExperimental: true;
+};
+
+export type AnswerAdaptiveExperimentBody = {
+  /** @minimum 1 */
+  revision: number;
+  commandKey: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  itemId: string;
+  /** @maxLength 4000 */
+  answer: string;
+  skip?: boolean;
+};
+
+export type ReadCodePracticeConfiguration200 = {
+  enabled: boolean;
+  languages: string[];
+  experimental: true;
+  qualificationGranted: false;
+};
+
+export type ListOwnCodePractice200 = {
+  items: CodePractice[];
+};
+
+export type IssueCodePracticeBody = {
+  id: string;
+  acceptExperimental: true;
+};
+
+export type SubmitCodePracticeBody = {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * Also limited to 32,768 UTF-8 bytes.
+     * @minLength 1
+     * @maxLength 32768
+     */
+  source: string;
+};
+
+export type ListOwnedSharedSelections200SharesItemContextType = typeof ListOwnedSharedSelections200SharesItemContextType[keyof typeof ListOwnedSharedSelections200SharesItemContextType];
+
+
+export const ListOwnedSharedSelections200SharesItemContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type ListOwnedSharedSelections200SharesItem = {
+  id: string;
+  publicPurpose: string;
+  /** @minimum 1 */
+  revision: number;
+  expiresAt: string;
+  revokedAt: string | null;
+  contextType: ListOwnedSharedSelections200SharesItemContextType;
+  /** @minimum 1 */
+  contextId: number;
+  /** @minimum 1 */
+  contextRevision: number;
+};
+
+export type ListOwnedSharedSelections200MembersItem = {
+  /** @minimum 1 */
+  userId: number;
+  active: boolean;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type ListOwnedSharedSelections200 = {
+  shares: ListOwnedSharedSelections200SharesItem[];
+  members: ListOwnedSharedSelections200MembersItem[];
+};
+
+export type CreateOwnedSharedSelectionBody = {
+  context: SelectionContextRef;
+  /**
+     * @minLength 8
+     * @maxLength 200
+     */
+  publicPurpose: string;
+  /**
+     * @maxItems 20
+     * @items.minimum 1
+     */
+  memberIds: number[];
+  guest: boolean;
+  /**
+     * @minimum 1
+     * @maximum 168
+     */
+  hours: number;
+};
+
+export type CreateOwnedSharedSelection201 = {
+  id: string;
+  expiresAt: string;
+  /** @minimum 1 */
+  revision: number;
+  guestToken: string | null;
+  /** @items.minimum 1 */
+  memberIds: number[];
+};
+
+export type AppointSharedSelectionReviewerBody = {
+  /** @minimum 1 */
+  userId: number;
+  active: boolean;
+  /** @minimum 1 */
+  revision?: number;
+};
+
+export type AppointSharedSelectionReviewer200 = {
+  /** @minimum 1 */
+  companyId: number;
+  /** @minimum 1 */
+  userId: number;
+  /** @minimum 1 */
+  appointedBy: number;
+  active: boolean;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type ReadEmployeeSharedSelection200ItemsItem = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  candidate: EmployeeSharedCandidate;
+};
+
+export type ReadEmployeeSharedSelection200 = {
+  id: string;
+  publicPurpose: string;
+  /** @minimum 1 */
+  contextRevision: number;
+  /** @minimum 1 */
+  revision: number;
+  expiresAt: string;
+  guest: false;
+  items: ReadEmployeeSharedSelection200ItemsItem[];
+  comments: SharedSelectionComment[];
+};
+
+export type CommentEmployeeSharedSelectionBodyReaction = typeof CommentEmployeeSharedSelectionBodyReaction[keyof typeof CommentEmployeeSharedSelectionBodyReaction];
+
+
+export const CommentEmployeeSharedSelectionBodyReaction = {
+  consider: 'consider',
+  discuss: 'discuss',
+  pass: 'pass',
+} as const;
+
+export type CommentEmployeeSharedSelectionBody = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  reaction: CommentEmployeeSharedSelectionBodyReaction;
+  /** @maxLength 1500 */
+  note: string;
+};
+
+export type CommentEmployeeSharedSelection201 = {
+  id: string;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type RevokeOwnedSharedSelection200 = {
+  revoked: true;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type ReadGuestSharedSelectionBody = {
+  /**
+     * @minLength 40
+     * @maxLength 60
+     */
+  token: string;
+};
+
+export type ReadGuestSharedSelection200ItemsItem = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  candidate: GuestSelectionCandidate;
+};
+
+export type ReadGuestSharedSelection200 = {
+  id: string;
+  publicPurpose: string;
+  /** @minimum 1 */
+  contextRevision: number;
+  /** @minimum 1 */
+  revision: number;
+  expiresAt: string;
+  guest: true;
+  items: ReadGuestSharedSelection200ItemsItem[];
+  comments: SharedSelectionComment[];
+};
+
+export type CommentGuestSharedSelectionBodyReaction = typeof CommentGuestSharedSelectionBodyReaction[keyof typeof CommentGuestSharedSelectionBodyReaction];
+
+
+export const CommentGuestSharedSelectionBodyReaction = {
+  consider: 'consider',
+  discuss: 'discuss',
+  pass: 'pass',
+} as const;
+
+export type CommentGuestSharedSelectionBody = {
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  resumeRevision: number;
+  reaction: CommentGuestSharedSelectionBodyReaction;
+  /** @maxLength 1500 */
+  note: string;
+  /**
+     * @minLength 40
+     * @maxLength 60
+     */
+  token: string;
+};
+
+export type CommentGuestSharedSelection201 = {
+  id: string;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type ReadOwnGuestReviewPermission200 = {
+  /** @minimum 1 */
+  resumeId: number;
+  allowed: boolean;
+};
+
+export type SaveOwnGuestReviewPermissionBody = {
+  allowed: boolean;
+};
+
+export type SaveOwnGuestReviewPermission200 = {
+  /** @minimum 1 */
+  resumeId: number;
+  allowed: boolean;
+};
+
+export type ListOwnPublicPassports200PassportsItemState = typeof ListOwnPublicPassports200PassportsItemState[keyof typeof ListOwnPublicPassports200PassportsItemState];
+
+
+export const ListOwnPublicPassports200PassportsItemState = {
+  active: 'active',
+  revoked: 'revoked',
+  replaced: 'replaced',
+} as const;
+
+export type ListOwnPublicPassports200PassportsItem = {
+  id: string;
+  state: ListOwnPublicPassports200PassportsItemState;
+  replacementId: string | null;
+  createdAt: string;
+};
+
+export type ListOwnPublicPassports200 = {
+  availableClaims: PublicPassportClaim[];
+  passports: ListOwnPublicPassports200PassportsItem[];
+};
+
+export type IssueOwnPublicPassportBody = {
+  previewId: string;
+  acceptPublication: true;
+  /**
+     * @minimum 1
+     * @maximum 90
+     */
+  days: number;
+  replaceId?: string;
+};
+
+export type IssueOwnPublicPassport201State = typeof IssueOwnPublicPassport201State[keyof typeof IssueOwnPublicPassport201State];
+
+
+export const IssueOwnPublicPassport201State = {
+  active: 'active',
+  revoked: 'revoked',
+  replaced: 'replaced',
+} as const;
+
+export type IssueOwnPublicPassport201 = {
+  id: string;
+  state: IssueOwnPublicPassport201State;
+};
+
+export type PreviewOwnPublicPassportBody = {
+  /**
+     * @minItems 1
+     * @maxItems 12
+     * @items.minLength 1
+     * @items.maxLength 80
+     */
+  skillIds: string[];
+};
+
+export type PreviewOwnPublicPassport200Disclosure = typeof PreviewOwnPublicPassport200Disclosure[keyof typeof PreviewOwnPublicPassport200Disclosure];
+
+
+export const PreviewOwnPublicPassport200Disclosure = {
+  selected_skill_claims_only: 'selected_skill_claims_only',
+} as const;
+
+export type PreviewOwnPublicPassport200 = {
+  id: string;
+  claims: PublicPassportClaim[];
+  expiresAt: string;
+  issuer: string;
+  disclosure: PreviewOwnPublicPassport200Disclosure;
+};
+
+export type RevokeOwnPublicPassport200Status = typeof RevokeOwnPublicPassport200Status[keyof typeof RevokeOwnPublicPassport200Status];
+
+
+export const RevokeOwnPublicPassport200Status = {
+  active: 'active',
+  revoked: 'revoked',
+  replaced: 'replaced',
+} as const;
+
+export type RevokeOwnPublicPassport200 = {
+  id: string;
+  status: RevokeOwnPublicPassport200Status;
+};
+
+export type ListPublicPassportKeys200Algorithm = typeof ListPublicPassportKeys200Algorithm[keyof typeof ListPublicPassportKeys200Algorithm];
+
+
+export const ListPublicPassportKeys200Algorithm = {
+  Ed25519: 'Ed25519',
+} as const;
+
+export type ListPublicPassportKeys200KeysItemState = typeof ListPublicPassportKeys200KeysItemState[keyof typeof ListPublicPassportKeys200KeysItemState];
+
+
+export const ListPublicPassportKeys200KeysItemState = {
+  active: 'active',
+  retired: 'retired',
+  compromised: 'compromised',
+} as const;
+
+export type ListPublicPassportKeys200KeysItem = {
+  kid: string;
+  publicKeyPem: string;
+  state: ListPublicPassportKeys200KeysItemState;
+};
+
+export type ListPublicPassportKeys200 = {
+  issuer: string;
+  algorithm: ListPublicPassportKeys200Algorithm;
+  keys: ListPublicPassportKeys200KeysItem[];
+};
+
+export type ReadPublicPassportQr410Status = typeof ReadPublicPassportQr410Status[keyof typeof ReadPublicPassportQr410Status];
+
+
+export const ReadPublicPassportQr410Status = {
+  not_found: 'not_found',
+  revoked: 'revoked',
+  replaced: 'replaced',
+  invalid_schema: 'invalid_schema',
+  untrusted_issuer_or_key: 'untrusted_issuer_or_key',
+  compromised_key: 'compromised_key',
+  invalid_signature: 'invalid_signature',
+  invalid_dates: 'invalid_dates',
+  expired: 'expired',
+  document_mismatch: 'document_mismatch',
+  evidence_changed: 'evidence_changed',
+} as const;
+
+export type ReadPublicPassportQr410 = {
+  status: ReadPublicPassportQr410Status;
+};
+
+export type ReadOwnedAtsIntegration200 = {
+  endpoint: AtsEndpoint | null;
+  deliveries: AtsDelivery[];
+};
+
+export type RegisterOwnedAtsIntegrationBody = {
+  /** @maxLength 1000 */
+  url: string;
+  /** @minimum 1 */
+  revision?: number;
+};
+
+export type RegisterOwnedAtsIntegration200 = {
+  id: string;
+  url: string;
+  /** @minimum 1 */
+  revision: number;
+  /** New HMAC credential returned once on registration/rotation. Store privately; never expose in UI logs or public DTOs. */
+  secret: string;
+};
+
+export type DisableOwnedAtsIntegration200 = {
+  disabled: true;
+  /** @minimum 1 */
+  revision: number;
+};
+
+export type RetryOwnedAtsDelivery200 = {
+  queued: true;
+};
+
+export type ReadEmployerInvitationAnalyticsParams = {
+/**
+ * Default 28.
+ */
+days?: ReadEmployerInvitationAnalyticsDays;
+/**
+ * Supply together with contextId.
+ */
+contextType?: ReadEmployerInvitationAnalyticsContextType;
+/**
+ * @minimum 1
+ */
+contextId?: number;
+};
+
+export type ReadEmployerInvitationAnalyticsDays = typeof ReadEmployerInvitationAnalyticsDays[keyof typeof ReadEmployerInvitationAnalyticsDays];
+
+
+export const ReadEmployerInvitationAnalyticsDays = {
+  NUMBER_7: '7',
+  NUMBER_28: '28',
+  NUMBER_90: '90',
+} as const;
+
+export type ReadEmployerInvitationAnalyticsContextType = typeof ReadEmployerInvitationAnalyticsContextType[keyof typeof ReadEmployerInvitationAnalyticsContextType];
+
+
+export const ReadEmployerInvitationAnalyticsContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type ReadEmployerInvitationAnalytics200PeriodDays = typeof ReadEmployerInvitationAnalytics200PeriodDays[keyof typeof ReadEmployerInvitationAnalytics200PeriodDays];
+
+
+export const ReadEmployerInvitationAnalytics200PeriodDays = {
+  NUMBER_7: 7,
+  NUMBER_28: 28,
+  NUMBER_90: 90,
+} as const;
+
+export type ReadEmployerInvitationAnalytics200Period = {
+  days: ReadEmployerInvitationAnalytics200PeriodDays;
+  from: string;
+  to: string;
+};
+
+export type ReadEmployerInvitationAnalytics200ObservationDays = typeof ReadEmployerInvitationAnalytics200ObservationDays[keyof typeof ReadEmployerInvitationAnalytics200ObservationDays];
+
+
+export const ReadEmployerInvitationAnalytics200ObservationDays = {
+  NUMBER_7: 7,
+} as const;
+
+export type ReadEmployerInvitationAnalytics200Counts = {
+  /** @minimum 0 */
+  sent: number;
+  /** @minimum 0 */
+  viewed: number;
+  /** @minimum 0 */
+  accepted: number;
+  /** @minimum 0 */
+  declined: number;
+  /** @minimum 0 */
+  withdrawn: number;
+  /** @minimum 0 */
+  expired: number;
+} | null;
+
+export type ReadEmployerInvitationAnalytics200StatusCounts = {
+  /** @minimum 0 */
+  sent: number;
+  /** @minimum 0 */
+  viewed: number;
+  /** @minimum 0 */
+  accepted: number;
+  /** @minimum 0 */
+  declined: number;
+  /** @minimum 0 */
+  withdrawn: number;
+  /** @minimum 0 */
+  expired: number;
+} | null;
+
+export type ReadEmployerInvitationAnalytics200TimelyResponse = {
+  /** @minimum 0 */
+  denominator: number;
+  /** @minimum 0 */
+  responses: number;
+  rate: number | null;
+  medianHours: number | null;
+} | null;
+
+export type ReadEmployerInvitationAnalytics200DeclineReasons = ({
+  reason: 'conditions' | 'format' | 'direction' | 'timing' | 'other';
+  /** @minimum 0 */
+  count: number;
+})[] | null;
+
+export type ReadEmployerInvitationAnalytics200SalaryCurrency = typeof ReadEmployerInvitationAnalytics200SalaryCurrency[keyof typeof ReadEmployerInvitationAnalytics200SalaryCurrency];
+
+
+export const ReadEmployerInvitationAnalytics200SalaryCurrency = {
+  RUB: 'RUB',
+} as const;
+
+export type ReadEmployerInvitationAnalytics200SalaryPeriod = typeof ReadEmployerInvitationAnalytics200SalaryPeriod[keyof typeof ReadEmployerInvitationAnalytics200SalaryPeriod];
+
+
+export const ReadEmployerInvitationAnalytics200SalaryPeriod = {
+  month: 'month',
+} as const;
+
+export type ReadEmployerInvitationAnalytics200SalaryTax = typeof ReadEmployerInvitationAnalytics200SalaryTax[keyof typeof ReadEmployerInvitationAnalytics200SalaryTax];
+
+
+export const ReadEmployerInvitationAnalytics200SalaryTax = {
+  gross: 'gross',
+} as const;
+
+export type ReadEmployerInvitationAnalytics200Salary = {
+  /** @minimum 0 */
+  n: number;
+  medianMidpoint: number | null;
+  currency: ReadEmployerInvitationAnalytics200SalaryCurrency;
+  period: ReadEmployerInvitationAnalytics200SalaryPeriod;
+  tax: ReadEmployerInvitationAnalytics200SalaryTax;
+} | null;
+
+export type ReadEmployerInvitationAnalytics200Definitions = {
+  counts: string;
+  statusCounts: string;
+  timelyResponse: string;
+  salary: string;
+  privacy: string;
+};
+
+export type ReadEmployerInvitationAnalytics200 = {
+  period: ReadEmployerInvitationAnalytics200Period;
+  observationDays: ReadEmployerInvitationAnalytics200ObservationDays;
+  total: number | null;
+  counts: ReadEmployerInvitationAnalytics200Counts;
+  statusCounts: ReadEmployerInvitationAnalytics200StatusCounts;
+  timelyResponse: ReadEmployerInvitationAnalytics200TimelyResponse;
+  declineReasons: ReadEmployerInvitationAnalytics200DeclineReasons;
+  salary: ReadEmployerInvitationAnalytics200Salary;
+  suppressed: boolean;
+  legacyTimelineIncomplete: boolean;
+  definitions: ReadEmployerInvitationAnalytics200Definitions;
+  budget: InvitationBudget;
+};
+
+export type ReadOwnInvitationAnalyticsParams = {
+/**
+ * Default 28.
+ */
+days?: ReadOwnInvitationAnalyticsDays;
+};
+
+export type ReadOwnInvitationAnalyticsDays = typeof ReadOwnInvitationAnalyticsDays[keyof typeof ReadOwnInvitationAnalyticsDays];
+
+
+export const ReadOwnInvitationAnalyticsDays = {
+  NUMBER_7: '7',
+  NUMBER_28: '28',
+  NUMBER_90: '90',
+} as const;
+
+export type ReadOwnInvitationAnalytics200PeriodDays = typeof ReadOwnInvitationAnalytics200PeriodDays[keyof typeof ReadOwnInvitationAnalytics200PeriodDays];
+
+
+export const ReadOwnInvitationAnalytics200PeriodDays = {
+  NUMBER_7: 7,
+  NUMBER_28: 28,
+  NUMBER_90: 90,
+} as const;
+
+export type ReadOwnInvitationAnalytics200Period = {
+  days: ReadOwnInvitationAnalytics200PeriodDays;
+  from: string;
+  to: string;
+};
+
+export type ReadOwnInvitationAnalytics200ObservationDays = typeof ReadOwnInvitationAnalytics200ObservationDays[keyof typeof ReadOwnInvitationAnalytics200ObservationDays];
+
+
+export const ReadOwnInvitationAnalytics200ObservationDays = {
+  NUMBER_7: 7,
+} as const;
+
+export type ReadOwnInvitationAnalytics200Counts = {
+  /** @minimum 0 */
+  sent: number;
+  /** @minimum 0 */
+  viewed: number;
+  /** @minimum 0 */
+  accepted: number;
+  /** @minimum 0 */
+  declined: number;
+  /** @minimum 0 */
+  withdrawn: number;
+  /** @minimum 0 */
+  expired: number;
+} | null;
+
+export type ReadOwnInvitationAnalytics200StatusCounts = {
+  /** @minimum 0 */
+  sent: number;
+  /** @minimum 0 */
+  viewed: number;
+  /** @minimum 0 */
+  accepted: number;
+  /** @minimum 0 */
+  declined: number;
+  /** @minimum 0 */
+  withdrawn: number;
+  /** @minimum 0 */
+  expired: number;
+} | null;
+
+export type ReadOwnInvitationAnalytics200TimelyResponse = {
+  /** @minimum 0 */
+  denominator: number;
+  /** @minimum 0 */
+  responses: number;
+  rate: number | null;
+  medianHours: number | null;
+} | null;
+
+export type ReadOwnInvitationAnalytics200DeclineReasons = ({
+  reason: 'conditions' | 'format' | 'direction' | 'timing' | 'other';
+  /** @minimum 0 */
+  count: number;
+})[] | null;
+
+export type ReadOwnInvitationAnalytics200SalaryCurrency = typeof ReadOwnInvitationAnalytics200SalaryCurrency[keyof typeof ReadOwnInvitationAnalytics200SalaryCurrency];
+
+
+export const ReadOwnInvitationAnalytics200SalaryCurrency = {
+  RUB: 'RUB',
+} as const;
+
+export type ReadOwnInvitationAnalytics200SalaryPeriod = typeof ReadOwnInvitationAnalytics200SalaryPeriod[keyof typeof ReadOwnInvitationAnalytics200SalaryPeriod];
+
+
+export const ReadOwnInvitationAnalytics200SalaryPeriod = {
+  month: 'month',
+} as const;
+
+export type ReadOwnInvitationAnalytics200SalaryTax = typeof ReadOwnInvitationAnalytics200SalaryTax[keyof typeof ReadOwnInvitationAnalytics200SalaryTax];
+
+
+export const ReadOwnInvitationAnalytics200SalaryTax = {
+  gross: 'gross',
+} as const;
+
+export type ReadOwnInvitationAnalytics200Salary = {
+  /** @minimum 0 */
+  n: number;
+  medianMidpoint: number | null;
+  currency: ReadOwnInvitationAnalytics200SalaryCurrency;
+  period: ReadOwnInvitationAnalytics200SalaryPeriod;
+  tax: ReadOwnInvitationAnalytics200SalaryTax;
+} | null;
+
+export type ReadOwnInvitationAnalytics200Definitions = {
+  counts: string;
+  statusCounts: string;
+  timelyResponse: string;
+  salary: string;
+  privacy: string;
+};
+
+export type ReadOwnInvitationAnalytics200MarketState = typeof ReadOwnInvitationAnalytics200MarketState[keyof typeof ReadOwnInvitationAnalytics200MarketState];
+
+
+export const ReadOwnInvitationAnalytics200MarketState = {
+  unavailable: 'unavailable',
+} as const;
+
+export type ReadOwnInvitationAnalytics200Market = {
+  state: ReadOwnInvitationAnalytics200MarketState;
+  reason: string;
+};
+
+export type ReadOwnInvitationAnalytics200 = {
+  period: ReadOwnInvitationAnalytics200Period;
+  observationDays: ReadOwnInvitationAnalytics200ObservationDays;
+  total: number | null;
+  counts: ReadOwnInvitationAnalytics200Counts;
+  statusCounts: ReadOwnInvitationAnalytics200StatusCounts;
+  timelyResponse: ReadOwnInvitationAnalytics200TimelyResponse;
+  declineReasons: ReadOwnInvitationAnalytics200DeclineReasons;
+  salary: ReadOwnInvitationAnalytics200Salary;
+  suppressed: boolean;
+  legacyTimelineIncomplete: boolean;
+  definitions: ReadOwnInvitationAnalytics200Definitions;
+  /** @minimum 0 */
+  uniqueCompanies: number;
+  market: ReadOwnInvitationAnalytics200Market;
+};
+
+export type SearchEmployerSelectionParams = {
+contextType?: SearchEmployerSelectionContextType;
+/**
+ * @minimum 1
+ */
+contextId?: number;
+mode?: SearchEmployerSelectionMode;
+view?: SearchEmployerSelectionView;
+/**
+ * @minLength 1
+ * @maxLength 120
+ */
+q?: string;
+/**
+ * @minLength 1
+ * @maxLength 160
+ */
+specialization?: string;
+grade?: SearchEmployerSelectionGrade;
+/**
+ * @maxLength 1600
+ */
+verifiedSkills?: string;
+verifiedSkillsMode?: SearchEmployerSelectionVerifiedSkillsMode;
+verifiedSkillLevel?: SearchEmployerSelectionVerifiedSkillLevel;
+/**
+ * @maxLength 1600
+ */
+declaredSkills?: string;
+declaredSkillsMode?: SearchEmployerSelectionDeclaredSkillsMode;
+/**
+ * @minimum 0
+ * @maximum 80
+ */
+experienceMin?: number;
+/**
+ * @minimum 0
+ * @maximum 80
+ */
+experienceMax?: number;
+/**
+ * @maxLength 80
+ */
+workFormat?: string;
+/**
+ * @maxLength 160
+ */
+location?: string;
+/**
+ * @minimum 0
+ * @maximum 1000000000
+ */
+salaryMin?: number;
+/**
+ * @minimum 0
+ * @maximum 1000000000
+ */
+salaryMax?: number;
+salaryPeriod?: SearchEmployerSelectionSalaryPeriod;
+salaryType?: SearchEmployerSelectionSalaryType;
+fsp?: SearchEmployerSelectionFsp;
+hasPhoto?: SearchEmployerSelectionHasPhoto;
+readyForOffers?: SearchEmployerSelectionReadyForOffers;
+/**
+ * @minimum 0
+ * @maximum 3650
+ */
+checkedWithinDays?: number;
+/**
+ * @minimum 1
+ * @maximum 1000000
+ */
+page?: number;
+/**
+ * @minimum 1
+ * @maximum 50
+ */
+pageSize?: number;
+sort?: SearchEmployerSelectionSort;
+direction?: SearchEmployerSelectionDirection;
+};
+
+export type SearchEmployerSelectionContextType = typeof SearchEmployerSelectionContextType[keyof typeof SearchEmployerSelectionContextType];
+
+
+export const SearchEmployerSelectionContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type SearchEmployerSelectionMode = typeof SearchEmployerSelectionMode[keyof typeof SearchEmployerSelectionMode];
+
+
+export const SearchEmployerSelectionMode = {
+  catalog: 'catalog',
+} as const;
+
+export type SearchEmployerSelectionView = typeof SearchEmployerSelectionView[keyof typeof SearchEmployerSelectionView];
+
+
+export const SearchEmployerSelectionView = {
+  all: 'all',
+  shortlisted: 'shortlisted',
+} as const;
+
+export type SearchEmployerSelectionGrade = typeof SearchEmployerSelectionGrade[keyof typeof SearchEmployerSelectionGrade];
+
+
+export const SearchEmployerSelectionGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+  unconfirmed: 'unconfirmed',
+} as const;
+
+export type SearchEmployerSelectionVerifiedSkillsMode = typeof SearchEmployerSelectionVerifiedSkillsMode[keyof typeof SearchEmployerSelectionVerifiedSkillsMode];
+
+
+export const SearchEmployerSelectionVerifiedSkillsMode = {
+  all: 'all',
+  any: 'any',
+} as const;
+
+export type SearchEmployerSelectionVerifiedSkillLevel = typeof SearchEmployerSelectionVerifiedSkillLevel[keyof typeof SearchEmployerSelectionVerifiedSkillLevel];
+
+
+export const SearchEmployerSelectionVerifiedSkillLevel = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type SearchEmployerSelectionDeclaredSkillsMode = typeof SearchEmployerSelectionDeclaredSkillsMode[keyof typeof SearchEmployerSelectionDeclaredSkillsMode];
+
+
+export const SearchEmployerSelectionDeclaredSkillsMode = {
+  all: 'all',
+  any: 'any',
+} as const;
+
+export type SearchEmployerSelectionSalaryPeriod = typeof SearchEmployerSelectionSalaryPeriod[keyof typeof SearchEmployerSelectionSalaryPeriod];
+
+
+export const SearchEmployerSelectionSalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type SearchEmployerSelectionSalaryType = typeof SearchEmployerSelectionSalaryType[keyof typeof SearchEmployerSelectionSalaryType];
+
+
+export const SearchEmployerSelectionSalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type SearchEmployerSelectionFsp = typeof SearchEmployerSelectionFsp[keyof typeof SearchEmployerSelectionFsp];
+
+
+export const SearchEmployerSelectionFsp = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type SearchEmployerSelectionHasPhoto = typeof SearchEmployerSelectionHasPhoto[keyof typeof SearchEmployerSelectionHasPhoto];
+
+
+export const SearchEmployerSelectionHasPhoto = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type SearchEmployerSelectionReadyForOffers = typeof SearchEmployerSelectionReadyForOffers[keyof typeof SearchEmployerSelectionReadyForOffers];
+
+
+export const SearchEmployerSelectionReadyForOffers = {
+  yes: 'yes',
+  no: 'no',
+} as const;
+
+export type SearchEmployerSelectionSort = typeof SearchEmployerSelectionSort[keyof typeof SearchEmployerSelectionSort];
+
+
+export const SearchEmployerSelectionSort = {
+  recommended: 'recommended',
+  grade: 'grade',
+  experience: 'experience',
+  salary: 'salary',
+  updated: 'updated',
+  name: 'name',
+} as const;
+
+export type SearchEmployerSelectionDirection = typeof SearchEmployerSelectionDirection[keyof typeof SearchEmployerSelectionDirection];
+
+
+export const SearchEmployerSelectionDirection = {
+  asc: 'asc',
+  desc: 'desc',
+} as const;
+
+export type SearchEmployerSelection200Sort = typeof SearchEmployerSelection200Sort[keyof typeof SearchEmployerSelection200Sort];
+
+
+export const SearchEmployerSelection200Sort = {
+  recommended: 'recommended',
+  grade: 'grade',
+  experience: 'experience',
+  salary: 'salary',
+  updated: 'updated',
+  name: 'name',
+} as const;
+
+export type SearchEmployerSelection200 = {
+  context: EmployerSelectionContext | null;
+  /** @minimum 0 */
+  total: number;
+  /** @minimum 1 */
+  page: number;
+  /** @minimum 1 */
+  pageSize: number;
+  appliedFilters: EmployerSelectionFilters;
+  sort: SearchEmployerSelection200Sort;
+  /** @minimum 0 */
+  unavailableShortlistCount: number;
+  specializations: string[];
+  items: EmployerSelectionCandidate[];
+};
+
+export type ReadEmployerSelectionResumeParams = {
+contextType?: ReadEmployerSelectionResumeContextType;
+/**
+ * @minimum 1
+ */
+contextId?: number;
+mode?: ReadEmployerSelectionResumeMode;
+view?: ReadEmployerSelectionResumeView;
+};
+
+export type ReadEmployerSelectionResumeContextType = typeof ReadEmployerSelectionResumeContextType[keyof typeof ReadEmployerSelectionResumeContextType];
+
+
+export const ReadEmployerSelectionResumeContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type ReadEmployerSelectionResumeMode = typeof ReadEmployerSelectionResumeMode[keyof typeof ReadEmployerSelectionResumeMode];
+
+
+export const ReadEmployerSelectionResumeMode = {
+  catalog: 'catalog',
+} as const;
+
+export type ReadEmployerSelectionResumeView = typeof ReadEmployerSelectionResumeView[keyof typeof ReadEmployerSelectionResumeView];
+
+
+export const ReadEmployerSelectionResumeView = {
+  all: 'all',
+  shortlisted: 'shortlisted',
+} as const;
+
+export type ReadEmployerSelectionResume200AvailableResumesItemGrade = typeof ReadEmployerSelectionResume200AvailableResumesItemGrade[keyof typeof ReadEmployerSelectionResume200AvailableResumesItemGrade] | null;
+
+
+export const ReadEmployerSelectionResume200AvailableResumesItemGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type ReadEmployerSelectionResume200AvailableResumesItem = {
+  /** @minimum 1 */
+  id: number;
+  title: string;
+  specialization: string;
+  grade: ReadEmployerSelectionResume200AvailableResumesItemGrade;
+};
+
+export type ReadEmployerSelectionResume200PracticeSummaryItem = {
+  title: string;
+  status: string;
+  result?: string;
+};
+
+export type ReadEmployerSelectionResume200 = {
+  candidate: EmployerSelectionCandidate;
+  availableResumes: ReadEmployerSelectionResume200AvailableResumesItem[];
+  context: EmployerSelectionContext | null;
+  match: SelectionMatchSummary | null;
+  practiceSummary: ReadEmployerSelectionResume200PracticeSummaryItem[];
+};
+
+export type CheckEmployerSelectionAccessBodyMode = typeof CheckEmployerSelectionAccessBodyMode[keyof typeof CheckEmployerSelectionAccessBodyMode];
+
+
+export const CheckEmployerSelectionAccessBodyMode = {
+  catalog: 'catalog',
+} as const;
+
+export type CheckEmployerSelectionAccessBodyView = typeof CheckEmployerSelectionAccessBodyView[keyof typeof CheckEmployerSelectionAccessBodyView];
+
+
+export const CheckEmployerSelectionAccessBodyView = {
+  all: 'all',
+  shortlisted: 'shortlisted',
+} as const;
+
+export type CheckEmployerSelectionAccessBody = {
+  context: SelectionContextRef | null;
+  mode?: CheckEmployerSelectionAccessBodyMode;
+  view?: CheckEmployerSelectionAccessBodyView;
+  /**
+     * @minItems 0
+     * @maxItems 50
+     * @items.minimum 1
+     * @items.maximum 2147483647
+     */
+  resumeIds: number[];
+};
+
+export type CheckEmployerSelectionAccess200ItemsItemVisibility = typeof CheckEmployerSelectionAccess200ItemsItemVisibility[keyof typeof CheckEmployerSelectionAccess200ItemsItemVisibility];
+
+
+export const CheckEmployerSelectionAccess200ItemsItemVisibility = {
+  public: 'public',
+  pseudonymous: 'pseudonymous',
+  private: 'private',
+} as const;
+
+export type CheckEmployerSelectionAccess200ItemsItem = {
+  /** @minimum 1 */
+  resumeId: number;
+  visibility: CheckEmployerSelectionAccess200ItemsItemVisibility;
+  publicName: string | null;
+  avatarDataUrl: string | null;
+  /** @minimum 1 */
+  revision: number;
+  alias: string;
+};
+
+export type CheckEmployerSelectionAccess200 = {
+  items: CheckEmployerSelectionAccess200ItemsItem[];
+};
+
+export type CompareEmployerSelectionBodyMode = typeof CompareEmployerSelectionBodyMode[keyof typeof CompareEmployerSelectionBodyMode];
+
+
+export const CompareEmployerSelectionBodyMode = {
+  catalog: 'catalog',
+} as const;
+
+export type CompareEmployerSelectionBodyView = typeof CompareEmployerSelectionBodyView[keyof typeof CompareEmployerSelectionBodyView];
+
+
+export const CompareEmployerSelectionBodyView = {
+  all: 'all',
+  shortlisted: 'shortlisted',
+} as const;
+
+export type CompareEmployerSelectionBody = {
+  context: SelectionContextRef | null;
+  mode?: CompareEmployerSelectionBodyMode;
+  view?: CompareEmployerSelectionBodyView;
+  /**
+     * @minItems 2
+     * @maxItems 4
+     * @items.minimum 1
+     * @items.maximum 2147483647
+     */
+  resumeIds: number[];
+};
+
+export type CompareEmployerSelection200 = {
+  context: EmployerSelectionContext | null;
+  items: EmployerSelectionCandidate[];
+};
+
+export type ListOwnedSelectionContexts200 = {
+  contexts: EmployerSelectionContext[];
+};
+
+export type ReadOwnedShortlistParams = {
+contextType?: ReadOwnedShortlistContextType;
+/**
+ * @minimum 1
+ */
+contextId?: number;
+};
+
+export type ReadOwnedShortlistContextType = typeof ReadOwnedShortlistContextType[keyof typeof ReadOwnedShortlistContextType];
+
+
+export const ReadOwnedShortlistContextType = {
+  job: 'job',
+  need: 'need',
+} as const;
+
+export type ReadOwnedShortlist200 = {
+  context: EmployerSelectionContext;
+  items: EmployerShortlistItem[];
+  /** @minimum 0 */
+  total: number;
+};
+
+export type SaveOwnedShortlistCandidateBody = {
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  candidateId: number;
+  /** @minimum 1 */
+  resumeId: number;
+  /** @minimum 1 */
+  contextVersion?: number;
+};
+
+export type SaveOwnedShortlistCandidate200 = {
+  item: EmployerShortlistItem;
+  /** @minimum 0 */
+  shortlistCount: number;
+};
+
+export type RemoveOwnedShortlistCandidateBody = {
+  context: SelectionContextRef;
+  /** @minimum 1 */
+  candidateId: number;
+};
+
+export type RemoveOwnedShortlistCandidate200 = {
+  /** @minimum 0 */
+  shortlistCount: number;
+};
+
+export type UpdateOwnedEmployerNeedBodyGrade = typeof UpdateOwnedEmployerNeedBodyGrade[keyof typeof UpdateOwnedEmployerNeedBodyGrade];
+
+
+export const UpdateOwnedEmployerNeedBodyGrade = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+/**
+ * Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum.
+ */
+export type UpdateOwnedEmployerNeedBodyRequiredSkillLevels = {[key: string]: 'Junior' | 'Middle' | 'Senior'};
+
+export type UpdateOwnedEmployerNeedBodySalaryPeriod = typeof UpdateOwnedEmployerNeedBodySalaryPeriod[keyof typeof UpdateOwnedEmployerNeedBodySalaryPeriod];
+
+
+export const UpdateOwnedEmployerNeedBodySalaryPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type UpdateOwnedEmployerNeedBodySalaryType = typeof UpdateOwnedEmployerNeedBodySalaryType[keyof typeof UpdateOwnedEmployerNeedBodySalaryType];
+
+
+export const UpdateOwnedEmployerNeedBodySalaryType = {
+  gross: 'gross',
+  net: 'net',
+} as const;
+
+export type UpdateOwnedEmployerNeedBodyStatus = typeof UpdateOwnedEmployerNeedBodyStatus[keyof typeof UpdateOwnedEmployerNeedBodyStatus];
+
+
+export const UpdateOwnedEmployerNeedBodyStatus = {
+  active: 'active',
+  archived: 'archived',
+} as const;
+
+export type UpdateOwnedEmployerNeedBody = {
+  gradeMode?: RequirementMode;
+  /** @maxItems 40 */
+  skillRequirements?: RecruitingSkillRequirement[];
+  /**
+     * @minLength 3
+     * @maxLength 160
+     */
+  title?: string;
+  specialization?: string;
+  grade?: UpdateOwnedEmployerNeedBodyGrade;
+  /**
+     * Every item must remain nonempty after NFKC and whitespace normalization. Known aliases are canonicalized before saving; unknown nonempty requirements are retained.
+     * @minItems 1
+     * @maxItems 40
+     * @items.minLength 1
+     * @items.maxLength 100
+     * @items.pattern \S
+     */
+  requiredSkills?: string[];
+  /** Explicit minimum levels for selected required skills. Absent levels impose no implicit minimum. */
+  requiredSkillLevels?: UpdateOwnedEmployerNeedBodyRequiredSkillLevels;
+  /**
+     * @maxItems 40
+     * @items.maxLength 100
+     */
+  desirableSkills?: string[];
+  /**
+     * @minLength 10
+     * @maxLength 3000
+     */
+  description?: string;
+  workFormat?: string;
+  /** @minimum 1 */
+  salaryMin?: number;
+  /** @minimum 1 */
+  salaryMax?: number;
+  salaryPeriod?: UpdateOwnedEmployerNeedBodySalaryPeriod;
+  salaryType?: UpdateOwnedEmployerNeedBodySalaryType;
+  /** @minimum 1 */
+  revision: number;
+  status?: UpdateOwnedEmployerNeedBodyStatus;
+};
+
+export type DeleteOwnedEmployerNeed200 = {
+  deleted: true;
+};
+
+export type ReadChangedConditionTraining200OptionsItem = {
+  id: string;
+  text: string;
+};
+
+export type ReadChangedConditionTraining200Level = typeof ReadChangedConditionTraining200Level[keyof typeof ReadChangedConditionTraining200Level];
+
+
+export const ReadChangedConditionTraining200Level = {
+  Junior: 'Junior',
+  Middle: 'Middle',
+  Senior: 'Senior',
+} as const;
+
+export type ReadChangedConditionTraining200 = {
+  title: string;
+  prompt: string;
+  options: ReadChangedConditionTraining200OptionsItem[];
+  qualificationImpact: false;
+  level: ReadChangedConditionTraining200Level;
+};
+
+export type AnswerChangedConditionTrainingBody = {
+  /** @maxLength 30 */
+  answer: string;
+};
+
+export type AnswerChangedConditionTraining200 = {
+  passed: boolean;
+  qualificationImpact: false;
+  explanation: string;
 };
 

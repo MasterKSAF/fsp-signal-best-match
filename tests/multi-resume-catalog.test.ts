@@ -461,7 +461,8 @@ test('request-local same-person résumé evaluation preserves every outcome and 
   const direct = rows.map(candidate=>({candidate,evaluation:evaluateMatch(need,candidate,false,now)}));
   const optimized = evaluateResumeCandidates(need,rows,false,now);
   assert.deepEqual(optimized,direct);
-  assert.equal(new Set(optimized.map(row=>row.evaluation)).size,5000,'Same-person alternatives share only pure calculation');
+  assert.equal(new Set(optimized.map(row=>row.evaluation.ranking)).size,5000,'Same-person alternatives retain the shared pure ranking calculation');
+  assert.ok(optimized.every(row=>row.evaluation.factorLedger!.factors.every(f=>f.versions.resumeId===row.candidate.resumeId&&f.versions.resumeRevision===(row.candidate.resumeRevision??null))),'Every ledger is bound to its exact CV');
   assert.deepEqual(rankMatches(selectMatchingResumes(optimized)),rankMatches(selectMatchingResumes(direct)));
   const changes: Partial<CatalogResume>[] = [{alias:'Different'}, {specialization:'Frontend / TypeScript'}, {verifiedGrade:'Junior'}, {verifiedScore:32}, {verifiedSkills:['Python']}, {stack:['Redis']}, {statedSkills:['Docker']}, {workFormat:'Офис'}, {salaryMin:400000}, {salaryMax:400000}, {salaryPeriod:'year'}, {salaryType:'net'}, {latestAssessmentAt:new Date(now.getTime()-181*86400000)}, {hasFspHistory:true}, {visibility:'private'}, {consentMatching:false}, {demoMode:true}, {assessmentEvidence:{attemptId:7,candidateId:1,programId:'backend-python',programVersion:'signal-backend-python-v6',grade:'Middle',score:83,submittedAt:'2026-10-05T12:00:00Z',state:'revoked',comparisonPolicy:'same-program-version-rubric-v1',rubricKey:'actual'}}, {skillEvidence:[{skill:'Python',candidateId:1,attemptId:8,programId:'backend-python',programVersion:'v6',templateId:null,templateVersion:null,criterionId:'api-contracts',criterion:'API',result:100,date:'2026-10-05T12:00:00Z',sourceType:'signal_assessment',limitation:null}]}];
   for(const patch of changes) {

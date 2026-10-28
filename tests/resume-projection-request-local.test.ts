@@ -86,10 +86,10 @@ test('fresh qualification input SQL binds whole ID arrays once and reads correct
   await services();process.env.SIGNAL_SKILL_MODULES_ENABLED='true';
   const {loadSkillQualificationInputs}=await import('../artifacts/api-server/src/lib/skill-module-service');
   const {loadCandidateQualificationInputs}=await import('../artifacts/api-server/src/lib/signal-resume');
-  const dialect=new PgDialect(),queries:{sql:string;params:unknown[]}[]=[],saved=[proof(17,'python'),proof(17,'sql')];let results:unknown[][]=[saved,[{evidenceId:saved[0]!.id}]];
+  const dialect=new PgDialect(),queries:{sql:string;params:unknown[]}[]=[],saved=[proof(17,'python'),proof(17,'sql')];let results:unknown[][]=[saved,[{evidenceId:saved[0]!.id}],[],[]];
   const reader={select(){return {from(){return {where(predicate:unknown){queries.push(dialect.sqlToQuery(predicate));return Promise.resolve(results.shift()!);}};}};}} as Parameters<typeof loadSkillQualificationInputs>[1];
-  const first=await loadSkillQualificationInputs([17,17,18],reader);assert.equal(queries.length,2);assert.deepEqual(queries[0]!.params,[[17,18]]);assert.deepEqual(queries[1]!.params,[saved.map(p=>p.id)]);assert.ok(queries.every(q=>q.sql.includes('any(')&&q.sql.includes('::int[]')));assert.deepEqual([...first.revokedIds],[saved[0]!.id]);
-  results=[saved,[]];const second=await loadSkillQualificationInputs([17],reader);assert.equal(queries.length,4);assert.equal(second.revokedIds.size,0,'new correction query on every request');
-  queries.length=0;results=[[attempt(1)],[{attemptId:1}]];const historical=await loadCandidateQualificationInputs([17,17],reader);assert.equal(queries.length,2);assert.deepEqual(queries[0]!.params,[[17],'submitted']);assert.deepEqual(queries[1]!.params,[[1]]);assert.deepEqual([...historical.correctedIds],[1]);
+  const first=await loadSkillQualificationInputs([17,17,18],reader);assert.equal(queries.length,4);assert.deepEqual(queries[0]!.params,[[17,18]]);assert.deepEqual(queries[1]!.params,[saved.map(p=>p.id)]);assert.ok(queries.every(q=>q.sql.includes('any(')&&q.sql.includes('::int[]')));assert.deepEqual([...first.revokedIds],[saved[0]!.id]);
+  results=[saved,[],[],[]];const second=await loadSkillQualificationInputs([17],reader);assert.equal(queries.length,8);assert.equal(second.revokedIds.size,0,'new correction query on every request');
+  queries.length=0;results=[[attempt(1)],[{attemptId:1}],[]];const historical=await loadCandidateQualificationInputs([17,17],reader);assert.equal(queries.length,3);assert.deepEqual(queries[0]!.params,[[17],'submitted']);assert.deepEqual(queries[1]!.params,[[1]]);assert.deepEqual([...historical.correctedIds],[1]);
   queries.length=0;assert.deepEqual((await loadCandidateQualificationInputs([],reader)).attempts,[]);assert.equal(queries.length,0);
 });

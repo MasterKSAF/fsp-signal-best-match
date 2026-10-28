@@ -3,11 +3,13 @@ import { hasMeaningfulRequiredSkills } from './employer-required-skills';
 import { compactFspSignal, emptyFspSignal, fspBonusForSignal, type FspRankingFacts } from './fsp-results';
 import type { SkillCategorySnapshot } from '@workspace/db';
 import { evaluateGradeRequirement, evaluateSkillRequirement, interpretSkillRequirements, type RequirementMode, type SkillRequirement } from './recruiting-requirements';
+import { buildMatchingFactorLedger, candidateQualificationFingerprint, type LedgerVersions } from './matching-factor-ledger';
 export type SignalGrade = "Junior" | "Middle" | "Senior";
 export type SalaryPeriod = "month" | "year";
 export type SalaryType = "gross" | "net";
 
 export type MatchNeed = {
+  requirementsRevision?: number | string;
   specialization: string;
   grade: SignalGrade;
   gradeMode?: RequirementMode;
@@ -24,6 +26,8 @@ export type MatchNeed = {
 };
 
 export type MatchCandidate = {
+  resumeId?: number;
+  resumeRevision?: number;
   userId: number;
   alias: string;
   specialization: string;
@@ -99,6 +103,8 @@ export type MatchFactor = {
   weight: number;
   effectiveWeight?: number;
   scope?: 'shared_fit' | 'within_comparable_group';
+  factorId?: string; reason?: string; state?: 'known' | 'unknown' | 'not_applicable'; normalizedValue?: number | null;
+  rawUnit?: string; baseWeight?: number; contribution?: number; evidenceRefs?: string[]; versions?: LedgerVersions;
 };
 
 export type SalaryCompatibility = "compatible" | "incompatible" | "unknown";
@@ -113,6 +119,7 @@ export type MatchEvaluation = {
   rankingScore: number;
   ranking: MatchRanking;
   factors: MatchFactor[];
+  factorLedger?: ReturnType<typeof buildMatchingFactorLedger>;
   evidence: MatchEvidence[];
   strengths: string[];
   gaps: string[];
@@ -351,21 +358,24 @@ export function evaluateMatch(
   const freshness = freshnessForNeed(candidate.latestAssessmentAt, now);
   ranking.freshnessBand = freshness.band;
   const salaryCompatibility = compareSalaryCompatibility(need, candidate);
-  const factors: MatchFactor[] = [
+  const factorLedger = buildMatchingFactorLedger([
     {
+      factorId: 'verified_skill_coverage', reason: 'Доля достаточных подтверждений по навыкам этого контекста.',
       name: "Подтверждённое покрытие навыков",
       score: verifiedSkillMatch,
-      weight: 0.625, scope: 'shared_fit',
+      weight: 0.625, scope: 'shared_fit', evidenceRefs:(candidate.skillEvidence??[]).filter(proof=>proof.candidateId===candidate.userId&&requiredSkills.some(skill=>canonicalSkillKey(skill)===canonicalSkillKey(proof.skill))).map(proof=>`${proof.sourceType}:${proof.evidenceId??proof.attemptId??'legacy'}:${proof.skill}`),
     },
     {
+      factorId: 'comparable_assessment_quality', reason: 'Только порядок внутри сопоставимой группы; вне общего балла.',
       name: "Результат сопоставимой проверки",
       score: relevantAssessmentEvidence,
-      weight: 0, scope: 'within_comparable_group',
+      weight: 0, scope: 'within_comparable_group', evidenceRefs:ranking.attemptId?[`assessment:${ranking.attemptId}:${ranking.programVersion}`]:[],
     },
-    { name: "Контекст работы", score: statedContextFit, weight: 0.1875, scope: 'shared_fit' },
-    { name: "Свежесть свидетельств", score: freshness.score, weight: 0.0625, scope: 'shared_fit' },
-    { name: "Совместимость зарплатных условий", score: salaryCompatibility === 'unknown' ? null : salaryCompatibility === 'compatible' ? 1 : 0, weight: 0.125, scope: 'shared_fit' },
-  ];
+    { factorId: 'work_context', reason: 'Совместимость указанного формата работы.', name: "Контекст работы", score: statedContextFit, weight: 0.1875, scope: 'shared_fit' },
+    { factorId: 'evidence_freshness', reason: 'Интервал давности релевантного свидетельства.', name: "Свежесть свидетельств", score: freshness.score, weight: 0.0625, scope: 'shared_fit' },
+    { factorId: 'salary_compatibility', reason: salaryCompatibility === 'unknown' ? 'Нет сопоставимой базы оплаты; фактор исключён.' : 'Совместимость условий без раскрытия приватных границ кандидата.', name: "Совместимость зарплатных условий", score: salaryCompatibility === 'unknown' ? null : salaryCompatibility === 'compatible' ? 1 : 0, weight: 0.125, scope: 'shared_fit' },
+  ], { algorithm: MATCH_ALGORITHM_VERSION, contextRevision: need.requirementsRevision ?? null, resumeId: candidate.resumeId ?? null, resumeRevision: candidate.resumeRevision ?? null, evidenceFingerprint: candidateQualificationFingerprint(candidate) });
+  const factors: MatchFactor[] = factorLedger.factors;
   // Raw test quality is exclusively a within-group ordering input. Unknown
   // salary is excluded, not a fictional mismatch or a qualification penalty.
   const shared = factors.filter(factor => factor.scope === 'shared_fit' && factor.score !== null);
@@ -374,7 +384,7 @@ export function evaluateMatch(
   // Canonical shared precision removes IEEE-754 ulp differences between
   // mathematically equal factor sums (e.g. a perfect unknown-salary profile
   // and a perfect compatible-salary profile). Raw test scores stay untouched.
-  const exactBaseScore = Number((100*shared.reduce((total,factor) => total+factor.score!*factor.weight,0)/knownWeight).toFixed(10));
+  const exactBaseScore = factorLedger.exactScore ?? 0;
   ranking.businessFitScore = exactBaseScore;
   const baseScore = Math.round(exactBaseScore);
   const fspBonus = fspBonusForSignal(candidate.fspSignal, candidate.demoMode);
@@ -427,6 +437,7 @@ export function evaluateMatch(
     rankingScore: exactBaseScore,
     ranking,
     factors,
+    factorLedger,
     evidence,
     strengths,
     gaps,

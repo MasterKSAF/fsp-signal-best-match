@@ -1,3 +1,4 @@
+import { overlayLegacyReviews } from './assessment-review';
 import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db, signalAssessmentAttemptsTable, signalAssessmentCorrectionsTable, signalCandidateProfilesTable, signalCandidateResumesTable, signalUsersTable, type SignalResumeSnapshot } from "@workspace/db";
 import { emptyResume, recommendResumeGrade, ResumeQuestionnaireSchema } from "./signal-resume-contract";
@@ -67,7 +68,7 @@ export async function loadCandidateQualificationInputs(userIds: readonly number[
   if (!userIds.length) return { attempts: [], correctedIds: new Set<number>() };
   const attempts = await reader.select().from(signalAssessmentAttemptsTable).where(and(sql`${signalAssessmentAttemptsTable.userId} = any(${sql.param([...new Set(userIds)])}::int[])`, eq(signalAssessmentAttemptsTable.status, "submitted")));
   const corrections = attempts.length ? await reader.select({ attemptId: signalAssessmentCorrectionsTable.attemptId }).from(signalAssessmentCorrectionsTable).where(sql`${signalAssessmentCorrectionsTable.attemptId} = any(${sql.param(attempts.map(a => a.id))}::int[])`) : [];
-  return { attempts, correctedIds: new Set(corrections.map(row => row.attemptId)) };
+  return { attempts, correctedIds: await overlayLegacyReviews(attempts.map(a=>a.id), new Set(corrections.map(row => row.attemptId)), reader) };
 }
 export async function recomputeCandidateResumes(userId: number, writer: ResumeWriter = db): Promise<CandidateResume[]> {
   if (writer === db) return db.transaction(tx => recomputeCandidateResumes(userId, tx));

@@ -76,3 +76,4 @@ output/
 *.cookie
 *.session
 *.session-journal
+**/.playwright-cli/

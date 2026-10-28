@@ -6,11 +6,21 @@ export type SkillLevel = 'Junior' | 'Middle' | 'Senior';
 export type SkillModuleCase = { id: string; competencyId: string; title: string; prompt: string; responseType: 'integer' | 'text' | 'choice'; options?: { id: string; text: string }[]; critical: boolean; templateId: string; templateVersion: number; contentFamilyId?: string; middleOutcome?: string; seniorOutcome?: string; levelRequirementId?: string };
 export type SkillModuleOracle = Record<string, { expected: string; explanation: string; rubricVersion: string; points: number; parts?: { expected: string; responseType: 'integer' | 'text' }[] }>;
 export type SkillModuleDecision = { score: number; passed: boolean; criticalComplete: boolean; competencies: { id: string; passed: boolean; critical: boolean }[]; rubricVersion: string; levelCoverage?: { requirementId: string; passed: boolean }[] };
+/** Immutable server-only archive; never project manifest sources or keys into candidate DTOs. */
+export const signalSkillBankReleasesTable = pgTable('signal_skill_bank_releases', {
+  contentHash: text('content_hash').primaryKey(), releaseId: text('release_id').notNull().unique(),
+  programVersion: text('program_version').notNull(), manifest: jsonb('manifest').notNull(),
+  sources: jsonb('sources').$type<Record<string, string>>().notNull(), attestation: jsonb('attestation').notNull(),
+  attestationHash: text('attestation_hash').notNull(), createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+export type SkillAttemptProvenance = { status: 'complete'; releaseId: string; contentHash: string; attestationHash: string; seed: string; variantHash: string };
 export const signalSkillAttemptsTable = pgTable('signal_skill_attempts', {
   id: serial('id').primaryKey(), userId: integer('user_id').notNull().references(() => signalUsersTable.id, { onDelete: 'cascade' }),
   resumeId: integer('resume_id').references(() => signalCandidateResumesTable.id, { onDelete: 'set null' }),
   skillId: text('skill_id').notNull(), level: text('level', { enum: ['Junior', 'Middle', 'Senior'] }).notNull(),
   programVersion: text('program_version').notNull(), status: text('status', { enum: ['active', 'submitted', 'expired'] }).notNull(),
+  bankReleaseHash: text('bank_release_hash').references(() => signalSkillBankReleasesTable.contentHash),
+  provenance: jsonb('provenance').$type<SkillAttemptProvenance>(),
   cases: jsonb('cases').$type<SkillModuleCase[]>().notNull(), oracles: jsonb('oracles').$type<SkillModuleOracle>().notNull(),
   answers: jsonb('answers').$type<Record<string, string>>().notNull().default({}), revision: integer('revision').notNull().default(1),
   policy: jsonb('policy').$type<{ durationMinutes: number; retryHours: number; maxDailyIssues: number; maxModuleDailyIssues: number; threshold: number; rubricVersion: string }>().notNull(),

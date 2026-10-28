@@ -1,3 +1,4 @@
+import { CodePractice } from './code-practice';
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { professionLabel } from "@/lib/employer-workspace-navigation";
@@ -155,6 +156,7 @@ export function CandidateMicrotasksPage() {
 
         </div>
       </header>
+      <CodePractice/>
       {jobId && <button className="button secondary" onClick={() => navigate("/candidate/microtasks")}>Все задания</button>}
       {query.isLoading && <p role="status">Загружаем задания…</p>}
       {query.isError && (

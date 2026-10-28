@@ -1,0 +1,22 @@
+import { Router,type IRouter } from 'express';
+import { z } from 'zod';
+import { and,eq,desc } from 'drizzle-orm';
+import { db,signalSharedSelectionsTable as shares,signalCompanyMembersTable as members,signalGuestPermissionsTable as permissions } from '@workspace/db';
+import { featureHandler as h,featureUser,FeatureError } from '../lib/competitive-http';
+import { appointReviewer,companyOwner,createSharedSelection,readSharedSelection,commentSharedSelection,revokeSharedSelection,setGuestPermission } from '../lib/shared-selection';
+import { SelectionContextRefSchema } from '../lib/selection-context-contract';
+const router:IRouter=Router(),id=z.string().uuid(),n=z.number().int().positive();
+const limits=new Map<string,{n:number;until:number}>();
+function guestAttempt(ip:string){const now=Date.now();if(limits.size>5000)for(const [k,v]of limits)if(v.until<=now)limits.delete(k);const row=limits.get(ip);if(row&&row.until>now){if(++row.n>60)throw new FeatureError(429,'guest_rate','Повторите через минуту.');}else{if(limits.size>=10000)throw new FeatureError(429,'guest_rate','Повторите позже.');limits.set(ip,{n:1,until:now+60000});}}
+router.get('/employer/shared-selections',h(async(req,res)=>{const u=await featureUser(req,'employer'),c=await companyOwner(u);const rows=await db.select({id:shares.id,publicPurpose:shares.publicPurpose,revision:shares.revision,expiresAt:shares.expiresAt,revokedAt:shares.revokedAt,contextType:shares.contextType,contextId:shares.contextId,contextRevision:shares.contextRevision}).from(shares).where(eq(shares.companyId,c.id)).orderBy(desc(shares.createdAt)).limit(100);res.json({shares:rows,members:await db.select({userId:members.userId,active:members.active,revision:members.revision}).from(members).where(eq(members.companyId,c.id))});}));
+router.put('/employer/shared-selection-members',h(async(req,res)=>{const u=await featureUser(req,'employer'),v=z.object({userId:n,active:z.boolean(),revision:n.optional()}).strict().parse(req.body);res.json(await appointReviewer(u,v.userId,v.active,v.revision));}));
+router.post('/employer/shared-selections',h(async(req,res)=>{const u=await featureUser(req,'employer'),v=z.object({context:SelectionContextRefSchema,publicPurpose:z.string().trim().min(8).max(200),memberIds:z.array(n).max(20),guest:z.boolean(),hours:z.number().int().min(1).max(168)}).strict().parse(req.body);res.status(201).json(await createSharedSelection(u,v));}));
+router.get('/shared-selections/:id',h(async(req,res)=>{res.json(await readSharedSelection(id.parse(req.params.id),{user:await featureUser(req,'employer')}));}));
+const note=z.object({candidateId:n,resumeId:n,resumeRevision:n,reaction:z.enum(['consider','discuss','pass']),note:z.string().trim().max(1500)}).strict();
+router.post('/shared-selections/:id/comments',h(async(req,res)=>{res.status(201).json(await commentSharedSelection(id.parse(req.params.id),{user:await featureUser(req,'employer')},note.parse(req.body)));}));
+router.post('/employer/shared-selections/:id/revoke',h(async(req,res)=>{res.json(await revokeSharedSelection(await featureUser(req,'employer'),id.parse(req.params.id),z.object({revision:n}).strict().parse(req.body).revision));}));
+router.post('/guest/shared-selections/:id/read',h(async(req,res)=>{guestAttempt(req.ip??'unknown');const {token}=z.object({token:z.string().min(40).max(60)}).strict().parse(req.body);res.json(await readSharedSelection(id.parse(req.params.id),{token}));}));
+router.post('/guest/shared-selections/:id/comments',h(async(req,res)=>{guestAttempt(req.ip??'unknown');const {token,...v}=note.extend({token:z.string().min(40).max(60)}).strict().parse(req.body);res.status(201).json(await commentSharedSelection(id.parse(req.params.id),{token},v));}));
+router.get('/candidate/guest-review-permissions/:resumeId',h(async(req,res)=>{const u=await featureUser(req,'candidate'),resumeId=z.coerce.number().int().positive().parse(req.params.resumeId);const [v]=await db.select().from(permissions).where(and(eq(permissions.resumeId,resumeId),eq(permissions.userId,u.id)));res.json({resumeId,allowed:v?.allowed??false});}));
+router.put('/candidate/guest-review-permissions/:resumeId',h(async(req,res)=>{const u=await featureUser(req,'candidate'),resumeId=z.coerce.number().int().positive().parse(req.params.resumeId),{allowed}=z.object({allowed:z.boolean()}).strict().parse(req.body);res.json(await setGuestPermission(u,resumeId,allowed));}));
+export default router;

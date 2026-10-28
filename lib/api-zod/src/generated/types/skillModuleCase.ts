@@ -19,4 +19,7 @@ export interface SkillModuleCase {
   /** @minimum 1 */
   templateVersion: number;
   seniorOutcome?: string;
+  contentFamilyId?: string;
+  middleOutcome?: string;
+  levelRequirementId?: string;
 }

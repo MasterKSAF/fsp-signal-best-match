@@ -68,8 +68,12 @@ export function evaluateResumeCandidates<T extends MatchCandidate>(
     const identical = variants.find((row) =>
       sameFacts(row.candidate, candidate),
     );
-    const evaluation =
-      identical?.evaluation ?? evaluateMatch(need, candidate, demoMode, now);
+    // Reuse the existing pure calculation, then bind explanation provenance to
+    // this exact CV. A shared object must never retain another CV's revision.
+    const base=identical?.evaluation;
+    const ledger=base?.factorLedger;
+    const factorLedger=ledger?{...ledger,factors:ledger.factors.map(f=>({...f,versions:{...f.versions,resumeId:candidate.resumeId??null,resumeRevision:candidate.resumeRevision??null}}))}:undefined;
+    const evaluation = base ? {...base,...(factorLedger?{factorLedger,factors:factorLedger.factors}:{})} : evaluateMatch(need, candidate, demoMode, now);
     if (!identical) {
       variants.push({ candidate, evaluation });
       personFacts.set(candidate.userId, variants);

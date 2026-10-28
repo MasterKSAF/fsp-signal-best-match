@@ -6,13 +6,14 @@
  * OpenAPI spec version: 0.7.0
  */
 import type { SkillModuleAttemptAnswers } from './skillModuleAttemptAnswers';
-import type { SkillModuleAttemptDecision } from './skillModuleAttemptDecision';
 import type { SkillModuleAttemptFeedbackItem } from './skillModuleAttemptFeedbackItem';
 import type { SkillModuleAttemptLevel } from './skillModuleAttemptLevel';
 import type { SkillModuleAttemptPolicy } from './skillModuleAttemptPolicy';
+import type { SkillModuleAttemptProvenance } from './skillModuleAttemptProvenance';
 import type { SkillModuleAttemptRevocation } from './skillModuleAttemptRevocation';
 import type { SkillModuleAttemptStatus } from './skillModuleAttemptStatus';
 import type { SkillModuleCase } from './skillModuleCase';
+import type { SkillReviewDecisionBasis } from './skillReviewDecisionBasis';
 
 export interface SkillModuleAttempt {
   id: number;
@@ -30,9 +31,9 @@ export interface SkillModuleAttempt {
   expiresAt: string;
   /** @nullable */
   submittedAt?: string | null;
-  /** @nullable */
-  decision?: SkillModuleAttemptDecision;
+  decision?: SkillReviewDecisionBasis | null;
   feedback?: SkillModuleAttemptFeedbackItem[];
   /** @nullable */
   revocation?: SkillModuleAttemptRevocation;
+  provenance?: SkillModuleAttemptProvenance;
 }

@@ -1,3 +1,4 @@
+import { overlayLegacyReviews } from './assessment-review';
 import { and, eq } from 'drizzle-orm';
 import { db, signalAssessmentAttemptsTable as attempts, signalAssessmentCorrectionsTable as corrections } from '@workspace/db';
 import { scoreAttempt } from './assessment-bank';
@@ -18,7 +19,7 @@ export async function loadSkillEvidence(candidate: Pick<MatchCandidate, 'userId'
   const [attempt] = await db.select().from(attempts).where(and(eq(attempts.userId, candidate.userId), eq(attempts.verified, true), eq(attempts.grade, candidate.verifiedGrade), eq(attempts.submittedAt, candidate.latestAssessmentAt))).limit(1);
   if (!attempt || !(candidate.specialization === 'Backend / Python' ? attempt.programId.includes('backend-python') : candidate.specialization === 'Frontend / TypeScript' ? attempt.programId.includes('frontend-typescript') : false)) return candidate.verifiedSkills.map(legacy);
   const [correction] = await db.select({ id: corrections.id }).from(corrections).where(eq(corrections.attemptId, attempt.id)).limit(1);
-  if (correction) return [];
+  if ((await overlayLegacyReviews([attempt.id],new Set(correction?[attempt.id]:[]))).has(attempt.id)) return [];
   const evaluated = scoreAttempt(attempt.cases, attempt.oracles, attempt.answers);
   return candidate.verifiedSkills.map(skill => {
     const criterion = evaluated.evidence.find(item => item.score === 100 && [item.skill, item.criterionId ?? "", ...(criterionSkills[item.skill] ?? [])].some(label => canonicalSkillKey(label) === canonicalSkillKey(skill)));

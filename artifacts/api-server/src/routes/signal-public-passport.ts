@@ -1,0 +1,18 @@
+import {Router,type IRouter} from 'express';
+import {z} from 'zod';
+import {eq,desc} from 'drizzle-orm';
+import QRCode from 'qrcode';
+import {db,signalPublicPassportsTable as passports,signalPassportKeysTable as keys} from '@workspace/db';
+import {featureHandler as h,featureUser} from '../lib/competitive-http';
+import {availablePublicClaims,previewPublicPassport,issuePublicPassport,revokePublicPassport,readPublicPassport,passportIssuer} from '../lib/public-passport';
+import {PassportDocumentSchema} from '../lib/passport-signature';
+const router:IRouter=Router(),id=z.string().uuid();
+router.get('/me/public-passports',h(async(req,res)=>{const u=await featureUser(req,'candidate');const rows=await db.select({id:passports.id,state:passports.state,replacementId:passports.replacementId,createdAt:passports.createdAt}).from(passports).where(eq(passports.userId,u.id)).orderBy(desc(passports.createdAt)).limit(100);res.json({availableClaims:await availablePublicClaims(u.id),passports:rows});}));
+router.post('/me/public-passports/preview',h(async(req,res)=>{const u=await featureUser(req,'candidate'),{skillIds}=z.object({skillIds:z.array(z.string().min(1).max(80)).min(1).max(12)}).strict().parse(req.body);res.json(await previewPublicPassport(u.id,skillIds));}));
+router.post('/me/public-passports',h(async(req,res)=>{const u=await featureUser(req,'candidate'),input=z.object({previewId:id,acceptPublication:z.literal(true),days:z.number().int().min(1).max(90),replaceId:id.optional()}).strict().parse(req.body);res.status(201).json(await issuePublicPassport(u.id,input));}));
+router.post('/me/public-passports/:id/revoke',h(async(req,res)=>{const u=await featureUser(req,'candidate');res.json(await revokePublicPassport(u.id,id.parse(req.params.id)));}));
+router.get('/public/passport-keys',h(async(_req,res)=>{const issuer=passportIssuer();const trusted=await db.select().from(keys).where(eq(keys.issuer,issuer));res.json({issuer,algorithm:'Ed25519',keys:trusted.map(k=>({kid:k.kid,publicKeyPem:k.publicKeyPem,state:k.state}))});}));
+router.get('/public/passports/:id',h(async(req,res)=>{res.json(await readPublicPassport(id.parse(req.params.id)));}));
+router.post('/public/passports/verify',h(async(req,res)=>{const document=PassportDocumentSchema.parse(req.body);res.json(await readPublicPassport(document.body.id,document));}));
+router.get('/public/passports/:id/qr',h(async(req,res)=>{const passportId=id.parse(req.params.id),result=await readPublicPassport(passportId);if(result.status!=='active'){res.status(410).json({status:result.status});return;}const url=`${passportIssuer()}/verify#${passportId}`;res.type('image/png').send(await QRCode.toBuffer(url,{width:220,margin:2,errorCorrectionLevel:'M'}));}));
+export default router;

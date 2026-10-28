@@ -1,6 +1,7 @@
+import { overlaySkillReviews, overlayLegacyReviews } from './assessment-review';
 import { createHash } from 'node:crypto';
 import { and, eq, inArray, sql } from 'drizzle-orm';
-import { db, signalSkillCategoriesTable, signalSkillCorrectionsTable, signalSkillEvidenceTable, signalAssessmentAttemptsTable, signalAssessmentCorrectionsTable, type signalCandidateResumesTable } from '@workspace/db';
+import { db, signalSkillCategoriesTable, signalSkillCorrectionsTable, signalSkillEvidenceTable, signalAssessmentAttemptsTable, signalAssessmentCorrectionsTable, signalAssessmentHeadsTable as reviewHeads, signalAssessmentReviewDecisionsTable as reviewDecisions, type signalCandidateResumesTable } from '@workspace/db';
 import { getSkillQualification, type SkillQualificationInputs, type SkillQualificationTarget } from './skill-module-qualification';
 import { getResumeQualification } from './signal-resume-qualification';
 import type { SafeSkillEvidence } from './signal-matching';
@@ -17,20 +18,22 @@ export async function loadSkillQualificationInputs(userIds: readonly number[], r
   if (!skillModulesEnabled() || !userIds.length) return { evidence: [], revokedIds: new Set() };
   const evidence = await reader.select().from(signalSkillEvidenceTable).where(sql`${signalSkillEvidenceTable.userId} = any(${sql.param([...new Set(userIds)])}::int[])`);
   const corrections = evidence.length ? await reader.select({ evidenceId: signalSkillCorrectionsTable.evidenceId }).from(signalSkillCorrectionsTable).where(sql`${signalSkillCorrectionsTable.evidenceId} = any(${sql.param(evidence.map(e => e.id))}::int[])`) : [];
-  return { evidence, revokedIds: new Set(corrections.map(c => c.evidenceId)) };
+  return overlaySkillReviews(evidence, new Set(corrections.map(c => c.evidenceId)), reader);
 }
 export async function skillAttemptRevocation(attemptId: number, userId: number, reader: Reader = db) {
+  const [head] = await reader.select().from(reviewHeads).where(and(eq(reviewHeads.kind,'skill'),eq(reviewHeads.attemptId,attemptId),eq(reviewHeads.userId,userId))).limit(1);
+  if(head?.validity==='invalid'){const [review]=head.decisionId?await reader.select({explanation:reviewDecisions.explanation}).from(reviewDecisions).where(eq(reviewDecisions.id,head.decisionId)).limit(1):[];return {reason:review?.explanation??'Результат пересмотрен.',date:head.updatedAt.toISOString()};}
   const [row] = await reader.select({ reason: signalSkillCorrectionsTable.reason, date: signalSkillCorrectionsTable.createdAt })
     .from(signalSkillEvidenceTable).innerJoin(signalSkillCorrectionsTable, eq(signalSkillCorrectionsTable.evidenceId, signalSkillEvidenceTable.id))
     .where(and(eq(signalSkillEvidenceTable.userId, userId), eq(signalSkillEvidenceTable.attemptId, attemptId))).limit(1);
-  return row ? { reason: row.reason, date: row.date.toISOString() } : null;
+  return row && !(head?.validity==='valid' && +head.updatedAt>+row.date) ? { reason: row.reason, date: row.date.toISOString() } : null;
 }
 export async function getCurrentResumeWorkspaceQualification(resume: typeof signalCandidateResumesTable.$inferSelect, reader: Reader = db) {
   const inputs = await loadSkillQualificationInputs([resume.userId], reader);
   const modular = getSkillQualification(resume, inputs);
   const attempts = await reader.select().from(signalAssessmentAttemptsTable).where(and(eq(signalAssessmentAttemptsTable.userId, resume.userId), eq(signalAssessmentAttemptsTable.status, 'submitted')));
   const corrected = attempts.length ? await reader.select({ attemptId: signalAssessmentCorrectionsTable.attemptId }).from(signalAssessmentCorrectionsTable).where(inArray(signalAssessmentCorrectionsTable.attemptId, attempts.map(a => a.id))) : [];
-  const historical = getResumeQualification(resume, attempts, new Set(corrected.map(c => c.attemptId)));
+  const historical = getResumeQualification(resume, attempts, await overlayLegacyReviews(attempts.map(a=>a.id), new Set(corrected.map(c => c.attemptId)), reader));
   const rank = { Junior: 1, Middle: 2, Senior: 3 };
   const useModular = modular.verifiedGrade && (!historical.verifiedGrade || rank[modular.verifiedGrade] >= rank[historical.verifiedGrade]);
   return { ...modular, category: useModular ? modular.category : null, verifiedGrade: useModular ? modular.verifiedGrade : historical.verifiedGrade, source: useModular ? 'skill_matrix' : historical.source,

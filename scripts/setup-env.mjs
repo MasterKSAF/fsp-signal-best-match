@@ -4,6 +4,10 @@ if (fs.existsSync('.env')) {
   console.log('.env already exists; preserved.');
 } else {
   const template = fs.readFileSync('.env.example', 'utf8');
-  fs.writeFileSync('.env', template.replace('replace-with-random-64-character-secret-before-sharing', randomBytes(32).toString('hex')), { mode: 0o600 });
-  console.log('Created local .env with a random verification secret.');
+  const databasePassword = randomBytes(32).toString('hex');
+  const generated = template
+    .replaceAll('replace-with-random-64-character-database-password', databasePassword)
+    .replace('replace-with-random-64-character-secret-before-sharing', randomBytes(32).toString('hex'));
+  fs.writeFileSync('.env', generated, { mode: 0o600 });
+  console.log('Created local .env with random database and verification secrets.');
 }

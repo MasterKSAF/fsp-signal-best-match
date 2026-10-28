@@ -5,11 +5,11 @@
  * FSP SIGNAL candidate assessment, explainable matching, and invitations API
  * OpenAPI spec version: 0.7.0
  */
-import type { Invitation } from './invitation';
+import type { CandidateInvitation } from './candidateInvitation';
 import type { InvitationDecisionResultDisclosedContacts } from './invitationDecisionResultDisclosedContacts';
 
 export interface InvitationDecisionResult {
-  invitation: Invitation;
+  invitation: CandidateInvitation;
   /** @nullable */
   disclosedContacts?: InvitationDecisionResultDisclosedContacts;
 }

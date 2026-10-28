@@ -16,3 +16,12 @@ local-backup
 **/__pycache__
 **/*.pyc
 **/*.pyo
+**/.playwright-cli
+**/*.pem
+**/*.key
+**/*.pfx
+**/*.p12
+**/*.cookie
+**/*.session
+**/*.dump
+**/*.backup

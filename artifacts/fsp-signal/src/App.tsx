@@ -1,3 +1,7 @@
+import { AtsIntegration } from './components/ats-integration';
+import { PublicPassportPage } from './components/public-passport';
+import { SharedReviewPage } from './components/shared-selection';
+import { InvitationInsights } from './components/invitation-insights';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryClient } from '@/lib/query-client';
@@ -33,7 +37,7 @@ import { InlineInfo } from '@/components/inline-info';
 import { SkillChips, employerSkillChips } from '@/components/skill-chip';
 import { MyResumesPage, ResumeDocumentButton, ResumeSaveRegistration, useResumeSaveBusy } from '@/components/my-resumes';
 import { CandidateInvitationsPage } from '@/components/candidate-invitations';
-import { InvitationCompanyCard, InvitationContextLabel, type InvitationCompanyView, type InvitationContextView } from '@/components/invitation-context';
+import { InvitationCompanyCard, InvitationContextLabel, InvitationResponse, type InvitationCompanyView, type InvitationContextView } from '@/components/invitation-context';
 import { CandidateWorkspaceOverview } from '@/components/workspace-overview';
 import { clearWorkspaceDrafts, readWorkspaceDraft, writeWorkspaceDraft, workspaceDraftKey } from '@/lib/workspace-drafts';
 import { CandidateResumeSection } from '@/components/candidate-resume';
@@ -378,6 +382,7 @@ function InvitationCard({ invitation: i, candidate, onDecision, onRevoke, pendin
   const statusNames: Record<string, string> = { sent: 'Ожидает ответа', viewed: 'Просмотрено', accepted: 'Принято', declined: 'Отклонено', withdrawn: 'Отозвано', expired: 'Истекло' };
   return <article className="panel invitation-card" data-testid={`card-invitation-${i.id}`}><div className="invitation-card-top"><div><span className={candidate ? "eyebrow" : "outgoing-candidate-name"}>{candidate ? i.companyName : i.candidateAlias}</span><h2>{i.title}</h2></div><Badge tone={i.status === 'accepted' ? 'verified' : i.status === 'declined' ? 'muted' : 'accent'}>{statusNames[i.status] || i.status}</Badge></div>
     <InvitationContextLabel context={i.context} candidate={candidate}/><p className="invitation-message">{i.message}</p>{candidate && <InvitationCompanyCard company={i.company} fallbackName={i.companyName} fallbackContact={i.companyContact}/>}<div className="invitation-terms"><span><Banknote size={16} /> <b className="mono">{i.salaryMin.toLocaleString('ru-RU')}–{i.salaryMax.toLocaleString('ru-RU')} ₽</b> / {i.salaryPeriod === 'month' ? 'мес.' : 'год'} · {i.salaryType === 'gross' ? 'до вычета' : 'на руки'}</span><span><BriefcaseBusiness size={15} /> {i.workFormat}</span></div><div className="interest-reason"><b>Почему интерес:</b> {i.reason}</div>
+    <InvitationResponse invitation={i}/>
     {candidate && i.status === 'accepted' && i.contactShared && <div className="contact-release"><UnlockMark /><div><b>Контакты открыты для {i.companyName}</b>{disclosed ? <span>{disclosed.displayName || ''}{disclosed.email ? ` · ${disclosed.email}` : ''}{disclosed.phone ? ` · ${disclosed.phone}` : ''}</span> : <span>Вы дали согласие на передачу данных этой компании. Контактные данные можно обновить в паспорте.</span>}<button className="button text-button" disabled={pending} onClick={() => onRevoke?.(i.id)} data-testid={`button-revoke-contact-${i.id}`}>Отозвать дальнейший доступ</button></div></div>}
     {candidate && i.status === 'accepted' && !i.contactShared && <div className="contact-release"><LockKeyhole size={16} /><div><b>Доступ к контактам отозван</b><span>Компания больше не может запрашивать ваши контакты через Signal.</span></div></div>}
     {candidate && (i.status === 'sent' || i.status === 'viewed') && <div className="decision-row"><p><LockKeyhole size={15} /> При принятии контакты будут переданы только этой компании.</p><div><button className="button secondary" disabled={pending} onClick={() => onDecision?.(i.id, 'decline')} data-testid={`button-decline-${i.id}`}>Отклонить</button><button className="button primary" disabled={pending} onClick={() => onDecision?.(i.id, 'accept')} data-testid={`button-accept-${i.id}`}>Принять и открыть контакты <ArrowRight size={15} /></button></div></div>}
@@ -476,7 +481,7 @@ function EmployerInvitations() {
   if (query.isError) return <ErrorState retry={() => query.refetch()} />;
   const invitations = query.data || [];
   const retract = (id: number) => withdraw.mutate({ id }, { onSuccess: () => qc.invalidateQueries({ queryKey: getListEmployerInvitationsQueryKey() }) });
-  return <><PageTitle eyebrow="ДИАЛОГИ" title="Исходящие приглашения" intro="Отслеживайте решения кандидатов. Контакты раскрываются только после принятия предложения." />
+  return <><PageTitle eyebrow="ДИАЛОГИ" title="Исходящие приглашения" intro="Отслеживайте решения кандидатов. Контакты раскрываются только после принятия предложения." /><InvitationInsights audience="employer" contexts={invitations.flatMap(i=>i.context&&i.context.id?[{type:i.context.type,id:i.context.id,title:i.context.title}]:[])}/>
     {!invitations.length ? <EmptyState title="Вы ещё не отправляли приглашений" body="Откройте подбор, сравните навыки и опыт и подготовьте персональное предложение." action={<Link className="button primary" href="/employer/selection" data-testid="link-empty-matches">К подбору <ArrowRight size={15} /></Link>} /> : <div className="invitation-list">{invitations.map(i => <div key={i.id} id={`employer-invitation-${i.id}`} tabIndex={selectedId === i.id ? -1 : undefined} aria-label={selectedId === i.id ? 'Выбранное приглашение' : undefined}><InvitationCard invitation={i} candidate={false} /><div className="outgoing-controls">{i.status === 'accepted' && i.contactShared && <EmployerContact id={i.id} />}{i.status === 'accepted' && !i.contactShared && <div className="contact-release"><LockKeyhole size={16} /><span>Кандидат отозвал доступ к контактам.</span></div>} {(i.status === 'sent' || i.status === 'viewed') && <button className="button text-button" disabled={withdraw.isPending} onClick={() => retract(i.id)} data-testid={`button-withdraw-${i.id}`}>Отозвать приглашение</button>}</div></div>)}</div>}
   </>;
 }
@@ -506,7 +511,7 @@ function SettingsPage({ theme }: { theme: ReturnType<typeof useThemePreference> 
     <section className="panel settings-panel" data-accent="tools"><div className="settings-icon"><Sparkles size={20} /></div><div className="settings-content"><h2>Анимации<InlineInfo>Настройка действует на этом устройстве.</InlineInfo></h2><div className="motion-options">{([['system', 'По системе'], ['reduced', 'Уменьшенные'], ['off', 'Выключены']] as const).map(([key, label]) => <button key={key} className={`motion-option ${motion === key ? 'selected' : ''}`} aria-pressed={motion === key} onClick={() => setMotionPreference(key)} data-testid={`motion-${key}`}>{label}</button>)}</div><div className="motion-speed-control"><div className="motion-speed-heading"><label htmlFor="motion-speed">Скорость анимаций</label><InlineInfo label="Скорость анимаций: подробнее">Скорость действует только на оформление. Таймеры проверок и сроки сообщений идут в реальном времени.</InlineInfo><output htmlFor="motion-speed" aria-live="polite">{speed === 0 ? 'Выключены' : `${speed.toLocaleString('ru-RU')}×`}</output></div><input id="motion-speed" type="range" min="0" max="5" step="0.25" value={speed} onChange={event => setSpeed(Number(event.target.value))} aria-valuetext={speed === 0 ? 'Выключены' : `${speed} от нормальной скорости`} aria-describedby="motion-speed-description" /><div className="motion-speed-scale"><span>0 — без движения</span><button type="button" className="text-link" onClick={() => setSpeed(1)}>Вернуть 1×</button><span>5×</span></div><p id="motion-speed-description" className="sr-only" role="status">{effective === 'off' ? 'Движение выключено. Все действия и сообщения доступны.' : effective === 'reduced' ? systemReduced ? 'Система просит уменьшить движение: декоративные циклы выключены.' : 'Уменьшенное движение: декоративные циклы выключены.' : 'Скорость применяется к оформлению. Таймеры экзамена и сроки сообщений идут в реальном времени.'}</p></div></div></section>
 
     </>}
-    {tab==='company' && <div className="settings-company"><CompanyPage embedded/></div>}
+    {tab==='company' && <div className="settings-company"><CompanyPage embedded/><AtsIntegration/></div>}
     </div></>;
 }
 
@@ -525,6 +530,8 @@ function RouteContent({ theme }: { theme: ReturnType<typeof useThemePreference> 
   const [location] = useLocation();
   const session = useGetCurrentUser({ query: { retry: false, queryKey: getGetCurrentUserQueryKey(), enabled: location !== '/' && location !== '/about' } });
   const user = currentAuthUser(session.data, session.error);
+  if (location === '/review') return <SharedReviewPage/>;
+  if (location === '/verify') return <PublicPassportPage/>;
   const isHome = location === '/';
   if (location === '/auth' && session.isLoading) return <LoadingState label="Проверяем сессию"/>;
   if (location === '/auth' && user) return <AuthenticatedEntryRedirect role={user.role}/>;
@@ -572,8 +579,8 @@ function Router() {
   const user = currentAuthUser(session.data, session.error);
   useEffect(() => { void expireRejectedAuthQuery(qc, getGetCurrentUserQueryKey(), session.error).then(expired => { if (expired) clearWorkspaceDrafts(); }); }, [qc, session.error]);
   useMotionPreference();
-  const isPublic = location === '/' || location === '/auth' || location === '/about';
-  return <ResumeSelectionProvider key={user?.id ?? "visitor"} userId={user?.role === 'candidate' ? user.id : null}><AppNavigationProvider userId={user?.id} role={user?.role}><ErrorBoundary resetKey={location}><RouteContent theme={theme} /><SignalConsultant key={user?.id ?? 'visitor'} role={isPublic ? undefined : user?.role} location={location} onOpenAuth={() => { if (location === '/' || location === '/auth') window.dispatchEvent(new CustomEvent('signal-open-auth')); else navigate('/auth'); }} /><CelebrationHost /></ErrorBoundary></AppNavigationProvider></ResumeSelectionProvider>;
+  const isPublic = location === '/' || location === '/auth' || location === '/about' || location === '/review' || location === '/verify';
+  return <ResumeSelectionProvider key={user?.id ?? "visitor"} userId={user?.role === 'candidate' ? user.id : null}><AppNavigationProvider userId={user?.id} role={user?.role}><ErrorBoundary resetKey={location}><RouteContent theme={theme} />{!['/review','/verify'].includes(location)&&<SignalConsultant key={user?.id ?? 'visitor'} role={isPublic ? undefined : user?.role} location={location} onOpenAuth={() => { if (location === '/' || location === '/auth') window.dispatchEvent(new CustomEvent('signal-open-auth')); else navigate('/auth'); }} />}<CelebrationHost /></ErrorBoundary></AppNavigationProvider></ResumeSelectionProvider>;
 }
 function App() {
   return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;

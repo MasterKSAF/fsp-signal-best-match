@@ -20,41 +20,75 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdaptiveSession,
   AddressedContact,
+  AnswerAdaptiveExperimentBody,
+  AnswerChangedConditionTraining200,
+  AnswerChangedConditionTrainingBody,
   ApiError,
   ApiErrorResponse,
   AppealEmployerRestriction200,
   AppealEmployerRestrictionBody,
   ApplyForJobInput,
+  ApplyPdfImport200,
+  ApplyPdfImportBody,
+  ApplyRequirementPreview200,
+  ApplyRequirementPreview409,
+  ApplyRequirementPreviewBody,
+  AppointSharedSelectionReviewer200,
+  AppointSharedSelectionReviewerBody,
   AssessmentAnswersInput,
+  AssessmentAppeal,
   AssessmentAttempt,
   AssessmentProgram,
   AssessmentResult,
   AssessmentStartInput,
   AuthSession,
+  CancelPdfImport200,
   CandidateCatalog,
   CandidateEvidenceRegistry,
+  CandidateInvitation,
   CandidateProfile,
   CandidateProfileInput,
   CandidateProfileRevisionConflict,
   CandidateResume,
   CandidateResumeInput,
   CatalogCandidate,
+  CheckEmployerSelectionAccess200,
+  CheckEmployerSelectionAccessBody,
   CloseResearchStudy200,
+  CodePractice,
+  CommentEmployeeSharedSelection201,
+  CommentEmployeeSharedSelectionBody,
+  CommentGuestSharedSelection201,
+  CommentGuestSharedSelectionBody,
   CompanyInput,
   CompanyResult,
+  CompareEmployerSelection200,
+  CompareEmployerSelectionBody,
+  CompareOwnOfferCompatibilityBody,
+  CompareOwnedOfferCompatibilityBody,
   CompareResumePairParams,
+  CompetitiveApiError,
+  CompetitiveRevisionInput,
   ComplaintInput,
+  ConfigureSelectionWatch200,
+  ConfigureSelectionWatchBody,
   ContactDisclosure,
+  CreateAdaptiveExperimentBody,
   CreateOwnedResume,
+  CreateOwnedSharedSelection201,
+  CreateOwnedSharedSelectionBody,
   CreateResearchStudy201,
   DecideComplaint200,
   DecideEmployerAppeal200,
   DecideEmployerAppealBody,
   DecideMicrotaskInput,
   DeleteCandidateAvatar200,
+  DeleteOwnedEmployerNeed200,
   DemoSessionInput,
   DemoSummary,
+  DisableOwnedAtsIntegration200,
   EmailVerificationInput,
   EmployerNeed,
   EmployerNeedInput,
@@ -104,6 +138,9 @@ import type {
   InvitationDecisionInput,
   InvitationDecisionResult,
   InvitationInput,
+  IssueCodePracticeBody,
+  IssueOwnPublicPassport201,
+  IssueOwnPublicPassportBody,
   JobApplication,
   JobInput,
   JobPublication,
@@ -114,10 +151,18 @@ import type {
   ListCompanyMicrotaskRecipientsParams,
   ListContactPermissions200Item,
   ListEmployerRestrictions200,
+  ListExpertAssessmentAppeals200,
+  ListExpertAssessmentAppealsParams,
   ListMicrotaskEligibleCandidatesParams,
   ListMyMicrotasks200,
   ListMyMicrotasksParams,
+  ListOwnAssessmentAppeals200,
+  ListOwnCodePractice200,
   ListOwnComplaints200,
+  ListOwnPublicPassports200,
+  ListOwnedSelectionContexts200,
+  ListOwnedSharedSelections200,
+  ListPublicPassportKeys200,
   ListResearchStudies200,
   ListSharedMicrotaskEvidence200Item,
   ListSharedMicrotaskEvidenceParams,
@@ -125,6 +170,10 @@ import type {
   MatchCandidate,
   MatchExplanation,
   Message,
+  MessageExpertAssessmentAppeal200,
+  MessageExpertAssessmentAppealBody,
+  MessageOwnAssessmentAppeal200,
+  MessageOwnAssessmentAppealBody,
   MicrotaskAnswerPage,
   MicrotaskEditInput,
   MicrotaskEligibleResumePage,
@@ -134,25 +183,81 @@ import type {
   MicrotaskSubscription,
   MicrotaskTemplate,
   ModerationDecisionInput,
+  OfferCompatibility,
+  OfferPreferencesRead,
+  OpenOwnAssessmentAppealBody,
   OpportunityError,
   OpportunityMessage,
   OwnedAccount,
   OwnedResume,
   OwnedResumeList,
+  PdfImportDraft,
+  PreviewOwnPublicPassport200,
+  PreviewOwnPublicPassportBody,
+  PreviewRequirementRestoreBody,
+  PreviewRequirementsBody,
+  ProposeSelectionRefinement200,
+  PublicPassportVerification,
   QualityReport,
+  ReadAdaptiveConfiguration200,
+  ReadChangedConditionTraining200,
+  ReadCodePracticeConfiguration200,
+  ReadEmployeeSharedSelection200,
+  ReadEmployerInvitationAnalytics200,
+  ReadEmployerInvitationAnalyticsParams,
+  ReadEmployerSelectionResume200,
+  ReadEmployerSelectionResumeParams,
+  ReadExpertAssessmentAppeal200,
+  ReadExpertAuthority200,
+  ReadGuestSharedSelection200,
+  ReadGuestSharedSelectionBody,
+  ReadOwnAssessmentAppeal200,
+  ReadOwnGuestReviewPermission200,
+  ReadOwnInvitationAnalytics200,
+  ReadOwnInvitationAnalyticsParams,
+  ReadOwnedAtsIntegration200,
+  ReadOwnedOfferConditions200,
+  ReadOwnedOfferConditionsBody,
+  ReadOwnedShortlist200,
+  ReadOwnedShortlistParams,
+  ReadPublicPassportQr410,
+  ReadRequirementHistory200,
+  ReadRequirementHistoryBody,
+  ReadSelectionExclusions200,
+  ReadSelectionExclusionsBody,
+  ReadSelectionWatchBody,
+  RefreshPdfImport200,
+  RegisterOwnedAtsIntegration200,
+  RegisterOwnedAtsIntegrationBody,
   RegistrationInput,
   RegistrationResult,
+  RemoveOwnedShortlistCandidate200,
+  RemoveOwnedShortlistCandidateBody,
   RequestFspImportBody,
+  RequirementPreview,
   ResearchError,
   ResearchReport,
   ResearchReviewInput,
   ResearchStudyInput,
+  ResolveExpertAssessmentReview200,
+  ResolveExpertAssessmentReviewBody,
   ResumeDocumentPreview,
   ResumeMetadata,
   ResumePairComparison,
+  RetryOwnedAtsDelivery200,
+  RevokeOwnPublicPassport200,
+  RevokeOwnedSharedSelection200,
   RevokeResearchStudy200,
   SaveAssessmentAnswersParams,
+  SaveOwnGuestReviewPermission200,
+  SaveOwnGuestReviewPermissionBody,
+  SaveOwnOfferPreferences200,
+  SaveOwnOfferPreferencesBody,
+  SaveOwnedOfferConditions200,
+  SaveOwnedOfferConditionsBody,
   SaveOwnedResumeBody,
+  SaveOwnedShortlistCandidate200,
+  SaveOwnedShortlistCandidateBody,
   SaveResearchAnswers200,
   SaveResearchAnswersInput,
   SaveResumeWorkPreferences200,
@@ -160,7 +265,12 @@ import type {
   SaveSkillModuleAnswers200,
   SearchAccessibleJobsParams,
   SearchCandidateApplicationsParams,
+  SearchCandidateInvitations200,
   SearchCandidateInvitationsParams,
+  SearchEmployerSelection200,
+  SearchEmployerSelectionParams,
+  SelectionFeedbackInput,
+  SelectionWatchRead,
   SetApplicationStatus200,
   SetApplicationStatusInput,
   SetCompanyBlock200,
@@ -173,6 +283,7 @@ import type {
   SetSkillModuleTarget200,
   SetSkillModuleTargetBody,
   ShareMicrotaskResultInput,
+  SignedPassportDocument,
   SkillCoverageResult,
   SkillDictionary,
   SkillModuleAnswersInput,
@@ -184,15 +295,21 @@ import type {
   StartSkillModuleAttempt200,
   StartSkillModuleAttempt201,
   SubmitAssessmentAttemptParams,
+  SubmitCodePracticeBody,
   SubmitComplaint201,
   SubmitMicrotaskInput,
   SubmitResearchAttempt200,
   SubmitSkillModuleAttempt200,
   SubscribeCandidateMicrotaskInput,
+  UndoSelectionExclusion200,
+  UndoSelectionExclusionBody,
   UnifiedErrorResponseResponse,
   UpdateOwnedAccountBody,
+  UpdateOwnedEmployerNeedBody,
   UploadCandidateAvatar200,
   UploadCandidateAvatarBody,
+  UploadResumePdf201,
+  UploadResumePdfBody,
   WorkspaceSearchPage
 } from './api.schemas';
 
@@ -1303,9 +1420,9 @@ export const getListMyInvitationsUrl = () => {
   return `/api/me/invitations`
 }
 
-export const listMyInvitations = async ( options?: Parameters<typeof customFetch>[1]): Promise<Invitation[]> => {
+export const listMyInvitations = async ( options?: Parameters<typeof customFetch>[1]): Promise<CandidateInvitation[]> => {
 
-  return customFetch<Invitation[]>(getListMyInvitationsUrl(),
+  return customFetch<CandidateInvitation[]>(getListMyInvitationsUrl(),
   {
     ...options,
     method: 'GET'
@@ -2093,6 +2210,9 @@ export const getGetMatchesUrl = (params: GetMatchesParams,) => {
   return stringifiedParams.length > 0 ? `/api/matches?${stringifiedParams}` : `/api/matches`
 }
 
+/**
+ *  Current company/context/CV consent is rechecked. Factor ledger explains the existing rank; internal computation leases/fences are not a public task API.
+ */
 export const getMatches = async (params: GetMatchesParams, options?: Parameters<typeof customFetch>[1]): Promise<MatchCandidate[]> => {
 
   return customFetch<MatchCandidate[]>(getGetMatchesUrl(params),
@@ -2171,6 +2291,9 @@ export const getGetMatchExplanationUrl = (params: GetMatchExplanationParams,) =>
   return stringifiedParams.length > 0 ? `/api/matches/explanation?${stringifiedParams}` : `/api/matches/explanation`
 }
 
+/**
+ *  Current company/context/CV consent is rechecked. Factor ledger explains the existing rank; internal computation leases/fences are not a public task API.
+ */
 export const getMatchExplanation = async (params: GetMatchExplanationParams, options?: Parameters<typeof customFetch>[1]): Promise<MatchExplanation> => {
 
   return customFetch<MatchExplanation>(getGetMatchExplanationUrl(params),
@@ -3826,9 +3949,9 @@ export const getViewInvitationUrl = (id: number,) => {
   return `/api/me/invitations/${id}/view`
 }
 
-export const viewInvitation = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<Invitation> => {
+export const viewInvitation = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<CandidateInvitation> => {
 
-  return customFetch<Invitation>(getViewInvitationUrl(id),
+  return customFetch<CandidateInvitation>(getViewInvitationUrl(id),
   {
     ...options,
     method: 'POST'
@@ -9871,7 +9994,7 @@ export const getCompareResumePairUrl = (params: CompareResumePairParams,) => {
 }
 
 /**
- * Same current owned need and two exact accessible resumes, evaluated in the full pool. No pair-only reranking or raw cross-program score comparison.
+ * Same current owned need and two exact accessible resumes, evaluated in the full pool. No pair-only reranking or raw cross-program score comparison. Current company/context/CV consent is rechecked. Factor ledger explains the existing rank; internal computation leases/fences are not a public task API.
  */
 export const compareResumePair = async (params: CompareResumePairParams, options?: Parameters<typeof customFetch>[1]): Promise<ResumePairComparison> => {
 
@@ -10849,9 +10972,9 @@ export const getSearchCandidateInvitationsUrl = (params?: SearchCandidateInvitat
 /**
  * Requires authenticated ownership and current per-resume permissions.
  */
-export const searchCandidateInvitations = async (params?: SearchCandidateInvitationsParams, options?: Parameters<typeof customFetch>[1]): Promise<WorkspaceSearchPage> => {
+export const searchCandidateInvitations = async (params?: SearchCandidateInvitationsParams, options?: Parameters<typeof customFetch>[1]): Promise<SearchCandidateInvitations200> => {
 
-  return customFetch<WorkspaceSearchPage>(getSearchCandidateInvitationsUrl(params),
+  return customFetch<SearchCandidateInvitations200>(getSearchCandidateInvitationsUrl(params),
   {
     ...options,
     method: 'GET'
@@ -11882,4 +12005,6498 @@ export function useGetMyComplaint<TData = Awaited<ReturnType<typeof getMyComplai
 
 
 
+
+export const getPreviewRequirementsUrl = () => {
+
+
+
+
+  return `/api/employer/requirements/preview`
+}
+
+/**
+ * Employer/company owner only. Idempotent by commandKey and payload. Preview computes a diff without saving requirements.
+ */
+export const previewRequirements = async (previewRequirementsBody: PreviewRequirementsBody, options?: Parameters<typeof customFetch>[1]): Promise<RequirementPreview> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RequirementPreview>(getPreviewRequirementsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(previewRequirementsBody)
+  }
+);}
+
+
+
+
+
+export const getPreviewRequirementsMutationKey = () => ['previewRequirements'] as const;
+
+export const getPreviewRequirementsMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewRequirements>>, TError,PreviewRequirementsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewRequirements>>, TError,PreviewRequirementsMutationVariables, TContext> => {
+
+const mutationKey = getPreviewRequirementsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewRequirements>>, PreviewRequirementsMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  previewRequirements(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewRequirementsMutationResult = NonNullable<Awaited<ReturnType<typeof previewRequirements>>>
+    export type PreviewRequirementsMutationBody = BodyType<PreviewRequirementsBody>
+    export type PreviewRequirementsMutationError = ErrorType<CompetitiveApiError>
+    export type PreviewRequirementsMutationVariables = {data: BodyType<PreviewRequirementsBody>}
+
+    export const usePreviewRequirements = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewRequirements>>, TError,PreviewRequirementsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof previewRequirements>>,
+        TError,
+        PreviewRequirementsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPreviewRequirementsMutationOptions(options));
+    }
+
+export const getReadRequirementPreviewUrl = (previewId: string,) => {
+
+
+
+
+  return `/api/employer/requirements/preview/${previewId}`
+}
+
+export const readRequirementPreview = async (previewId: string, options?: Parameters<typeof customFetch>[1]): Promise<RequirementPreview> => {
+
+  return customFetch<RequirementPreview>(getReadRequirementPreviewUrl(previewId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadRequirementPreviewQueryKey = (previewId: string,) => {
+    return [
+    `/api/employer/requirements/preview/${previewId}`
+    ] as const;
+    }
+
+
+export const getReadRequirementPreviewQueryOptions = <TData = Awaited<ReturnType<typeof readRequirementPreview>>, TError = ErrorType<CompetitiveApiError>>(previewId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readRequirementPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadRequirementPreviewQueryKey(previewId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readRequirementPreview>>> = ({ signal }) => readRequirementPreview(previewId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: previewId !== null && previewId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readRequirementPreview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadRequirementPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof readRequirementPreview>>>
+export type ReadRequirementPreviewQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadRequirementPreview<TData = Awaited<ReturnType<typeof readRequirementPreview>>, TError = ErrorType<CompetitiveApiError>>(
+ previewId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readRequirementPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadRequirementPreviewQueryOptions(previewId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getApplyRequirementPreviewUrl = (previewId: string,) => {
+
+
+
+
+  return `/api/employer/requirements/preview/${previewId}/apply`
+}
+
+/**
+ * CAS apply is append-only history. Same command replays; another payload/key cannot reuse an applied preview. Stale input never changes requirements.
+ */
+export const applyRequirementPreview = async (previewId: string,
+    applyRequirementPreviewBody: ApplyRequirementPreviewBody, options?: Parameters<typeof customFetch>[1]): Promise<ApplyRequirementPreview200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ApplyRequirementPreview200>(getApplyRequirementPreviewUrl(previewId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(applyRequirementPreviewBody)
+  }
+);}
+
+
+
+
+
+export const getApplyRequirementPreviewMutationKey = () => ['applyRequirementPreview'] as const;
+
+export const getApplyRequirementPreviewMutationOptions = <TError = ErrorType<CompetitiveApiError | ApplyRequirementPreview409>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyRequirementPreview>>, TError,ApplyRequirementPreviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof applyRequirementPreview>>, TError,ApplyRequirementPreviewMutationVariables, TContext> => {
+
+const mutationKey = getApplyRequirementPreviewMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof applyRequirementPreview>>, ApplyRequirementPreviewMutationVariables> = (props) => {
+          const {previewId,data} = props ?? {};
+
+          return  applyRequirementPreview(previewId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ApplyRequirementPreviewMutationResult = NonNullable<Awaited<ReturnType<typeof applyRequirementPreview>>>
+    export type ApplyRequirementPreviewMutationBody = BodyType<ApplyRequirementPreviewBody>
+    export type ApplyRequirementPreviewMutationError = ErrorType<CompetitiveApiError | ApplyRequirementPreview409>
+    export type ApplyRequirementPreviewMutationVariables = {previewId: string;data: BodyType<ApplyRequirementPreviewBody>}
+
+    export const useApplyRequirementPreview = <TError = ErrorType<CompetitiveApiError | ApplyRequirementPreview409>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyRequirementPreview>>, TError,ApplyRequirementPreviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof applyRequirementPreview>>,
+        TError,
+        ApplyRequirementPreviewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getApplyRequirementPreviewMutationOptions(options));
+    }
+
+export const getProposeSelectionRefinementUrl = () => {
+
+
+
+
+  return `/api/employer/selection/feedback`
+}
+
+/**
+ * Feedback is bound to exact CV and revision. Produces a proposal/preview; does not automatically change selection criteria.
+ */
+export const proposeSelectionRefinement = async (selectionFeedbackInput: SelectionFeedbackInput, options?: Parameters<typeof customFetch>[1]): Promise<ProposeSelectionRefinement200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProposeSelectionRefinement200>(getProposeSelectionRefinementUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(selectionFeedbackInput)
+  }
+);}
+
+
+
+
+
+export const getProposeSelectionRefinementMutationKey = () => ['proposeSelectionRefinement'] as const;
+
+export const getProposeSelectionRefinementMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof proposeSelectionRefinement>>, TError,ProposeSelectionRefinementMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof proposeSelectionRefinement>>, TError,ProposeSelectionRefinementMutationVariables, TContext> => {
+
+const mutationKey = getProposeSelectionRefinementMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof proposeSelectionRefinement>>, ProposeSelectionRefinementMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  proposeSelectionRefinement(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ProposeSelectionRefinementMutationResult = NonNullable<Awaited<ReturnType<typeof proposeSelectionRefinement>>>
+    export type ProposeSelectionRefinementMutationBody = BodyType<SelectionFeedbackInput>
+    export type ProposeSelectionRefinementMutationError = ErrorType<CompetitiveApiError>
+    export type ProposeSelectionRefinementMutationVariables = {data: BodyType<SelectionFeedbackInput>}
+
+    export const useProposeSelectionRefinement = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof proposeSelectionRefinement>>, TError,ProposeSelectionRefinementMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof proposeSelectionRefinement>>,
+        TError,
+        ProposeSelectionRefinementMutationVariables,
+        TContext
+      > => {
+      return useMutation(getProposeSelectionRefinementMutationOptions(options));
+    }
+
+export const getReadRequirementHistoryUrl = () => {
+
+
+
+
+  return `/api/employer/requirements/history`
+}
+
+/**
+ * Company-scoped accepted history, reauthorized against current context. No pagination in this route.
+ */
+export const readRequirementHistory = async (readRequirementHistoryBody: ReadRequirementHistoryBody, options?: Parameters<typeof customFetch>[1]): Promise<ReadRequirementHistory200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ReadRequirementHistory200>(getReadRequirementHistoryUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readRequirementHistoryBody)
+  }
+);}
+
+
+
+
+
+export const getReadRequirementHistoryMutationKey = () => ['readRequirementHistory'] as const;
+
+export const getReadRequirementHistoryMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readRequirementHistory>>, TError,ReadRequirementHistoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof readRequirementHistory>>, TError,ReadRequirementHistoryMutationVariables, TContext> => {
+
+const mutationKey = getReadRequirementHistoryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof readRequirementHistory>>, ReadRequirementHistoryMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  readRequirementHistory(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReadRequirementHistoryMutationResult = NonNullable<Awaited<ReturnType<typeof readRequirementHistory>>>
+    export type ReadRequirementHistoryMutationBody = BodyType<ReadRequirementHistoryBody>
+    export type ReadRequirementHistoryMutationError = ErrorType<CompetitiveApiError>
+    export type ReadRequirementHistoryMutationVariables = {data: BodyType<ReadRequirementHistoryBody>}
+
+    export const useReadRequirementHistory = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readRequirementHistory>>, TError,ReadRequirementHistoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof readRequirementHistory>>,
+        TError,
+        ReadRequirementHistoryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReadRequirementHistoryMutationOptions(options));
+    }
+
+export const getPreviewRequirementRestoreUrl = (revisionId: string,) => {
+
+
+
+
+  return `/api/employer/requirements/history/${revisionId}/restore-preview`
+}
+
+/**
+ * Creates a new preview of the historical before state; restoration still needs explicit apply.
+ */
+export const previewRequirementRestore = async (revisionId: string,
+    previewRequirementRestoreBody: PreviewRequirementRestoreBody, options?: Parameters<typeof customFetch>[1]): Promise<RequirementPreview> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RequirementPreview>(getPreviewRequirementRestoreUrl(revisionId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(previewRequirementRestoreBody)
+  }
+);}
+
+
+
+
+
+export const getPreviewRequirementRestoreMutationKey = () => ['previewRequirementRestore'] as const;
+
+export const getPreviewRequirementRestoreMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewRequirementRestore>>, TError,PreviewRequirementRestoreMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewRequirementRestore>>, TError,PreviewRequirementRestoreMutationVariables, TContext> => {
+
+const mutationKey = getPreviewRequirementRestoreMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewRequirementRestore>>, PreviewRequirementRestoreMutationVariables> = (props) => {
+          const {revisionId,data} = props ?? {};
+
+          return  previewRequirementRestore(revisionId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewRequirementRestoreMutationResult = NonNullable<Awaited<ReturnType<typeof previewRequirementRestore>>>
+    export type PreviewRequirementRestoreMutationBody = BodyType<PreviewRequirementRestoreBody>
+    export type PreviewRequirementRestoreMutationError = ErrorType<CompetitiveApiError>
+    export type PreviewRequirementRestoreMutationVariables = {revisionId: string;data: BodyType<PreviewRequirementRestoreBody>}
+
+    export const usePreviewRequirementRestore = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewRequirementRestore>>, TError,PreviewRequirementRestoreMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof previewRequirementRestore>>,
+        TError,
+        PreviewRequirementRestoreMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPreviewRequirementRestoreMutationOptions(options));
+    }
+
+export const getReadSelectionExclusionsUrl = () => {
+
+
+
+
+  return `/api/employer/selection/exclusions`
+}
+
+/**
+ * Only active exclusions for the current context revision.
+ */
+export const readSelectionExclusions = async (readSelectionExclusionsBody: ReadSelectionExclusionsBody, options?: Parameters<typeof customFetch>[1]): Promise<ReadSelectionExclusions200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ReadSelectionExclusions200>(getReadSelectionExclusionsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readSelectionExclusionsBody)
+  }
+);}
+
+
+
+
+
+export const getReadSelectionExclusionsMutationKey = () => ['readSelectionExclusions'] as const;
+
+export const getReadSelectionExclusionsMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readSelectionExclusions>>, TError,ReadSelectionExclusionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof readSelectionExclusions>>, TError,ReadSelectionExclusionsMutationVariables, TContext> => {
+
+const mutationKey = getReadSelectionExclusionsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof readSelectionExclusions>>, ReadSelectionExclusionsMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  readSelectionExclusions(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReadSelectionExclusionsMutationResult = NonNullable<Awaited<ReturnType<typeof readSelectionExclusions>>>
+    export type ReadSelectionExclusionsMutationBody = BodyType<ReadSelectionExclusionsBody>
+    export type ReadSelectionExclusionsMutationError = ErrorType<CompetitiveApiError>
+    export type ReadSelectionExclusionsMutationVariables = {data: BodyType<ReadSelectionExclusionsBody>}
+
+    export const useReadSelectionExclusions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readSelectionExclusions>>, TError,ReadSelectionExclusionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof readSelectionExclusions>>,
+        TError,
+        ReadSelectionExclusionsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReadSelectionExclusionsMutationOptions(options));
+    }
+
+export const getUndoSelectionExclusionUrl = (exclusionId: string,) => {
+
+
+
+
+  return `/api/employer/selection/exclusions/${exclusionId}/undo`
+}
+
+export const undoSelectionExclusion = async (exclusionId: string,
+    undoSelectionExclusionBody: UndoSelectionExclusionBody, options?: Parameters<typeof customFetch>[1]): Promise<UndoSelectionExclusion200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<UndoSelectionExclusion200>(getUndoSelectionExclusionUrl(exclusionId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(undoSelectionExclusionBody)
+  }
+);}
+
+
+
+
+
+export const getUndoSelectionExclusionMutationKey = () => ['undoSelectionExclusion'] as const;
+
+export const getUndoSelectionExclusionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof undoSelectionExclusion>>, TError,UndoSelectionExclusionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof undoSelectionExclusion>>, TError,UndoSelectionExclusionMutationVariables, TContext> => {
+
+const mutationKey = getUndoSelectionExclusionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof undoSelectionExclusion>>, UndoSelectionExclusionMutationVariables> = (props) => {
+          const {exclusionId,data} = props ?? {};
+
+          return  undoSelectionExclusion(exclusionId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UndoSelectionExclusionMutationResult = NonNullable<Awaited<ReturnType<typeof undoSelectionExclusion>>>
+    export type UndoSelectionExclusionMutationBody = BodyType<UndoSelectionExclusionBody>
+    export type UndoSelectionExclusionMutationError = ErrorType<CompetitiveApiError>
+    export type UndoSelectionExclusionMutationVariables = {exclusionId: string;data: BodyType<UndoSelectionExclusionBody>}
+
+    export const useUndoSelectionExclusion = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof undoSelectionExclusion>>, TError,UndoSelectionExclusionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof undoSelectionExclusion>>,
+        TError,
+        UndoSelectionExclusionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUndoSelectionExclusionMutationOptions(options));
+    }
+
+export const getReadSelectionWatchUrl = () => {
+
+
+
+
+  return `/api/employer/selection/watch/read`
+}
+
+/**
+ * At most 100 pending/delivered events. Rechecks exact CV, proof fingerprint and context; stale/private candidates are suppressed. This read marks visible events delivered.
+ */
+export const readSelectionWatch = async (readSelectionWatchBody: ReadSelectionWatchBody, options?: Parameters<typeof customFetch>[1]): Promise<SelectionWatchRead> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SelectionWatchRead>(getReadSelectionWatchUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readSelectionWatchBody)
+  }
+);}
+
+
+
+
+
+export const getReadSelectionWatchMutationKey = () => ['readSelectionWatch'] as const;
+
+export const getReadSelectionWatchMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readSelectionWatch>>, TError,ReadSelectionWatchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof readSelectionWatch>>, TError,ReadSelectionWatchMutationVariables, TContext> => {
+
+const mutationKey = getReadSelectionWatchMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof readSelectionWatch>>, ReadSelectionWatchMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  readSelectionWatch(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReadSelectionWatchMutationResult = NonNullable<Awaited<ReturnType<typeof readSelectionWatch>>>
+    export type ReadSelectionWatchMutationBody = BodyType<ReadSelectionWatchBody>
+    export type ReadSelectionWatchMutationError = ErrorType<CompetitiveApiError>
+    export type ReadSelectionWatchMutationVariables = {data: BodyType<ReadSelectionWatchBody>}
+
+    export const useReadSelectionWatch = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readSelectionWatch>>, TError,ReadSelectionWatchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof readSelectionWatch>>,
+        TError,
+        ReadSelectionWatchMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReadSelectionWatchMutationOptions(options));
+    }
+
+export const getConfigureSelectionWatchUrl = () => {
+
+
+
+
+  return `/api/employer/selection/watch/configure`
+}
+
+/**
+ * Revision CAS; first creation has no revision. Scheduler availability is deployment configuration, not an HTTP worker API.
+ */
+export const configureSelectionWatch = async (configureSelectionWatchBody: ConfigureSelectionWatchBody, options?: Parameters<typeof customFetch>[1]): Promise<ConfigureSelectionWatch200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ConfigureSelectionWatch200>(getConfigureSelectionWatchUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(configureSelectionWatchBody)
+  }
+);}
+
+
+
+
+
+export const getConfigureSelectionWatchMutationKey = () => ['configureSelectionWatch'] as const;
+
+export const getConfigureSelectionWatchMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof configureSelectionWatch>>, TError,ConfigureSelectionWatchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof configureSelectionWatch>>, TError,ConfigureSelectionWatchMutationVariables, TContext> => {
+
+const mutationKey = getConfigureSelectionWatchMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof configureSelectionWatch>>, ConfigureSelectionWatchMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  configureSelectionWatch(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ConfigureSelectionWatchMutationResult = NonNullable<Awaited<ReturnType<typeof configureSelectionWatch>>>
+    export type ConfigureSelectionWatchMutationBody = BodyType<ConfigureSelectionWatchBody>
+    export type ConfigureSelectionWatchMutationError = ErrorType<CompetitiveApiError>
+    export type ConfigureSelectionWatchMutationVariables = {data: BodyType<ConfigureSelectionWatchBody>}
+
+    export const useConfigureSelectionWatch = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof configureSelectionWatch>>, TError,ConfigureSelectionWatchMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof configureSelectionWatch>>,
+        TError,
+        ConfigureSelectionWatchMutationVariables,
+        TContext
+      > => {
+      return useMutation(getConfigureSelectionWatchMutationOptions(options));
+    }
+
+export const getUploadResumePdfUrl = () => {
+
+
+
+
+  return `/api/me/pdf-import`
+}
+
+/**
+ * Candidate owner and exact CV revision required before extraction. Authentication precedes 7 MB JSON parser. Bytes discarded after extraction; private draft expires in 24 hours. No CV mutation, grade or confirmed skills until reviewed apply.
+ */
+export const uploadResumePdf = async (uploadResumePdfBody: UploadResumePdfBody, options?: Parameters<typeof customFetch>[1]): Promise<UploadResumePdf201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<UploadResumePdf201>(getUploadResumePdfUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(uploadResumePdfBody)
+  }
+);}
+
+
+
+
+
+export const getUploadResumePdfMutationKey = () => ['uploadResumePdf'] as const;
+
+export const getUploadResumePdfMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadResumePdf>>, TError,UploadResumePdfMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadResumePdf>>, TError,UploadResumePdfMutationVariables, TContext> => {
+
+const mutationKey = getUploadResumePdfMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadResumePdf>>, UploadResumePdfMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  uploadResumePdf(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadResumePdfMutationResult = NonNullable<Awaited<ReturnType<typeof uploadResumePdf>>>
+    export type UploadResumePdfMutationBody = BodyType<UploadResumePdfBody>
+    export type UploadResumePdfMutationError = ErrorType<CompetitiveApiError>
+    export type UploadResumePdfMutationVariables = {data: BodyType<UploadResumePdfBody>}
+
+    export const useUploadResumePdf = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadResumePdf>>, TError,UploadResumePdfMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof uploadResumePdf>>,
+        TError,
+        UploadResumePdfMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUploadResumePdfMutationOptions(options));
+    }
+
+export const getReviewPdfImportUrl = (draftId: string,) => {
+
+
+
+
+  return `/api/me/pdf-import/${draftId}`
+}
+
+/**
+ * Reading an open draft rotates its review token. Reopen comparison after refresh before applying. Source PDF is never downloadable.
+ */
+export const reviewPdfImport = async (draftId: string, options?: Parameters<typeof customFetch>[1]): Promise<PdfImportDraft> => {
+
+  return customFetch<PdfImportDraft>(getReviewPdfImportUrl(draftId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReviewPdfImportQueryKey = (draftId: string,) => {
+    return [
+    `/api/me/pdf-import/${draftId}`
+    ] as const;
+    }
+
+
+export const getReviewPdfImportQueryOptions = <TData = Awaited<ReturnType<typeof reviewPdfImport>>, TError = ErrorType<CompetitiveApiError>>(draftId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof reviewPdfImport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReviewPdfImportQueryKey(draftId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reviewPdfImport>>> = ({ signal }) => reviewPdfImport(draftId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: draftId !== null && draftId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof reviewPdfImport>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReviewPdfImportQueryResult = NonNullable<Awaited<ReturnType<typeof reviewPdfImport>>>
+export type ReviewPdfImportQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReviewPdfImport<TData = Awaited<ReturnType<typeof reviewPdfImport>>, TError = ErrorType<CompetitiveApiError>>(
+ draftId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof reviewPdfImport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReviewPdfImportQueryOptions(draftId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCancelPdfImportUrl = (draftId: string,) => {
+
+
+
+
+  return `/api/me/pdf-import/${draftId}`
+}
+
+/**
+ * Cancellation erases extracted fields, fragments and provenance; keeps minimal history.
+ */
+export const cancelPdfImport = async (draftId: string, options?: Parameters<typeof customFetch>[1]): Promise<CancelPdfImport200> => {
+
+  return customFetch<CancelPdfImport200>(getCancelPdfImportUrl(draftId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getCancelPdfImportMutationKey = () => ['cancelPdfImport'] as const;
+
+export const getCancelPdfImportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPdfImport>>, TError,CancelPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof cancelPdfImport>>, TError,CancelPdfImportMutationVariables, TContext> => {
+
+const mutationKey = getCancelPdfImportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelPdfImport>>, CancelPdfImportMutationVariables> = (props) => {
+          const {draftId} = props ?? {};
+
+          return  cancelPdfImport(draftId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CancelPdfImportMutationResult = NonNullable<Awaited<ReturnType<typeof cancelPdfImport>>>
+
+    export type CancelPdfImportMutationError = ErrorType<CompetitiveApiError>
+    export type CancelPdfImportMutationVariables = {draftId: string}
+
+    export const useCancelPdfImport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelPdfImport>>, TError,CancelPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof cancelPdfImport>>,
+        TError,
+        CancelPdfImportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCancelPdfImportMutationOptions(options));
+    }
+
+export const getApplyPdfImportUrl = (draftId: string,) => {
+
+
+
+
+  return `/api/me/pdf-import/${draftId}/apply`
+}
+
+/**
+ * Explicit field selection, valid review token and draft/CV CAS required. Same payload replays. Skills merge as declared skills; no assessment/grade changes.
+ */
+export const applyPdfImport = async (draftId: string,
+    applyPdfImportBody: ApplyPdfImportBody, options?: Parameters<typeof customFetch>[1]): Promise<ApplyPdfImport200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ApplyPdfImport200>(getApplyPdfImportUrl(draftId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(applyPdfImportBody)
+  }
+);}
+
+
+
+
+
+export const getApplyPdfImportMutationKey = () => ['applyPdfImport'] as const;
+
+export const getApplyPdfImportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyPdfImport>>, TError,ApplyPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof applyPdfImport>>, TError,ApplyPdfImportMutationVariables, TContext> => {
+
+const mutationKey = getApplyPdfImportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof applyPdfImport>>, ApplyPdfImportMutationVariables> = (props) => {
+          const {draftId,data} = props ?? {};
+
+          return  applyPdfImport(draftId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ApplyPdfImportMutationResult = NonNullable<Awaited<ReturnType<typeof applyPdfImport>>>
+    export type ApplyPdfImportMutationBody = BodyType<ApplyPdfImportBody>
+    export type ApplyPdfImportMutationError = ErrorType<CompetitiveApiError>
+    export type ApplyPdfImportMutationVariables = {draftId: string;data: BodyType<ApplyPdfImportBody>}
+
+    export const useApplyPdfImport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyPdfImport>>, TError,ApplyPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof applyPdfImport>>,
+        TError,
+        ApplyPdfImportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getApplyPdfImportMutationOptions(options));
+    }
+
+export const getRefreshPdfImportUrl = (draftId: string,) => {
+
+
+
+
+  return `/api/me/pdf-import/${draftId}/refresh`
+}
+
+/**
+ * Rebase draft on current CV revision, clear review token, increment draft revision; does not apply.
+ */
+export const refreshPdfImport = async (draftId: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<RefreshPdfImport200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RefreshPdfImport200>(getRefreshPdfImportUrl(draftId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getRefreshPdfImportMutationKey = () => ['refreshPdfImport'] as const;
+
+export const getRefreshPdfImportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshPdfImport>>, TError,RefreshPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof refreshPdfImport>>, TError,RefreshPdfImportMutationVariables, TContext> => {
+
+const mutationKey = getRefreshPdfImportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refreshPdfImport>>, RefreshPdfImportMutationVariables> = (props) => {
+          const {draftId,data} = props ?? {};
+
+          return  refreshPdfImport(draftId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RefreshPdfImportMutationResult = NonNullable<Awaited<ReturnType<typeof refreshPdfImport>>>
+    export type RefreshPdfImportMutationBody = BodyType<CompetitiveRevisionInput>
+    export type RefreshPdfImportMutationError = ErrorType<CompetitiveApiError>
+    export type RefreshPdfImportMutationVariables = {draftId: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useRefreshPdfImport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshPdfImport>>, TError,RefreshPdfImportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof refreshPdfImport>>,
+        TError,
+        RefreshPdfImportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRefreshPdfImportMutationOptions(options));
+    }
+
+export const getReadOwnOfferPreferencesUrl = (resumeId: number,) => {
+
+
+
+
+  return `/api/candidate/offer-preferences/${resumeId}`
+}
+
+/**
+ * Only the owner of this exact CV. Unset state: revision 0, shared false, empty preferences.
+ */
+export const readOwnOfferPreferences = async (resumeId: number, options?: Parameters<typeof customFetch>[1]): Promise<OfferPreferencesRead> => {
+
+  return customFetch<OfferPreferencesRead>(getReadOwnOfferPreferencesUrl(resumeId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnOfferPreferencesQueryKey = (resumeId: number,) => {
+    return [
+    `/api/candidate/offer-preferences/${resumeId}`
+    ] as const;
+    }
+
+
+export const getReadOwnOfferPreferencesQueryOptions = <TData = Awaited<ReturnType<typeof readOwnOfferPreferences>>, TError = ErrorType<CompetitiveApiError>>(resumeId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnOfferPreferences>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnOfferPreferencesQueryKey(resumeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnOfferPreferences>>> = ({ signal }) => readOwnOfferPreferences(resumeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: resumeId !== null && resumeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnOfferPreferences>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnOfferPreferencesQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnOfferPreferences>>>
+export type ReadOwnOfferPreferencesQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnOfferPreferences<TData = Awaited<ReturnType<typeof readOwnOfferPreferences>>, TError = ErrorType<CompetitiveApiError>>(
+ resumeId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnOfferPreferences>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnOfferPreferencesQueryOptions(resumeId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveOwnOfferPreferencesUrl = (resumeId: number,) => {
+
+
+
+
+  return `/api/candidate/offer-preferences/${resumeId}`
+}
+
+/**
+ * Preference revision CAS (0 for absent). Increments this CV revision. Sharing is explicit opt-in, separate from professional matching consent.
+ */
+export const saveOwnOfferPreferences = async (resumeId: number,
+    saveOwnOfferPreferencesBody: SaveOwnOfferPreferencesBody, options?: Parameters<typeof customFetch>[1]): Promise<SaveOwnOfferPreferences200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveOwnOfferPreferences200>(getSaveOwnOfferPreferencesUrl(resumeId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(saveOwnOfferPreferencesBody)
+  }
+);}
+
+
+
+
+
+export const getSaveOwnOfferPreferencesMutationKey = () => ['saveOwnOfferPreferences'] as const;
+
+export const getSaveOwnOfferPreferencesMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnOfferPreferences>>, TError,SaveOwnOfferPreferencesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveOwnOfferPreferences>>, TError,SaveOwnOfferPreferencesMutationVariables, TContext> => {
+
+const mutationKey = getSaveOwnOfferPreferencesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveOwnOfferPreferences>>, SaveOwnOfferPreferencesMutationVariables> = (props) => {
+          const {resumeId,data} = props ?? {};
+
+          return  saveOwnOfferPreferences(resumeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveOwnOfferPreferencesMutationResult = NonNullable<Awaited<ReturnType<typeof saveOwnOfferPreferences>>>
+    export type SaveOwnOfferPreferencesMutationBody = BodyType<SaveOwnOfferPreferencesBody>
+    export type SaveOwnOfferPreferencesMutationError = ErrorType<CompetitiveApiError>
+    export type SaveOwnOfferPreferencesMutationVariables = {resumeId: number;data: BodyType<SaveOwnOfferPreferencesBody>}
+
+    export const useSaveOwnOfferPreferences = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnOfferPreferences>>, TError,SaveOwnOfferPreferencesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveOwnOfferPreferences>>,
+        TError,
+        SaveOwnOfferPreferencesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveOwnOfferPreferencesMutationOptions(options));
+    }
+
+export const getReadOwnedOfferConditionsUrl = () => {
+
+
+
+
+  return `/api/employer/offer-conditions/read`
+}
+
+/**
+ * Company owner and active owned context; unset revision is 0.
+ */
+export const readOwnedOfferConditions = async (readOwnedOfferConditionsBody: ReadOwnedOfferConditionsBody, options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnedOfferConditions200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ReadOwnedOfferConditions200>(getReadOwnedOfferConditionsUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readOwnedOfferConditionsBody)
+  }
+);}
+
+
+
+
+
+export const getReadOwnedOfferConditionsMutationKey = () => ['readOwnedOfferConditions'] as const;
+
+export const getReadOwnedOfferConditionsMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readOwnedOfferConditions>>, TError,ReadOwnedOfferConditionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof readOwnedOfferConditions>>, TError,ReadOwnedOfferConditionsMutationVariables, TContext> => {
+
+const mutationKey = getReadOwnedOfferConditionsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof readOwnedOfferConditions>>, ReadOwnedOfferConditionsMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  readOwnedOfferConditions(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReadOwnedOfferConditionsMutationResult = NonNullable<Awaited<ReturnType<typeof readOwnedOfferConditions>>>
+    export type ReadOwnedOfferConditionsMutationBody = BodyType<ReadOwnedOfferConditionsBody>
+    export type ReadOwnedOfferConditionsMutationError = ErrorType<CompetitiveApiError>
+    export type ReadOwnedOfferConditionsMutationVariables = {data: BodyType<ReadOwnedOfferConditionsBody>}
+
+    export const useReadOwnedOfferConditions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readOwnedOfferConditions>>, TError,ReadOwnedOfferConditionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof readOwnedOfferConditions>>,
+        TError,
+        ReadOwnedOfferConditionsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReadOwnedOfferConditionsMutationOptions(options));
+    }
+
+export const getSaveOwnedOfferConditionsUrl = () => {
+
+
+
+
+  return `/api/employer/offer-conditions`
+}
+
+/**
+ * CAS on both context version and offer-conditions revision. Increments the owned job/need version.
+ */
+export const saveOwnedOfferConditions = async (saveOwnedOfferConditionsBody: SaveOwnedOfferConditionsBody, options?: Parameters<typeof customFetch>[1]): Promise<SaveOwnedOfferConditions200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveOwnedOfferConditions200>(getSaveOwnedOfferConditionsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(saveOwnedOfferConditionsBody)
+  }
+);}
+
+
+
+
+
+export const getSaveOwnedOfferConditionsMutationKey = () => ['saveOwnedOfferConditions'] as const;
+
+export const getSaveOwnedOfferConditionsMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnedOfferConditions>>, TError,SaveOwnedOfferConditionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveOwnedOfferConditions>>, TError,SaveOwnedOfferConditionsMutationVariables, TContext> => {
+
+const mutationKey = getSaveOwnedOfferConditionsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveOwnedOfferConditions>>, SaveOwnedOfferConditionsMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  saveOwnedOfferConditions(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveOwnedOfferConditionsMutationResult = NonNullable<Awaited<ReturnType<typeof saveOwnedOfferConditions>>>
+    export type SaveOwnedOfferConditionsMutationBody = BodyType<SaveOwnedOfferConditionsBody>
+    export type SaveOwnedOfferConditionsMutationError = ErrorType<CompetitiveApiError>
+    export type SaveOwnedOfferConditionsMutationVariables = {data: BodyType<SaveOwnedOfferConditionsBody>}
+
+    export const useSaveOwnedOfferConditions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnedOfferConditions>>, TError,SaveOwnedOfferConditionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveOwnedOfferConditions>>,
+        TError,
+        SaveOwnedOfferConditionsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveOwnedOfferConditionsMutationOptions(options));
+    }
+
+export const getCompareOwnedOfferCompatibilityUrl = () => {
+
+
+
+
+  return `/api/employer/offer-compatibility`
+}
+
+/**
+ * Requires current matching access to exact CV. Unshared preferences are withheld. professionallyEligible is returned only on this employer endpoint.
+ */
+export const compareOwnedOfferCompatibility = async (compareOwnedOfferCompatibilityBody: CompareOwnedOfferCompatibilityBody, options?: Parameters<typeof customFetch>[1]): Promise<OfferCompatibility> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OfferCompatibility>(getCompareOwnedOfferCompatibilityUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(compareOwnedOfferCompatibilityBody)
+  }
+);}
+
+
+
+
+
+export const getCompareOwnedOfferCompatibilityMutationKey = () => ['compareOwnedOfferCompatibility'] as const;
+
+export const getCompareOwnedOfferCompatibilityMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>, TError,CompareOwnedOfferCompatibilityMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>, TError,CompareOwnedOfferCompatibilityMutationVariables, TContext> => {
+
+const mutationKey = getCompareOwnedOfferCompatibilityMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>, CompareOwnedOfferCompatibilityMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  compareOwnedOfferCompatibility(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompareOwnedOfferCompatibilityMutationResult = NonNullable<Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>>
+    export type CompareOwnedOfferCompatibilityMutationBody = BodyType<CompareOwnedOfferCompatibilityBody>
+    export type CompareOwnedOfferCompatibilityMutationError = ErrorType<CompetitiveApiError>
+    export type CompareOwnedOfferCompatibilityMutationVariables = {data: BodyType<CompareOwnedOfferCompatibilityBody>}
+
+    export const useCompareOwnedOfferCompatibility = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>, TError,CompareOwnedOfferCompatibilityMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof compareOwnedOfferCompatibility>>,
+        TError,
+        CompareOwnedOfferCompatibilityMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCompareOwnedOfferCompatibilityMutationOptions(options));
+    }
+
+export const getCompareOwnOfferCompatibilityUrl = () => {
+
+
+
+
+  return `/api/candidate/offer-compatibility`
+}
+
+/**
+ * Candidate-owned exact CV and published same-pool job only. Private need is not accepted.
+ */
+export const compareOwnOfferCompatibility = async (compareOwnOfferCompatibilityBody: CompareOwnOfferCompatibilityBody, options?: Parameters<typeof customFetch>[1]): Promise<OfferCompatibility> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OfferCompatibility>(getCompareOwnOfferCompatibilityUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(compareOwnOfferCompatibilityBody)
+  }
+);}
+
+
+
+
+
+export const getCompareOwnOfferCompatibilityMutationKey = () => ['compareOwnOfferCompatibility'] as const;
+
+export const getCompareOwnOfferCompatibilityMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareOwnOfferCompatibility>>, TError,CompareOwnOfferCompatibilityMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof compareOwnOfferCompatibility>>, TError,CompareOwnOfferCompatibilityMutationVariables, TContext> => {
+
+const mutationKey = getCompareOwnOfferCompatibilityMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof compareOwnOfferCompatibility>>, CompareOwnOfferCompatibilityMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  compareOwnOfferCompatibility(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompareOwnOfferCompatibilityMutationResult = NonNullable<Awaited<ReturnType<typeof compareOwnOfferCompatibility>>>
+    export type CompareOwnOfferCompatibilityMutationBody = BodyType<CompareOwnOfferCompatibilityBody>
+    export type CompareOwnOfferCompatibilityMutationError = ErrorType<CompetitiveApiError>
+    export type CompareOwnOfferCompatibilityMutationVariables = {data: BodyType<CompareOwnOfferCompatibilityBody>}
+
+    export const useCompareOwnOfferCompatibility = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareOwnOfferCompatibility>>, TError,CompareOwnOfferCompatibilityMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof compareOwnOfferCompatibility>>,
+        TError,
+        CompareOwnOfferCompatibilityMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCompareOwnOfferCompatibilityMutationOptions(options));
+    }
+
+export const getReadExpertAuthorityUrl = () => {
+
+
+
+
+  return `/api/me/expert-authority`
+}
+
+/**
+ * Authenticated user; reports an unexpired, nonrevoked assessment_review grant. Role label alone grants no authority.
+ */
+export const readExpertAuthority = async ( options?: Parameters<typeof customFetch>[1]): Promise<ReadExpertAuthority200> => {
+
+  return customFetch<ReadExpertAuthority200>(getReadExpertAuthorityUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadExpertAuthorityQueryKey = () => {
+    return [
+    `/api/me/expert-authority`
+    ] as const;
+    }
+
+
+export const getReadExpertAuthorityQueryOptions = <TData = Awaited<ReturnType<typeof readExpertAuthority>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readExpertAuthority>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadExpertAuthorityQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readExpertAuthority>>> = ({ signal }) => readExpertAuthority({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readExpertAuthority>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadExpertAuthorityQueryResult = NonNullable<Awaited<ReturnType<typeof readExpertAuthority>>>
+export type ReadExpertAuthorityQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadExpertAuthority<TData = Awaited<ReturnType<typeof readExpertAuthority>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readExpertAuthority>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadExpertAuthorityQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListOwnAssessmentAppealsUrl = () => {
+
+
+
+
+  return `/api/me/assessment-appeals`
+}
+
+/**
+ * Candidate owner; at most 100 ordered by updatedAt descending, no page cursor.
+ */
+export const listOwnAssessmentAppeals = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListOwnAssessmentAppeals200> => {
+
+  return customFetch<ListOwnAssessmentAppeals200>(getListOwnAssessmentAppealsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListOwnAssessmentAppealsQueryKey = () => {
+    return [
+    `/api/me/assessment-appeals`
+    ] as const;
+    }
+
+
+export const getListOwnAssessmentAppealsQueryOptions = <TData = Awaited<ReturnType<typeof listOwnAssessmentAppeals>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnAssessmentAppeals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListOwnAssessmentAppealsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listOwnAssessmentAppeals>>> = ({ signal }) => listOwnAssessmentAppeals({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listOwnAssessmentAppeals>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListOwnAssessmentAppealsQueryResult = NonNullable<Awaited<ReturnType<typeof listOwnAssessmentAppeals>>>
+export type ListOwnAssessmentAppealsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListOwnAssessmentAppeals<TData = Awaited<ReturnType<typeof listOwnAssessmentAppeals>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnAssessmentAppeals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListOwnAssessmentAppealsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getOpenOwnAssessmentAppealUrl = () => {
+
+
+
+
+  return `/api/me/assessment-appeals`
+}
+
+/**
+ * Completed own attempt only. Reopen requires current revision and new normalized grounds; immutable attempt is retained.
+ */
+export const openOwnAssessmentAppeal = async (openOwnAssessmentAppealBody: OpenOwnAssessmentAppealBody, options?: Parameters<typeof customFetch>[1]): Promise<AssessmentAppeal> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AssessmentAppeal>(getOpenOwnAssessmentAppealUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(openOwnAssessmentAppealBody)
+  }
+);}
+
+
+
+
+
+export const getOpenOwnAssessmentAppealMutationKey = () => ['openOwnAssessmentAppeal'] as const;
+
+export const getOpenOwnAssessmentAppealMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof openOwnAssessmentAppeal>>, TError,OpenOwnAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof openOwnAssessmentAppeal>>, TError,OpenOwnAssessmentAppealMutationVariables, TContext> => {
+
+const mutationKey = getOpenOwnAssessmentAppealMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof openOwnAssessmentAppeal>>, OpenOwnAssessmentAppealMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  openOwnAssessmentAppeal(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type OpenOwnAssessmentAppealMutationResult = NonNullable<Awaited<ReturnType<typeof openOwnAssessmentAppeal>>>
+    export type OpenOwnAssessmentAppealMutationBody = BodyType<OpenOwnAssessmentAppealBody>
+    export type OpenOwnAssessmentAppealMutationError = ErrorType<CompetitiveApiError>
+    export type OpenOwnAssessmentAppealMutationVariables = {data: BodyType<OpenOwnAssessmentAppealBody>}
+
+    export const useOpenOwnAssessmentAppeal = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof openOwnAssessmentAppeal>>, TError,OpenOwnAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof openOwnAssessmentAppeal>>,
+        TError,
+        OpenOwnAssessmentAppealMutationVariables,
+        TContext
+      > => {
+      return useMutation(getOpenOwnAssessmentAppealMutationOptions(options));
+    }
+
+export const getReadOwnAssessmentAppealUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/assessment-appeals/${id}`
+}
+
+/**
+ * Owner projection contains only candidate-visible messages and decisions. Internal expert notes are excluded.
+ */
+export const readOwnAssessmentAppeal = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnAssessmentAppeal200> => {
+
+  return customFetch<ReadOwnAssessmentAppeal200>(getReadOwnAssessmentAppealUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnAssessmentAppealQueryKey = (id: string,) => {
+    return [
+    `/api/me/assessment-appeals/${id}`
+    ] as const;
+    }
+
+
+export const getReadOwnAssessmentAppealQueryOptions = <TData = Awaited<ReturnType<typeof readOwnAssessmentAppeal>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnAssessmentAppeal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnAssessmentAppealQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnAssessmentAppeal>>> = ({ signal }) => readOwnAssessmentAppeal(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnAssessmentAppeal>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnAssessmentAppealQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnAssessmentAppeal>>>
+export type ReadOwnAssessmentAppealQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnAssessmentAppeal<TData = Awaited<ReturnType<typeof readOwnAssessmentAppeal>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnAssessmentAppeal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnAssessmentAppealQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListExpertAssessmentAppealsUrl = (params?: ListExpertAssessmentAppealsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/expert/assessment-appeals?${stringifiedParams}` : `/api/expert/assessment-appeals`
+}
+
+/**
+ * Explicit unexpired assessment_review grant required. At most 100 ordered by updatedAt descending.
+ */
+export const listExpertAssessmentAppeals = async (params?: ListExpertAssessmentAppealsParams, options?: Parameters<typeof customFetch>[1]): Promise<ListExpertAssessmentAppeals200> => {
+
+  return customFetch<ListExpertAssessmentAppeals200>(getListExpertAssessmentAppealsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListExpertAssessmentAppealsQueryKey = (params?: ListExpertAssessmentAppealsParams,) => {
+    return [
+    `/api/expert/assessment-appeals`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListExpertAssessmentAppealsQueryOptions = <TData = Awaited<ReturnType<typeof listExpertAssessmentAppeals>>, TError = ErrorType<CompetitiveApiError>>(params?: ListExpertAssessmentAppealsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listExpertAssessmentAppeals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListExpertAssessmentAppealsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listExpertAssessmentAppeals>>> = ({ signal }) => listExpertAssessmentAppeals(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listExpertAssessmentAppeals>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListExpertAssessmentAppealsQueryResult = NonNullable<Awaited<ReturnType<typeof listExpertAssessmentAppeals>>>
+export type ListExpertAssessmentAppealsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListExpertAssessmentAppeals<TData = Awaited<ReturnType<typeof listExpertAssessmentAppeals>>, TError = ErrorType<CompetitiveApiError>>(
+ params?: ListExpertAssessmentAppealsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listExpertAssessmentAppeals>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListExpertAssessmentAppealsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadExpertAssessmentAppealUrl = (id: string,) => {
+
+
+
+
+  return `/api/expert/assessment-appeals/${id}`
+}
+
+/**
+ * Expert grant rechecked; this protected DTO includes source rubric/oracles and internal review notes. Never use in a candidate or guest client.
+ */
+export const readExpertAssessmentAppeal = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<ReadExpertAssessmentAppeal200> => {
+
+  return customFetch<ReadExpertAssessmentAppeal200>(getReadExpertAssessmentAppealUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadExpertAssessmentAppealQueryKey = (id: string,) => {
+    return [
+    `/api/expert/assessment-appeals/${id}`
+    ] as const;
+    }
+
+
+export const getReadExpertAssessmentAppealQueryOptions = <TData = Awaited<ReturnType<typeof readExpertAssessmentAppeal>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readExpertAssessmentAppeal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadExpertAssessmentAppealQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readExpertAssessmentAppeal>>> = ({ signal }) => readExpertAssessmentAppeal(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readExpertAssessmentAppeal>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadExpertAssessmentAppealQueryResult = NonNullable<Awaited<ReturnType<typeof readExpertAssessmentAppeal>>>
+export type ReadExpertAssessmentAppealQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadExpertAssessmentAppeal<TData = Awaited<ReturnType<typeof readExpertAssessmentAppeal>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readExpertAssessmentAppeal>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadExpertAssessmentAppealQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getStartExpertAssessmentReviewUrl = (id: string,) => {
+
+
+
+
+  return `/api/expert/assessment-appeals/${id}/start`
+}
+
+/**
+ * Revision CAS open → in_review. Already in_review with same revision replays.
+ */
+export const startExpertAssessmentReview = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<AssessmentAppeal> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AssessmentAppeal>(getStartExpertAssessmentReviewUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getStartExpertAssessmentReviewMutationKey = () => ['startExpertAssessmentReview'] as const;
+
+export const getStartExpertAssessmentReviewMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startExpertAssessmentReview>>, TError,StartExpertAssessmentReviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startExpertAssessmentReview>>, TError,StartExpertAssessmentReviewMutationVariables, TContext> => {
+
+const mutationKey = getStartExpertAssessmentReviewMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startExpertAssessmentReview>>, StartExpertAssessmentReviewMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  startExpertAssessmentReview(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartExpertAssessmentReviewMutationResult = NonNullable<Awaited<ReturnType<typeof startExpertAssessmentReview>>>
+    export type StartExpertAssessmentReviewMutationBody = BodyType<CompetitiveRevisionInput>
+    export type StartExpertAssessmentReviewMutationError = ErrorType<CompetitiveApiError>
+    export type StartExpertAssessmentReviewMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useStartExpertAssessmentReview = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startExpertAssessmentReview>>, TError,StartExpertAssessmentReviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startExpertAssessmentReview>>,
+        TError,
+        StartExpertAssessmentReviewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartExpertAssessmentReviewMutationOptions(options));
+    }
+
+export const getResolveExpertAssessmentReviewUrl = (id: string,) => {
+
+
+
+
+  return `/api/expert/assessment-appeals/${id}/resolve`
+}
+
+/**
+ * Append-only decision, two revisions and UUID command idempotency. Correction requires six distinct saved source cases and preserved rubric. Does not edit or manufacture historical answers.
+ */
+export const resolveExpertAssessmentReview = async (id: string,
+    resolveExpertAssessmentReviewBody: ResolveExpertAssessmentReviewBody, options?: Parameters<typeof customFetch>[1]): Promise<ResolveExpertAssessmentReview200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ResolveExpertAssessmentReview200>(getResolveExpertAssessmentReviewUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(resolveExpertAssessmentReviewBody)
+  }
+);}
+
+
+
+
+
+export const getResolveExpertAssessmentReviewMutationKey = () => ['resolveExpertAssessmentReview'] as const;
+
+export const getResolveExpertAssessmentReviewMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resolveExpertAssessmentReview>>, TError,ResolveExpertAssessmentReviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof resolveExpertAssessmentReview>>, TError,ResolveExpertAssessmentReviewMutationVariables, TContext> => {
+
+const mutationKey = getResolveExpertAssessmentReviewMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resolveExpertAssessmentReview>>, ResolveExpertAssessmentReviewMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  resolveExpertAssessmentReview(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResolveExpertAssessmentReviewMutationResult = NonNullable<Awaited<ReturnType<typeof resolveExpertAssessmentReview>>>
+    export type ResolveExpertAssessmentReviewMutationBody = BodyType<ResolveExpertAssessmentReviewBody>
+    export type ResolveExpertAssessmentReviewMutationError = ErrorType<CompetitiveApiError>
+    export type ResolveExpertAssessmentReviewMutationVariables = {id: string;data: BodyType<ResolveExpertAssessmentReviewBody>}
+
+    export const useResolveExpertAssessmentReview = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resolveExpertAssessmentReview>>, TError,ResolveExpertAssessmentReviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof resolveExpertAssessmentReview>>,
+        TError,
+        ResolveExpertAssessmentReviewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getResolveExpertAssessmentReviewMutationOptions(options));
+    }
+
+export const getMessageOwnAssessmentAppealUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/assessment-appeals/${id}/messages`
+}
+
+/**
+ * Owner only; internal=true is forbidden (403). Resolved appeals cannot be changed.
+ */
+export const messageOwnAssessmentAppeal = async (id: string,
+    messageOwnAssessmentAppealBody: MessageOwnAssessmentAppealBody, options?: Parameters<typeof customFetch>[1]): Promise<MessageOwnAssessmentAppeal200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<MessageOwnAssessmentAppeal200>(getMessageOwnAssessmentAppealUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(messageOwnAssessmentAppealBody)
+  }
+);}
+
+
+
+
+
+export const getMessageOwnAssessmentAppealMutationKey = () => ['messageOwnAssessmentAppeal'] as const;
+
+export const getMessageOwnAssessmentAppealMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>, TError,MessageOwnAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>, TError,MessageOwnAssessmentAppealMutationVariables, TContext> => {
+
+const mutationKey = getMessageOwnAssessmentAppealMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>, MessageOwnAssessmentAppealMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  messageOwnAssessmentAppeal(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MessageOwnAssessmentAppealMutationResult = NonNullable<Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>>
+    export type MessageOwnAssessmentAppealMutationBody = BodyType<MessageOwnAssessmentAppealBody>
+    export type MessageOwnAssessmentAppealMutationError = ErrorType<CompetitiveApiError>
+    export type MessageOwnAssessmentAppealMutationVariables = {id: string;data: BodyType<MessageOwnAssessmentAppealBody>}
+
+    export const useMessageOwnAssessmentAppeal = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>, TError,MessageOwnAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof messageOwnAssessmentAppeal>>,
+        TError,
+        MessageOwnAssessmentAppealMutationVariables,
+        TContext
+      > => {
+      return useMutation(getMessageOwnAssessmentAppealMutationOptions(options));
+    }
+
+export const getMessageExpertAssessmentAppealUrl = (id: string,) => {
+
+
+
+
+  return `/api/expert/assessment-appeals/${id}/messages`
+}
+
+/**
+ * Expert may post internal or candidate-visible message.
+ */
+export const messageExpertAssessmentAppeal = async (id: string,
+    messageExpertAssessmentAppealBody: MessageExpertAssessmentAppealBody, options?: Parameters<typeof customFetch>[1]): Promise<MessageExpertAssessmentAppeal200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<MessageExpertAssessmentAppeal200>(getMessageExpertAssessmentAppealUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(messageExpertAssessmentAppealBody)
+  }
+);}
+
+
+
+
+
+export const getMessageExpertAssessmentAppealMutationKey = () => ['messageExpertAssessmentAppeal'] as const;
+
+export const getMessageExpertAssessmentAppealMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>, TError,MessageExpertAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>, TError,MessageExpertAssessmentAppealMutationVariables, TContext> => {
+
+const mutationKey = getMessageExpertAssessmentAppealMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>, MessageExpertAssessmentAppealMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  messageExpertAssessmentAppeal(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MessageExpertAssessmentAppealMutationResult = NonNullable<Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>>
+    export type MessageExpertAssessmentAppealMutationBody = BodyType<MessageExpertAssessmentAppealBody>
+    export type MessageExpertAssessmentAppealMutationError = ErrorType<CompetitiveApiError>
+    export type MessageExpertAssessmentAppealMutationVariables = {id: string;data: BodyType<MessageExpertAssessmentAppealBody>}
+
+    export const useMessageExpertAssessmentAppeal = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>, TError,MessageExpertAssessmentAppealMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof messageExpertAssessmentAppeal>>,
+        TError,
+        MessageExpertAssessmentAppealMutationVariables,
+        TContext
+      > => {
+      return useMutation(getMessageExpertAssessmentAppealMutationOptions(options));
+    }
+
+export const getReadAdaptiveConfigurationUrl = () => {
+
+
+
+
+  return `/api/me/adaptive-config`
+}
+
+export const readAdaptiveConfiguration = async ( options?: Parameters<typeof customFetch>[1]): Promise<ReadAdaptiveConfiguration200> => {
+
+  return customFetch<ReadAdaptiveConfiguration200>(getReadAdaptiveConfigurationUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadAdaptiveConfigurationQueryKey = () => {
+    return [
+    `/api/me/adaptive-config`
+    ] as const;
+    }
+
+
+export const getReadAdaptiveConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof readAdaptiveConfiguration>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveConfiguration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadAdaptiveConfigurationQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readAdaptiveConfiguration>>> = ({ signal }) => readAdaptiveConfiguration({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveConfiguration>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadAdaptiveConfigurationQueryResult = NonNullable<Awaited<ReturnType<typeof readAdaptiveConfiguration>>>
+export type ReadAdaptiveConfigurationQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadAdaptiveConfiguration<TData = Awaited<ReturnType<typeof readAdaptiveConfiguration>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveConfiguration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadAdaptiveConfigurationQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateAdaptiveExperimentUrl = () => {
+
+
+
+
+  return `/api/me/adaptive-sessions`
+}
+
+/**
+ * Client UUID is an idempotency key; parent refinement only when permitted. Requires explicit experimental consent.
+ */
+export const createAdaptiveExperiment = async (createAdaptiveExperimentBody: CreateAdaptiveExperimentBody, options?: Parameters<typeof customFetch>[1]): Promise<AdaptiveSession> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdaptiveSession>(getCreateAdaptiveExperimentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createAdaptiveExperimentBody)
+  }
+);}
+
+
+
+
+
+export const getCreateAdaptiveExperimentMutationKey = () => ['createAdaptiveExperiment'] as const;
+
+export const getCreateAdaptiveExperimentMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdaptiveExperiment>>, TError,CreateAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdaptiveExperiment>>, TError,CreateAdaptiveExperimentMutationVariables, TContext> => {
+
+const mutationKey = getCreateAdaptiveExperimentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdaptiveExperiment>>, CreateAdaptiveExperimentMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdaptiveExperiment(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdaptiveExperimentMutationResult = NonNullable<Awaited<ReturnType<typeof createAdaptiveExperiment>>>
+    export type CreateAdaptiveExperimentMutationBody = BodyType<CreateAdaptiveExperimentBody>
+    export type CreateAdaptiveExperimentMutationError = ErrorType<CompetitiveApiError>
+    export type CreateAdaptiveExperimentMutationVariables = {data: BodyType<CreateAdaptiveExperimentBody>}
+
+    export const useCreateAdaptiveExperiment = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdaptiveExperiment>>, TError,CreateAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdaptiveExperiment>>,
+        TError,
+        CreateAdaptiveExperimentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateAdaptiveExperimentMutationOptions(options));
+    }
+
+export const getReadAdaptiveExperimentUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/adaptive-sessions/${id}`
+}
+
+/**
+ * Candidate owner only. Progress can expire a session; saved history does not grant a grade.
+ */
+export const readAdaptiveExperiment = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<AdaptiveSession> => {
+
+  return customFetch<AdaptiveSession>(getReadAdaptiveExperimentUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadAdaptiveExperimentQueryKey = (id: string,) => {
+    return [
+    `/api/me/adaptive-sessions/${id}`
+    ] as const;
+    }
+
+
+export const getReadAdaptiveExperimentQueryOptions = <TData = Awaited<ReturnType<typeof readAdaptiveExperiment>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveExperiment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadAdaptiveExperimentQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readAdaptiveExperiment>>> = ({ signal }) => readAdaptiveExperiment(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveExperiment>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadAdaptiveExperimentQueryResult = NonNullable<Awaited<ReturnType<typeof readAdaptiveExperiment>>>
+export type ReadAdaptiveExperimentQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadAdaptiveExperiment<TData = Awaited<ReturnType<typeof readAdaptiveExperiment>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readAdaptiveExperiment>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadAdaptiveExperimentQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAnswerAdaptiveExperimentUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/adaptive-sessions/${id}/answers`
+}
+
+export const answerAdaptiveExperiment = async (id: string,
+    answerAdaptiveExperimentBody: AnswerAdaptiveExperimentBody, options?: Parameters<typeof customFetch>[1]): Promise<AdaptiveSession> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdaptiveSession>(getAnswerAdaptiveExperimentUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(answerAdaptiveExperimentBody)
+  }
+);}
+
+
+
+
+
+export const getAnswerAdaptiveExperimentMutationKey = () => ['answerAdaptiveExperiment'] as const;
+
+export const getAnswerAdaptiveExperimentMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof answerAdaptiveExperiment>>, TError,AnswerAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof answerAdaptiveExperiment>>, TError,AnswerAdaptiveExperimentMutationVariables, TContext> => {
+
+const mutationKey = getAnswerAdaptiveExperimentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof answerAdaptiveExperiment>>, AnswerAdaptiveExperimentMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  answerAdaptiveExperiment(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AnswerAdaptiveExperimentMutationResult = NonNullable<Awaited<ReturnType<typeof answerAdaptiveExperiment>>>
+    export type AnswerAdaptiveExperimentMutationBody = BodyType<AnswerAdaptiveExperimentBody>
+    export type AnswerAdaptiveExperimentMutationError = ErrorType<CompetitiveApiError>
+    export type AnswerAdaptiveExperimentMutationVariables = {id: string;data: BodyType<AnswerAdaptiveExperimentBody>}
+
+    export const useAnswerAdaptiveExperiment = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof answerAdaptiveExperiment>>, TError,AnswerAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof answerAdaptiveExperiment>>,
+        TError,
+        AnswerAdaptiveExperimentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAnswerAdaptiveExperimentMutationOptions(options));
+    }
+
+export const getFinishAdaptiveExperimentUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/adaptive-sessions/${id}/finish`
+}
+
+export const finishAdaptiveExperiment = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<AdaptiveSession> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdaptiveSession>(getFinishAdaptiveExperimentUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getFinishAdaptiveExperimentMutationKey = () => ['finishAdaptiveExperiment'] as const;
+
+export const getFinishAdaptiveExperimentMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishAdaptiveExperiment>>, TError,FinishAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof finishAdaptiveExperiment>>, TError,FinishAdaptiveExperimentMutationVariables, TContext> => {
+
+const mutationKey = getFinishAdaptiveExperimentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finishAdaptiveExperiment>>, FinishAdaptiveExperimentMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  finishAdaptiveExperiment(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type FinishAdaptiveExperimentMutationResult = NonNullable<Awaited<ReturnType<typeof finishAdaptiveExperiment>>>
+    export type FinishAdaptiveExperimentMutationBody = BodyType<CompetitiveRevisionInput>
+    export type FinishAdaptiveExperimentMutationError = ErrorType<CompetitiveApiError>
+    export type FinishAdaptiveExperimentMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useFinishAdaptiveExperiment = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishAdaptiveExperiment>>, TError,FinishAdaptiveExperimentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof finishAdaptiveExperiment>>,
+        TError,
+        FinishAdaptiveExperimentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getFinishAdaptiveExperimentMutationOptions(options));
+    }
+
+export const getReadCodePracticeConfigurationUrl = () => {
+
+
+
+
+  return `/api/me/code-practice/config`
+}
+
+/**
+ * Candidate; available even when runner is disabled.
+ */
+export const readCodePracticeConfiguration = async ( options?: Parameters<typeof customFetch>[1]): Promise<ReadCodePracticeConfiguration200> => {
+
+  return customFetch<ReadCodePracticeConfiguration200>(getReadCodePracticeConfigurationUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadCodePracticeConfigurationQueryKey = () => {
+    return [
+    `/api/me/code-practice/config`
+    ] as const;
+    }
+
+
+export const getReadCodePracticeConfigurationQueryOptions = <TData = Awaited<ReturnType<typeof readCodePracticeConfiguration>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readCodePracticeConfiguration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadCodePracticeConfigurationQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readCodePracticeConfiguration>>> = ({ signal }) => readCodePracticeConfiguration({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readCodePracticeConfiguration>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadCodePracticeConfigurationQueryResult = NonNullable<Awaited<ReturnType<typeof readCodePracticeConfiguration>>>
+export type ReadCodePracticeConfigurationQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadCodePracticeConfiguration<TData = Awaited<ReturnType<typeof readCodePracticeConfiguration>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readCodePracticeConfiguration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadCodePracticeConfigurationQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListOwnCodePracticeUrl = () => {
+
+
+
+
+  return `/api/me/code-practice`
+}
+
+/**
+ * Candidate-owned history remains readable with runner off. No pagination.
+ */
+export const listOwnCodePractice = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListOwnCodePractice200> => {
+
+  return customFetch<ListOwnCodePractice200>(getListOwnCodePracticeUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListOwnCodePracticeQueryKey = () => {
+    return [
+    `/api/me/code-practice`
+    ] as const;
+    }
+
+
+export const getListOwnCodePracticeQueryOptions = <TData = Awaited<ReturnType<typeof listOwnCodePractice>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnCodePractice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListOwnCodePracticeQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listOwnCodePractice>>> = ({ signal }) => listOwnCodePractice({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listOwnCodePractice>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListOwnCodePracticeQueryResult = NonNullable<Awaited<ReturnType<typeof listOwnCodePractice>>>
+export type ListOwnCodePracticeQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListOwnCodePractice<TData = Awaited<ReturnType<typeof listOwnCodePractice>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnCodePractice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListOwnCodePracticeQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getIssueCodePracticeUrl = () => {
+
+
+
+
+  return `/api/me/code-practice`
+}
+
+/**
+ * UUID idempotency; maximum three issues per 24 hours. No grade is granted.
+ */
+export const issueCodePractice = async (issueCodePracticeBody: IssueCodePracticeBody, options?: Parameters<typeof customFetch>[1]): Promise<CodePractice> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CodePractice>(getIssueCodePracticeUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(issueCodePracticeBody)
+  }
+);}
+
+
+
+
+
+export const getIssueCodePracticeMutationKey = () => ['issueCodePractice'] as const;
+
+export const getIssueCodePracticeMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueCodePractice>>, TError,IssueCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof issueCodePractice>>, TError,IssueCodePracticeMutationVariables, TContext> => {
+
+const mutationKey = getIssueCodePracticeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof issueCodePractice>>, IssueCodePracticeMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  issueCodePractice(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type IssueCodePracticeMutationResult = NonNullable<Awaited<ReturnType<typeof issueCodePractice>>>
+    export type IssueCodePracticeMutationBody = BodyType<IssueCodePracticeBody>
+    export type IssueCodePracticeMutationError = ErrorType<CompetitiveApiError>
+    export type IssueCodePracticeMutationVariables = {data: BodyType<IssueCodePracticeBody>}
+
+    export const useIssueCodePractice = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueCodePractice>>, TError,IssueCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof issueCodePractice>>,
+        TError,
+        IssueCodePracticeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getIssueCodePracticeMutationOptions(options));
+    }
+
+export const getReadOwnCodePracticeUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/code-practice/${id}`
+}
+
+/**
+ * Own history readable with runner off.
+ */
+export const readOwnCodePractice = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<CodePractice> => {
+
+  return customFetch<CodePractice>(getReadOwnCodePracticeUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnCodePracticeQueryKey = (id: string,) => {
+    return [
+    `/api/me/code-practice/${id}`
+    ] as const;
+    }
+
+
+export const getReadOwnCodePracticeQueryOptions = <TData = Awaited<ReturnType<typeof readOwnCodePractice>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnCodePractice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnCodePracticeQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnCodePractice>>> = ({ signal }) => readOwnCodePractice(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnCodePractice>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnCodePracticeQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnCodePractice>>>
+export type ReadOwnCodePracticeQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnCodePractice<TData = Awaited<ReturnType<typeof readOwnCodePractice>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnCodePractice>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnCodePracticeQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSubmitCodePracticeUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/code-practice/${id}/submit`
+}
+
+/**
+ * CAS submit. Same accepted source hash replays; replacement source needs a new attempt.
+ */
+export const submitCodePractice = async (id: string,
+    submitCodePracticeBody: SubmitCodePracticeBody, options?: Parameters<typeof customFetch>[1]): Promise<CodePractice> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CodePractice>(getSubmitCodePracticeUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(submitCodePracticeBody)
+  }
+);}
+
+
+
+
+
+export const getSubmitCodePracticeMutationKey = () => ['submitCodePractice'] as const;
+
+export const getSubmitCodePracticeMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitCodePractice>>, TError,SubmitCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitCodePractice>>, TError,SubmitCodePracticeMutationVariables, TContext> => {
+
+const mutationKey = getSubmitCodePracticeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitCodePractice>>, SubmitCodePracticeMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  submitCodePractice(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitCodePracticeMutationResult = NonNullable<Awaited<ReturnType<typeof submitCodePractice>>>
+    export type SubmitCodePracticeMutationBody = BodyType<SubmitCodePracticeBody>
+    export type SubmitCodePracticeMutationError = ErrorType<CompetitiveApiError>
+    export type SubmitCodePracticeMutationVariables = {id: string;data: BodyType<SubmitCodePracticeBody>}
+
+    export const useSubmitCodePractice = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitCodePractice>>, TError,SubmitCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitCodePractice>>,
+        TError,
+        SubmitCodePracticeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSubmitCodePracticeMutationOptions(options));
+    }
+
+export const getRetryCodePracticeUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/code-practice/${id}/retry`
+}
+
+/**
+ * Only after infrastructure_error; maximum two retries, no ordinary wrong-answer retry.
+ */
+export const retryCodePractice = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<CodePractice> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CodePractice>(getRetryCodePracticeUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getRetryCodePracticeMutationKey = () => ['retryCodePractice'] as const;
+
+export const getRetryCodePracticeMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof retryCodePractice>>, TError,RetryCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof retryCodePractice>>, TError,RetryCodePracticeMutationVariables, TContext> => {
+
+const mutationKey = getRetryCodePracticeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof retryCodePractice>>, RetryCodePracticeMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  retryCodePractice(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RetryCodePracticeMutationResult = NonNullable<Awaited<ReturnType<typeof retryCodePractice>>>
+    export type RetryCodePracticeMutationBody = BodyType<CompetitiveRevisionInput>
+    export type RetryCodePracticeMutationError = ErrorType<CompetitiveApiError>
+    export type RetryCodePracticeMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useRetryCodePractice = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof retryCodePractice>>, TError,RetryCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof retryCodePractice>>,
+        TError,
+        RetryCodePracticeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRetryCodePracticeMutationOptions(options));
+    }
+
+export const getCancelCodePracticeUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/code-practice/${id}/cancel`
+}
+
+/**
+ * Works with runner off. Changes fence/revision and attempts to stop the owned container.
+ */
+export const cancelCodePractice = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<CodePractice> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CodePractice>(getCancelCodePracticeUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getCancelCodePracticeMutationKey = () => ['cancelCodePractice'] as const;
+
+export const getCancelCodePracticeMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelCodePractice>>, TError,CancelCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof cancelCodePractice>>, TError,CancelCodePracticeMutationVariables, TContext> => {
+
+const mutationKey = getCancelCodePracticeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelCodePractice>>, CancelCodePracticeMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  cancelCodePractice(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CancelCodePracticeMutationResult = NonNullable<Awaited<ReturnType<typeof cancelCodePractice>>>
+    export type CancelCodePracticeMutationBody = BodyType<CompetitiveRevisionInput>
+    export type CancelCodePracticeMutationError = ErrorType<CompetitiveApiError>
+    export type CancelCodePracticeMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useCancelCodePractice = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof cancelCodePractice>>, TError,CancelCodePracticeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof cancelCodePractice>>,
+        TError,
+        CancelCodePracticeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCancelCodePracticeMutationOptions(options));
+    }
+
+export const getListOwnedSharedSelectionsUrl = () => {
+
+
+
+
+  return `/api/employer/shared-selections`
+}
+
+/**
+ * Company owner only; at most 100 latest shares, no guest tokens returned.
+ */
+export const listOwnedSharedSelections = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListOwnedSharedSelections200> => {
+
+  return customFetch<ListOwnedSharedSelections200>(getListOwnedSharedSelectionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListOwnedSharedSelectionsQueryKey = () => {
+    return [
+    `/api/employer/shared-selections`
+    ] as const;
+    }
+
+
+export const getListOwnedSharedSelectionsQueryOptions = <TData = Awaited<ReturnType<typeof listOwnedSharedSelections>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnedSharedSelections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListOwnedSharedSelectionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listOwnedSharedSelections>>> = ({ signal }) => listOwnedSharedSelections({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listOwnedSharedSelections>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListOwnedSharedSelectionsQueryResult = NonNullable<Awaited<ReturnType<typeof listOwnedSharedSelections>>>
+export type ListOwnedSharedSelectionsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListOwnedSharedSelections<TData = Awaited<ReturnType<typeof listOwnedSharedSelections>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnedSharedSelections>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListOwnedSharedSelectionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateOwnedSharedSelectionUrl = () => {
+
+
+
+
+  return `/api/employer/shared-selections`
+}
+
+/**
+ * Creates a snapshot of currently saved exact CV revisions, TTL 1–168 hours. guestToken returned once to owner; it is a credential and must stay out of logs/query URLs. Guest also needs separate per-CV permission.
+ */
+export const createOwnedSharedSelection = async (createOwnedSharedSelectionBody: CreateOwnedSharedSelectionBody, options?: Parameters<typeof customFetch>[1]): Promise<CreateOwnedSharedSelection201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CreateOwnedSharedSelection201>(getCreateOwnedSharedSelectionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createOwnedSharedSelectionBody)
+  }
+);}
+
+
+
+
+
+export const getCreateOwnedSharedSelectionMutationKey = () => ['createOwnedSharedSelection'] as const;
+
+export const getCreateOwnedSharedSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOwnedSharedSelection>>, TError,CreateOwnedSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createOwnedSharedSelection>>, TError,CreateOwnedSharedSelectionMutationVariables, TContext> => {
+
+const mutationKey = getCreateOwnedSharedSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createOwnedSharedSelection>>, CreateOwnedSharedSelectionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createOwnedSharedSelection(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateOwnedSharedSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof createOwnedSharedSelection>>>
+    export type CreateOwnedSharedSelectionMutationBody = BodyType<CreateOwnedSharedSelectionBody>
+    export type CreateOwnedSharedSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type CreateOwnedSharedSelectionMutationVariables = {data: BodyType<CreateOwnedSharedSelectionBody>}
+
+    export const useCreateOwnedSharedSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOwnedSharedSelection>>, TError,CreateOwnedSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createOwnedSharedSelection>>,
+        TError,
+        CreateOwnedSharedSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateOwnedSharedSelectionMutationOptions(options));
+    }
+
+export const getAppointSharedSelectionReviewerUrl = () => {
+
+
+
+
+  return `/api/employer/shared-selection-members`
+}
+
+/**
+ * Same-pool employer account, explicitly appointed by owner. Existing membership requires its revision. Appointment never expands CV matching consent.
+ */
+export const appointSharedSelectionReviewer = async (appointSharedSelectionReviewerBody: AppointSharedSelectionReviewerBody, options?: Parameters<typeof customFetch>[1]): Promise<AppointSharedSelectionReviewer200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AppointSharedSelectionReviewer200>(getAppointSharedSelectionReviewerUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(appointSharedSelectionReviewerBody)
+  }
+);}
+
+
+
+
+
+export const getAppointSharedSelectionReviewerMutationKey = () => ['appointSharedSelectionReviewer'] as const;
+
+export const getAppointSharedSelectionReviewerMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof appointSharedSelectionReviewer>>, TError,AppointSharedSelectionReviewerMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof appointSharedSelectionReviewer>>, TError,AppointSharedSelectionReviewerMutationVariables, TContext> => {
+
+const mutationKey = getAppointSharedSelectionReviewerMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof appointSharedSelectionReviewer>>, AppointSharedSelectionReviewerMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  appointSharedSelectionReviewer(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AppointSharedSelectionReviewerMutationResult = NonNullable<Awaited<ReturnType<typeof appointSharedSelectionReviewer>>>
+    export type AppointSharedSelectionReviewerMutationBody = BodyType<AppointSharedSelectionReviewerBody>
+    export type AppointSharedSelectionReviewerMutationError = ErrorType<CompetitiveApiError>
+    export type AppointSharedSelectionReviewerMutationVariables = {data: BodyType<AppointSharedSelectionReviewerBody>}
+
+    export const useAppointSharedSelectionReviewer = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof appointSharedSelectionReviewer>>, TError,AppointSharedSelectionReviewerMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof appointSharedSelectionReviewer>>,
+        TError,
+        AppointSharedSelectionReviewerMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAppointSharedSelectionReviewerMutationOptions(options));
+    }
+
+export const getReadEmployeeSharedSelectionUrl = (id: string,) => {
+
+
+
+
+  return `/api/shared-selections/${id}`
+}
+
+/**
+ * Owner or explicitly listed active same-company reviewer. Revalidates source context/CV versions and current consent on every read.
+ */
+export const readEmployeeSharedSelection = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<ReadEmployeeSharedSelection200> => {
+
+  return customFetch<ReadEmployeeSharedSelection200>(getReadEmployeeSharedSelectionUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadEmployeeSharedSelectionQueryKey = (id: string,) => {
+    return [
+    `/api/shared-selections/${id}`
+    ] as const;
+    }
+
+
+export const getReadEmployeeSharedSelectionQueryOptions = <TData = Awaited<ReturnType<typeof readEmployeeSharedSelection>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployeeSharedSelection>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadEmployeeSharedSelectionQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readEmployeeSharedSelection>>> = ({ signal }) => readEmployeeSharedSelection(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readEmployeeSharedSelection>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadEmployeeSharedSelectionQueryResult = NonNullable<Awaited<ReturnType<typeof readEmployeeSharedSelection>>>
+export type ReadEmployeeSharedSelectionQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadEmployeeSharedSelection<TData = Awaited<ReturnType<typeof readEmployeeSharedSelection>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployeeSharedSelection>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadEmployeeSharedSelectionQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCommentEmployeeSharedSelectionUrl = (id: string,) => {
+
+
+
+
+  return `/api/shared-selections/${id}/comments`
+}
+
+/**
+ * Comment only on an accessible row at the saved exact CV revision.
+ */
+export const commentEmployeeSharedSelection = async (id: string,
+    commentEmployeeSharedSelectionBody: CommentEmployeeSharedSelectionBody, options?: Parameters<typeof customFetch>[1]): Promise<CommentEmployeeSharedSelection201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CommentEmployeeSharedSelection201>(getCommentEmployeeSharedSelectionUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(commentEmployeeSharedSelectionBody)
+  }
+);}
+
+
+
+
+
+export const getCommentEmployeeSharedSelectionMutationKey = () => ['commentEmployeeSharedSelection'] as const;
+
+export const getCommentEmployeeSharedSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentEmployeeSharedSelection>>, TError,CommentEmployeeSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof commentEmployeeSharedSelection>>, TError,CommentEmployeeSharedSelectionMutationVariables, TContext> => {
+
+const mutationKey = getCommentEmployeeSharedSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentEmployeeSharedSelection>>, CommentEmployeeSharedSelectionMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  commentEmployeeSharedSelection(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CommentEmployeeSharedSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof commentEmployeeSharedSelection>>>
+    export type CommentEmployeeSharedSelectionMutationBody = BodyType<CommentEmployeeSharedSelectionBody>
+    export type CommentEmployeeSharedSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type CommentEmployeeSharedSelectionMutationVariables = {id: string;data: BodyType<CommentEmployeeSharedSelectionBody>}
+
+    export const useCommentEmployeeSharedSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentEmployeeSharedSelection>>, TError,CommentEmployeeSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof commentEmployeeSharedSelection>>,
+        TError,
+        CommentEmployeeSharedSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCommentEmployeeSharedSelectionMutationOptions(options));
+    }
+
+export const getRevokeOwnedSharedSelectionUrl = (id: string,) => {
+
+
+
+
+  return `/api/employer/shared-selections/${id}/revoke`
+}
+
+/**
+ * Company owner, revision CAS. Already revoked replays. Future reads/comments fail with 404, not a public revocation-detail oracle.
+ */
+export const revokeOwnedSharedSelection = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<RevokeOwnedSharedSelection200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RevokeOwnedSharedSelection200>(getRevokeOwnedSharedSelectionUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getRevokeOwnedSharedSelectionMutationKey = () => ['revokeOwnedSharedSelection'] as const;
+
+export const getRevokeOwnedSharedSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeOwnedSharedSelection>>, TError,RevokeOwnedSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof revokeOwnedSharedSelection>>, TError,RevokeOwnedSharedSelectionMutationVariables, TContext> => {
+
+const mutationKey = getRevokeOwnedSharedSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof revokeOwnedSharedSelection>>, RevokeOwnedSharedSelectionMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  revokeOwnedSharedSelection(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RevokeOwnedSharedSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof revokeOwnedSharedSelection>>>
+    export type RevokeOwnedSharedSelectionMutationBody = BodyType<CompetitiveRevisionInput>
+    export type RevokeOwnedSharedSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type RevokeOwnedSharedSelectionMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useRevokeOwnedSharedSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeOwnedSharedSelection>>, TError,RevokeOwnedSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof revokeOwnedSharedSelection>>,
+        TError,
+        RevokeOwnedSharedSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRevokeOwnedSharedSelectionMutationOptions(options));
+    }
+
+export const getReadGuestSharedSelectionUrl = (id: string,) => {
+
+
+
+
+  return `/api/guest/shared-selections/${id}/read`
+}
+
+/**
+ * No login; bearer capability is supplied only in JSON. Current CV matching consent AND explicit per-CV guest consent required. Guest sees own comments only; denied rows disappear.
+ */
+export const readGuestSharedSelection = async (id: string,
+    readGuestSharedSelectionBody: ReadGuestSharedSelectionBody, options?: Parameters<typeof customFetch>[1]): Promise<ReadGuestSharedSelection200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ReadGuestSharedSelection200>(getReadGuestSharedSelectionUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(readGuestSharedSelectionBody)
+  }
+);}
+
+
+
+
+
+export const getReadGuestSharedSelectionMutationKey = () => ['readGuestSharedSelection'] as const;
+
+export const getReadGuestSharedSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readGuestSharedSelection>>, TError,ReadGuestSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof readGuestSharedSelection>>, TError,ReadGuestSharedSelectionMutationVariables, TContext> => {
+
+const mutationKey = getReadGuestSharedSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof readGuestSharedSelection>>, ReadGuestSharedSelectionMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  readGuestSharedSelection(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReadGuestSharedSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof readGuestSharedSelection>>>
+    export type ReadGuestSharedSelectionMutationBody = BodyType<ReadGuestSharedSelectionBody>
+    export type ReadGuestSharedSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type ReadGuestSharedSelectionMutationVariables = {id: string;data: BodyType<ReadGuestSharedSelectionBody>}
+
+    export const useReadGuestSharedSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof readGuestSharedSelection>>, TError,ReadGuestSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof readGuestSharedSelection>>,
+        TError,
+        ReadGuestSharedSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReadGuestSharedSelectionMutationOptions(options));
+    }
+
+export const getCommentGuestSharedSelectionUrl = (id: string,) => {
+
+
+
+
+  return `/api/guest/shared-selections/${id}/comments`
+}
+
+/**
+ * Guest capability plus all current row permissions; no employer or unrelated guest comments disclosed.
+ */
+export const commentGuestSharedSelection = async (id: string,
+    commentGuestSharedSelectionBody: CommentGuestSharedSelectionBody, options?: Parameters<typeof customFetch>[1]): Promise<CommentGuestSharedSelection201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CommentGuestSharedSelection201>(getCommentGuestSharedSelectionUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(commentGuestSharedSelectionBody)
+  }
+);}
+
+
+
+
+
+export const getCommentGuestSharedSelectionMutationKey = () => ['commentGuestSharedSelection'] as const;
+
+export const getCommentGuestSharedSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentGuestSharedSelection>>, TError,CommentGuestSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof commentGuestSharedSelection>>, TError,CommentGuestSharedSelectionMutationVariables, TContext> => {
+
+const mutationKey = getCommentGuestSharedSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentGuestSharedSelection>>, CommentGuestSharedSelectionMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  commentGuestSharedSelection(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CommentGuestSharedSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof commentGuestSharedSelection>>>
+    export type CommentGuestSharedSelectionMutationBody = BodyType<CommentGuestSharedSelectionBody>
+    export type CommentGuestSharedSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type CommentGuestSharedSelectionMutationVariables = {id: string;data: BodyType<CommentGuestSharedSelectionBody>}
+
+    export const useCommentGuestSharedSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentGuestSharedSelection>>, TError,CommentGuestSharedSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof commentGuestSharedSelection>>,
+        TError,
+        CommentGuestSharedSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCommentGuestSharedSelectionMutationOptions(options));
+    }
+
+export const getReadOwnGuestReviewPermissionUrl = (resumeId: number,) => {
+
+
+
+
+  return `/api/candidate/guest-review-permissions/${resumeId}`
+}
+
+/**
+ * Candidate-scoped permission lookup; missing record returns false. GET does not disclose whether a foreign CV exists.
+ */
+export const readOwnGuestReviewPermission = async (resumeId: number, options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnGuestReviewPermission200> => {
+
+  return customFetch<ReadOwnGuestReviewPermission200>(getReadOwnGuestReviewPermissionUrl(resumeId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnGuestReviewPermissionQueryKey = (resumeId: number,) => {
+    return [
+    `/api/candidate/guest-review-permissions/${resumeId}`
+    ] as const;
+    }
+
+
+export const getReadOwnGuestReviewPermissionQueryOptions = <TData = Awaited<ReturnType<typeof readOwnGuestReviewPermission>>, TError = ErrorType<CompetitiveApiError>>(resumeId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnGuestReviewPermission>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnGuestReviewPermissionQueryKey(resumeId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnGuestReviewPermission>>> = ({ signal }) => readOwnGuestReviewPermission(resumeId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: resumeId !== null && resumeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnGuestReviewPermission>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnGuestReviewPermissionQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnGuestReviewPermission>>>
+export type ReadOwnGuestReviewPermissionQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnGuestReviewPermission<TData = Awaited<ReturnType<typeof readOwnGuestReviewPermission>>, TError = ErrorType<CompetitiveApiError>>(
+ resumeId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnGuestReviewPermission>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnGuestReviewPermissionQueryOptions(resumeId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveOwnGuestReviewPermissionUrl = (resumeId: number,) => {
+
+
+
+
+  return `/api/candidate/guest-review-permissions/${resumeId}`
+}
+
+/**
+ * Owner of exact CV only. Separate opt-in; default false. Revocation takes effect on subsequent guest reads/comments.
+ */
+export const saveOwnGuestReviewPermission = async (resumeId: number,
+    saveOwnGuestReviewPermissionBody: SaveOwnGuestReviewPermissionBody, options?: Parameters<typeof customFetch>[1]): Promise<SaveOwnGuestReviewPermission200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveOwnGuestReviewPermission200>(getSaveOwnGuestReviewPermissionUrl(resumeId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(saveOwnGuestReviewPermissionBody)
+  }
+);}
+
+
+
+
+
+export const getSaveOwnGuestReviewPermissionMutationKey = () => ['saveOwnGuestReviewPermission'] as const;
+
+export const getSaveOwnGuestReviewPermissionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>, TError,SaveOwnGuestReviewPermissionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>, TError,SaveOwnGuestReviewPermissionMutationVariables, TContext> => {
+
+const mutationKey = getSaveOwnGuestReviewPermissionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>, SaveOwnGuestReviewPermissionMutationVariables> = (props) => {
+          const {resumeId,data} = props ?? {};
+
+          return  saveOwnGuestReviewPermission(resumeId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveOwnGuestReviewPermissionMutationResult = NonNullable<Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>>
+    export type SaveOwnGuestReviewPermissionMutationBody = BodyType<SaveOwnGuestReviewPermissionBody>
+    export type SaveOwnGuestReviewPermissionMutationError = ErrorType<CompetitiveApiError>
+    export type SaveOwnGuestReviewPermissionMutationVariables = {resumeId: number;data: BodyType<SaveOwnGuestReviewPermissionBody>}
+
+    export const useSaveOwnGuestReviewPermission = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>, TError,SaveOwnGuestReviewPermissionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveOwnGuestReviewPermission>>,
+        TError,
+        SaveOwnGuestReviewPermissionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveOwnGuestReviewPermissionMutationOptions(options));
+    }
+
+export const getListOwnPublicPassportsUrl = () => {
+
+
+
+
+  return `/api/me/public-passports`
+}
+
+/**
+ * Candidate owner; at most 100 latest publications, selected available account evidence.
+ */
+export const listOwnPublicPassports = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListOwnPublicPassports200> => {
+
+  return customFetch<ListOwnPublicPassports200>(getListOwnPublicPassportsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListOwnPublicPassportsQueryKey = () => {
+    return [
+    `/api/me/public-passports`
+    ] as const;
+    }
+
+
+export const getListOwnPublicPassportsQueryOptions = <TData = Awaited<ReturnType<typeof listOwnPublicPassports>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnPublicPassports>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListOwnPublicPassportsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listOwnPublicPassports>>> = ({ signal }) => listOwnPublicPassports({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listOwnPublicPassports>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListOwnPublicPassportsQueryResult = NonNullable<Awaited<ReturnType<typeof listOwnPublicPassports>>>
+export type ListOwnPublicPassportsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListOwnPublicPassports<TData = Awaited<ReturnType<typeof listOwnPublicPassports>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnPublicPassports>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListOwnPublicPassportsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getIssueOwnPublicPassportUrl = () => {
+
+
+
+
+  return `/api/me/public-passports`
+}
+
+/**
+ * Explicit publication consent required. Preview-bound idempotency; optional replacement atomically supersedes old publication.
+ */
+export const issueOwnPublicPassport = async (issueOwnPublicPassportBody: IssueOwnPublicPassportBody, options?: Parameters<typeof customFetch>[1]): Promise<IssueOwnPublicPassport201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<IssueOwnPublicPassport201>(getIssueOwnPublicPassportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(issueOwnPublicPassportBody)
+  }
+);}
+
+
+
+
+
+export const getIssueOwnPublicPassportMutationKey = () => ['issueOwnPublicPassport'] as const;
+
+export const getIssueOwnPublicPassportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueOwnPublicPassport>>, TError,IssueOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof issueOwnPublicPassport>>, TError,IssueOwnPublicPassportMutationVariables, TContext> => {
+
+const mutationKey = getIssueOwnPublicPassportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof issueOwnPublicPassport>>, IssueOwnPublicPassportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  issueOwnPublicPassport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type IssueOwnPublicPassportMutationResult = NonNullable<Awaited<ReturnType<typeof issueOwnPublicPassport>>>
+    export type IssueOwnPublicPassportMutationBody = BodyType<IssueOwnPublicPassportBody>
+    export type IssueOwnPublicPassportMutationError = ErrorType<CompetitiveApiError>
+    export type IssueOwnPublicPassportMutationVariables = {data: BodyType<IssueOwnPublicPassportBody>}
+
+    export const useIssueOwnPublicPassport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueOwnPublicPassport>>, TError,IssueOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof issueOwnPublicPassport>>,
+        TError,
+        IssueOwnPublicPassportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getIssueOwnPublicPassportMutationOptions(options));
+    }
+
+export const getPreviewOwnPublicPassportUrl = () => {
+
+
+
+
+  return `/api/me/public-passports/preview`
+}
+
+/**
+ * Explicit selected claims only; short-lived preview must be reviewed before publication.
+ */
+export const previewOwnPublicPassport = async (previewOwnPublicPassportBody: PreviewOwnPublicPassportBody, options?: Parameters<typeof customFetch>[1]): Promise<PreviewOwnPublicPassport200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PreviewOwnPublicPassport200>(getPreviewOwnPublicPassportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(previewOwnPublicPassportBody)
+  }
+);}
+
+
+
+
+
+export const getPreviewOwnPublicPassportMutationKey = () => ['previewOwnPublicPassport'] as const;
+
+export const getPreviewOwnPublicPassportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewOwnPublicPassport>>, TError,PreviewOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewOwnPublicPassport>>, TError,PreviewOwnPublicPassportMutationVariables, TContext> => {
+
+const mutationKey = getPreviewOwnPublicPassportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewOwnPublicPassport>>, PreviewOwnPublicPassportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  previewOwnPublicPassport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewOwnPublicPassportMutationResult = NonNullable<Awaited<ReturnType<typeof previewOwnPublicPassport>>>
+    export type PreviewOwnPublicPassportMutationBody = BodyType<PreviewOwnPublicPassportBody>
+    export type PreviewOwnPublicPassportMutationError = ErrorType<CompetitiveApiError>
+    export type PreviewOwnPublicPassportMutationVariables = {data: BodyType<PreviewOwnPublicPassportBody>}
+
+    export const usePreviewOwnPublicPassport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewOwnPublicPassport>>, TError,PreviewOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof previewOwnPublicPassport>>,
+        TError,
+        PreviewOwnPublicPassportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPreviewOwnPublicPassportMutationOptions(options));
+    }
+
+export const getRevokeOwnPublicPassportUrl = (id: string,) => {
+
+
+
+
+  return `/api/me/public-passports/${id}/revoke`
+}
+
+/**
+ * Owner; append event, no proof deletion. Repeated revocation returns existing state.
+ */
+export const revokeOwnPublicPassport = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<RevokeOwnPublicPassport200> => {
+
+  return customFetch<RevokeOwnPublicPassport200>(getRevokeOwnPublicPassportUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRevokeOwnPublicPassportMutationKey = () => ['revokeOwnPublicPassport'] as const;
+
+export const getRevokeOwnPublicPassportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeOwnPublicPassport>>, TError,RevokeOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof revokeOwnPublicPassport>>, TError,RevokeOwnPublicPassportMutationVariables, TContext> => {
+
+const mutationKey = getRevokeOwnPublicPassportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof revokeOwnPublicPassport>>, RevokeOwnPublicPassportMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  revokeOwnPublicPassport(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RevokeOwnPublicPassportMutationResult = NonNullable<Awaited<ReturnType<typeof revokeOwnPublicPassport>>>
+
+    export type RevokeOwnPublicPassportMutationError = ErrorType<CompetitiveApiError>
+    export type RevokeOwnPublicPassportMutationVariables = {id: string}
+
+    export const useRevokeOwnPublicPassport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeOwnPublicPassport>>, TError,RevokeOwnPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof revokeOwnPublicPassport>>,
+        TError,
+        RevokeOwnPublicPassportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRevokeOwnPublicPassportMutationOptions(options));
+    }
+
+export const getListPublicPassportKeysUrl = () => {
+
+
+
+
+  return `/api/public/passport-keys`
+}
+
+/**
+ * Public verification keys, never private signing material.
+ */
+export const listPublicPassportKeys = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListPublicPassportKeys200> => {
+
+  return customFetch<ListPublicPassportKeys200>(getListPublicPassportKeysUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListPublicPassportKeysQueryKey = () => {
+    return [
+    `/api/public/passport-keys`
+    ] as const;
+    }
+
+
+export const getListPublicPassportKeysQueryOptions = <TData = Awaited<ReturnType<typeof listPublicPassportKeys>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPublicPassportKeys>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListPublicPassportKeysQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listPublicPassportKeys>>> = ({ signal }) => listPublicPassportKeys({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listPublicPassportKeys>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListPublicPassportKeysQueryResult = NonNullable<Awaited<ReturnType<typeof listPublicPassportKeys>>>
+export type ListPublicPassportKeysQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListPublicPassportKeys<TData = Awaited<ReturnType<typeof listPublicPassportKeys>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPublicPassportKeys>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListPublicPassportKeysQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadPublicPassportUrl = (id: string,) => {
+
+
+
+
+  return `/api/public/passports/${id}`
+}
+
+/**
+ * Anonymous current-status check. Not found/revoked/expired are HTTP 200 status DTOs, not 404/410.
+ */
+export const readPublicPassport = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<PublicPassportVerification> => {
+
+  return customFetch<PublicPassportVerification>(getReadPublicPassportUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadPublicPassportQueryKey = (id: string,) => {
+    return [
+    `/api/public/passports/${id}`
+    ] as const;
+    }
+
+
+export const getReadPublicPassportQueryOptions = <TData = Awaited<ReturnType<typeof readPublicPassport>>, TError = ErrorType<CompetitiveApiError>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readPublicPassport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadPublicPassportQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readPublicPassport>>> = ({ signal }) => readPublicPassport(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readPublicPassport>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadPublicPassportQueryResult = NonNullable<Awaited<ReturnType<typeof readPublicPassport>>>
+export type ReadPublicPassportQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadPublicPassport<TData = Awaited<ReturnType<typeof readPublicPassport>>, TError = ErrorType<CompetitiveApiError>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readPublicPassport>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadPublicPassportQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getVerifyUploadedPublicPassportUrl = () => {
+
+
+
+
+  return `/api/public/passports/verify`
+}
+
+/**
+ * Anonymous strict signed JSON upload, not PDF. Compares persisted bytes/issuer/key/signature/expiry/current effective claims.
+ */
+export const verifyUploadedPublicPassport = async (signedPassportDocument: SignedPassportDocument, options?: Parameters<typeof customFetch>[1]): Promise<PublicPassportVerification> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PublicPassportVerification>(getVerifyUploadedPublicPassportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(signedPassportDocument)
+  }
+);}
+
+
+
+
+
+export const getVerifyUploadedPublicPassportMutationKey = () => ['verifyUploadedPublicPassport'] as const;
+
+export const getVerifyUploadedPublicPassportMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyUploadedPublicPassport>>, TError,VerifyUploadedPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyUploadedPublicPassport>>, TError,VerifyUploadedPublicPassportMutationVariables, TContext> => {
+
+const mutationKey = getVerifyUploadedPublicPassportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyUploadedPublicPassport>>, VerifyUploadedPublicPassportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  verifyUploadedPublicPassport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyUploadedPublicPassportMutationResult = NonNullable<Awaited<ReturnType<typeof verifyUploadedPublicPassport>>>
+    export type VerifyUploadedPublicPassportMutationBody = BodyType<SignedPassportDocument>
+    export type VerifyUploadedPublicPassportMutationError = ErrorType<CompetitiveApiError>
+    export type VerifyUploadedPublicPassportMutationVariables = {data: BodyType<SignedPassportDocument>}
+
+    export const useVerifyUploadedPublicPassport = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyUploadedPublicPassport>>, TError,VerifyUploadedPublicPassportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyUploadedPublicPassport>>,
+        TError,
+        VerifyUploadedPublicPassportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyUploadedPublicPassportMutationOptions(options));
+    }
+
+export const getReadPublicPassportQrUrl = (id: string,) => {
+
+
+
+
+  return `/api/public/passports/${id}/qr`
+}
+
+/**
+ * PNG for the issuer verification URL and passport UUID. Active proofs only.
+ */
+export const readPublicPassportQr = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getReadPublicPassportQrUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadPublicPassportQrQueryKey = (id: string,) => {
+    return [
+    `/api/public/passports/${id}/qr`
+    ] as const;
+    }
+
+
+export const getReadPublicPassportQrQueryOptions = <TData = Awaited<ReturnType<typeof readPublicPassportQr>>, TError = ErrorType<CompetitiveApiError | ReadPublicPassportQr410>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readPublicPassportQr>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadPublicPassportQrQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readPublicPassportQr>>> = ({ signal }) => readPublicPassportQr(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readPublicPassportQr>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadPublicPassportQrQueryResult = NonNullable<Awaited<ReturnType<typeof readPublicPassportQr>>>
+export type ReadPublicPassportQrQueryError = ErrorType<CompetitiveApiError | ReadPublicPassportQr410>
+
+
+
+export function useReadPublicPassportQr<TData = Awaited<ReturnType<typeof readPublicPassportQr>>, TError = ErrorType<CompetitiveApiError | ReadPublicPassportQr410>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readPublicPassportQr>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadPublicPassportQrQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadOwnedAtsIntegrationUrl = () => {
+
+
+
+
+  return `/api/employer/ats`
+}
+
+/**
+ * Company owner; at most 100 recent delivery states. No signing secret, ciphertext, CV content or raw payload returned.
+ */
+export const readOwnedAtsIntegration = async ( options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnedAtsIntegration200> => {
+
+  return customFetch<ReadOwnedAtsIntegration200>(getReadOwnedAtsIntegrationUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnedAtsIntegrationQueryKey = () => {
+    return [
+    `/api/employer/ats`
+    ] as const;
+    }
+
+
+export const getReadOwnedAtsIntegrationQueryOptions = <TData = Awaited<ReturnType<typeof readOwnedAtsIntegration>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnedAtsIntegration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnedAtsIntegrationQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnedAtsIntegration>>> = ({ signal }) => readOwnedAtsIntegration({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnedAtsIntegration>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnedAtsIntegrationQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnedAtsIntegration>>>
+export type ReadOwnedAtsIntegrationQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnedAtsIntegration<TData = Awaited<ReturnType<typeof readOwnedAtsIntegration>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnedAtsIntegration>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnedAtsIntegrationQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRegisterOwnedAtsIntegrationUrl = () => {
+
+
+
+
+  return `/api/employer/ats`
+}
+
+/**
+ * Owner only; existing endpoint revision required. Registration/rotation replaces secret. Delivery rejects unsafe DNS/IP targets.
+ */
+export const registerOwnedAtsIntegration = async (registerOwnedAtsIntegrationBody: RegisterOwnedAtsIntegrationBody, options?: Parameters<typeof customFetch>[1]): Promise<RegisterOwnedAtsIntegration200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RegisterOwnedAtsIntegration200>(getRegisterOwnedAtsIntegrationUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(registerOwnedAtsIntegrationBody)
+  }
+);}
+
+
+
+
+
+export const getRegisterOwnedAtsIntegrationMutationKey = () => ['registerOwnedAtsIntegration'] as const;
+
+export const getRegisterOwnedAtsIntegrationMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof registerOwnedAtsIntegration>>, TError,RegisterOwnedAtsIntegrationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof registerOwnedAtsIntegration>>, TError,RegisterOwnedAtsIntegrationMutationVariables, TContext> => {
+
+const mutationKey = getRegisterOwnedAtsIntegrationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof registerOwnedAtsIntegration>>, RegisterOwnedAtsIntegrationMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  registerOwnedAtsIntegration(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RegisterOwnedAtsIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof registerOwnedAtsIntegration>>>
+    export type RegisterOwnedAtsIntegrationMutationBody = BodyType<RegisterOwnedAtsIntegrationBody>
+    export type RegisterOwnedAtsIntegrationMutationError = ErrorType<CompetitiveApiError>
+    export type RegisterOwnedAtsIntegrationMutationVariables = {data: BodyType<RegisterOwnedAtsIntegrationBody>}
+
+    export const useRegisterOwnedAtsIntegration = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof registerOwnedAtsIntegration>>, TError,RegisterOwnedAtsIntegrationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof registerOwnedAtsIntegration>>,
+        TError,
+        RegisterOwnedAtsIntegrationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRegisterOwnedAtsIntegrationMutationOptions(options));
+    }
+
+export const getDisableOwnedAtsIntegrationUrl = (id: string,) => {
+
+
+
+
+  return `/api/employer/ats/${id}/disable`
+}
+
+/**
+ * Company-scoped CAS. Pending delivery work is suppressed when endpoint or revision changes.
+ */
+export const disableOwnedAtsIntegration = async (id: string,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<DisableOwnedAtsIntegration200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<DisableOwnedAtsIntegration200>(getDisableOwnedAtsIntegrationUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getDisableOwnedAtsIntegrationMutationKey = () => ['disableOwnedAtsIntegration'] as const;
+
+export const getDisableOwnedAtsIntegrationMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disableOwnedAtsIntegration>>, TError,DisableOwnedAtsIntegrationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof disableOwnedAtsIntegration>>, TError,DisableOwnedAtsIntegrationMutationVariables, TContext> => {
+
+const mutationKey = getDisableOwnedAtsIntegrationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof disableOwnedAtsIntegration>>, DisableOwnedAtsIntegrationMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  disableOwnedAtsIntegration(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DisableOwnedAtsIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof disableOwnedAtsIntegration>>>
+    export type DisableOwnedAtsIntegrationMutationBody = BodyType<CompetitiveRevisionInput>
+    export type DisableOwnedAtsIntegrationMutationError = ErrorType<CompetitiveApiError>
+    export type DisableOwnedAtsIntegrationMutationVariables = {id: string;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useDisableOwnedAtsIntegration = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof disableOwnedAtsIntegration>>, TError,DisableOwnedAtsIntegrationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof disableOwnedAtsIntegration>>,
+        TError,
+        DisableOwnedAtsIntegrationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDisableOwnedAtsIntegrationMutationOptions(options));
+    }
+
+export const getRetryOwnedAtsDeliveryUrl = (id: string,) => {
+
+
+
+
+  return `/api/employer/ats/deliveries/${id}/retry`
+}
+
+/**
+ * Only dead delivery at the current active endpoint revision. Requeues same event UUID; consumers must deduplicate.
+ */
+export const retryOwnedAtsDelivery = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<RetryOwnedAtsDelivery200> => {
+
+  return customFetch<RetryOwnedAtsDelivery200>(getRetryOwnedAtsDeliveryUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRetryOwnedAtsDeliveryMutationKey = () => ['retryOwnedAtsDelivery'] as const;
+
+export const getRetryOwnedAtsDeliveryMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof retryOwnedAtsDelivery>>, TError,RetryOwnedAtsDeliveryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof retryOwnedAtsDelivery>>, TError,RetryOwnedAtsDeliveryMutationVariables, TContext> => {
+
+const mutationKey = getRetryOwnedAtsDeliveryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof retryOwnedAtsDelivery>>, RetryOwnedAtsDeliveryMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  retryOwnedAtsDelivery(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RetryOwnedAtsDeliveryMutationResult = NonNullable<Awaited<ReturnType<typeof retryOwnedAtsDelivery>>>
+
+    export type RetryOwnedAtsDeliveryMutationError = ErrorType<CompetitiveApiError>
+    export type RetryOwnedAtsDeliveryMutationVariables = {id: string}
+
+    export const useRetryOwnedAtsDelivery = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof retryOwnedAtsDelivery>>, TError,RetryOwnedAtsDeliveryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof retryOwnedAtsDelivery>>,
+        TError,
+        RetryOwnedAtsDeliveryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRetryOwnedAtsDeliveryMutationOptions(options));
+    }
+
+export const getReadEmployerInvitationAnalyticsUrl = (params?: ReadEmployerInvitationAnalyticsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/invitation-analytics?${stringifiedParams}` : `/api/employer/invitation-analytics`
+}
+
+/**
+ * Owned cohort; optional owned job XOR need scope. Small groups/rare reasons are suppressed. Budget is rolling 24-hour company spend; withdrawals/declines do not refund.
+ */
+export const readEmployerInvitationAnalytics = async (params?: ReadEmployerInvitationAnalyticsParams, options?: Parameters<typeof customFetch>[1]): Promise<ReadEmployerInvitationAnalytics200> => {
+
+  return customFetch<ReadEmployerInvitationAnalytics200>(getReadEmployerInvitationAnalyticsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadEmployerInvitationAnalyticsQueryKey = (params?: ReadEmployerInvitationAnalyticsParams,) => {
+    return [
+    `/api/employer/invitation-analytics`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getReadEmployerInvitationAnalyticsQueryOptions = <TData = Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>, TError = ErrorType<CompetitiveApiError>>(params?: ReadEmployerInvitationAnalyticsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadEmployerInvitationAnalyticsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>> = ({ signal }) => readEmployerInvitationAnalytics(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadEmployerInvitationAnalyticsQueryResult = NonNullable<Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>>
+export type ReadEmployerInvitationAnalyticsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadEmployerInvitationAnalytics<TData = Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>, TError = ErrorType<CompetitiveApiError>>(
+ params?: ReadEmployerInvitationAnalyticsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployerInvitationAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadEmployerInvitationAnalyticsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadOwnInvitationAnalyticsUrl = (params?: ReadOwnInvitationAnalyticsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/me/invitation-analytics?${stringifiedParams}` : `/api/me/invitation-analytics`
+}
+
+/**
+ * Own invitation history only. Seven-day response denominator includes only mature cohorts; pending is not a decline. Market aggregate honestly unavailable.
+ */
+export const readOwnInvitationAnalytics = async (params?: ReadOwnInvitationAnalyticsParams, options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnInvitationAnalytics200> => {
+
+  return customFetch<ReadOwnInvitationAnalytics200>(getReadOwnInvitationAnalyticsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnInvitationAnalyticsQueryKey = (params?: ReadOwnInvitationAnalyticsParams,) => {
+    return [
+    `/api/me/invitation-analytics`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getReadOwnInvitationAnalyticsQueryOptions = <TData = Awaited<ReturnType<typeof readOwnInvitationAnalytics>>, TError = ErrorType<CompetitiveApiError>>(params?: ReadOwnInvitationAnalyticsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitationAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnInvitationAnalyticsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnInvitationAnalytics>>> = ({ signal }) => readOwnInvitationAnalytics(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitationAnalytics>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnInvitationAnalyticsQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnInvitationAnalytics>>>
+export type ReadOwnInvitationAnalyticsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnInvitationAnalytics<TData = Awaited<ReturnType<typeof readOwnInvitationAnalytics>>, TError = ErrorType<CompetitiveApiError>>(
+ params?: ReadOwnInvitationAnalyticsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitationAnalytics>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnInvitationAnalyticsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadOwnInvitationUrl = (id: number,) => {
+
+
+
+
+  return `/api/me/invitations/${id}`
+}
+
+/**
+ * Candidate recipient projection. Private need ID may be retained as a routing reference; its title/description/snapshot are withheld, label is generic and available=false. Only invitation conditions are shown. Does not mark viewed.
+ */
+export const readOwnInvitation = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<CandidateInvitation> => {
+
+  return customFetch<CandidateInvitation>(getReadOwnInvitationUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnInvitationQueryKey = (id: number,) => {
+    return [
+    `/api/me/invitations/${id}`
+    ] as const;
+    }
+
+
+export const getReadOwnInvitationQueryOptions = <TData = Awaited<ReturnType<typeof readOwnInvitation>>, TError = ErrorType<CompetitiveApiError>>(id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitation>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnInvitationQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnInvitation>>> = ({ signal }) => readOwnInvitation(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitation>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnInvitationQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnInvitation>>>
+export type ReadOwnInvitationQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnInvitation<TData = Awaited<ReturnType<typeof readOwnInvitation>>, TError = ErrorType<CompetitiveApiError>>(
+ id: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnInvitation>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnInvitationQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSearchEmployerSelectionUrl = (params?: SearchEmployerSelectionParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/selection?${stringifiedParams}` : `/api/employer/selection`
+}
+
+/**
+ * Company owner, same pool and current consent. contextType/contextId must be supplied together; shortlisted requires context. Skill filters are comma-separated. Salary filters require period and tax type. Default sort recommended desc. All predicates apply to one CV before person deduplication and pagination; permissions rechecked before projection.
+ */
+export const searchEmployerSelection = async (params?: SearchEmployerSelectionParams, options?: Parameters<typeof customFetch>[1]): Promise<SearchEmployerSelection200> => {
+
+  return customFetch<SearchEmployerSelection200>(getSearchEmployerSelectionUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSearchEmployerSelectionQueryKey = (params?: SearchEmployerSelectionParams,) => {
+    return [
+    `/api/employer/selection`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchEmployerSelectionQueryOptions = <TData = Awaited<ReturnType<typeof searchEmployerSelection>>, TError = ErrorType<CompetitiveApiError>>(params?: SearchEmployerSelectionParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchEmployerSelection>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchEmployerSelectionQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchEmployerSelection>>> = ({ signal }) => searchEmployerSelection(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchEmployerSelection>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type SearchEmployerSelectionQueryResult = NonNullable<Awaited<ReturnType<typeof searchEmployerSelection>>>
+export type SearchEmployerSelectionQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useSearchEmployerSelection<TData = Awaited<ReturnType<typeof searchEmployerSelection>>, TError = ErrorType<CompetitiveApiError>>(
+ params?: SearchEmployerSelectionParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof searchEmployerSelection>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getSearchEmployerSelectionQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadEmployerSelectionResumeUrl = (resumeId: number,
+    params?: ReadEmployerSelectionResumeParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/selection/resumes/${resumeId}?${stringifiedParams}` : `/api/employer/selection/resumes/${resumeId}`
+}
+
+/**
+ * Current scope and exact CV access rechecked. Archived saved context is read-only. No raw exam answers, free-form contacts or private candidate metadata.
+ */
+export const readEmployerSelectionResume = async (resumeId: number,
+    params?: ReadEmployerSelectionResumeParams, options?: Parameters<typeof customFetch>[1]): Promise<ReadEmployerSelectionResume200> => {
+
+  return customFetch<ReadEmployerSelectionResume200>(getReadEmployerSelectionResumeUrl(resumeId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadEmployerSelectionResumeQueryKey = (resumeId: number,
+    params?: ReadEmployerSelectionResumeParams,) => {
+    return [
+    `/api/employer/selection/resumes/${resumeId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getReadEmployerSelectionResumeQueryOptions = <TData = Awaited<ReturnType<typeof readEmployerSelectionResume>>, TError = ErrorType<CompetitiveApiError>>(resumeId: number,
+    params?: ReadEmployerSelectionResumeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployerSelectionResume>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadEmployerSelectionResumeQueryKey(resumeId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readEmployerSelectionResume>>> = ({ signal }) => readEmployerSelectionResume(resumeId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: resumeId !== null && resumeId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readEmployerSelectionResume>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadEmployerSelectionResumeQueryResult = NonNullable<Awaited<ReturnType<typeof readEmployerSelectionResume>>>
+export type ReadEmployerSelectionResumeQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadEmployerSelectionResume<TData = Awaited<ReturnType<typeof readEmployerSelectionResume>>, TError = ErrorType<CompetitiveApiError>>(
+ resumeId: number,
+    params?: ReadEmployerSelectionResumeParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readEmployerSelectionResume>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadEmployerSelectionResumeQueryOptions(resumeId,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCheckEmployerSelectionAccessUrl = () => {
+
+
+
+
+  return `/api/employer/selection/access`
+}
+
+/**
+ * Visible-page access recheck, maximum 50 exact CV IDs; denied rows omitted, no rank recomputation.
+ */
+export const checkEmployerSelectionAccess = async (checkEmployerSelectionAccessBody: CheckEmployerSelectionAccessBody, options?: Parameters<typeof customFetch>[1]): Promise<CheckEmployerSelectionAccess200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CheckEmployerSelectionAccess200>(getCheckEmployerSelectionAccessUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(checkEmployerSelectionAccessBody)
+  }
+);}
+
+
+
+
+
+export const getCheckEmployerSelectionAccessMutationKey = () => ['checkEmployerSelectionAccess'] as const;
+
+export const getCheckEmployerSelectionAccessMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checkEmployerSelectionAccess>>, TError,CheckEmployerSelectionAccessMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof checkEmployerSelectionAccess>>, TError,CheckEmployerSelectionAccessMutationVariables, TContext> => {
+
+const mutationKey = getCheckEmployerSelectionAccessMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof checkEmployerSelectionAccess>>, CheckEmployerSelectionAccessMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  checkEmployerSelectionAccess(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CheckEmployerSelectionAccessMutationResult = NonNullable<Awaited<ReturnType<typeof checkEmployerSelectionAccess>>>
+    export type CheckEmployerSelectionAccessMutationBody = BodyType<CheckEmployerSelectionAccessBody>
+    export type CheckEmployerSelectionAccessMutationError = ErrorType<CompetitiveApiError>
+    export type CheckEmployerSelectionAccessMutationVariables = {data: BodyType<CheckEmployerSelectionAccessBody>}
+
+    export const useCheckEmployerSelectionAccess = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checkEmployerSelectionAccess>>, TError,CheckEmployerSelectionAccessMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof checkEmployerSelectionAccess>>,
+        TError,
+        CheckEmployerSelectionAccessMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCheckEmployerSelectionAccessMutationOptions(options));
+    }
+
+export const getCompareEmployerSelectionUrl = () => {
+
+
+
+
+  return `/api/employer/selection/compare`
+}
+
+/**
+ * Two to four unique CV IDs from different people; all current permissions required.
+ */
+export const compareEmployerSelection = async (compareEmployerSelectionBody: CompareEmployerSelectionBody, options?: Parameters<typeof customFetch>[1]): Promise<CompareEmployerSelection200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CompareEmployerSelection200>(getCompareEmployerSelectionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(compareEmployerSelectionBody)
+  }
+);}
+
+
+
+
+
+export const getCompareEmployerSelectionMutationKey = () => ['compareEmployerSelection'] as const;
+
+export const getCompareEmployerSelectionMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareEmployerSelection>>, TError,CompareEmployerSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof compareEmployerSelection>>, TError,CompareEmployerSelectionMutationVariables, TContext> => {
+
+const mutationKey = getCompareEmployerSelectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof compareEmployerSelection>>, CompareEmployerSelectionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  compareEmployerSelection(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompareEmployerSelectionMutationResult = NonNullable<Awaited<ReturnType<typeof compareEmployerSelection>>>
+    export type CompareEmployerSelectionMutationBody = BodyType<CompareEmployerSelectionBody>
+    export type CompareEmployerSelectionMutationError = ErrorType<CompetitiveApiError>
+    export type CompareEmployerSelectionMutationVariables = {data: BodyType<CompareEmployerSelectionBody>}
+
+    export const useCompareEmployerSelection = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof compareEmployerSelection>>, TError,CompareEmployerSelectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof compareEmployerSelection>>,
+        TError,
+        CompareEmployerSelectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCompareEmployerSelectionMutationOptions(options));
+    }
+
+export const getListOwnedSelectionContextsUrl = () => {
+
+
+
+
+  return `/api/employer/selection/contexts`
+}
+
+/**
+ * Owned jobs and private needs; no public need discovery route.
+ */
+export const listOwnedSelectionContexts = async ( options?: Parameters<typeof customFetch>[1]): Promise<ListOwnedSelectionContexts200> => {
+
+  return customFetch<ListOwnedSelectionContexts200>(getListOwnedSelectionContextsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListOwnedSelectionContextsQueryKey = () => {
+    return [
+    `/api/employer/selection/contexts`
+    ] as const;
+    }
+
+
+export const getListOwnedSelectionContextsQueryOptions = <TData = Awaited<ReturnType<typeof listOwnedSelectionContexts>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnedSelectionContexts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListOwnedSelectionContextsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listOwnedSelectionContexts>>> = ({ signal }) => listOwnedSelectionContexts({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listOwnedSelectionContexts>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListOwnedSelectionContextsQueryResult = NonNullable<Awaited<ReturnType<typeof listOwnedSelectionContexts>>>
+export type ListOwnedSelectionContextsQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useListOwnedSelectionContexts<TData = Awaited<ReturnType<typeof listOwnedSelectionContexts>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listOwnedSelectionContexts>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListOwnedSelectionContextsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReadOwnedShortlistUrl = (params?: ReadOwnedShortlistParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/employer/shortlist?${stringifiedParams}` : `/api/employer/shortlist`
+}
+
+/**
+ * Current access required; unavailable saved rows retain routing references and candidate=null.
+ */
+export const readOwnedShortlist = async (params?: ReadOwnedShortlistParams, options?: Parameters<typeof customFetch>[1]): Promise<ReadOwnedShortlist200> => {
+
+  return customFetch<ReadOwnedShortlist200>(getReadOwnedShortlistUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadOwnedShortlistQueryKey = (params?: ReadOwnedShortlistParams,) => {
+    return [
+    `/api/employer/shortlist`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getReadOwnedShortlistQueryOptions = <TData = Awaited<ReturnType<typeof readOwnedShortlist>>, TError = ErrorType<CompetitiveApiError>>(params?: ReadOwnedShortlistParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnedShortlist>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadOwnedShortlistQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readOwnedShortlist>>> = ({ signal }) => readOwnedShortlist(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readOwnedShortlist>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadOwnedShortlistQueryResult = NonNullable<Awaited<ReturnType<typeof readOwnedShortlist>>>
+export type ReadOwnedShortlistQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadOwnedShortlist<TData = Awaited<ReturnType<typeof readOwnedShortlist>>, TError = ErrorType<CompetitiveApiError>>(
+ params?: ReadOwnedShortlistParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readOwnedShortlist>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadOwnedShortlistQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveOwnedShortlistCandidateUrl = () => {
+
+
+
+
+  return `/api/employer/shortlist`
+}
+
+/**
+ * One exact CV per candidate/context. Current CV matching consent required. Optional contextVersion rejects stale requirements.
+ */
+export const saveOwnedShortlistCandidate = async (saveOwnedShortlistCandidateBody: SaveOwnedShortlistCandidateBody, options?: Parameters<typeof customFetch>[1]): Promise<SaveOwnedShortlistCandidate200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SaveOwnedShortlistCandidate200>(getSaveOwnedShortlistCandidateUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(saveOwnedShortlistCandidateBody)
+  }
+);}
+
+
+
+
+
+export const getSaveOwnedShortlistCandidateMutationKey = () => ['saveOwnedShortlistCandidate'] as const;
+
+export const getSaveOwnedShortlistCandidateMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>, TError,SaveOwnedShortlistCandidateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>, TError,SaveOwnedShortlistCandidateMutationVariables, TContext> => {
+
+const mutationKey = getSaveOwnedShortlistCandidateMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>, SaveOwnedShortlistCandidateMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  saveOwnedShortlistCandidate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveOwnedShortlistCandidateMutationResult = NonNullable<Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>>
+    export type SaveOwnedShortlistCandidateMutationBody = BodyType<SaveOwnedShortlistCandidateBody>
+    export type SaveOwnedShortlistCandidateMutationError = ErrorType<CompetitiveApiError>
+    export type SaveOwnedShortlistCandidateMutationVariables = {data: BodyType<SaveOwnedShortlistCandidateBody>}
+
+    export const useSaveOwnedShortlistCandidate = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>, TError,SaveOwnedShortlistCandidateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveOwnedShortlistCandidate>>,
+        TError,
+        SaveOwnedShortlistCandidateMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveOwnedShortlistCandidateMutationOptions(options));
+    }
+
+export const getRemoveOwnedShortlistCandidateUrl = () => {
+
+
+
+
+  return `/api/employer/shortlist`
+}
+
+/**
+ * Explicit context and candidate. Removes saved row, not CV or matching consent.
+ */
+export const removeOwnedShortlistCandidate = async (removeOwnedShortlistCandidateBody: RemoveOwnedShortlistCandidateBody, options?: Parameters<typeof customFetch>[1]): Promise<RemoveOwnedShortlistCandidate200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RemoveOwnedShortlistCandidate200>(getRemoveOwnedShortlistCandidateUrl(),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(removeOwnedShortlistCandidateBody)
+  }
+);}
+
+
+
+
+
+export const getRemoveOwnedShortlistCandidateMutationKey = () => ['removeOwnedShortlistCandidate'] as const;
+
+export const getRemoveOwnedShortlistCandidateMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>, TError,RemoveOwnedShortlistCandidateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>, TError,RemoveOwnedShortlistCandidateMutationVariables, TContext> => {
+
+const mutationKey = getRemoveOwnedShortlistCandidateMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>, RemoveOwnedShortlistCandidateMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  removeOwnedShortlistCandidate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveOwnedShortlistCandidateMutationResult = NonNullable<Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>>
+    export type RemoveOwnedShortlistCandidateMutationBody = BodyType<RemoveOwnedShortlistCandidateBody>
+    export type RemoveOwnedShortlistCandidateMutationError = ErrorType<CompetitiveApiError>
+    export type RemoveOwnedShortlistCandidateMutationVariables = {data: BodyType<RemoveOwnedShortlistCandidateBody>}
+
+    export const useRemoveOwnedShortlistCandidate = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>, TError,RemoveOwnedShortlistCandidateMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof removeOwnedShortlistCandidate>>,
+        TError,
+        RemoveOwnedShortlistCandidateMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveOwnedShortlistCandidateMutationOptions(options));
+    }
+
+export const getUpdateOwnedEmployerNeedUrl = (id: number,) => {
+
+
+
+
+  return `/api/employer/needs/${id}`
+}
+
+/**
+ * Partial merge of present fields only; company owner, revision CAS. Archiving removes current shortlist; accepted history is retained.
+ */
+export const updateOwnedEmployerNeed = async (id: number,
+    updateOwnedEmployerNeedBody: UpdateOwnedEmployerNeedBody, options?: Parameters<typeof customFetch>[1]): Promise<EmployerNeed> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EmployerNeed>(getUpdateOwnedEmployerNeedUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateOwnedEmployerNeedBody)
+  }
+);}
+
+
+
+
+
+export const getUpdateOwnedEmployerNeedMutationKey = () => ['updateOwnedEmployerNeed'] as const;
+
+export const getUpdateOwnedEmployerNeedMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOwnedEmployerNeed>>, TError,UpdateOwnedEmployerNeedMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateOwnedEmployerNeed>>, TError,UpdateOwnedEmployerNeedMutationVariables, TContext> => {
+
+const mutationKey = getUpdateOwnedEmployerNeedMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateOwnedEmployerNeed>>, UpdateOwnedEmployerNeedMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateOwnedEmployerNeed(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateOwnedEmployerNeedMutationResult = NonNullable<Awaited<ReturnType<typeof updateOwnedEmployerNeed>>>
+    export type UpdateOwnedEmployerNeedMutationBody = BodyType<UpdateOwnedEmployerNeedBody>
+    export type UpdateOwnedEmployerNeedMutationError = ErrorType<CompetitiveApiError>
+    export type UpdateOwnedEmployerNeedMutationVariables = {id: number;data: BodyType<UpdateOwnedEmployerNeedBody>}
+
+    export const useUpdateOwnedEmployerNeed = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateOwnedEmployerNeed>>, TError,UpdateOwnedEmployerNeedMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateOwnedEmployerNeed>>,
+        TError,
+        UpdateOwnedEmployerNeedMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateOwnedEmployerNeedMutationOptions(options));
+    }
+
+export const getDeleteOwnedEmployerNeedUrl = (id: number,) => {
+
+
+
+
+  return `/api/employer/needs/${id}`
+}
+
+/**
+ * Soft deletion, same deleted record replays. No public need content exposed.
+ */
+export const deleteOwnedEmployerNeed = async (id: number,
+    competitiveRevisionInput: CompetitiveRevisionInput, options?: Parameters<typeof customFetch>[1]): Promise<DeleteOwnedEmployerNeed200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<DeleteOwnedEmployerNeed200>(getDeleteOwnedEmployerNeedUrl(id),
+  {
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(competitiveRevisionInput)
+  }
+);}
+
+
+
+
+
+export const getDeleteOwnedEmployerNeedMutationKey = () => ['deleteOwnedEmployerNeed'] as const;
+
+export const getDeleteOwnedEmployerNeedMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>, TError,DeleteOwnedEmployerNeedMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>, TError,DeleteOwnedEmployerNeedMutationVariables, TContext> => {
+
+const mutationKey = getDeleteOwnedEmployerNeedMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>, DeleteOwnedEmployerNeedMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  deleteOwnedEmployerNeed(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteOwnedEmployerNeedMutationResult = NonNullable<Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>>
+    export type DeleteOwnedEmployerNeedMutationBody = BodyType<CompetitiveRevisionInput>
+    export type DeleteOwnedEmployerNeedMutationError = ErrorType<CompetitiveApiError>
+    export type DeleteOwnedEmployerNeedMutationVariables = {id: number;data: BodyType<CompetitiveRevisionInput>}
+
+    export const useDeleteOwnedEmployerNeed = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>, TError,DeleteOwnedEmployerNeedMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteOwnedEmployerNeed>>,
+        TError,
+        DeleteOwnedEmployerNeedMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteOwnedEmployerNeedMutationOptions(options));
+    }
+
+export const getReadChangedConditionTrainingUrl = () => {
+
+
+
+
+  return `/api/me/skill-training/changed-condition`
+}
+
+/**
+ * Candidate only; separate optional training, never qualification evidence. Expected answer is withheld.
+ */
+export const readChangedConditionTraining = async ( options?: Parameters<typeof customFetch>[1]): Promise<ReadChangedConditionTraining200> => {
+
+  return customFetch<ReadChangedConditionTraining200>(getReadChangedConditionTrainingUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getReadChangedConditionTrainingQueryKey = () => {
+    return [
+    `/api/me/skill-training/changed-condition`
+    ] as const;
+    }
+
+
+export const getReadChangedConditionTrainingQueryOptions = <TData = Awaited<ReturnType<typeof readChangedConditionTraining>>, TError = ErrorType<CompetitiveApiError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readChangedConditionTraining>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReadChangedConditionTrainingQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readChangedConditionTraining>>> = ({ signal }) => readChangedConditionTraining({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof readChangedConditionTraining>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ReadChangedConditionTrainingQueryResult = NonNullable<Awaited<ReturnType<typeof readChangedConditionTraining>>>
+export type ReadChangedConditionTrainingQueryError = ErrorType<CompetitiveApiError>
+
+
+
+export function useReadChangedConditionTraining<TData = Awaited<ReturnType<typeof readChangedConditionTraining>>, TError = ErrorType<CompetitiveApiError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof readChangedConditionTraining>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getReadChangedConditionTrainingQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getAnswerChangedConditionTrainingUrl = () => {
+
+
+
+
+  return `/api/me/skill-training/changed-condition`
+}
+
+/**
+ * Checks this training answer only; no grade or proof mutation.
+ */
+export const answerChangedConditionTraining = async (answerChangedConditionTrainingBody: AnswerChangedConditionTrainingBody, options?: Parameters<typeof customFetch>[1]): Promise<AnswerChangedConditionTraining200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AnswerChangedConditionTraining200>(getAnswerChangedConditionTrainingUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(answerChangedConditionTrainingBody)
+  }
+);}
+
+
+
+
+
+export const getAnswerChangedConditionTrainingMutationKey = () => ['answerChangedConditionTraining'] as const;
+
+export const getAnswerChangedConditionTrainingMutationOptions = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof answerChangedConditionTraining>>, TError,AnswerChangedConditionTrainingMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof answerChangedConditionTraining>>, TError,AnswerChangedConditionTrainingMutationVariables, TContext> => {
+
+const mutationKey = getAnswerChangedConditionTrainingMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof answerChangedConditionTraining>>, AnswerChangedConditionTrainingMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  answerChangedConditionTraining(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AnswerChangedConditionTrainingMutationResult = NonNullable<Awaited<ReturnType<typeof answerChangedConditionTraining>>>
+    export type AnswerChangedConditionTrainingMutationBody = BodyType<AnswerChangedConditionTrainingBody>
+    export type AnswerChangedConditionTrainingMutationError = ErrorType<CompetitiveApiError>
+    export type AnswerChangedConditionTrainingMutationVariables = {data: BodyType<AnswerChangedConditionTrainingBody>}
+
+    export const useAnswerChangedConditionTraining = <TError = ErrorType<CompetitiveApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof answerChangedConditionTraining>>, TError,AnswerChangedConditionTrainingMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof answerChangedConditionTraining>>,
+        TError,
+        AnswerChangedConditionTrainingMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAnswerChangedConditionTrainingMutationOptions(options));
+    }
 

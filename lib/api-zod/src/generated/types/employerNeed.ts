@@ -10,6 +10,7 @@ import type { EmployerNeedRequiredSkillLevels } from './employerNeedRequiredSkil
 import type { EmployerNeedRequirementsVersion } from './employerNeedRequirementsVersion';
 import type { EmployerNeedSalaryPeriod } from './employerNeedSalaryPeriod';
 import type { EmployerNeedSalaryType } from './employerNeedSalaryType';
+import type { EmployerNeedStatus } from './employerNeedStatus';
 import type { RecruitingSkillRequirement } from './recruitingSkillRequirement';
 import type { RequirementMode } from './requirementMode';
 
@@ -33,4 +34,7 @@ export interface EmployerNeed {
   salaryPeriod: EmployerNeedSalaryPeriod;
   salaryType: EmployerNeedSalaryType;
   createdAt: Date;
+  /** @minimum 1 */
+  revision?: number;
+  status?: EmployerNeedStatus;
 }

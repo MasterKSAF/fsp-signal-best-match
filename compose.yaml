@@ -4,9 +4,9 @@ services:
     image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
     environment:
       POSTGRES_USER: signal
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-signal-local}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Initialize .env using scripts/setup-env.mjs}
       POSTGRES_DB: signal
-    ports: ["127.0.0.1:${SIGNAL_DB_PORT:-55433}:5432"]
+    ports: ["127.0.0.1:${SIGNAL_DB_PORT:-55450}:5432"]
     volumes: ["signal-data:/var/lib/postgresql/data"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U signal -d signal"]
@@ -15,22 +15,32 @@ services:
       retries: 20
   mail:
     image: axllent/mailpit@sha256:b68349e3a014b90c5610bfb26b2ae36f3892d7b8cf25ee140c6c71c98d2fcf48
-    ports: ["127.0.0.1:${SIGNAL_MAIL_PORT:-8026}:8025"]
+    ports: ["127.0.0.1:${SIGNAL_MAIL_PORT:-8050}:8025"]
   app:
     profiles: ["full"]
     build: .
     environment:
-      DATABASE_URL: postgresql://signal:${POSTGRES_PASSWORD:-signal-local}@db:5432/signal
+      DATABASE_URL: postgresql://signal:${POSTGRES_PASSWORD:?Initialize .env using scripts/setup-env.mjs}@db:5432/signal
       NODE_ENV: production
       PORT: 4310
       HOST: 0.0.0.0
-      DEMO_MODE: "true"
-      SIGNAL_WORKSPACE_ENABLED: "true"
-      SIGNAL_SKILL_MODULES_ENABLED: "true"
+      DEMO_MODE: ${DEMO_MODE:-true}
+      SIGNAL_WORKSPACE_ENABLED: ${SIGNAL_WORKSPACE_ENABLED:-true}
+      SIGNAL_SKILL_MODULES_ENABLED: ${SIGNAL_SKILL_MODULES_ENABLED:-true}
+      SIGNAL_ADAPTIVE_EXPERIMENT_ENABLED: ${SIGNAL_ADAPTIVE_EXPERIMENT_ENABLED:-false}
+      SIGNAL_CODE_RUNNER_ENABLED: "false"
+      SIGNAL_ATS_WORKER_ENABLED: ${SIGNAL_ATS_WORKER_ENABLED:-false}
+      SIGNAL_ATS_ENCRYPTION_KEY: ${SIGNAL_ATS_ENCRYPTION_KEY:-}
+      SIGNAL_COMPUTATION_RECOVERY_ENABLED: ${SIGNAL_COMPUTATION_RECOVERY_ENABLED:-true}
+      SIGNAL_SELECTION_WATCH_SCHEDULER_ENABLED: ${SIGNAL_SELECTION_WATCH_SCHEDULER_ENABLED:-true}
+      SIGNAL_INVITATIONS_PER_24H: ${SIGNAL_INVITATIONS_PER_24H:-20}
+      EXPOSE_DEMO_VERIFICATION_CODE: "false"
+      SIGNAL_RESEARCH_OPERATOR_IDS: ${SIGNAL_RESEARCH_OPERATOR_IDS:-}
+      MAIL_TRANSPORT: mailpit
       MAILPIT_URL: http://mail:8025
-      PUBLIC_URL: http://localhost:${SIGNAL_HTTP_PORT:-4310}
+      PUBLIC_URL: ${SIGNAL_PUBLIC_URL:-http://localhost:${SIGNAL_HTTP_PORT:-4450}}
       VERIFICATION_TOKEN_SECRET: ${VERIFICATION_TOKEN_SECRET:?Initialize .env using the Docker command in README}
-    ports: ["127.0.0.1:${SIGNAL_HTTP_PORT:-4310}:4310"]
+    ports: ["127.0.0.1:${SIGNAL_HTTP_PORT:-4450}:4310"]
     depends_on:
       db: { condition: service_healthy }
       mail: { condition: service_started }

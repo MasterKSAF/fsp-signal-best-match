@@ -607,6 +607,8 @@ router.get("/matches/explanation", async (req, res): Promise<void> => {
   });
   res.json({
     ...response,
+    factors: enriched.factors,
+    factorLedger: enriched.factorLedger,
     resumeId: candidate.resumeId,
     resumeRevision: selected.candidate.resumeRevision,
     title: selected.candidate.title,

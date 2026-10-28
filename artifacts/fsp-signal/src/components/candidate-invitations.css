@@ -12,3 +12,7 @@
 .invitation-created-date svg{color:hsl(var(--muted-foreground));flex:none}
 .invitation-compact-aside .opportunity-status{white-space:normal;text-align:right}
 @media(max-width:420px){.invitation-compact-main{gap:9px}.invitation-compact-main .invitation-compact-aside{max-width:48%}.invitation-created-date{font-size:12px;gap:4px}.invitation-created-date svg{width:12px;height:12px}}
+
+.invitation-insights{margin-bottom:1rem}.invitation-insights .requirement-preview-editor{padding:1rem}.invitation-funnel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}.invitation-funnel>div{border:1px solid var(--border);padding:.75rem;border-radius:12px}.invitation-funnel dd{margin:.3rem 0 0;font-size:1.35rem;font-weight:650}.decline-reason{margin:.75rem 0}.decline-reason label{display:grid;gap:.35rem;margin-top:.65rem}.decline-reason textarea{min-height:4rem}@media(max-width:600px){.invitation-funnel{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.invitation-response{padding:1rem;border:1px solid hsl(var(--border));border-radius:var(--radius);margin-block:1rem;overflow-wrap:anywhere}.invitation-response p{margin-block:.5rem 0}.invitation-response .prewrap{white-space:pre-wrap}

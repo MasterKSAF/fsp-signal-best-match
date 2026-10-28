@@ -24,6 +24,7 @@ import {
   signalNeedsTable,
   signalUsersTable,
   signalInvitationRequestsTable,
+  signalInvitationBudgetConsumptionTable,
 } from "@workspace/db";
 import { getSessionUser } from "../lib/signal-auth";
 import { escapeLike } from '../lib/job-discovery';
@@ -37,7 +38,7 @@ import {
   signalPoolPredicate,
   type SignalPoolScope,
 } from "../lib/signal-pool-scope";
-import { postgresIntIdParam, postgresIntIdSchema } from "../lib/postgres-id";
+import { postgresIntIdParam, postgresIntIdSchema, postgresIntIdTextSchema } from "../lib/postgres-id";
 import { withAssessmentRankingEvidence } from "../lib/assessment-ranking-evidence";
 import {
   historicalResumeVisible,
@@ -54,6 +55,7 @@ import {
   INVITATION_WINDOW_MS,
 } from "../lib/signal-invitation-policy";
 import { assertCompanyActionAllowed } from "../lib/signal-trust";
+import { expireInvitations, invitationAnalytics, invitationBudget } from '../lib/invitation-analytics';
 import {
   createContactPermission,
   lockContactOwner,
@@ -118,6 +120,7 @@ async function candidateContext(
     res.status(403).json({ error: "Действие доступно только кандидату." });
     return null;
   }
+  await expireInvitations();
   return { userId: session.user.id, ...poolScopeForAccount(session.user) };
 }
 
@@ -226,6 +229,10 @@ async function invitationPayload(
     salaryType: invitation.salaryType,
     workFormat: invitation.workFormat,
     status: invitation.status,
+    revision: invitation.revision,
+    declineReason: invitation.declineReason,
+    declineNote: invitation.declineNote,
+    expiresAt: invitation.expiresAt?.toISOString() ?? null,
     contactShared: Boolean(grant) && permission.allowed,
     createdAt: invitation.createdAt.toISOString(),
   };
@@ -435,6 +442,8 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
         message: permission.publicReason,
         retryAt: permission.retryAt,
       };
+    const selectedContext = await loadOwnedSelectionContext(context.companyId,ref,tx,{lock:true});
+    if(!selectedContext)return {error:404,code:'CONTEXT_UNAVAILABLE',message:'Вакансия или запрос недоступны.'};
     const [receipt] = await tx
       .select()
       .from(signalInvitationRequestsTable)
@@ -465,8 +474,7 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
             message: "Исходное приглашение недоступно.",
           };
     }
-    const selectedContext = await loadOwnedSelectionContext(context.companyId,ref,tx,{lock:true});
-    if(!selectedContext || !selectedContext.active)return {error:404,code:'CONTEXT_UNAVAILABLE',message:'Вакансия или запрос недоступны для нового приглашения.'};
+    if(!selectedContext.active)return {error:404,code:'CONTEXT_UNAVAILABLE',message:'Вакансия или запрос недоступны для нового приглашения.'};
     if(input.contextVersion!==undefined&&input.contextVersion!==selectedContext.context.version)return {error:409,code:'VERSION_CONFLICT',message:'Условия изменились. Обновите подготовку приглашения.'};
     await tx
       .select({ userId: signalCandidateProfilesTable.userId })
@@ -553,16 +561,16 @@ router.post("/employer/invitations", async (req, res): Promise<void> => {
         retryAt: cooldown,
       };
     const recent = await tx
-      .select({ createdAt: signalInvitationsTable.createdAt })
-      .from(signalInvitationsTable)
+      .select({ createdAt: signalInvitationBudgetConsumptionTable.spentAt })
+      .from(signalInvitationBudgetConsumptionTable)
       .where(
         and(
-          eq(signalInvitationsTable.companyId, context.companyId),
+          eq(signalInvitationBudgetConsumptionTable.companyId, context.companyId),
           gt(
-            signalInvitationsTable.createdAt,
+            signalInvitationBudgetConsumptionTable.spentAt,
             new Date(now.getTime() - INVITATION_WINDOW_MS),
           ),
-          lte(signalInvitationsTable.createdAt, now),
+          lte(signalInvitationBudgetConsumptionTable.spentAt, now),
         ),
       );
     const retryAt = quotaRetryAt(
@@ -622,7 +630,7 @@ router.post("/me/invitations/:id/decision", async (req, res): Promise<void> => {
   const context = await candidateContext(req, res);
   if (!context) return;
   const params = DecideInvitationParams.safeParse(req.params);
-  const parsed = DecideInvitationBody.safeParse(req.body);
+  const parsed = z.object({decision:z.enum(['accept','decline']),revision:z.number().int().positive().optional(),reason:z.enum(['conditions','format','direction','timing','other']).optional(),note:z.string().trim().max(1000).optional()}).strict().refine(v=>v.decision==='decline'||(!v.reason&&!v.note)).safeParse(req.body);
   if (!params.success || !parsed.success) {
     res.status(400).json({ error: "Некорректное решение по приглашению." });
     return;
@@ -652,13 +660,15 @@ router.post("/me/invitations/:id/decision", async (req, res): Promise<void> => {
     await lockContactOwner(tx, context.userId);
     const [updated] = await tx
       .update(signalInvitationsTable)
-      .set({ status: targetStatus, updatedAt: new Date() })
+      .set({ status: targetStatus, ...(targetStatus==='declined'?{declineReason:parsed.data.reason??null,declineNote:parsed.data.note||null}:{}), updatedAt: new Date() })
       .where(
         and(
           eq(signalInvitationsTable.id, owned.id),
           eq(signalInvitationsTable.candidateUserId, context.userId),
           eq(signalInvitationsTable.companyId, owned.companyId),
           inArray(signalInvitationsTable.status, ["sent", "viewed"]),
+          parsed.data.revision===undefined?undefined:eq(signalInvitationsTable.revision,parsed.data.revision),
+          or(isNull(signalInvitationsTable.expiresAt),gt(signalInvitationsTable.expiresAt,new Date())),
         ),
       )
       .returning();
@@ -681,7 +691,7 @@ router.post("/me/invitations/:id/decision", async (req, res): Promise<void> => {
         ),
       )
       .limit(1);
-    return current?.status === targetStatus ? current : null;
+    return current?.status === targetStatus && (targetStatus!=='declined'||(current.declineReason===(parsed.data.reason??null)&&current.declineNote===(parsed.data.note||null))) ? current : null;
   });
   if (!result) {
     res
@@ -853,5 +863,20 @@ router.post(
     );
   },
 );
+
+const AnalyticsQuery=z.object({days:z.enum(['7','28','90']).default('28'),contextType:z.enum(['job','need']).optional(),contextId:postgresIntIdTextSchema.optional()}).strict().refine(v=>(v.contextType===undefined)===(v.contextId===undefined));
+router.get('/employer/invitation-analytics',async(req,res)=>{
+ const owner=await employerCompanyContext(req,res);if(!owner)return;
+ const parsed=AnalyticsQuery.safeParse(req.query);if(!parsed.success){res.status(400).json({error:'Проверьте период и контекст аналитики.'});return;}
+ const ref=parsed.data.contextType?{type:parsed.data.contextType,id:parsed.data.contextId!}:undefined;
+ if(ref&&!await loadOwnedSelectionContext(owner.companyId,ref)){res.status(404).json({error:'Вакансия или запрос недоступны.'});return;}
+ await expireInvitations();res.set('Cache-Control','no-store, private');
+ res.json({...await invitationAnalytics({companyId:owner.companyId,context:ref,days:Number(parsed.data.days) as 7|28|90}),budget:await invitationBudget(owner.companyId)});
+});
+router.get('/me/invitation-analytics',async(req,res)=>{
+ const owner=await candidateContext(req,res);if(!owner)return;
+ const parsed=z.object({days:z.enum(['7','28','90']).default('28')}).strict().safeParse(req.query);if(!parsed.success){res.status(400).json({error:'Выберите период 7, 28 или 90 дней.'});return;}
+ res.set('Cache-Control','no-store, private');res.json(await invitationAnalytics({candidateId:owner.userId,days:Number(parsed.data.days) as 7|28|90}));
+});
 
 export default router;

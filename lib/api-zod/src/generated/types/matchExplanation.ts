@@ -7,8 +7,9 @@
  */
 import type { FspRankingSignal } from './fspRankingSignal';
 import type { MatchEvidence } from './matchEvidence';
-import type { MatchExplanationFactorsItem } from './matchExplanationFactorsItem';
 import type { MatchExplanationScoreScope } from './matchExplanationScoreScope';
+import type { MatchingFactor } from './matchingFactor';
+import type { MatchingFactorLedger } from './matchingFactorLedger';
 import type { MatchRanking } from './matchRanking';
 
 export interface MatchExplanation {
@@ -30,7 +31,7 @@ export interface MatchExplanation {
      */
   rankingScore?: number;
   algorithmVersion: string;
-  factors: MatchExplanationFactorsItem[];
+  factors: MatchingFactor[];
   evidence: MatchEvidence[];
   strengths: string[];
   gaps: string[];
@@ -48,4 +49,5 @@ export interface MatchExplanation {
      * @maximum 2147483647
      */
   resumeRevision: number;
+  factorLedger?: MatchingFactorLedger;
 }

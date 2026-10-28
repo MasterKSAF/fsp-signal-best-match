@@ -172,6 +172,10 @@ export const signalAssessmentAttemptsTable = pgTable("signal_assessment_attempts
 
 export const signalInvitationsTable = pgTable("signal_invitations", {
   id: serial("id").primaryKey(),
+  revision: integer('revision').notNull().default(1),
+  declineReason: text('decline_reason', { enum: ['conditions','format','direction','timing','other'] }),
+  declineNote: text('decline_note'),
+  expiresAt: timestamp('expires_at', { withTimezone:true }).default(sql`now()+interval '14 days'`),
   needId: integer("need_id").references(() => signalNeedsTable.id, { onDelete: "restrict" }),
   jobId: integer("job_id").references(() => signalJobsTable.id, { onDelete: "restrict" }),
   contextVersion: integer("context_version").notNull().default(1),

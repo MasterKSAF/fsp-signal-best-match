@@ -8,6 +8,9 @@
 import type { InvitationInputSalaryPeriod } from './invitationInputSalaryPeriod';
 import type { InvitationInputSalaryType } from './invitationInputSalaryType';
 
+/**
+ * Employer owner creates for one exact accessible CV. Exactly one of jobId OR needId is required (server XOR refinement); contextVersion required and optional resumeRevision reject stale context/CV. Same idempotency key replays only identical input.
+ */
 export interface InvitationInput {
   /**
      * @minimum 1
@@ -62,8 +65,9 @@ export interface InvitationInput {
      */
   resumeId: number;
   /**
-     * @minLength 8
+     * @minLength 1
      * @maxLength 128
+     * @pattern ^[A-Za-z0-9._:-]+$
      */
   idempotencyKey?: string;
 }

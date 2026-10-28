@@ -8,9 +8,21 @@
 import type { InvitationCompany } from './invitationCompany';
 import type { InvitationContext } from './invitationContext';
 import type { InvitationContextSnapshot } from './invitationContextSnapshot';
+import type { InvitationDeclineReason } from './invitationDeclineReason';
 import type { InvitationStatus } from './invitationStatus';
 
 export interface Invitation {
+  /** @minimum 1 */
+  revision?: number;
+  /** @nullable */
+  declineReason?: InvitationDeclineReason;
+  /**
+     * @maxLength 1000
+     * @nullable
+     */
+  declineNote?: string | null;
+  /** @nullable */
+  expiresAt?: Date | null;
   id: number;
   /** @nullable */
   needId: number | null;

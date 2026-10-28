@@ -60,3 +60,5 @@
 @supports (grid-template-rows:subgrid) {
   .resume-card { grid-row:span 7;grid-template-rows:subgrid; }
 }
+
+.pdf-resume-import{display:grid;gap:1rem;max-height:72vh;overflow:auto}.pdf-resume-import input[type=file]{max-width:100%;margin-inline-start:.5rem}.pdf-import-field{padding:1rem;border:1px solid var(--border);border-radius:14px}.pdf-import-field>label{display:flex;gap:.5rem;font-weight:600}.pdf-import-comparison{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.pdf-import-comparison>div{min-width:0}.pdf-import-comparison pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:16rem;overflow:auto}.pdf-import-field details{margin-top:1rem}.pdf-import-field details p{overflow-wrap:anywhere}@media(max-width:700px){.pdf-import-comparison{grid-template-columns:1fr}}

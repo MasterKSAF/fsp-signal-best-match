@@ -1,0 +1,4 @@
+CREATE TABLE signal_offer_preferences(resume_id integer PRIMARY KEY REFERENCES signal_candidate_resumes(id),shared boolean NOT NULL DEFAULT false,revision integer NOT NULL DEFAULT 1,preferences jsonb NOT NULL);
+CREATE TABLE signal_offer_conditions(company_id integer NOT NULL REFERENCES signal_companies(id),context_type text NOT NULL CHECK(context_type IN('job','need')),context_id integer NOT NULL,revision integer NOT NULL DEFAULT 1,conditions jsonb NOT NULL,PRIMARY KEY(company_id,context_type,context_id));
+CREATE TRIGGER signal_offer_preferences_epoch AFTER INSERT OR UPDATE OR DELETE ON signal_offer_preferences FOR EACH STATEMENT EXECUTE FUNCTION signal_bump_professional_epoch();
+CREATE TRIGGER signal_offer_conditions_epoch AFTER INSERT OR UPDATE OR DELETE ON signal_offer_conditions FOR EACH STATEMENT EXECUTE FUNCTION signal_bump_professional_epoch();

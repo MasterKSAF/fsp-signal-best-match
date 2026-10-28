@@ -99,6 +99,7 @@ export async function evaluateSupplement(output?: string) {
         if(name==='signal_assessment_corrections')return Promise.resolve([...corrected].map(attemptId=>({attemptId})));
         if(name==='signal_skill_evidence')return Promise.resolve(moduleEvidence);
         if(name==='signal_skill_corrections')return Promise.resolve([...revoked].map(evidenceId=>({evidenceId})));
+        if(name==='signal_assessment_heads')return Promise.resolve([]);
         throw new Error(`Unexpected fixture table read: ${name}`);
       } };} };
     },

@@ -4,6 +4,11 @@ import type { InvitationContext, InvitationCompany } from '@workspace/api-client
 import { selectionHref } from '../lib/employer-workspace-navigation';
 export type InvitationContextView = InvitationContext;
 export type InvitationCompanyView = InvitationCompany;
+export function InvitationResponse({invitation}:{invitation:{status:string;declineReason?:string|null;declineNote?:string|null}}) {
+  if(invitation.status!=='declined')return null;
+  const reasons:Record<string,string>={conditions:'Условия',format:'Формат работы',direction:'Направление',timing:'Сейчас неактуально',other:'Другая причина'};
+  return <section className="invitation-response" aria-label="Ответ на приглашение"><b>Приглашение отклонено</b>{invitation.declineReason&&<p>Причина: {reasons[invitation.declineReason]||'Другая причина'}</p>}{invitation.declineNote&&<p className="prewrap">{invitation.declineNote}</p>}{!invitation.declineReason&&!invitation.declineNote&&<p className="muted">Без объяснения причины.</p>}</section>;
+}
 export function InvitationContextLabel({context,candidate=false}:{context?:InvitationContextView|null;candidate?:boolean}) {
   if(!context)return <span className="muted invitation-context-label">Условия из отправленного приглашения</span>;
   const label=candidate&&context.type==='need'?'Приглашение по запросу компании':`${context.type==='job'?'По вакансии':'По запросу'} «${context.title}»`;

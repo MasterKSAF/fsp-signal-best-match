@@ -17,6 +17,7 @@ import { postgresIntIdInputSchema, postgresIntIdSchema } from '../lib/postgres-i
 import { assertCompanyActionAllowed } from '../lib/signal-trust';
 import { loadCompanyOfferReadability } from '../lib/microtask-company-read';
 import { selectionReadPolicy, withinSavedSelection } from '../lib/selection-read-policy';
+import { contextExcludedCandidates } from '../lib/selection-exclusions';
 
 const router:IRouter=Router();
 async function requestScope(req:Request,res:Response,input:z.infer<typeof SelectionScopeQuery>) {
@@ -41,7 +42,8 @@ router.get('/employer/selection',async(req,res)=>{
   const visible=input.view==='shortlisted'
     ?await selectionMetadata([...await loadAccessibleShortlistCandidates(companyId,scope,links)].map(([,candidate])=>candidate))
     :await loadSelectionResumes(companyId,scope,purpose);
-  const filtered=visible.filter(row=>matchesSelectionFilters(row,input));
+  const excluded=loaded&&input.view!=='shortlisted'?await contextExcludedCandidates(companyId,loaded.context):new Set<number>();
+  const filtered=visible.filter(row=>!excluded.has(row.userId)&&matchesSelectionFilters(row,input));
   let people:SelectionPerson[];
   if(loaded) {
     const evaluated=evaluateResumeCandidates(loaded.matchNeed,filtered,scope.demoMode,new Date());

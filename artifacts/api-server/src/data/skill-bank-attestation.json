@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "manifestHash": "34352fefc678c367fcafc187f69b0a55e29dcddb9012fb01545c56347513efbe",
+  "checkerVersion": "signal-bank-checker-v1",
+  "checkerHash": "4ebc9f8c660a42f2e4edf27df7d1028f5badc15336f42b8d156a27174b8e0d35",
+  "checks": [
+    {
+      "id": "all-family-input-domain-and-unique-options",
+      "passed": true,
+      "checked": 3240
+    },
+    {
+      "id": "python-reference-runtime",
+      "passed": true,
+      "checked": 320
+    },
+    {
+      "id": "typescript-reference-runtime",
+      "passed": true,
+      "checked": 260
+    },
+    {
+      "id": "positive-negative-critical-rubric",
+      "passed": true,
+      "checked": 72,
+      "limitations": "Synthetic fixtures; does not establish difficulty or equivalence on people."
+    },
+    {
+      "id": "handwritten-outcomes-and-historical-bank-regressions",
+      "passed": true,
+      "checked": 8
+    }
+  ],
+  "passed": true
+}

@@ -5,6 +5,7 @@ import { build as esbuild } from "esbuild";
 import { portablePinoPlugin } from "./build-portability.mjs";
 import { rm, copyFile, readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { execFileSync } from 'node:child_process';
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -16,6 +17,7 @@ async function buildAll() {
   await rm(distDir, { recursive: true, force: true });
 
   const matcherSha256 = createHash('sha256').update(await readFile(path.resolve(artifactDir, 'src/lib/signal-matching.ts'))).digest('hex');
+  const skillBankBundle = execFileSync(process.execPath, ['--import', 'tsx', 'scripts/pack-skill-bank.ts'], { cwd: path.resolve(artifactDir, '../..'), encoding: 'utf8', maxBuffer: 8_000_000 });
 
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/index.ts")],
@@ -25,7 +27,7 @@ async function buildAll() {
     outdir: distDir,
     outExtension: { ".js": ".mjs" },
     logLevel: "info",
-    define: { __SIGNAL_MATCHER_SHA256__: JSON.stringify(matcherSha256) },
+    define: { __SIGNAL_MATCHER_SHA256__: JSON.stringify(matcherSha256), __SIGNAL_SKILL_BANK_BUNDLE__: skillBankBundle },
     // Some packages may not be bundleable, so we externalize them, we can add more here as needed.
     // Some of the packages below may not be imported or installed, but we're adding them in case they are in the future.
     // Examples of unbundleable packages:

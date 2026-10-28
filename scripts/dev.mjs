@@ -4,6 +4,9 @@ import path from 'node:path';
 if (existsSync('.env')) process.loadEnvFile('.env');
 process.env.PORT ||= process.env.API_PORT || '4312';
 process.env.API_PORT ||= process.env.PORT;
+if (process.env.PORT !== process.env.API_PORT) {
+  throw new Error('PORT and API_PORT must match: the API listener and Vite proxy use the same port.');
+}
 process.env.NODE_ENV = 'development';
 const root = process.cwd();
 const children = [

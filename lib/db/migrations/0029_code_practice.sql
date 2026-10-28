@@ -1,0 +1,8 @@
+CREATE TABLE signal_code_practice(id uuid PRIMARY KEY,user_id integer NOT NULL REFERENCES signal_users(id),task_version text NOT NULL,tests jsonb NOT NULL,source text,source_hash text,submitted_at timestamptz,deadline timestamptz NOT NULL,state text NOT NULL DEFAULT 'draft' CHECK(state IN ('draft','queued','running','finished','cancelled')),revision integer NOT NULL DEFAULT 1,fence integer NOT NULL DEFAULT 0,lease_until timestamptz,container_name text,image_digest text,status text,history jsonb NOT NULL DEFAULT '[]',created_at timestamptz NOT NULL DEFAULT now());
+CREATE INDEX signal_code_practice_queue ON signal_code_practice(state,lease_until,submitted_at);
+CREATE FUNCTION signal_preserve_code_submission() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN
+ IF NEW.tests IS DISTINCT FROM OLD.tests OR NEW.task_version IS DISTINCT FROM OLD.task_version OR NEW.deadline IS DISTINCT FROM OLD.deadline OR NEW.user_id IS DISTINCT FROM OLD.user_id THEN RAISE EXCEPTION 'code task source is immutable'; END IF;
+ IF OLD.submitted_at IS NOT NULL AND (NEW.source IS DISTINCT FROM OLD.source OR NEW.source_hash IS DISTINCT FROM OLD.source_hash OR NEW.submitted_at IS DISTINCT FROM OLD.submitted_at) THEN RAISE EXCEPTION 'submitted code is immutable'; END IF;
+ IF EXISTS(SELECT 1 FROM jsonb_array_elements(OLD.history) old_receipt WHERE NOT NEW.history @> jsonb_build_array(old_receipt)) THEN RAISE EXCEPTION 'code receipts are append-only'; END IF;
+ RETURN NEW; END $$;
+CREATE TRIGGER signal_code_submission_immutable BEFORE UPDATE ON signal_code_practice FOR EACH ROW EXECUTE FUNCTION signal_preserve_code_submission();
